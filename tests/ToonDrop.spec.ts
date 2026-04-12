@@ -26,7 +26,17 @@ describe('ToonDrop', () => {
         registry = blockchain.openContract(await ToonRegistry.fromInit(deployer.address, vaultAddr.address));
         await registry.send(deployer.getSender(), { value: toNano('0.05') }, { $$type: 'Deploy', queryId: 0n });
 
-        vault = blockchain.openContract(await ToonVault.fromInit(registry.address));
+        vault = blockchain.openContract(await ToonVault.fromInit(
+            deployer.address,
+            registry.address,
+            deployer.address,
+            0n,
+            toNano('1000000'),
+            0n,
+            0n,
+            false,
+            0n
+        ));
         await vault.send(deployer.getSender(), { value: toNano('0.05') }, { $$type: 'Deploy', queryId: 0n });
 
         const trackId = 1n;
@@ -54,7 +64,7 @@ describe('ToonDrop', () => {
         
         const result = await drop.send(
             fan.getSender(),
-            { value: toNano('0.1') },
+            { value: purchaseAmount + toNano('0.1') },
             { $$type: 'PurchaseSlice', amount: purchaseAmount }
         );
 

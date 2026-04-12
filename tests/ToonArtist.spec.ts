@@ -43,20 +43,25 @@ describe('ToonArtist', () => {
         expect(await artistContract.getIsActive()).toBe(true);
     });
 
-    it('should register artist in registry', async () => {
-        await registry.send(artist.getSender(), { value: toNano('0.1') }, { $$type: 'RegisterArtist', artistContract: artistContract.address });
+    it('should register artist in registry using 2PC', async () => {
+        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "RegisterSelf");
+        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "ConfirmRegistration");
+
         expect(await registry.getIsRegisteredArtist(artist.address)).toBe(true);
         expect(await registry.getGetArtistContract(artist.address)).toEqualAddress(artistContract.address);
     });
 
-    it('should add track through artist contract', async () => {
+    it('should add track through artist contract using 2PC', async () => {
         // Must be registered and active
-        await registry.send(artist.getSender(), { value: toNano('0.1') }, { $$type: 'RegisterArtist', artistContract: artistContract.address });
+        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "RegisterSelf");
+        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "ConfirmRegistration");
+
         await artistContract.send(artist.getSender(), { value: toNano('0.1') }, { $$type: 'StakeToon', amount: toNano('100') });
 
         const trackId = 1n;
         const fingerprint = 111n;
-        const trackAddr = (await blockchain.treasury('track')).address;
+        const track = await blockchain.treasury('track');
+        const trackAddr = track.address;
 
         const result = await artistContract.send(artist.getSender(), { value: toNano('0.1') }, {
             $$type: 'AddTrack',
@@ -65,10 +70,10 @@ describe('ToonArtist', () => {
             trackContract: trackAddr
         });
 
-        expect(result.transactions).toHaveTransaction({
-            from: artistContract.address,
-            to: registry.address,
-            success: true
+        // Manually confirm track registration since track treasury won't do it
+        await registry.send(track.getSender(), { value: toNano('0.1') }, {
+            $$type: 'ConfirmTrackRegistration',
+            trackId: trackId
         });
 
         expect(await registry.getIsRegisteredTrack(trackId)).toBe(true);

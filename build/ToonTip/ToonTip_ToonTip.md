@@ -1,6 +1,6 @@
 # Tact compilation report
 Contract: ToonTip
-BoC Size: 970 bytes
+BoC Size: 910 bytes
 
 ## Structures (Structs and Messages)
 Total structures: 18

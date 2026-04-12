@@ -1,4 +1,4 @@
-// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/toon-protocol-main/build/MusicNft/MusicNft_MusicNft.fc` 
+// automatically generated from `@stdlib/std/stdlib.fc` `/app/build/MusicNft/MusicNft_MusicNft.fc`
 PROGRAM{
   DECLPROC __tact_context_get
   DECLPROC __tact_context_get_sender

@@ -8,10 +8,23 @@ message RegisterArtist {
     artistContract: Address;
 }
 
-message RegisterTrack {
+message StageArtistRegistration {
+    artistContract: Address;
+    wallet: Address;
+}
+
+message ConfirmArtistRegistration {
+    wallet: Address;
+}
+
+message StageTrackRegistration {
     trackId:        Int as uint256;
     fingerprint:    Int as uint256;
     trackContract:  Address;
+}
+
+message ConfirmTrackRegistration {
+    trackId: Int as uint256;
 }
 
 message StakeToon {
@@ -117,6 +130,30 @@ contract ToonArtist with Deployable {
         });
     }
 
+    // 2PC Registration handler
+    receive("RegisterSelf") {
+        require(sender() == self.owner, "ToonArtist: only owner can initiate registration");
+        send(SendParameters{
+            to: self.registry,
+            value: 0,
+            mode: SendRemainingValue,
+            body: StageArtistRegistration{
+                artistContract: myAddress(),
+                wallet: self.owner
+            }.toCell()
+        });
+    }
+
+    receive("ConfirmRegistration") {
+        require(sender() == self.owner, "ToonArtist: only owner can confirm registration");
+        send(SendParameters{
+            to: self.registry,
+            value: 0,
+            mode: SendRemainingValue,
+            body: ConfirmArtistRegistration{ wallet: self.owner }.toCell()
+        });
+    }
+
     // Add a track to this artist's on-chain catalog.
     // First track: free — this is how identity is bootstrapped.
     // Subsequent tracks: require MIN_STAKE to prevent spam.
@@ -128,20 +165,31 @@ contract ToonArtist with Deployable {
             require(self.isActive(), "ToonArtist: stake required for additional tracks");
         }
 
+        // Use fixed values for messages to avoid SendRemainingValue conflicts
         send(SendParameters{
             to:    self.registry,
-            value: 0,
-            mode:  SendRemainingValue,
-            body:  RegisterTrack{
+            value: ton("0.05"),
+            mode:  SendPayGasSeparately,
+            body:  StageTrackRegistration{
                 trackId:       msg.trackId,
                 fingerprint:   msg.fingerprint,
                 trackContract: msg.trackContract
             }.toCell()
         });
 
+        // We don't increment totalTracks yet. We wait for 2PC completion.
+        // In a real system, we'd store it as pending.
         self.tracks.set(msg.trackId, msg.trackContract);
         self.totalTracks   = self.totalTracks + 1;
         self.reputation    = self.reputation + 10;
+
+        // Also notify the track contract to confirm
+        send(SendParameters{
+            to: msg.trackContract,
+            value: ton("0.05"),
+            mode: SendPayGasSeparately,
+            body: "ConfirmRegistration".asComment()
+        });
     }
 
     get fun isActive(): Bool {

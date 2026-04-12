@@ -36,7 +36,9 @@ describe('ToonTrack', () => {
         await artistContract.send(artist.getSender(), { value: toNano('0.05') }, { $$type: 'Deploy', queryId: 0n });
         
         // Register artist
-        await registry.send(artist.getSender(), { value: toNano('0.1') }, { $$type: 'RegisterArtist', artistContract: artistContract.address });
+        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "RegisterSelf");
+        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "ConfirmRegistration");
+
         // Stake to be active
         await artistContract.send(artist.getSender(), { value: toNano('0.1') }, { $$type: 'StakeToon', amount: toNano('100') });
 
@@ -46,6 +48,7 @@ describe('ToonTrack', () => {
         trackContract = blockchain.openContract(await ToonTrack.fromInit(
             artistContract.address,
             registry.address,
+            trackId,
             "ipfs://track-metadata",
             fingerprint,
             100000000n // 0.1 TON
@@ -94,8 +97,8 @@ describe('ToonTrack', () => {
         });
 
         // Artist contract should have received some tip volume
-        const artistDetails = await artistContract.getDetails();
-        expect(artistDetails).toMatch(/tips: [1-9][0-9]*/);
+        const artistDetails = await artistContract.getGetDetails();
+        expect(artistDetails.totalTipVolume).toBeGreaterThan(0n);
 
         // Should request mint from registry
         expect(result.transactions).toHaveTransaction({
@@ -116,7 +119,7 @@ describe('ToonTrack', () => {
     it('should reject tips below floor', async () => {
         const result = await trackContract.send(
             fan.getSender(),
-            { value: toNano('0.05') },
+            { value: 50000000n },
             null
         );
 
@@ -124,7 +127,7 @@ describe('ToonTrack', () => {
             from: fan.address,
             to: trackContract.address,
             success: false,
-            exitCode: 44191, // ToonTrack: tip below minimum floor
+            exitCode: 43013, // ToonTrack: tip below minimum floor (including gas)
         });
     });
 });

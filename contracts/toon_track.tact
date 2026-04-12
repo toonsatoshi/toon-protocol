@@ -14,6 +14,10 @@ message RequestMint {
     amount:    Int as coins;
 }
 
+message ConfirmTrackRegistration {
+    trackId: Int as uint256;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  ToonTrack
 // ─────────────────────────────────────────────────────────────────────────────
@@ -26,6 +30,7 @@ contract ToonTrack with Deployable {
 
     artist:      Address;    // The ToonArtist contract address (or wallet)
     registry:    Address;    // The global ToonRegistry
+    trackId:     Int as uint256;
     metadataUri: String;     // Arweave link
     fingerprint: Int as uint256; 
     
@@ -41,9 +46,10 @@ contract ToonTrack with Deployable {
 
     // ── Constructor ──────────────────────────────────────────────────────────
 
-    init(artist: Address, registry: Address, metadataUri: String, fingerprint: Int, mintFee: Int) {
+    init(artist: Address, registry: Address, trackId: Int, metadataUri: String, fingerprint: Int, mintFee: Int) {
         self.artist = artist;
         self.registry = registry;
+        self.trackId = trackId;
         self.metadataUri = metadataUri;
         self.fingerprint = fingerprint;
         self.mintFee = mintFee;
@@ -51,6 +57,16 @@ contract ToonTrack with Deployable {
     }
 
     // ── Actions ──────────────────────────────────────────────────────────────
+
+    receive("ConfirmRegistration") {
+        require(sender() == self.artist, "ToonTrack: only artist can confirm registration");
+        send(SendParameters{
+            to: self.registry,
+            value: 0,
+            mode: SendRemainingValue,
+            body: ConfirmTrackRegistration{ trackId: self.trackId }.toCell()
+        });
+    }
 
     /// Accepts TON tips. 
     /// If value >= mintFee:

@@ -471,22 +471,22 @@ builder $ToonFan$_store(builder build_0, (slice, slice, cell, int, cell, int) v)
     var (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId)) = $self;
     int $power = __tact_dict_get_slice_int($self'fanPower, 267, $fan, 257);
     if ((~ null?($power))) {
-        var $fresh$ret_71 = __tact_not_null($power);
-        return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), $fresh$ret_71);
+        var $fresh$ret_76 = __tact_not_null($power);
+        return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), $fresh$ret_76);
     }
-    var $fresh$ret_72 = 0;
-    return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), $fresh$ret_72);
+    var $fresh$ret_77 = 0;
+    return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), $fresh$ret_77);
 }
 
 ((slice, slice, cell, int, cell, int), int) $ToonFan$_fun_isTopFan((slice, slice, cell, int, cell, int) $self, slice $fan) impure inline_ref {
     var (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId)) = $self;
     int $power = __tact_dict_get_slice_int($self'fanPower, 267, $fan, 257);
     if ((~ null?($power))) {
-        var $fresh$ret_73 = ((__tact_not_null($power) * 10) > $self'totalFanPower);
-        return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), $fresh$ret_73);
+        var $fresh$ret_78 = ((__tact_not_null($power) * 10) > $self'totalFanPower);
+        return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), $fresh$ret_78);
     }
-    var $fresh$ret_74 = false;
-    return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), $fresh$ret_74);
+    var $fresh$ret_79 = false;
+    return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), $fresh$ret_79);
 }
 
 ;;

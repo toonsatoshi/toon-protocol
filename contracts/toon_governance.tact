@@ -50,19 +50,33 @@ message ExecuteAddressProposal {
 //  Messages — outbound to Vault / Registry
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Dispatched to ToonVault on emissionCap proposal execution.
-message UpdateEmissionCap {
-    newCap: Int as coins;
+struct Configuration {
+    emissionCap: Int as coins;
+    minWalletAgeDays: Int as uint32;
+    targetDailyActivity: Int as uint32;
+    rewardBaseActiveListener: Int as coins;
+    rewardBaseGrowthAgent: Int as coins;
+    rewardBaseArtistLaunch: Int as coins;
+    rewardBaseTrendsetter: Int as coins;
+    rewardBaseEarlyBeliever: Int as coins;
+    rewardBaseDropInvestor: Int as coins;
+    decayFactor: Int as uint16; // e.g., in basis points
+    minThreshold: Int as coins;
+    antiFarmingCoeff: Int as uint16;
 }
 
-// Dispatched to ToonVault on minWalletAge proposal execution.
-message UpdateMinWalletAge {
-    newAgeDays: Int as uint32;
+message SetConfig {
+    config: Configuration;
 }
 
 // Dispatched to ToonRegistry on mintAuthority proposal execution.
 message UpdateMintAuthority {
     newAuthority: Address;
+}
+
+message UpdateConfigParam {
+    parameter: String;
+    newValue: Int as uint64;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -244,9 +258,13 @@ contract ToonGovernance with Deployable {
         self.proposals.set(msg.proposalId, proposal);
     }
 
-    // Execute: dispatches a deterministic typed message to Vault.
-    // No string placeholders — every proposal type has a concrete endpoint.
+    // Execute: dispatches a deterministic typed message to Registry.
     receive(msg: ExecuteProposal) {
+        // Governance should now target Registry for config updates.
+        // However, the Registry handles a full Configuration struct.
+        // We'll need a way to update individual parameters or just send the full config.
+        // For now, I'll follow the principle of centralizing in the Registry.
+
         let p: GlobalProposal? = self.proposals.get(msg.proposalId);
         require(p != null, "ToonGovernance: proposal does not exist");
         let proposal: GlobalProposal = p!!;
@@ -258,30 +276,16 @@ contract ToonGovernance with Deployable {
         proposal.executed = true;
         self.proposals.set(msg.proposalId, proposal);
 
-        if (proposal.parameter == "emissionCap") {
-            // → vault.UpdateEmissionCap — vault mutates self.emissionCap
-            send(SendParameters{
-                to:   self.vault,
-                value: 0,
-                mode:  SendRemainingValue,
-                body:  UpdateEmissionCap{
-                    newCap: proposal.newValue
-                }.toCell()
-            });
-
-        } else if (proposal.parameter == "minWalletAge") {
-            // → vault.UpdateMinWalletAge — vault mutates self.minWalletAgeDays
-            send(SendParameters{
-                to:   self.vault,
-                value: 0,
-                mode:  SendRemainingValue,
-                body:  UpdateMinWalletAge{
-                    newAgeDays: proposal.newValue
-                }.toCell()
-            });
-        }
-        // Note: any future numeric parameters are added here with their
-        // own typed message dispatch — never fall back to a string comment.
+        // Implementation of individual parameter updates in Registry.
+        send(SendParameters{
+            to: self.registry,
+            value: 0,
+            mode: SendRemainingValue,
+            body: UpdateConfigParam{
+                parameter: proposal.parameter,
+                newValue: proposal.newValue
+            }.toCell()
+        });
     }
 
     // ─────────────────────────────────────────────────────────

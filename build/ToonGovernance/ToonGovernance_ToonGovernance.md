@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonGovernance
-BoC Size: 4159 bytes
+BoC Size: 4033 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 27
+Total structures: 28
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -89,17 +89,21 @@ Signature: `ExecuteProposal{proposalId:uint256}`
 TL-B: `execute_address_proposal#81a594dc proposalId:uint256 = ExecuteAddressProposal`
 Signature: `ExecuteAddressProposal{proposalId:uint256}`
 
-### UpdateEmissionCap
-TL-B: `update_emission_cap#4bd7a705 newCap:coins = UpdateEmissionCap`
-Signature: `UpdateEmissionCap{newCap:coins}`
+### Configuration
+TL-B: `_ emissionCap:coins minWalletAgeDays:uint32 targetDailyActivity:uint32 rewardBaseActiveListener:coins rewardBaseGrowthAgent:coins rewardBaseArtistLaunch:coins rewardBaseTrendsetter:coins rewardBaseEarlyBeliever:coins rewardBaseDropInvestor:coins decayFactor:uint16 minThreshold:coins antiFarmingCoeff:uint16 = Configuration`
+Signature: `Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16}`
 
-### UpdateMinWalletAge
-TL-B: `update_min_wallet_age#c1dbfed1 newAgeDays:uint32 = UpdateMinWalletAge`
-Signature: `UpdateMinWalletAge{newAgeDays:uint32}`
+### SetConfig
+TL-B: `set_config#2bd0b755 config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16} = SetConfig`
+Signature: `SetConfig{config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16}}`
 
 ### UpdateMintAuthority
 TL-B: `update_mint_authority#787cca54 newAuthority:address = UpdateMintAuthority`
 Signature: `UpdateMintAuthority{newAuthority:address}`
+
+### UpdateConfigParam
+TL-B: `update_config_param#0e849a55 parameter:^string newValue:uint64 = UpdateConfigParam`
+Signature: `UpdateConfigParam{parameter:^string,newValue:uint64}`
 
 ### GlobalProposal
 TL-B: `_ parameter:^string newValue:uint64 description:^string proposer:address votesFor:coins votesAgainst:coins deadline:uint32 executed:bool = GlobalProposal`

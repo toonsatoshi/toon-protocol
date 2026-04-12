@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonVault
-BoC Size: 5637 bytes
+BoC Size: 8862 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 25
+Total structures: 24
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -57,6 +57,14 @@ Signature: `DeployOk{queryId:uint64}`
 TL-B: `factory_deploy#6d0ff13b queryId:uint64 cashback:address = FactoryDeploy`
 Signature: `FactoryDeploy{queryId:uint64,cashback:address}`
 
+### Configuration
+TL-B: `_ emissionCap:coins minWalletAgeDays:uint32 targetDailyActivity:uint32 rewardBaseActiveListener:coins rewardBaseGrowthAgent:coins rewardBaseArtistLaunch:coins rewardBaseTrendsetter:coins rewardBaseEarlyBeliever:coins rewardBaseDropInvestor:coins decayFactor:uint16 minThreshold:coins antiFarmingCoeff:uint16 = Configuration`
+Signature: `Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16}`
+
+### SetConfig
+TL-B: `set_config#2bd0b755 config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16} = SetConfig`
+Signature: `SetConfig{config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16}}`
+
 ### ClaimReward
 TL-B: `claim_reward#f9d49f8b walletAddress:address rewardId:uint8 telegramId:uint64 walletAgeDays:uint32 hasVibeStreak:bool tipAmount:coins claimId:uint64 expiry:uint32 sigHigh:uint256 sigLow:uint256 referrerId:uint64 = ClaimReward`
 Signature: `ClaimReward{walletAddress:address,rewardId:uint8,telegramId:uint64,walletAgeDays:uint32,hasVibeStreak:bool,tipAmount:coins,claimId:uint64,expiry:uint32,sigHigh:uint256,sigLow:uint256,referrerId:uint64}`
@@ -68,18 +76,6 @@ Signature: `MintAuthorized{recipient:address,amount:coins,authorizedAt:uint32}`
 ### RewardClaimed
 TL-B: `reward_claimed#81a35543 rewardId:uint8 recipient:address amount:coins = RewardClaimed`
 Signature: `RewardClaimed{rewardId:uint8,recipient:address,amount:coins}`
-
-### UpdateEmissionCap
-TL-B: `update_emission_cap#4bd7a705 newCap:coins = UpdateEmissionCap`
-Signature: `UpdateEmissionCap{newCap:coins}`
-
-### UpdateMinWalletAge
-TL-B: `update_min_wallet_age#c1dbfed1 newAgeDays:uint32 = UpdateMinWalletAge`
-Signature: `UpdateMinWalletAge{newAgeDays:uint32}`
-
-### UpdateTargetActivity
-TL-B: `update_target_activity#482c9884 newTarget:uint32 = UpdateTargetActivity`
-Signature: `UpdateTargetActivity{newTarget:uint32}`
 
 ### UpdateReserve
 TL-B: `update_reserve#dded29fc amount:coins = UpdateReserve`
@@ -102,11 +98,11 @@ TL-B: `treasury_withdraw#79d47611 amount:coins recipient:address = TreasuryWithd
 Signature: `TreasuryWithdraw{amount:coins,recipient:address}`
 
 ### ToonVault$Data
-TL-B: `_ owner:address registry:address governance:address oraclePublicKey:uint256 totalReserve:coins dailyEmitted:coins lastResetDay:uint32 halved:bool emissionCap:coins minWalletAgeDays:uint32 targetDailyActivity:uint32 dailyClaimCount:uint32 usedClaimIds:dict<int, bool> lastClaimTimestamp:dict<int, int> claimCounts:dict<int, int> pairingCounts:dict<int, int> lifetimeClaimed:dict<int, bool> = ToonVault`
-Signature: `ToonVault{owner:address,registry:address,governance:address,oraclePublicKey:uint256,totalReserve:coins,dailyEmitted:coins,lastResetDay:uint32,halved:bool,emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,dailyClaimCount:uint32,usedClaimIds:dict<int, bool>,lastClaimTimestamp:dict<int, int>,claimCounts:dict<int, int>,pairingCounts:dict<int, int>,lifetimeClaimed:dict<int, bool>}`
+TL-B: `_ owner:address registry:address governance:address oraclePublicKey:uint256 totalReserve:coins dailyEmitted:coins lastResetDay:uint32 halved:bool config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16} dailyClaimCount:uint32 usedClaimIds:dict<int, bool> lastClaimTimestamp:dict<int, int> claimCounts:dict<int, int> pairingCounts:dict<int, int> participantEntropy:dict<int, int> lastRewardTimestamp:dict<int, int> dailyIdentityRewards:dict<int, coins> dailyClusterRewards:dict<int, coins> lifetimeClaimed:dict<int, bool> = ToonVault`
+Signature: `ToonVault{owner:address,registry:address,governance:address,oraclePublicKey:uint256,totalReserve:coins,dailyEmitted:coins,lastResetDay:uint32,halved:bool,config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16},dailyClaimCount:uint32,usedClaimIds:dict<int, bool>,lastClaimTimestamp:dict<int, int>,claimCounts:dict<int, int>,pairingCounts:dict<int, int>,participantEntropy:dict<int, int>,lastRewardTimestamp:dict<int, int>,dailyIdentityRewards:dict<int, coins>,dailyClusterRewards:dict<int, coins>,lifetimeClaimed:dict<int, bool>}`
 
 ## Get methods
-Total get methods: 11
+Total get methods: 12
 
 ## totalReserve
 No arguments
@@ -118,6 +114,9 @@ No arguments
 No arguments
 
 ## isHalved
+No arguments
+
+## getConfig
 No arguments
 
 ## currentEmissionCap
@@ -187,20 +186,16 @@ Argument: claimId
 * 8406: ToonVault: zero oracle key
 * 11229: ToonVault: claimId already used
 * 12206: ToonVault: tip too small
-* 14150: ToonVault: age > 1-year ceiling
 * 16587: ToonVault: claim cooldown active
 * 26099: ToonVault: no Telegram identity
 * 36280: ToonVault: insufficient reserve
 * 40789: ToonVault: invalid rewardId
 * 43615: ToonVault: invalid wallet address
 * 44370: ToonVault: invalid oracle signature
-* 47601: ToonVault: cap out of valid range
-* 50533: ToonVault: only governance can set target activity
 * 52129: ToonVault: not owner
-* 53827: ToonVault: only governance can update emission cap
 * 54161: ToonVault: one-time reward already claimed
+* 55558: ToonVault: only registry can update config
 * 57033: ToonVault: daily emission cap reached
-* 58627: ToonVault: only governance can update min wallet age
 
 ## Trait inheritance diagram
 

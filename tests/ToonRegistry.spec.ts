@@ -40,22 +40,34 @@ describe('ToonRegistry', () => {
         });
     });
 
-    it('should register an artist', async () => {
+    it('should register an artist using 2PC', async () => {
         const artistContract = await blockchain.treasury('artistContract');
         
-        const result = await registry.send(
+        // Stage
+        await registry.send(
             artist.getSender(),
+            { value: toNano('0.1') },
             {
-                value: toNano('0.1'),
-            },
-            {
-                $$type: 'RegisterArtist',
+                $$type: 'StageArtistRegistration',
                 artistContract: artistContract.address,
+                wallet: artist.address,
+            }
+        );
+
+        expect(await registry.getIsRegisteredArtist(artist.address)).toBe(false);
+
+        // Confirm
+        const result = await registry.send(
+            artistContract.getSender(),
+            { value: toNano('0.1') },
+            {
+                $$type: 'ConfirmArtistRegistration',
+                wallet: artist.address,
             }
         );
 
         expect(result.transactions).toHaveTransaction({
-            from: artist.address,
+            from: artistContract.address,
             to: registry.address,
             success: true,
         });
@@ -66,36 +78,46 @@ describe('ToonRegistry', () => {
         expect(await registry.getIsRegisteredArtist(artist.address)).toBe(true);
     });
 
-    it('should register a track', async () => {
-        // Register artist first because track registration requires it
+    it('should register a track using 2PC', async () => {
+        // Register artist first
         const artistContract = await blockchain.treasury('artistContract');
-        await registry.send(
-            artist.getSender(),
-            { value: toNano('0.1') },
-            { $$type: 'RegisterArtist', artistContract: artistContract.address }
-        );
+        await registry.send(artist.getSender(), { value: toNano('0.1') }, {
+            $$type: 'StageArtistRegistration',
+            artistContract: artistContract.address,
+            wallet: artist.address,
+        });
+        await registry.send(artistContract.getSender(), { value: toNano('0.1') }, { $$type: 'ConfirmArtistRegistration', wallet: artist.address });
 
         const trackId = 12345n;
         const fingerprint = 67890n;
         const trackContract = await blockchain.treasury('trackContract');
 
-        // Track registration must be called by the artist contract in the current implementation
-        // Note: isKnownArtistContract returns true for now in my Tact code
-        const result = await registry.send(
+        // Stage
+        await registry.send(
             artistContract.getSender(),
+            { value: toNano('0.1') },
             {
-                value: toNano('0.1'),
-            },
-            {
-                $$type: 'RegisterTrack',
+                $$type: 'StageTrackRegistration',
                 trackId: trackId,
                 fingerprint: fingerprint,
                 trackContract: trackContract.address,
             }
         );
 
+        expect(await registry.getIsRegisteredTrack(trackId)).toBe(false);
+
+        // Confirm
+        const result = await registry.send(
+            trackContract.getSender(),
+            { value: toNano('0.1') },
+            {
+                $$type: 'ConfirmTrackRegistration',
+                trackId: trackId,
+            }
+        );
+
         expect(result.transactions).toHaveTransaction({
-            from: artistContract.address,
+            from: trackContract.address,
             to: registry.address,
             success: true,
         });

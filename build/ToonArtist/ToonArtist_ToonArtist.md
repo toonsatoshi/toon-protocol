@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonArtist
-BoC Size: 1872 bytes
+BoC Size: 2316 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 21
+Total structures: 24
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -61,9 +61,21 @@ Signature: `FactoryDeploy{queryId:uint64,cashback:address}`
 TL-B: `register_artist#dfc5fbf5 artistContract:address = RegisterArtist`
 Signature: `RegisterArtist{artistContract:address}`
 
-### RegisterTrack
-TL-B: `register_track#8cb4c243 trackId:uint256 fingerprint:uint256 trackContract:address = RegisterTrack`
-Signature: `RegisterTrack{trackId:uint256,fingerprint:uint256,trackContract:address}`
+### StageArtistRegistration
+TL-B: `stage_artist_registration#cc4fedf7 artistContract:address wallet:address = StageArtistRegistration`
+Signature: `StageArtistRegistration{artistContract:address,wallet:address}`
+
+### ConfirmArtistRegistration
+TL-B: `confirm_artist_registration#c8526e47 wallet:address = ConfirmArtistRegistration`
+Signature: `ConfirmArtistRegistration{wallet:address}`
+
+### StageTrackRegistration
+TL-B: `stage_track_registration#c09310ed trackId:uint256 fingerprint:uint256 trackContract:address = StageTrackRegistration`
+Signature: `StageTrackRegistration{trackId:uint256,fingerprint:uint256,trackContract:address}`
+
+### ConfirmTrackRegistration
+TL-B: `confirm_track_registration#a47a6dee trackId:uint256 = ConfirmTrackRegistration`
+Signature: `ConfirmTrackRegistration{trackId:uint256}`
 
 ### StakeToon
 TL-B: `stake_toon#4435ea95 amount:coins = StakeToon`
@@ -156,12 +168,14 @@ No arguments
 * 6995: ToonArtist: stake required for additional tracks
 * 9033: ToonArtist: stake amount must be positive
 * 17513: ToonArtist: invalid track contract address
+* 27429: ToonArtist: only owner can initiate registration
 * 33141: ToonArtist: only owner can stake
 * 34415: ToonArtist: only owner can update metadata
 * 36510: ToonArtist: only owner can unstake
 * 42813: ToonArtist: empty metadata URI
 * 44170: ToonArtist: only owner can add tracks
 * 59865: ToonArtist: insufficient stake
+* 62589: ToonArtist: only owner can confirm registration
 
 ## Trait inheritance diagram
 
