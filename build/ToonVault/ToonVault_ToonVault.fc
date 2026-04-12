@@ -1,0 +1,1432 @@
+#pragma version =0.4.6;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+;; ToonVault_ToonVault.headers.fc
+;;
+;; Header files for ToonVault
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_not_null
+forall X -> X __tact_not_null(X x) impure inline;
+
+;; __tact_crc16
+(slice) __tact_crc16(slice data) inline_ref;
+
+;; __tact_base64_encode
+(slice) __tact_base64_encode(slice data) inline_ref;
+
+;; __tact_address_to_user_friendly
+(slice) __tact_address_to_user_friendly(slice address) inline_ref;
+
+;; __tact_context_get
+(int, slice, int, slice) __tact_context_get() inline;
+
+;; __tact_context_get_sender
+slice __tact_context_get_sender() inline;
+
+;; __tact_string_builder_start
+tuple __tact_string_builder_start(builder b) inline;
+
+;; __tact_string_builder_start_string
+tuple __tact_string_builder_start_string() inline;
+
+;; __tact_string_builder_end
+cell __tact_string_builder_end(tuple builders) inline;
+
+;; __tact_string_builder_end_slice
+slice __tact_string_builder_end_slice(tuple builders) inline;
+
+;; __tact_string_builder_append
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref;
+
+;; __tact_dict_get_int_int
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline;
+
+;; __tact_dict_set_int_int
+(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline;
+
+;; $DeployOk$_store
+builder $DeployOk$_store(builder build_0, (int) v) inline;
+
+;; $DeployOk$_store_cell
+cell $DeployOk$_store_cell((int) v, builder b) inline;
+
+;; $RewardClaimed$_store
+builder $RewardClaimed$_store(builder build_0, (int, slice, int) v) inline;
+
+;; $RewardClaimed$_store_cell
+cell $RewardClaimed$_store_cell((int, slice, int) v, builder b) inline;
+
+;; $ToonVault$_store
+builder $ToonVault$_store(builder build_0, (slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) v) inline;
+
+;; $ToonVault$_load
+(slice, ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell))) $ToonVault$_load(slice sc_0) inline;
+
+;; $Context$_get_value
+_ $Context$_get_value((int, slice, int, slice) v) inline;
+
+;; $ToonVault$init$_load
+(slice, ((slice, slice, slice, int, int, int, int, int, int, int, int, int))) $ToonVault$init$_load(slice sc_0) inline_ref;
+
+;; $ToonVault$_contract_init
+(slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $ToonVault$_contract_init(slice $owner, slice $registry, slice $governance, int $oraclePublicKey, int $totalReserve, int $dailyEmitted, int $lastResetDay, int $halved, int $emissionCap, int $minWalletAgeDays, int $targetDailyActivity, int $dailyClaimCount) impure inline;
+
+;; $ToonVault$_contract_load
+(slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $ToonVault$_contract_load() impure inline;
+
+;; $ToonVault$_contract_store
+() $ToonVault$_contract_store((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) v) impure inline;
+
+;; $global_emit
+() $global_emit(cell $body) impure inline;
+
+;; $Cell$_fun_asSlice
+slice $Cell$_fun_asSlice(cell $self) impure inline;
+
+;; $ToonVault$_fun_cooldownKey
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_cooldownKey((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, slice $wallet) impure inline_ref;
+
+;; $ToonVault$_fun_countKey
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_countKey((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId, slice $wallet) impure inline_ref;
+
+;; $ToonVault$_fun_pairingKey
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_pairingKey((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $userA, int $userB) impure inline_ref;
+
+;; $ToonVault$_fun_onceKey
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_onceKey((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId, slice $wallet) impure inline_ref;
+
+;; $ToonVault$_fun_verifyOracleSignature
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_verifyOracleSignature((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, (slice, int, int, int, int, int, int, int, int, int, int) $msg) impure inline_ref;
+
+;; $ToonVault$_fun_checkDayReset
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), ()) $ToonVault$_fun_checkDayReset((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $today) impure inline_ref;
+
+;; $ToonVault$_fun_halvedBaseCap
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_halvedBaseCap((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $ToonVault$_fun_activityMultiplier
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_activityMultiplier((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $ToonVault$_fun_applyMultiplier
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_applyMultiplier((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $amount, int $hasStreak) impure inline_ref;
+
+;; $ToonVault$_fun_decayedReward
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_decayedReward((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $base, int $claimCount) impure inline_ref;
+
+;; $ToonVault$_fun_pairingDecay
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_pairingDecay((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $amount, int $pairCount) impure inline_ref;
+
+;; $ToonVault$_fun_isOneTimeReward
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_isOneTimeReward((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId) impure inline_ref;
+
+;; $ToonVault$_fun_totalReserve
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_totalReserve((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $ToonVault$_fun_dailyEmitted
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_dailyEmitted((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $ToonVault$_fun_dailyClaimCount
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_dailyClaimCount((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $ToonVault$_fun_isHalved
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_isHalved((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $ToonVault$_fun_currentEmissionCap
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_currentEmissionCap((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $ToonVault$_fun_minWalletAgeDays
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_minWalletAgeDays((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $ToonVault$_fun_effectiveDailyCap
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_effectiveDailyCap((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $ToonVault$_fun_governance
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), slice) $ToonVault$_fun_governance((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $ToonVault$_fun_walletClaimCount
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_walletClaimCount((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId, slice $wallet) impure inline_ref;
+
+;; $ToonVault$_fun_isOneTimeClaimed
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_isOneTimeClaimed((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId, slice $wallet) impure inline_ref;
+
+;; $ToonVault$_fun_isClaimIdUsed
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_isClaimIdUsed((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $claimId) impure inline_ref;
+
+;; $MessageParameters$_constructor_bounce_to_value_mode_body
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline;
+
+;; $ToonVault$_fun_notify
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), ()) $ToonVault$_fun_notify((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, cell $body) impure inline;
+
+;; $RewardClaimed$_constructor_rewardId_recipient_amount
+((int, slice, int)) $RewardClaimed$_constructor_rewardId_recipient_amount(int $rewardId, slice $recipient, int $amount) inline;
+
+;; $SendParameters$_constructor_to_value_mode_body
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline;
+
+;; $DeployOk$_constructor_queryId
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline;
+
+
+;; ToonVault_ToonVault.stdlib.fc
+global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
+global cell __tact_child_contract_codes;
+global int __tact_randomized;
+
+int __tact_sha256(slice data) asm """
+
+            <{
+                <{ DUP SREFS }> PUSHCONT
+                <{ LDREFRTOS }> PUSHCONT
+                WHILE
+                DEPTH
+                HASHEXT_SHA256
+            }> PUSHCONT
+            1 1 CALLXARGS
+
+""";
+
+forall X -> X __tact_not_null(X x) impure inline {
+    throw_if(128, null?(x)); return x;
+}
+
+(slice) __tact_preload_offset(slice s, int offset, int bits) asm """
+    SDSUBSTR
+""";
+
+(slice) __tact_crc16(slice data) inline_ref {
+    slice new_data = begin_cell()
+        .store_slice(data)
+        .store_slice("0000"s)
+    .end_cell().begin_parse();
+    int reg = 0;
+    while (~ new_data.slice_data_empty?()) {
+        int byte = new_data~load_uint(8);
+        int mask = 0x80;
+        while (mask > 0) {
+            reg <<= 1;
+            if (byte & mask) {
+                reg += 1;
+            }
+            mask >>= 1;
+            if (reg > 0xffff) {
+                reg &= 0xffff;
+                reg ^= 0x1021;
+            }
+        }
+    }
+    (int q, int r) = divmod(reg, 256);
+    return begin_cell()
+        .store_uint(q, 8)
+        .store_uint(r, 8)
+    .end_cell().begin_parse();
+}
+
+(slice) __tact_base64_encode(slice data) inline_ref {
+    slice chars = "4142434445464748494A4B4C4D4E4F505152535455565758595A6162636465666768696A6B6C6D6E6F707172737475767778797A303132333435363738392D5F"s;
+    builder res = begin_cell();
+
+    while (data.slice_bits() >= 24) {
+        (int bs1, int bs2, int bs3) = (data~load_uint(8), data~load_uint(8), data~load_uint(8));
+
+        int n = (bs1 << 16) | (bs2 << 8) | bs3;
+
+        res = res
+            .store_slice(__tact_preload_offset(chars, ((n >> 18) & 63) * 8, 8))
+            .store_slice(__tact_preload_offset(chars, ((n >> 12) & 63) * 8, 8))
+            .store_slice(__tact_preload_offset(chars, ((n >>  6) & 63) * 8, 8))
+            .store_slice(__tact_preload_offset(chars, ((n      ) & 63) * 8, 8));
+    }
+
+    return res.end_cell().begin_parse();
+}
+
+(slice) __tact_address_to_user_friendly(slice address) inline_ref {
+    (int wc, int hash) = address.parse_std_addr();
+
+    slice user_friendly_address = begin_cell()
+        .store_slice("11"s)
+        .store_uint((wc + 0x100) % 0x100, 8)
+        .store_uint(hash, 256)
+    .end_cell().begin_parse();
+
+    slice checksum = __tact_crc16(user_friendly_address);
+    slice user_friendly_address_with_checksum = begin_cell()
+        .store_slice(user_friendly_address)
+        .store_slice(checksum)
+    .end_cell().begin_parse();
+
+    return __tact_base64_encode(user_friendly_address_with_checksum);
+}
+
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
+
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
+
+tuple __tact_string_builder_start(builder b) inline {
+    return tpush(tpush(empty_tuple(), b), null());
+}
+
+tuple __tact_string_builder_start_string() inline {
+    return __tact_string_builder_start(begin_cell());
+}
+
+cell __tact_string_builder_end(tuple builders) inline {
+    (builder b, tuple tail) = uncons(builders);
+    cell c = b.end_cell();
+    while(~ null?(tail)) {
+        (b, tail) = uncons(tail);
+        c = b.store_ref(c).end_cell();
+    }
+    return c;
+}
+
+slice __tact_string_builder_end_slice(tuple builders) inline {
+    return __tact_string_builder_end(builders).begin_parse();
+}
+
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
+    int sliceRefs = slice_refs(sc);
+    int sliceBits = slice_bits(sc);
+
+    while((sliceBits > 0) | (sliceRefs > 0)) {
+
+        ;; Load the current builder
+        (builder b, tuple tail) = uncons(builders);
+        int remBytes = 127 - (builder_bits(b) / 8);
+        int exBytes = sliceBits / 8;
+
+        ;; Append bits
+        int amount = min(remBytes, exBytes);
+        if (amount > 0) {
+            slice read = sc~load_bits(amount * 8);
+            b = b.store_slice(read);
+        }
+
+        ;; Update builders
+        builders = cons(b, tail);
+
+        ;; Check if we need to add a new cell and continue
+        if (exBytes - amount > 0) {
+            var bb = begin_cell();
+            builders = cons(bb, builders);
+            sliceBits = (exBytes - amount) * 8;
+        } elseif (sliceRefs > 0) {
+            sc = sc~load_ref().begin_parse();
+            sliceRefs = slice_refs(sc);
+            sliceBits = slice_bits(sc);
+        } else {
+            sliceBits = 0;
+            sliceRefs = 0;
+        }
+    }
+
+    return ((builders), ());
+}
+
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+builder $global_beginCell() impure asm """
+    NEWC
+""";
+
+int $global_checkSignature(int $hash, slice $signature, int $publicKey) impure asm """
+    CHKSIGNU
+""";
+
+int $global_myBalance() impure asm """
+    BALANCE FIRST
+""";
+
+() $global_nativeReserve(int $amount, int $mode) impure asm """
+    RAWRESERVE
+""";
+
+() $global_message((int, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+    STZEROES
+    // → Stack state
+    // s0: Builder
+    // s1: `body`
+    // s2: `mode`
+    STDICT
+    ENDC
+    SWAP
+    SENDRAWMSG
+""";
+
+() $global_send((int, cell, cell, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+    STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+    // → Stack state
+    // s0: Builder
+    // s1: `data`
+    // s2: `code`
+    // s3: `body`
+    // s4: `mode`
+
+    // Group 2: Placing the Builder after code and data, then checking those for nullability
+    s2 XCHG0
+    DUP2
+    ISNULL
+    SWAP
+    ISNULL
+    AND
+    // → Stack state
+    // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+    // s1: `code`
+    // s2: `data`
+    // s3: Builder
+    // s4: `body`
+    // s5: `mode`
+
+    // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+    <{
+        DROP2 // drop `data` and `code`, since either of those is null
+        b{0} STSLICECONST
+    }> PUSHCONT
+
+    // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+    <{
+        // _ split_depth:(Maybe (## 5))
+        //   special:(Maybe TickTock)
+        //   code:(Maybe ^Cell)
+        //   data:(Maybe ^Cell)
+        //   library:(Maybe ^Cell)
+        // = StateInit;
+        ROT                // place message Builder on top
+        b{10} STSLICECONST // store Maybe = true, Either = false
+        // Start composing inlined StateInit
+        b{00} STSLICECONST // store split_depth and special first
+        STDICT             // store code
+        STDICT             // store data
+        b{0} STSLICECONST  // store library
+    }> PUSHCONT
+
+    // Group 3: IFELSE that does the branching shown above
+    IFELSE
+    // → Stack state
+    // s0: Builder
+    // s1: null or StateInit
+    // s2: `body`
+    // s3: `mode`
+
+    // Group 4: Finalizing the message
+    STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+    ENDC
+    // → Stack state
+    // s0: Cell
+    // s1: `mode`
+
+    // Group 5: Sending the message, with `mode` on top
+    SWAP
+    SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+""";
+
+() $global_sendRawMessage(cell $msg, int $mode) impure asm """
+    SENDRAWMSG
+""";
+
+cell $Builder$_fun_endCell(builder $self) impure asm """
+    ENDC
+""";
+
+builder $Builder$_fun_storeRef(cell $cell, builder $self) impure asm """
+    STREF
+""";
+
+() $global_emit(cell $body) impure inline {
+    cell $c = $Builder$_fun_endCell($Builder$_fun_storeRef($body, store_uint($global_beginCell(), 15211807202738752817960438464513, 104)));
+    $global_sendRawMessage($c, 0);
+}
+
+int $global_now() impure asm """
+    NOW
+""";
+
+slice $Int$_fun_toString(int $self) impure asm """
+    <{
+        // x
+        NEWC // x b
+        OVER // x b x
+        0 LESSINT // x b <0?
+        <{
+            // x b
+            45 PUSHINT // x b 45
+            SWAP // x 45 b
+            8 STU // x b
+            SWAP // b x
+            NEGATE // b -x
+            SWAP // -x b
+        }>CONT IF
+        // x b
+
+        SWAP // b x
+
+        <{
+            // b x
+            10 PUSHINT DIVMOD // b x/10 x%10
+            48 ADDCONST // b x/10 (x%10+48)
+            s2 s2 s0 XC2PU ISZERO // (x%10+48) b x/10 x/10==0?
+        }>CONT UNTIL
+        // ... b x
+
+        DROP // ... b
+        DEPTH DEC // ... b n
+        <{ 8 STU }>CONT REPEAT // b
+    }>CONT 1 1 CALLXARGS
+    // b
+
+    ENDC CTOS // s
+""";
+
+builder $Builder$_fun_storeBool(int $value, builder $self) impure asm """
+    1 STI
+""";
+
+builder $Builder$_fun_storeCoins(builder $self, int $value) impure asm """
+    STVARUINT16
+""";
+
+builder $Builder$_fun_storeAddress(builder $self, slice $address) impure asm """
+    STSLICER
+""";
+
+slice $Cell$_fun_beginParse(cell $self) impure asm """
+    CTOS
+""";
+
+slice $Cell$_fun_asSlice(cell $self) impure inline {
+    var ($self) = $self;
+    return $Cell$_fun_beginParse($self);
+}
+
+int $Cell$_fun_hash(cell $self) impure asm """
+    HASHCU
+""";
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), ()) $ToonVault$_fun_notify((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, cell $body) impure inline {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    slice $to = __tact_context_get_sender();
+    int $bounce = false;
+    if (false) {
+        int $balance = $global_myBalance();
+        int $balanceBeforeMessage = ($balance - $Context$_get_value(__tact_context_get()));
+        if (($balanceBeforeMessage < 0)) {
+            $global_nativeReserve(0, 0);
+            $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 130, $body));
+            return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), ());
+        }
+    }
+    $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 66, $body));
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), ());
+}
+
+;; ToonVault_ToonVault.constants.fc
+;; String "cd:"
+slice __gen_slice_string_3f036ef3ca2b18c7eb8d8166dbce0af9ff2bf48fc42b7ccddfa4d142bcee8e9a() asm """
+    B{b5ee9c7241010101000500000663643a3d97471c} B>boc <s PUSHSLICE
+""";
+
+;; String "cnt:"
+slice __gen_slice_string_46e36d181a99806f2cc4b83ea5c48860739f24f5a321cfa91f752ae83c9d4252() asm """
+    B{b5ee9c72410101010006000008636e743a7ba51d74} B>boc <s PUSHSLICE
+""";
+
+;; String ":"
+slice __gen_slice_string_d4945957eae362fe7564b6491c1f1933ef0e8c8d8c854b880ee9333b04f49c43() asm """
+    B{b5ee9c724101010100030000023a5a06dd1a} B>boc <s PUSHSLICE
+""";
+
+;; String "pair:"
+slice __gen_slice_string_ea085cf26ac7df9b02bce3ab22665d787f9436a17dd8405923fe84c726a1702c() asm """
+    B{b5ee9c7241010101000700000a706169723a5cdc91f7} B>boc <s PUSHSLICE
+""";
+
+;; String "once:"
+slice __gen_slice_string_6d297540b3a6c7ff19491518e8ecf5b21afcda3397774e00351b197c51c3b767() asm """
+    B{b5ee9c7241010101000700000a6f6e63653a7a3770c8} B>boc <s PUSHSLICE
+""";
+
+;; Cell bZxKvf4bg3ieQ02BG1I+13YwIRObf5dSZu0owkHo1tQ=
+cell __gen_cell_cell_6d9c4abdfe1b83789e434d811b523ed7763021139b7f975266ed28c241e8d6d4() asm """
+    B{b5ee9c7241010101001100001e00000000746f6f6e5f72657761726419eb5d8f} B>boc PUSHREF
+""";
+
+;; Cell utrhi41vxmpyOLiJILHj4bWpDkZPSd3Q4+MF8wis9A0=
+cell __gen_cell_cell_badae18b8d6fc66a7238b88920b1e3e1b5a90e464f49ddd0e3e305f308acf40d() asm """
+    B{b5ee9c72410101010015000026000000006d696e745f617574686f72697a656403446d71} B>boc PUSHREF
+""";
+
+;; Cell A71oWppOTh591JmTZ0HMmOU66yWPOlDa5HeSGSeDUq8=
+cell __gen_cell_cell_03bd685a9a4e4e1e7dd499936741cc98e53aeb258f3a50dae4779219278352af() asm """
+    B{b5ee9c7241010101001800002c00000000456d697373696f6e4361705570646174656443265661} B>boc PUSHREF
+""";
+
+;; Cell XglgewiB+p92j90wgp8DSeAcAwwHYsylSc+HltVtDk0=
+cell __gen_cell_cell_5e09607b0881fa9f768fdd30829f0349e01c030c0762cca549cf8796d56d0e4d() asm """
+    B{b5ee9c7241010101001900002e000000004d696e57616c6c65744167655570646174656488cae9c3} B>boc PUSHREF
+""";
+
+;; Cell Ngs0hFu9XdDI/7tMiO3ppOjdpPBeOURr5D+L0nq5c6U=
+cell __gen_cell_cell_360b34845bbd5dd0c8ffbb4c88ede9a4e8dda4f05e39446be43f8bd27ab973a5() asm """
+    B{b5ee9c7241010101001b000032000000005461726765744163746976697479557064617465646f61f848} B>boc PUSHREF
+""";
+
+;; Cell fV9/T38Nl8kp/yv4qeF1eOzkh7UAYXZRJIA5lk7ovoo=
+cell __gen_cell_cell_7d5f7f4f7f0d97c929ff2bf8a9e17578ece487b500617651248039964ee8be8a() asm """
+    B{b5ee9c72410101010016000028000000004f7261636c654b6579526f74617465646c10913b} B>boc PUSHREF
+""";
+
+;; Cell fayqK1O9QGl/vIiOJJp1KL3c3KeVypI9b7q7W9pkJko=
+cell __gen_cell_cell_7dacaa2b53bd40697fbc888e249a7528bddcdca795ca923d6fbabb5bda64264a() asm """
+    B{b5ee9c7241010101001000001c000000007769746864726177616cf4d2c6d5} B>boc PUSHREF
+""";
+
+;; ToonVault_ToonVault.storage.fc
+;;
+;; Type: Context
+;; TLB: _ bounceable:bool sender:address value:int257 raw:^slice = Context
+;;
+
+_ $Context$_get_value((int, slice, int, slice) v) inline {
+    var (v'bounceable, v'sender, v'value, v'raw) = v;
+    return v'value;
+}
+
+;;
+;; Type: SendParameters
+;; TLB: _ mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell value:int257 to:address bounce:bool = SendParameters
+;;
+
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, null(), null(), $value, $to, true);
+}
+
+;;
+;; Type: MessageParameters
+;; TLB: _ mode:int257 body:Maybe ^cell value:int257 to:address bounce:bool = MessageParameters
+;;
+
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, $value, $to, $bounce);
+}
+
+;;
+;; Type: DeployOk
+;; Header: 0xaff90f57
+;; TLB: deploy_ok#aff90f57 queryId:uint64 = DeployOk
+;;
+
+builder $DeployOk$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $DeployOk$_store_cell((int) v, builder b) inline {
+    return $DeployOk$_store(b, v).end_cell();
+}
+
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline {
+    return ($queryId);
+}
+
+;;
+;; Type: ClaimReward
+;; Header: 0xf9d49f8b
+;; TLB: claim_reward#f9d49f8b walletAddress:address rewardId:uint8 telegramId:uint64 walletAgeDays:uint32 hasVibeStreak:bool tipAmount:coins claimId:uint64 expiry:uint32 sigHigh:uint256 sigLow:uint256 referrerId:uint64 = ClaimReward
+;;
+
+((slice, int, int, int, int, int, int, int, int, int, int)) $ClaimReward$_tensor_cast((slice, int, int, int, int, int, int, int, int, int, int) v) asm "NOP";
+
+;;
+;; Type: RewardClaimed
+;; Header: 0x81a35543
+;; TLB: reward_claimed#81a35543 rewardId:uint8 recipient:address amount:coins = RewardClaimed
+;;
+
+builder $RewardClaimed$_store(builder build_0, (int, slice, int) v) inline {
+    var (v'rewardId, v'recipient, v'amount) = v;
+    build_0 = store_uint(build_0, 2174965059, 32);
+    build_0 = build_0.store_uint(v'rewardId, 8);
+    build_0 = build_0.store_slice(v'recipient);
+    build_0 = build_0.store_varuint16(v'amount);
+    return build_0;
+}
+
+cell $RewardClaimed$_store_cell((int, slice, int) v, builder b) inline {
+    return $RewardClaimed$_store(b, v).end_cell();
+}
+
+((int, slice, int)) $RewardClaimed$_constructor_rewardId_recipient_amount(int $rewardId, slice $recipient, int $amount) inline {
+    return ($rewardId, $recipient, $amount);
+}
+
+;;
+;; Type: ToonVault
+;; TLB: _ owner:address registry:address governance:address oraclePublicKey:uint256 totalReserve:coins dailyEmitted:coins lastResetDay:uint32 halved:bool emissionCap:coins minWalletAgeDays:uint32 targetDailyActivity:uint32 dailyClaimCount:uint32 usedClaimIds:dict<int, bool> lastClaimTimestamp:dict<int, int> claimCounts:dict<int, int> pairingCounts:dict<int, int> lifetimeClaimed:dict<int, bool> = ToonVault
+;;
+
+builder $ToonVault$_store(builder build_0, (slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) v) inline {
+    var (v'owner, v'registry, v'governance, v'oraclePublicKey, v'totalReserve, v'dailyEmitted, v'lastResetDay, v'halved, v'emissionCap, v'minWalletAgeDays, v'targetDailyActivity, v'dailyClaimCount, v'usedClaimIds, v'lastClaimTimestamp, v'claimCounts, v'pairingCounts, v'lifetimeClaimed) = v;
+    build_0 = build_0.store_slice(v'owner);
+    build_0 = build_0.store_slice(v'registry);
+    build_0 = build_0.store_slice(v'governance);
+    var build_1 = begin_cell();
+    build_1 = build_1.store_uint(v'oraclePublicKey, 256);
+    build_1 = build_1.store_varuint16(v'totalReserve);
+    build_1 = build_1.store_varuint16(v'dailyEmitted);
+    build_1 = build_1.store_uint(v'lastResetDay, 32);
+    build_1 = build_1.store_int(v'halved, 1);
+    build_1 = build_1.store_varuint16(v'emissionCap);
+    build_1 = build_1.store_uint(v'minWalletAgeDays, 32);
+    build_1 = build_1.store_uint(v'targetDailyActivity, 32);
+    build_1 = build_1.store_uint(v'dailyClaimCount, 32);
+    build_1 = build_1.store_dict(v'usedClaimIds);
+    build_1 = build_1.store_dict(v'lastClaimTimestamp);
+    build_1 = build_1.store_dict(v'claimCounts);
+    var build_2 = begin_cell();
+    build_2 = build_2.store_dict(v'pairingCounts);
+    build_2 = build_2.store_dict(v'lifetimeClaimed);
+    build_1 = store_builder_ref(build_1, build_2);
+    build_0 = store_builder_ref(build_0, build_1);
+    return build_0;
+}
+
+(slice, ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell))) $ToonVault$_load(slice sc_0) inline {
+    var v'owner = sc_0~load_msg_addr();
+    var v'registry = sc_0~load_msg_addr();
+    var v'governance = sc_0~load_msg_addr();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'oraclePublicKey = sc_1~load_uint(256);
+    var v'totalReserve = sc_1~load_varuint16();
+    var v'dailyEmitted = sc_1~load_varuint16();
+    var v'lastResetDay = sc_1~load_uint(32);
+    var v'halved = sc_1~load_int(1);
+    var v'emissionCap = sc_1~load_varuint16();
+    var v'minWalletAgeDays = sc_1~load_uint(32);
+    var v'targetDailyActivity = sc_1~load_uint(32);
+    var v'dailyClaimCount = sc_1~load_uint(32);
+    var v'usedClaimIds = sc_1~load_dict();
+    var v'lastClaimTimestamp = sc_1~load_dict();
+    var v'claimCounts = sc_1~load_dict();
+    slice sc_2 = sc_1~load_ref().begin_parse();
+    var v'pairingCounts = sc_2~load_dict();
+    var v'lifetimeClaimed = sc_2~load_dict();
+    return (sc_0, (v'owner, v'registry, v'governance, v'oraclePublicKey, v'totalReserve, v'dailyEmitted, v'lastResetDay, v'halved, v'emissionCap, v'minWalletAgeDays, v'targetDailyActivity, v'dailyClaimCount, v'usedClaimIds, v'lastClaimTimestamp, v'claimCounts, v'pairingCounts, v'lifetimeClaimed));
+}
+
+(slice, ((slice, slice, slice, int, int, int, int, int, int, int, int, int))) $ToonVault$init$_load(slice sc_0) inline_ref {
+    var v'owner = sc_0~load_msg_addr();
+    var v'registry = sc_0~load_msg_addr();
+    var v'governance = sc_0~load_msg_addr();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'oraclePublicKey = sc_1~load_int(257);
+    var v'totalReserve = sc_1~load_int(257);
+    var v'dailyEmitted = sc_1~load_int(257);
+    slice sc_2 = sc_1~load_ref().begin_parse();
+    var v'lastResetDay = sc_2~load_int(257);
+    var v'halved = sc_2~load_int(1);
+    var v'emissionCap = sc_2~load_int(257);
+    var v'minWalletAgeDays = sc_2~load_int(257);
+    slice sc_3 = sc_2~load_ref().begin_parse();
+    var v'targetDailyActivity = sc_3~load_int(257);
+    var v'dailyClaimCount = sc_3~load_int(257);
+    return (sc_0, (v'owner, v'registry, v'governance, v'oraclePublicKey, v'totalReserve, v'dailyEmitted, v'lastResetDay, v'halved, v'emissionCap, v'minWalletAgeDays, v'targetDailyActivity, v'dailyClaimCount));
+}
+
+(slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $ToonVault$_contract_load() impure inline {
+    slice $sc = get_data().begin_parse();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$ToonVault$_load();
+    }
+    else {
+        (slice $owner, slice $registry, slice $governance, int $oraclePublicKey, int $totalReserve, int $dailyEmitted, int $lastResetDay, int $halved, int $emissionCap, int $minWalletAgeDays, int $targetDailyActivity, int $dailyClaimCount) = $sc~$ToonVault$init$_load();
+        $sc.end_parse();
+        return $ToonVault$_contract_init($owner, $registry, $governance, $oraclePublicKey, $totalReserve, $dailyEmitted, $lastResetDay, $halved, $emissionCap, $minWalletAgeDays, $targetDailyActivity, $dailyClaimCount);
+    }
+}
+
+() $ToonVault$_contract_store((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_int(true, 1);
+    b = $ToonVault$_store(b, v);
+    set_data(b.end_cell());
+}
+
+;;
+;; Contract ToonVault functions
+;;
+
+(slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $ToonVault$_contract_init(slice $owner, slice $registry, slice $governance, int $oraclePublicKey, int $totalReserve, int $dailyEmitted, int $lastResetDay, int $halved, int $emissionCap, int $minWalletAgeDays, int $targetDailyActivity, int $dailyClaimCount) impure inline {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = (null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null());
+    $self'owner = $owner;
+    $self'registry = $registry;
+    $self'governance = $governance;
+    $self'oraclePublicKey = $oraclePublicKey;
+    $self'totalReserve = $totalReserve;
+    $self'dailyEmitted = $dailyEmitted;
+    $self'lastResetDay = $lastResetDay;
+    $self'halved = $halved;
+    $self'emissionCap = $emissionCap;
+    $self'minWalletAgeDays = $minWalletAgeDays;
+    $self'targetDailyActivity = $targetDailyActivity;
+    $self'dailyClaimCount = $dailyClaimCount;
+    return ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_cooldownKey((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, slice $wallet) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    tuple $sb = __tact_string_builder_start_string();
+    $sb~__tact_string_builder_append(__gen_slice_string_3f036ef3ca2b18c7eb8d8166dbce0af9ff2bf48fc42b7ccddfa4d142bcee8e9a());
+    $sb~__tact_string_builder_append(__tact_address_to_user_friendly($wallet));
+    var $fresh$ret_0 = __tact_sha256(__tact_string_builder_end_slice($sb));
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_0);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_countKey((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId, slice $wallet) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    tuple $sb = __tact_string_builder_start_string();
+    $sb~__tact_string_builder_append(__gen_slice_string_46e36d181a99806f2cc4b83ea5c48860739f24f5a321cfa91f752ae83c9d4252());
+    $sb~__tact_string_builder_append($Int$_fun_toString($rewardId));
+    $sb~__tact_string_builder_append(__gen_slice_string_d4945957eae362fe7564b6491c1f1933ef0e8c8d8c854b880ee9333b04f49c43());
+    $sb~__tact_string_builder_append(__tact_address_to_user_friendly($wallet));
+    var $fresh$ret_1 = __tact_sha256(__tact_string_builder_end_slice($sb));
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_1);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_pairingKey((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $userA, int $userB) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    ifnot ($userB) {
+        var $fresh$ret_2 = 0;
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_2);
+    }
+    tuple $sb = __tact_string_builder_start_string();
+    $sb~__tact_string_builder_append(__gen_slice_string_ea085cf26ac7df9b02bce3ab22665d787f9436a17dd8405923fe84c726a1702c());
+    $sb~__tact_string_builder_append($Int$_fun_toString($userA));
+    $sb~__tact_string_builder_append(__gen_slice_string_d4945957eae362fe7564b6491c1f1933ef0e8c8d8c854b880ee9333b04f49c43());
+    $sb~__tact_string_builder_append($Int$_fun_toString($userB));
+    var $fresh$ret_3 = __tact_sha256(__tact_string_builder_end_slice($sb));
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_3);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_onceKey((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId, slice $wallet) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    tuple $sb = __tact_string_builder_start_string();
+    $sb~__tact_string_builder_append(__gen_slice_string_6d297540b3a6c7ff19491518e8ecf5b21afcda3397774e00351b197c51c3b767());
+    $sb~__tact_string_builder_append($Int$_fun_toString($rewardId));
+    $sb~__tact_string_builder_append(__gen_slice_string_d4945957eae362fe7564b6491c1f1933ef0e8c8d8c854b880ee9333b04f49c43());
+    $sb~__tact_string_builder_append(__tact_address_to_user_friendly($wallet));
+    var $fresh$ret_4 = __tact_sha256(__tact_string_builder_end_slice($sb));
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_4);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_verifyOracleSignature((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, (slice, int, int, int, int, int, int, int, int, int, int) $msg) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    var (($msg'walletAddress, $msg'rewardId, $msg'telegramId, $msg'walletAgeDays, $msg'hasVibeStreak, $msg'tipAmount, $msg'claimId, $msg'expiry, $msg'sigHigh, $msg'sigLow, $msg'referrerId)) = $msg;
+    cell $payloadCell = $Builder$_fun_endCell(store_uint(store_uint(store_uint($Builder$_fun_storeCoins($Builder$_fun_storeBool($msg'hasVibeStreak, store_uint(store_uint($Builder$_fun_storeAddress(store_uint($global_beginCell(), $msg'telegramId, 64), $msg'walletAddress), $msg'rewardId, 8), $msg'walletAgeDays, 32)), $msg'tipAmount), $msg'claimId, 64), $msg'expiry, 32), $msg'referrerId, 64));
+    int $h = $Cell$_fun_hash($payloadCell);
+    slice $sigSlice = $Cell$_fun_asSlice($Builder$_fun_endCell(store_uint(store_uint($global_beginCell(), $msg'sigHigh, 256), $msg'sigLow, 256)));
+    var $fresh$ret_5 = $global_checkSignature($h, $sigSlice, $self'oraclePublicKey);
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_5);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), ()) $ToonVault$_fun_checkDayReset((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $today) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    if (($today > $self'lastResetDay)) {
+        $self'dailyEmitted = 0;
+        $self'dailyClaimCount = 0;
+        $self'lastResetDay = $today;
+    }
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), ());
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_halvedBaseCap((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    int $cap = $self'emissionCap;
+    int $reservePct = (($self'totalReserve * 100) / 1000000000000000);
+    if (($reservePct <= 10)) {
+        $self'halved = true;
+    }
+    if (($reservePct >= 20)) {
+        $self'halved = false;
+    }
+    if ($self'halved) {
+        $cap = ($cap / 2);
+    }
+    var $fresh$ret_6 = $cap;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_6);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_activityMultiplier((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    ifnot ($self'targetDailyActivity) {
+        var $fresh$ret_7 = 10000;
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_7);
+    }
+    int $actual = $self'dailyClaimCount;
+    if (($actual <= $self'targetDailyActivity)) {
+        var $fresh$ret_8 = 10000;
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_8);
+    }
+    int $ratio = (($self'targetDailyActivity * 10000) / $actual);
+    if (($ratio < 1000)) {
+        $ratio = 1000;
+    }
+    var $fresh$ret_9 = $ratio;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_9);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_applyMultiplier((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $amount, int $hasStreak) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    int $res = $amount;
+    if ($hasStreak) {
+        $res = (($res * 150) / 100);
+    }
+    int $feedback = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_activityMultiplier();
+    $res = (($res * $feedback) / 10000);
+    var $fresh$ret_10 = $res;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_10);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_decayedReward((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $base, int $claimCount) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    ifnot ($claimCount) {
+        var $fresh$ret_11 = $base;
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_11);
+    }
+    if (($claimCount == 1)) {
+        var $fresh$ret_12 = (($base * 75) / 100);
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_12);
+    }
+    if (($claimCount == 2)) {
+        var $fresh$ret_13 = (($base * 50) / 100);
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_13);
+    }
+    if (($claimCount <= 9)) {
+        var $fresh$ret_14 = (($base * 25) / 100);
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_14);
+    }
+    var $fresh$ret_15 = (($base * 10) / 100);
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_15);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_pairingDecay((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $amount, int $pairCount) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    ifnot ($pairCount) {
+        var $fresh$ret_16 = $amount;
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_16);
+    }
+    if (($pairCount == 1)) {
+        var $fresh$ret_17 = (($amount * 80) / 100);
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_17);
+    }
+    if (($pairCount == 2)) {
+        var $fresh$ret_18 = (($amount * 60) / 100);
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_18);
+    }
+    var $fresh$ret_19 = (($amount * 40) / 100);
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_19);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_isOneTimeReward((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    var $fresh$ret_20 = ( (( (($rewardId == 3)) ? (true) : (($rewardId == 4)) )) ? (true) : (($rewardId == 6)) );
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_20);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_totalReserve((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    var $fresh$ret_21 = $self'totalReserve;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_21);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_dailyEmitted((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    var $fresh$ret_22 = $self'dailyEmitted;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_22);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_dailyClaimCount((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    var $fresh$ret_23 = $self'dailyClaimCount;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_23);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_isHalved((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    var $fresh$ret_24 = $self'halved;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_24);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_currentEmissionCap((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    var $fresh$ret_25 = $self'emissionCap;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_25);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_minWalletAgeDays((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    var $fresh$ret_26 = $self'minWalletAgeDays;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_26);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_effectiveDailyCap((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    var $fresh$ret_27 = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_halvedBaseCap();
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_27);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), slice) $ToonVault$_fun_governance((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    var $fresh$ret_28 = $self'governance;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_28);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_walletClaimCount((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId, slice $wallet) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    int $k = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_countKey($rewardId, $wallet);
+    int $v = __tact_dict_get_int_int($self'claimCounts, 257, $k, 257);
+    var $fresh$ret_29 = ((~ null?($v)) ? __tact_not_null($v) : 0);
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_29);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_isOneTimeClaimed((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId, slice $wallet) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    var $fresh$ret_30 = (~ null?(__tact_dict_get_int_int($self'lifetimeClaimed, 257, ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_onceKey($rewardId, $wallet), 1)));
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_30);
+}
+
+((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_isClaimIdUsed((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $claimId) impure inline_ref {
+    var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
+    var $fresh$ret_31 = (~ null?(__tact_dict_get_int_int($self'usedClaimIds, 257, $claimId, 1)));
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_31);
+}
+
+;;
+;; Get methods of a Contract ToonVault
+;;
+
+_ %totalReserve() method_id(113023) {
+    var self = $ToonVault$_contract_load();
+    var res = self~$ToonVault$_fun_totalReserve();
+    return res;
+}
+
+_ %dailyEmitted() method_id(70394) {
+    var self = $ToonVault$_contract_load();
+    var res = self~$ToonVault$_fun_dailyEmitted();
+    return res;
+}
+
+_ %dailyClaimCount() method_id(75448) {
+    var self = $ToonVault$_contract_load();
+    var res = self~$ToonVault$_fun_dailyClaimCount();
+    return res;
+}
+
+_ %isHalved() method_id(129080) {
+    var self = $ToonVault$_contract_load();
+    var res = self~$ToonVault$_fun_isHalved();
+    return res;
+}
+
+_ %currentEmissionCap() method_id(119461) {
+    var self = $ToonVault$_contract_load();
+    var res = self~$ToonVault$_fun_currentEmissionCap();
+    return res;
+}
+
+_ %minWalletAgeDays() method_id(69813) {
+    var self = $ToonVault$_contract_load();
+    var res = self~$ToonVault$_fun_minWalletAgeDays();
+    return res;
+}
+
+_ %effectiveDailyCap() method_id(69207) {
+    var self = $ToonVault$_contract_load();
+    var res = self~$ToonVault$_fun_effectiveDailyCap();
+    return res;
+}
+
+_ %governance() method_id(71736) {
+    var self = $ToonVault$_contract_load();
+    var res = self~$ToonVault$_fun_governance();
+    return res;
+}
+
+_ %walletClaimCount(int $rewardId, slice $wallet) method_id(101475) {
+    int $rewardId = $rewardId;
+    slice $wallet = $wallet;
+    var self = $ToonVault$_contract_load();
+    var res = self~$ToonVault$_fun_walletClaimCount($rewardId, $wallet);
+    return res;
+}
+
+_ %isOneTimeClaimed(int $rewardId, slice $wallet) method_id(103401) {
+    int $rewardId = $rewardId;
+    slice $wallet = $wallet;
+    var self = $ToonVault$_contract_load();
+    var res = self~$ToonVault$_fun_isOneTimeClaimed($rewardId, $wallet);
+    return res;
+}
+
+_ %isClaimIdUsed(int $claimId) method_id(103612) {
+    int $claimId = $claimId;
+    var self = $ToonVault$_contract_load();
+    var res = self~$ToonVault$_fun_isClaimIdUsed($claimId);
+    return res;
+}
+
+;;
+;; Routing of a Contract ToonVault
+;;
+
+;; message opcode reader utility: only binary receivers
+;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code
+(slice, int) ~load_opcode_internal(slice s) asm( -> 1 0) "32 LDUQ 130 THROWIFNOT";
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    cs~skip_bits(2);
+    var msg_bounceable = cs~load_int(1);
+    var msg_bounced = cs~load_int(1);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed) = $ToonVault$_contract_load();
+    
+    ;; Handle bounced messages
+    if (msg_bounced) { return (); }
+    int op = 0;
+    int in_msg_length = slice_bits(in_msg);
+    if (in_msg_length >= 32) {
+        op = in_msg~load_uint(32);
+    }
+    ;; Receive ClaimReward message
+    if (op == 4191461259) {
+        var $msg'walletAddress = in_msg~load_msg_addr();
+        var $msg'rewardId = in_msg~load_uint(8);
+        var $msg'telegramId = in_msg~load_uint(64);
+        var $msg'walletAgeDays = in_msg~load_uint(32);
+        var $msg'hasVibeStreak = in_msg~load_int(1);
+        var $msg'tipAmount = in_msg~load_varuint16();
+        var $msg'claimId = in_msg~load_uint(64);
+        var $msg'expiry = in_msg~load_uint(32);
+        var $msg'sigHigh = in_msg~load_uint(256);
+        slice sc_1 = in_msg~load_ref().begin_parse();
+        var $msg'sigLow = sc_1~load_uint(256);
+        var $msg'referrerId = sc_1~load_uint(64);
+        throw_unless(44370, ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_verifyOracleSignature($ClaimReward$_tensor_cast(($msg'walletAddress, $msg'rewardId, $msg'telegramId, $msg'walletAgeDays, $msg'hasVibeStreak, $msg'tipAmount, $msg'claimId, $msg'expiry, $msg'sigHigh, $msg'sigLow, $msg'referrerId))));
+        throw_unless(4234, ($msg'expiry >= $global_now()));
+        throw_unless(11229, null?(__tact_dict_get_int_int($self'usedClaimIds, 257, $msg'claimId, 1)));
+        $self'usedClaimIds~__tact_dict_set_int_int(257, $msg'claimId, true, 1);
+        throw_unless(2528, ($msg'walletAgeDays >= $self'minWalletAgeDays));
+        throw_unless(26099, ($msg'telegramId > 0));
+        int $today = ($global_now() / 86400);
+        ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_checkDayReset($today);
+        int $cKey = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_cooldownKey($msg'walletAddress);
+        int $lastClaim = __tact_dict_get_int_int($self'lastClaimTimestamp, 257, $cKey, 257);
+        if ((~ null?($lastClaim))) {
+            throw_unless(16587, ($global_now() >= (__tact_not_null($lastClaim) + 300)));
+        }
+        int $oKey = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_onceKey($msg'rewardId, $msg'walletAddress);
+        if (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_isOneTimeReward($msg'rewardId)) {
+            throw_unless(54161, null?(__tact_dict_get_int_int($self'lifetimeClaimed, 257, $oKey, 1)));
+        }
+        int $cap = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_halvedBaseCap();
+        throw_unless(57033, ($self'dailyEmitted < $cap));
+        int $baseReward = 0;
+        if (($msg'rewardId == 1)) {
+            $baseReward = 10000000000;
+        } elseif (($msg'rewardId == 2)) {
+            $baseReward = 5000000000;
+        } elseif (($msg'rewardId == 3)) {
+            $baseReward = 500000000000;
+        } elseif (($msg'rewardId == 4)) {
+            $baseReward = 5000000000000;
+        } elseif (($msg'rewardId == 6)) {
+            $baseReward = 200000000000;
+        } elseif (($msg'rewardId == 7)) {
+            $baseReward = 50000000000;
+        } elseif (($msg'rewardId == 5)) {
+            throw_unless(12206, ($msg'tipAmount >= 100000000000));
+            $baseReward = (($msg'tipAmount * 800) / 10000);
+        }
+        throw_unless(1842, ($baseReward > 0));
+        int $ckKey = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_countKey($msg'rewardId, $msg'walletAddress);
+        int $claimCount = ((~ null?(__tact_dict_get_int_int($self'claimCounts, 257, $ckKey, 257))) ? __tact_not_null(__tact_dict_get_int_int($self'claimCounts, 257, $ckKey, 257)) : 0);
+        int $reward = 0;
+        if (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_isOneTimeReward($msg'rewardId)) {
+            $reward = $baseReward;
+        } else {
+            $reward = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_decayedReward($baseReward, $claimCount);
+        }
+        int $pKey = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_pairingKey($msg'telegramId, $msg'referrerId);
+        if ($pKey) {
+            int $pairCount = ((~ null?(__tact_dict_get_int_int($self'pairingCounts, 257, $pKey, 257))) ? __tact_not_null(__tact_dict_get_int_int($self'pairingCounts, 257, $pKey, 257)) : 0);
+            $reward = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_pairingDecay($reward, $pairCount);
+            $self'pairingCounts~__tact_dict_set_int_int(257, $pKey, ($pairCount + 1), 257);
+        }
+        $reward = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_applyMultiplier($reward, $msg'hasVibeStreak);
+        int $remaining = ($cap - $self'dailyEmitted);
+        if (($reward > $remaining)) {
+            $reward = $remaining;
+        }
+        if (( (($reward < 100000)) ? (($reward > 0)) : (false) )) {
+            $reward = 100000;
+        }
+        throw_unless(36280, ($self'totalReserve >= $reward));
+        $self'totalReserve = ($self'totalReserve - $reward);
+        $self'dailyEmitted = ($self'dailyEmitted + $reward);
+        $self'dailyClaimCount = ($self'dailyClaimCount + 1);
+        $self'lastClaimTimestamp~__tact_dict_set_int_int(257, $cKey, $global_now(), 257);
+        $self'claimCounts~__tact_dict_set_int_int(257, $ckKey, ($claimCount + 1), 257);
+        if (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_isOneTimeReward($msg'rewardId)) {
+            $self'lifetimeClaimed~__tact_dict_set_int_int(257, $oKey, true, 1);
+        }
+        $global_emit($RewardClaimed$_store_cell($RewardClaimed$_constructor_rewardId_recipient_amount($msg'rewardId, $msg'walletAddress, $reward), begin_cell()));
+        $global_send($SendParameters$_constructor_to_value_mode_body($msg'walletAddress, $reward, 1, __gen_cell_cell_6d9c4abdfe1b83789e434d811b523ed7763021139b7f975266ed28c241e8d6d4()));
+        $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed));
+        return ();
+    }
+    
+    ;; Receive MintAuthorized message
+    if (op == 4196209244) {
+        var $msg'recipient = in_msg~load_msg_addr();
+        var $msg'amount = in_msg~load_varuint16();
+        var $msg'authorizedAt = in_msg~load_uint(32);
+        throw_unless(4630, ( equal_slices_bits(__tact_context_get_sender(), $self'registry) ));
+        throw_unless(36280, ($self'totalReserve >= $msg'amount));
+        $self'totalReserve = ($self'totalReserve - $msg'amount);
+        $global_send($SendParameters$_constructor_to_value_mode_body($msg'recipient, $msg'amount, 2, __gen_cell_cell_badae18b8d6fc66a7238b88920b1e3e1b5a90e464f49ddd0e3e305f308acf40d()));
+        $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed));
+        return ();
+    }
+    
+    ;; Receive UpdateEmissionCap message
+    if (op == 1272424197) {
+        var $msg'newCap = in_msg~load_varuint16();
+        throw_unless(53827, ( equal_slices_bits(__tact_context_get_sender(), $self'governance) ));
+        throw_unless(47601, ( (($msg'newCap > 0)) ? (($msg'newCap <= 500000000000000)) : (false) ));
+        $self'emissionCap = $msg'newCap;
+        $global_emit(__gen_cell_cell_03bd685a9a4e4e1e7dd499936741cc98e53aeb258f3a50dae4779219278352af());
+        $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed));
+        return ();
+    }
+    
+    ;; Receive UpdateMinWalletAge message
+    if (op == 3252420305) {
+        var $msg'newAgeDays = in_msg~load_uint(32);
+        throw_unless(58627, ( equal_slices_bits(__tact_context_get_sender(), $self'governance) ));
+        throw_unless(14150, ($msg'newAgeDays <= 365));
+        $self'minWalletAgeDays = $msg'newAgeDays;
+        $global_emit(__gen_cell_cell_5e09607b0881fa9f768fdd30829f0349e01c030c0762cca549cf8796d56d0e4d());
+        $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed));
+        return ();
+    }
+    
+    ;; Receive UpdateTargetActivity message
+    if (op == 1210882180) {
+        var $msg'newTarget = in_msg~load_uint(32);
+        throw_unless(50533, ( equal_slices_bits(__tact_context_get_sender(), $self'governance) ));
+        $self'targetDailyActivity = $msg'newTarget;
+        $global_emit(__gen_cell_cell_360b34845bbd5dd0c8ffbb4c88ede9a4e8dda4f05e39446be43f8bd27ab973a5());
+        $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed));
+        return ();
+    }
+    
+    ;; Receive UpdateReserve message
+    if (op == 3723307516) {
+        var $msg'amount = in_msg~load_varuint16();
+        throw_unless(52129, ( equal_slices_bits(__tact_context_get_sender(), $self'owner) ));
+        $self'totalReserve = ($self'totalReserve + $msg'amount);
+        $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed));
+        return ();
+    }
+    
+    ;; Receive UpdateRegistry message
+    if (op == 272637735) {
+        var $msg'newRegistry = in_msg~load_msg_addr();
+        throw_unless(55903, ( equal_slices_bits(__tact_context_get_sender(), $self'owner) ));
+        $self'registry = $msg'newRegistry;
+        $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed));
+        return ();
+    }
+    
+    ;; Receive SetGovernance message
+    if (op == 3079187044) {
+        var $msg'newGovernance = in_msg~load_msg_addr();
+        throw_unless(52129, ( equal_slices_bits(__tact_context_get_sender(), $self'owner) ));
+        $self'governance = $msg'newGovernance;
+        $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed));
+        return ();
+    }
+    
+    ;; Receive SetOracleKey message
+    if (op == 1504480982) {
+        var $msg'newPublicKey = in_msg~load_uint(256);
+        throw_unless(52129, ( equal_slices_bits(__tact_context_get_sender(), $self'owner) ));
+        throw_unless(8406, ($msg'newPublicKey != 0));
+        $self'oraclePublicKey = $msg'newPublicKey;
+        $global_emit(__gen_cell_cell_7d5f7f4f7f0d97c929ff2bf8a9e17578ece487b500617651248039964ee8be8a());
+        $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed));
+        return ();
+    }
+    
+    ;; Receive TreasuryWithdraw message
+    if (op == 2043966993) {
+        var $msg'amount = in_msg~load_varuint16();
+        var $msg'recipient = in_msg~load_msg_addr();
+        throw_unless(52129, ( equal_slices_bits(__tact_context_get_sender(), $self'owner) ));
+        throw_unless(36280, ($self'totalReserve >= $msg'amount));
+        $self'totalReserve = ($self'totalReserve - $msg'amount);
+        $global_send($SendParameters$_constructor_to_value_mode_body($msg'recipient, $msg'amount, 2, __gen_cell_cell_7dacaa2b53bd40697fbc888e249a7528bddcdca795ca923d6fbabb5bda64264a()));
+        $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed));
+        return ();
+    }
+    
+    ;; Receive Deploy message
+    if (op == 0x946a98b6) {
+        var $deploy'queryId = in_msg~load_uint(64);
+        ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId), begin_cell()));
+        $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed));
+        return ();
+    }
+    
+    ;; Receive empty message
+    if ((op == 0) & (in_msg_length <= 32)) {
+        $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed));
+        return ();
+    }
+    ;; Throw if not handled
+    throw(130);
+}
+
+
+() __tact_selector_hack_asm() impure asm """
+@atend @ 1 {
+        execute current@ context@ current!
+        {
+            // The core idea of this function is to save gas by avoiding unnecessary dict jump, when recv_internal/recv_external is called
+            // We want to extract recv_internal/recv_external from the dict and select needed function
+            // not by jumping to the needed function by it's index, but by using usual IF statements.
+
+            }END> b> // Close previous builder, now we have a cell of previous code on top of the stack
+
+            <{ // Start of the new code builder
+                SETCP0
+                // Swap the new code builder with the previous code, now we have previous code on top of the stack
+                swap
+                // Transform cell to slice and load first ref from the previous code, now we have the dict on top of the stack
+                <s ref@
+
+                // Extract the recv_internal from the dict
+                dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot
+                swap
+
+                // Delete the recv_internal from the dict
+                0 swap @procdictkeylen idict- drop
+                // Delete the recv_external from the dict (it's okay if it's not there)
+                -1 swap @procdictkeylen idict- drop
+                // Delete the __tact_selector_hack from the dict
+                65535 swap @procdictkeylen idict- drop
+
+                // Bring the code builder from the bottom of the stack
+                // because if recv_external extraction is optional, and the number of elements on the stack is not fixed
+                depth 1- roll
+                // Swap with the dict from which we extracted recv_internal and (maybe) recv_external
+                swap
+
+                // Check if the dict is empty
+                dup null?
+                // Store a copy of this flag in the bottom of the stack
+                dup depth 1- -roll
+                {
+                    // If the dict is empty, just drop it (it will be null if it's empty)
+                    drop
+                }
+                {
+                    // If the dict is not empty, prepare continuation to be stored in c3
+                    <{
+                        // Save this dict as first ref in this continuation, it will be pushed in runtime by DICTPUSHCONST
+                        swap @procdictkeylen DICTPUSHCONST
+                        // Jump to the needed function by it's index
+                        DICTIGETJMPZ
+                        // If such key is not found, throw 11 along with the key as an argument
+                        11 THROWARG
+                    }> PUSHCONT
+                    // Store the continuation in c3
+                    c3 POP
+                } cond
+
+                // Function id is on top of the (runtime) stack
+                DUP IFNOTJMP:<{
+                    // place recv_internal here
+                    DROP swap @addop
+                }>
+
+                // Bring back the flag, indicating if the dict is empty or not from the bottom of the stack
+                depth 1- roll
+                {
+                    // If the dict is empty, throw 11
+                    11 THROWARG
+                }
+                {
+                    // If the dict is not empty, jump to continuation from c3
+                    c3 PUSH JMPX
+                } cond
+            }> b>
+        } : }END>c
+        current@ context! current!
+    } does @atend !
+""";
+
+() __tact_selector_hack() method_id(65535) {
+    return __tact_selector_hack_asm();
+}

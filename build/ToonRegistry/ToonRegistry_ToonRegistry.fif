@@ -1,0 +1,980 @@
+// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/projects/toon-bot/toon-contracts/build/ToonRegistry/ToonRegistry_ToonRegistry.fc` 
+PROGRAM{
+  DECLPROC __tact_context_get
+  DECLPROC __tact_context_get_sender
+  DECLPROC __tact_dict_get_slice_slice
+  DECLPROC __tact_dict_set_slice_slice
+  DECLPROC __tact_dict_get_slice_int
+  DECLPROC __tact_dict_set_slice_int
+  DECLPROC __tact_dict_get_int_slice
+  DECLPROC __tact_dict_set_int_slice
+  DECLPROC __tact_dict_get_int_int
+  DECLPROC __tact_dict_set_int_int
+  DECLPROC $DeployOk$_store
+  DECLPROC $DeployOk$_store_cell
+  DECLPROC $ArtistRegistered$_store
+  DECLPROC $ArtistRegistered$_store_cell
+  DECLPROC $TrackRegistered$_store
+  DECLPROC $TrackRegistered$_store_cell
+  DECLPROC $MintAuthorized$_store
+  DECLPROC $MintAuthorized$_store_cell
+  DECLPROC $DropRegistered$_store
+  DECLPROC $DropRegistered$_store_cell
+  DECLPROC $ToonRegistry$_store
+  DECLPROC $ToonRegistry$_load
+  DECLPROC $Context$_get_value
+  DECLPROC $ToonRegistry$init$_load
+  DECLPROC $ToonRegistry$_contract_init
+  DECLPROC $ToonRegistry$_contract_load
+  DECLPROC $ToonRegistry$_contract_store
+  DECLPROC $global_emit
+  DECLPROC $ToonRegistry$_fun_getArtistContract
+  DECLPROC $ToonRegistry$_fun_getTrackContract
+  DECLPROC $ToonRegistry$_fun_getDropContract
+  DECLPROC $ToonRegistry$_fun_isRegisteredArtist
+  DECLPROC $ToonRegistry$_fun_isRegisteredTrack
+  DECLPROC $ToonRegistry$_fun_fingerprintExists
+  DECLPROC $ToonRegistry$_fun_getMintAuthority
+  DECLPROC $ToonRegistry$_fun_isKnownArtistContract
+  DECLPROC $MessageParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $ToonRegistry$_fun_notify
+  DECLPROC $ArtistRegistered$_constructor_wallet_artistContract_registeredAt
+  DECLPROC $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt
+  DECLPROC $SendParameters$_constructor_to_value_mode_body
+  DECLPROC $MintAuthorized$_constructor_recipient_amount_authorizedAt
+  DECLPROC $DropRegistered$_constructor_trackId_dropContract_registeredAt
+  DECLPROC $DeployOk$_constructor_queryId
+  91748 DECLMETHOD %getArtistContract
+  96672 DECLMETHOD %getTrackContract
+  117014 DECLMETHOD %getDropContract
+  87801 DECLMETHOD %isRegisteredArtist
+  86961 DECLMETHOD %isRegisteredTrack
+  74238 DECLMETHOD %fingerprintExists
+  97950 DECLMETHOD %getMintAuthority
+  DECLPROC recv_internal
+  65535 DECLMETHOD __tact_selector_hack
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sender
+  DECLGLOBVAR __tact_child_contract_codes
+  DECLGLOBVAR __tact_randomized
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    4 UNTUPLE
+  }>
+  __tact_context_get_sender PROCINLINE:<{
+    __tact_context_sender GETGLOB
+  }>
+  __tact_dict_get_slice_slice PROCINLINE:<{
+    -ROT
+        DICTGET NULLSWAPIFNOT
+    IF:<{
+    }>ELSE<{
+      DROP
+      PUSHNULL
+    }>
+  }>
+  __tact_dict_set_slice_slice PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      -ROT
+          DICTDEL
+      DROP
+    }>ELSE<{
+      NEWC
+      STSLICE
+      s1 s3 s3 XCHG3
+      DICTSETB
+    }>
+  }>
+  __tact_dict_get_slice_int PROCINLINE:<{
+    s1 s3 s3 XCHG3
+        DICTGET NULLSWAPIFNOT
+    IF:<{
+      SWAP
+      LDIX
+      DROP
+    }>ELSE<{
+      2DROP
+      PUSHNULL
+    }>
+  }>
+  __tact_dict_set_slice_int PROCINLINE:<{
+    OVER
+    ISNULL
+    IF:<{
+      2DROP
+      -ROT
+          DICTDEL
+      DROP
+    }>ELSE<{
+      NEWC
+      SWAP
+      STIX
+      s1 s3 s3 XCHG3
+      DICTSETB
+    }>
+  }>
+  __tact_dict_get_int_slice PROCINLINE:<{
+    -ROT
+    DICTIGET
+    NULLSWAPIFNOT
+    IF:<{
+    }>ELSE<{
+      DROP
+      PUSHNULL
+    }>
+  }>
+  __tact_dict_set_int_slice PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      -ROT
+      DICTIDEL
+      DROP
+    }>ELSE<{
+      s1 s3 s3 XCHG3
+      DICTISET
+    }>
+  }>
+  __tact_dict_get_int_int PROCINLINE:<{
+    s1 s3 s3 XCHG3
+    DICTIGET
+    NULLSWAPIFNOT
+    IF:<{
+      SWAP
+      LDIX
+      DROP
+    }>ELSE<{
+      2DROP
+      PUSHNULL
+    }>
+  }>
+  __tact_dict_set_int_int PROCINLINE:<{
+    OVER
+    ISNULL
+    IF:<{
+      2DROP
+      -ROT
+      DICTIDEL
+      DROP
+    }>ELSE<{
+      NEWC
+      SWAP
+      STIX
+      s1 s3 s3 XCHG3
+      DICTISETB
+    }>
+  }>
+  $DeployOk$_store PROCINLINE:<{
+    2952335191 PUSHINT
+    ROT
+    32 STU
+    64 STU
+  }>
+  $DeployOk$_store_cell PROCINLINE:<{
+    SWAP
+    $DeployOk$_store INLINECALLDICT
+    ENDC
+  }>
+  $ArtistRegistered$_store PROCINLINE:<{
+    3803150073 PUSHINT
+    s0 s4 XCHG2
+    32 STU
+    s1 s2 XCHG
+    STSLICE
+    STSLICE
+    32 STU
+  }>
+  $ArtistRegistered$_store_cell PROCINLINE:<{
+    3 -ROLL
+    $ArtistRegistered$_store INLINECALLDICT
+    ENDC
+  }>
+  $TrackRegistered$_store PROCINLINE:<{
+    1961142070 PUSHINT
+    s0 s5 XCHG2
+    32 STU
+    s1 s3 XCHG
+    256 STU
+    256 STU
+    STSLICE
+    32 STU
+  }>
+  $TrackRegistered$_store_cell PROCINLINE:<{
+    4 -ROLL
+    $TrackRegistered$_store INLINECALLDICT
+    ENDC
+  }>
+  $MintAuthorized$_store PROCINLINE:<{
+    4196209244 PUSHINT
+    s0 s4 XCHG2
+    32 STU
+    s1 s2 XCHG
+    STSLICE
+    SWAP
+    STVARUINT16
+    32 STU
+  }>
+  $MintAuthorized$_store_cell PROCINLINE:<{
+    3 -ROLL
+    $MintAuthorized$_store INLINECALLDICT
+    ENDC
+  }>
+  $DropRegistered$_store PROCINLINE:<{
+    1376189393 PUSHINT
+    s0 s4 XCHG2
+    32 STU
+    s1 s2 XCHG
+    256 STU
+    STSLICE
+    32 STU
+  }>
+  $DropRegistered$_store_cell PROCINLINE:<{
+    3 -ROLL
+    $DropRegistered$_store INLINECALLDICT
+    ENDC
+  }>
+  $ToonRegistry$_store PROCINLINE:<{
+    s9 s10 XCHG2
+    STDICT
+    s0 s7 XCHG
+    NEWC
+    STDICT
+    s1 s6 XCHG
+    STDICT
+    s1 s4 XCHG
+    STDICT
+    s0 s2 XCHG
+    NEWC
+    STDICT
+    STDICT
+    s1 s2 XCHG
+    STSLICE
+    s1 s2 XCHG
+    STSLICE
+    s1 s3 XCHG
+    32 STU
+    s1 s3 XCHG
+    32 STU
+    STBREFR
+    STBREFR
+  }>
+  $ToonRegistry$_load PROCINLINE:<{
+    LDDICT
+    LDREF
+    SWAP
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
+    LDDICT
+    LDMSGADDR
+    LDMSGADDR
+    32 LDU
+    32 LDU
+    DROP
+    s9 s10 XCHG
+  }>
+  $Context$_get_value PROCINLINE:<{
+    s1 s3 XCHG
+    3 BLKDROP
+  }>
+  $ToonRegistry$init$_load PROCINLINE:<{
+    LDMSGADDR
+    LDMSGADDR
+    -ROT
+  }>
+  $ToonRegistry$_contract_init PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    0 PUSHINT
+    DUP
+    s7 s9 XCHG
+    s6 s8 XCHG
+    s5 s7 XCHG
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s2 s4 XCHG
+  }>
+  $ToonRegistry$_contract_load PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+    IF:<{
+      $ToonRegistry$_load INLINECALLDICT
+      1 10 BLKDROP2
+    }>ELSE<{
+      $ToonRegistry$init$_load INLINECALLDICT
+      s0 s2 XCHG
+      ENDS
+      SWAP
+      $ToonRegistry$_contract_init INLINECALLDICT
+    }>
+  }>
+  $ToonRegistry$_contract_store PROCINLINE:<{
+    NEWC
+    TRUE
+    SWAP
+    1 STI
+    10 -ROLL
+    $ToonRegistry$_store INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  $global_emit PROCINLINE:<{
+        NEWC
+    15211807202738752817960438464513 PUSHINT
+    SWAP
+    104 STU
+        STREF
+        ENDC
+    0 PUSHINT
+        SENDRAWMSG
+  }>
+  $ToonRegistry$_fun_getArtistContract PROCREF:<{
+    267 PUSHINT
+    s11 PUSH
+    s0 s2 XCHG
+    __tact_dict_get_slice_slice INLINECALLDICT
+  }>
+  $ToonRegistry$_fun_getTrackContract PROCREF:<{
+    257 PUSHINT
+    s9 PUSH
+    s0 s2 XCHG
+    __tact_dict_get_int_slice INLINECALLDICT
+  }>
+  $ToonRegistry$_fun_getDropContract PROCREF:<{
+    257 PUSHINT
+    s7 PUSH
+    s0 s2 XCHG
+    __tact_dict_get_int_slice INLINECALLDICT
+  }>
+  $ToonRegistry$_fun_isRegisteredArtist PROCREF:<{
+    267 PUSHINT
+    s11 PUSH
+    s0 s2 XCHG
+    __tact_dict_get_slice_slice INLINECALLDICT
+    ISNULL
+    NOT
+  }>
+  $ToonRegistry$_fun_isRegisteredTrack PROCREF:<{
+    257 PUSHINT
+    s9 PUSH
+    s0 s2 XCHG
+    __tact_dict_get_int_slice INLINECALLDICT
+    ISNULL
+    NOT
+  }>
+  $ToonRegistry$_fun_fingerprintExists PROCREF:<{
+    257 PUSHINT
+    s6 PUSH
+    s0 s2 XCHG
+    1 PUSHINT
+    __tact_dict_get_int_int INLINECALLDICT
+    ISNULL
+    NOT
+  }>
+  $ToonRegistry$_fun_getMintAuthority PROCREF:<{
+    s3 PUSH
+  }>
+  $ToonRegistry$_fun_isKnownArtistContract PROCREF:<{
+    267 PUSHINT
+    s10 PUSH
+    s0 s2 XCHG
+    __tact_dict_get_slice_slice INLINECALLDICT
+    ISNULL
+    NOT
+  }>
+  $MessageParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
+    s3 s3 XCHG2
+    s0 s4 XCHG
+  }>
+  $ToonRegistry$_fun_notify PROCINLINE:<{
+    __tact_context_get_sender INLINECALLDICT
+    FALSE
+    0 PUSHINT
+    s0 s3 XCHG2
+    66 PUSHINT
+    SWAP
+    $MessageParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+        NEWC
+        b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+        1 STI               // store `bounce`
+        b{000} STSLICECONST // store bounced = false and src = addr_none
+        STSLICE             // store `to`
+        SWAP
+        STGRAMS             // store `value`
+        106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+        STZEROES
+        // → Stack state
+        // s0: Builder
+        // s1: `body`
+        // s2: `mode`
+        STDICT
+        ENDC
+        SWAP
+        SENDRAWMSG
+  }>
+  $ArtistRegistered$_constructor_wallet_artistContract_registeredAt PROCINLINE:<{
+  }>
+  $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt PROCINLINE:<{
+  }>
+  $SendParameters$_constructor_to_value_mode_body PROCINLINE:<{
+    2SWAP
+    PUSHNULL
+    PUSHNULL
+    s0 s0 s3 XCHG3
+    TRUE
+  }>
+  $MintAuthorized$_constructor_recipient_amount_authorizedAt PROCINLINE:<{
+  }>
+  $DropRegistered$_constructor_trackId_dropContract_registeredAt PROCINLINE:<{
+  }>
+  $DeployOk$_constructor_queryId PROCINLINE:<{
+  }>
+  %getArtistContract PROC:<{
+    $ToonRegistry$_contract_load INLINECALLDICT
+    10 ROLL
+    $ToonRegistry$_fun_getArtistContract INLINECALLDICT
+    10 1 BLKDROP2
+  }>
+  %getTrackContract PROC:<{
+    $ToonRegistry$_contract_load INLINECALLDICT
+    10 ROLL
+    $ToonRegistry$_fun_getTrackContract INLINECALLDICT
+    10 1 BLKDROP2
+  }>
+  %getDropContract PROC:<{
+    $ToonRegistry$_contract_load INLINECALLDICT
+    10 ROLL
+    $ToonRegistry$_fun_getDropContract INLINECALLDICT
+    10 1 BLKDROP2
+  }>
+  %isRegisteredArtist PROC:<{
+    $ToonRegistry$_contract_load INLINECALLDICT
+    10 ROLL
+    $ToonRegistry$_fun_isRegisteredArtist INLINECALLDICT
+    10 1 BLKDROP2
+  }>
+  %isRegisteredTrack PROC:<{
+    $ToonRegistry$_contract_load INLINECALLDICT
+    10 ROLL
+    $ToonRegistry$_fun_isRegisteredTrack INLINECALLDICT
+    10 1 BLKDROP2
+  }>
+  %fingerprintExists PROC:<{
+    $ToonRegistry$_contract_load INLINECALLDICT
+    10 ROLL
+    $ToonRegistry$_fun_fingerprintExists INLINECALLDICT
+    10 1 BLKDROP2
+  }>
+  %getMintAuthority PROC:<{
+    $ToonRegistry$_contract_load INLINECALLDICT
+    $ToonRegistry$_fun_getMintAuthority INLINECALLDICT
+    10 1 BLKDROP2
+  }>
+  recv_internal PROC:<{
+    SWAP
+    CTOS
+    2 PUSHINT
+    SDSKIPFIRST
+    1 LDI
+    1 LDI
+    LDMSGADDR
+    OVER
+    s3 s4 XCHG
+    s6 s6 XCHG2
+    4 TUPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    __tact_context_sender SETGLOB
+    $ToonRegistry$_contract_load INLINECALLDICT
+    s0 s11 XCHG
+    IFJMP:<{
+      11 BLKDROP
+    }>
+    s0 s9 XCHG
+    32 LDUQ 130 THROWIFNOT
+    OVER
+    3754294261 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      LDMSGADDR
+      DROP
+      __tact_context_get_sender INLINECALLDICT
+      9299 PUSHINT
+      s10 PUSH
+      267 PUSHINT
+      s3 PUSH
+      __tact_dict_get_slice_slice INLINECALLDICT
+      ISNULL
+      THROWANYIFNOT
+      s0 s9 XCHG
+      267 PUSHINT
+      s10 s2 PUSH2
+      __tact_dict_set_slice_slice INLINECALLDICT
+      s0 s8 XCHG
+      267 PUSHINT
+      s2 s10 PUSH2
+      __tact_dict_set_slice_slice INLINECALLDICT
+      s0 s10 XCHG
+      INC
+          NOW
+      s10 s10 s0 XCHG3
+      $ArtistRegistered$_constructor_wallet_artistContract_registeredAt INLINECALLDICT
+      NEWC
+      $ArtistRegistered$_store_cell INLINECALLDICT
+      $global_emit INLINECALLDICT
+      s6 s9 XCHG
+      2 6 BLKSWAP
+      $ToonRegistry$_contract_store INLINECALLDICT
+    }>
+    OVER
+    2360656451 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      256 LDU
+      256 LDU
+      LDMSGADDR
+      DROP
+      __tact_context_get_sender INLINECALLDICT
+      s9 s11 XCHG
+      5 7 REVERSE
+      s6 s10 XCHG
+      s5 s11 XCHG
+      s4 s10 XCHG
+      s3 s11 XCHG
+      s10 s12 s13 XCHG3
+      26225 PUSHINT
+      s0 s14 XCHG
+      $ToonRegistry$_fun_isKnownArtistContract INLINECALLDICT
+      s1 s14 XCHG
+      THROWANYIFNOT
+      16165 PUSHINT
+      s7 PUSH
+      257 PUSHINT
+      s13 PUSH
+      __tact_dict_get_int_slice INLINECALLDICT
+      ISNULL
+      THROWANYIFNOT
+      15016 PUSHINT
+      s4 PUSH
+      257 PUSHINT
+      s12 PUSH
+      1 PUSHINT
+      __tact_dict_get_int_int INLINECALLDICT
+      ISNULL
+      THROWANYIFNOT
+      s0 s6 XCHG
+      257 PUSHINT
+      s11 s12 PUSH2
+      __tact_dict_set_int_slice INLINECALLDICT
+      s0 s5 XCHG
+      267 PUSHINT
+      s12 s11 PUSH2
+      257 PUSHINT
+      __tact_dict_set_slice_int INLINECALLDICT
+      s0 s3 XCHG
+      257 PUSHINT
+      s10 PUSH
+      TRUE
+      1 PUSHINT
+      __tact_dict_set_int_int INLINECALLDICT
+      s0 s12 XCHG
+      INC
+          NOW
+      s3 s11 XCHG
+      s10 s12 s0 XCHG3
+      $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt INLINECALLDICT
+      NEWC
+      $TrackRegistered$_store_cell INLINECALLDICT
+      $global_emit INLINECALLDICT
+      s5 s9 XCHG
+      s4 s8 XCHG
+      s7 s1 s6 XCHG3
+      s0 s3 s3 XCHG3
+      s0 s5 XCHG
+      s0 s4 XCHG
+      $ToonRegistry$_contract_store INLINECALLDICT
+    }>
+    OVER
+    3725821709 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      LDMSGADDR
+      LDVARUINT16
+      DROP
+      27890 PUSHINT
+      __tact_context_get_sender INLINECALLDICT
+      s5 PUSH
+      SDEQ
+      THROWANYIFNOT
+      9580 PUSHINT
+      OVER
+      0 GTINT
+      THROWANYIFNOT
+      0 PUSHINT
+      64 PUSHINT
+          NOW
+      s4 s3 s0 XCHG3
+      $MintAuthorized$_constructor_recipient_amount_authorizedAt INLINECALLDICT
+      NEWC
+      $MintAuthorized$_store_cell INLINECALLDICT
+      s3 PUSH
+      3 -ROLL
+      $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
+          NEWC
+          b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+          1 STI               // store `bounce`
+          b{000} STSLICECONST // store bounced = false and src = addr_none
+          STSLICE             // store `to`
+          SWAP
+          STGRAMS             // store `value`
+          105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+          STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+          // → Stack state
+          // s0: Builder
+          // s1: `data`
+          // s2: `code`
+          // s3: `body`
+          // s4: `mode`
+          // Group 2: Placing the Builder after code and data, then checking those for nullability
+          s2 XCHG0
+          DUP2
+          ISNULL
+          SWAP
+          ISNULL
+          AND
+          // → Stack state
+          // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+          // s1: `code`
+          // s2: `data`
+          // s3: Builder
+          // s4: `body`
+          // s5: `mode`
+          // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+          <{
+              DROP2 // drop `data` and `code`, since either of those is null
+              b{0} STSLICECONST
+          }> PUSHCONT
+          // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+          <{
+              // _ split_depth:(Maybe (## 5))
+              //   special:(Maybe TickTock)
+              //   code:(Maybe ^Cell)
+              //   data:(Maybe ^Cell)
+              //   library:(Maybe ^Cell)
+              // = StateInit;
+              ROT                // place message Builder on top
+              b{10} STSLICECONST // store Maybe = true, Either = false
+              // Start composing inlined StateInit
+              b{00} STSLICECONST // store split_depth and special first
+              STDICT             // store code
+              STDICT             // store data
+              b{0} STSLICECONST  // store library
+          }> PUSHCONT
+          // Group 3: IFELSE that does the branching shown above
+          IFELSE
+          // → Stack state
+          // s0: Builder
+          // s1: null or StateInit
+          // s2: `body`
+          // s3: `mode`
+          // Group 4: Finalizing the message
+          STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+          ENDC
+          // → Stack state
+          // s0: Cell
+          // s1: `mode`
+          // Group 5: Sending the message, with `mode` on top
+          SWAP
+          SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      s7 s9 XCHG
+      2 7 BLKSWAP
+      $ToonRegistry$_contract_store INLINECALLDICT
+    }>
+    OVER
+    277189457 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      LDMSGADDR
+      LDVARUINT16
+      DROP
+      50582 PUSHINT
+      267 PUSHINT
+      __tact_context_get_sender INLINECALLDICT
+      s9 PUSH
+      -ROT
+      257 PUSHINT
+      __tact_dict_get_slice_int INLINECALLDICT
+      ISNULL
+      NOT
+      THROWANYIFNOT
+      0 PUSHINT
+      64 PUSHINT
+          NOW
+      s4 s3 s0 XCHG3
+      $MintAuthorized$_constructor_recipient_amount_authorizedAt INLINECALLDICT
+      NEWC
+      $MintAuthorized$_store_cell INLINECALLDICT
+      s3 PUSH
+      3 -ROLL
+      $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
+          NEWC
+          b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+          1 STI               // store `bounce`
+          b{000} STSLICECONST // store bounced = false and src = addr_none
+          STSLICE             // store `to`
+          SWAP
+          STGRAMS             // store `value`
+          105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+          STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+          // → Stack state
+          // s0: Builder
+          // s1: `data`
+          // s2: `code`
+          // s3: `body`
+          // s4: `mode`
+          // Group 2: Placing the Builder after code and data, then checking those for nullability
+          s2 XCHG0
+          DUP2
+          ISNULL
+          SWAP
+          ISNULL
+          AND
+          // → Stack state
+          // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+          // s1: `code`
+          // s2: `data`
+          // s3: Builder
+          // s4: `body`
+          // s5: `mode`
+          // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+          <{
+              DROP2 // drop `data` and `code`, since either of those is null
+              b{0} STSLICECONST
+          }> PUSHCONT
+          // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+          <{
+              // _ split_depth:(Maybe (## 5))
+              //   special:(Maybe TickTock)
+              //   code:(Maybe ^Cell)
+              //   data:(Maybe ^Cell)
+              //   library:(Maybe ^Cell)
+              // = StateInit;
+              ROT                // place message Builder on top
+              b{10} STSLICECONST // store Maybe = true, Either = false
+              // Start composing inlined StateInit
+              b{00} STSLICECONST // store split_depth and special first
+              STDICT             // store code
+              STDICT             // store data
+              b{0} STSLICECONST  // store library
+          }> PUSHCONT
+          // Group 3: IFELSE that does the branching shown above
+          IFELSE
+          // → Stack state
+          // s0: Builder
+          // s1: null or StateInit
+          // s2: `body`
+          // s3: `mode`
+          // Group 4: Finalizing the message
+          STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+          ENDC
+          // → Stack state
+          // s0: Cell
+          // s1: `mode`
+          // Group 5: Sending the message, with `mode` on top
+          SWAP
+          SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      s7 s9 XCHG
+      2 7 BLKSWAP
+      $ToonRegistry$_contract_store INLINECALLDICT
+    }>
+    OVER
+    2021444180 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      LDMSGADDR
+      DROP
+      27890 PUSHINT
+      __tact_context_get_sender INLINECALLDICT
+      s0 s4 XCHG2
+      SDEQ
+      s1 s3 XCHG
+      THROWANYIFNOT
+      s7 s9 XCHG
+      2 7 BLKSWAP
+      $ToonRegistry$_contract_store INLINECALLDICT
+    }>
+    OVER
+    3682064959 PUSHINT
+    EQUAL
+    IFJMP:<{
+      2 1 BLKDROP2
+      LDMSGADDR
+      DROP
+      27890 PUSHINT
+      __tact_context_get_sender INLINECALLDICT
+      s3 PUSH
+      SDEQ
+      THROWANYIFNOT
+      s7 s9 XCHG
+      2 7 BLKSWAP
+      $ToonRegistry$_contract_store INLINECALLDICT
+    }>
+    OVER
+    2845755895 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      256 LDU
+      LDMSGADDR
+      DROP
+      __tact_context_get_sender INLINECALLDICT
+      s9 s10 XCHG
+      s8 s10 XCHG
+      s7 s10 XCHG
+      s6 s10 XCHG
+      s5 s10 XCHG
+      s4 s10 XCHG
+      s3 s10 XCHG
+      s10 s11 s12 XCHG3
+      26225 PUSHINT
+      s0 s13 XCHG
+      $ToonRegistry$_fun_isKnownArtistContract INLINECALLDICT
+      s1 s13 XCHG
+      THROWANYIFNOT
+      44318 PUSHINT
+      s5 PUSH
+      257 PUSHINT
+      s12 PUSH
+      __tact_dict_get_int_slice INLINECALLDICT
+      ISNULL
+      THROWANYIFNOT
+      s0 s4 XCHG
+      257 PUSHINT
+      s10 s11 PUSH2
+      __tact_dict_set_int_slice INLINECALLDICT
+          NOW
+      s10 s11 s0 XCHG3
+      $DropRegistered$_constructor_trackId_dropContract_registeredAt INLINECALLDICT
+      NEWC
+      $DropRegistered$_store_cell INLINECALLDICT
+      $global_emit INLINECALLDICT
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s0 s3 XCHG
+      s4 s4 s6 XCHG3
+      $ToonRegistry$_contract_store INLINECALLDICT
+    }>
+    SWAP
+    2490013878 PUSHINT
+    EQUAL
+    IFJMP:<{
+      64 LDU
+      DROP
+      $DeployOk$_constructor_queryId INLINECALLDICT
+      NEWC
+      $DeployOk$_store_cell INLINECALLDICT
+      s8 s10 XCHG
+      s7 s9 XCHG
+      s6 s8 XCHG
+      s5 s7 XCHG
+      s4 s6 XCHG
+      s3 s5 XCHG
+      s4 s3 s0 XCHG3
+      s1 s2 XCHG
+      $ToonRegistry$_fun_notify INLINECALLDICT
+      $ToonRegistry$_contract_store INLINECALLDICT
+    }>
+    11 BLKDROP
+    130 THROW
+  }>
+  __tact_selector_hack PROC:<{
+    @atend @ 1 {
+            execute current@ context@ current!
+            {
+                // The core idea of this function is to save gas by avoiding unnecessary dict jump, when recv_internal/recv_external is called
+                // We want to extract recv_internal/recv_external from the dict and select needed function
+                // not by jumping to the needed function by it's index, but by using usual IF statements.
+                }END> b> // Close previous builder, now we have a cell of previous code on top of the stack
+                <{ // Start of the new code builder
+                    SETCP0
+                    // Swap the new code builder with the previous code, now we have previous code on top of the stack
+                    swap
+                    // Transform cell to slice and load first ref from the previous code, now we have the dict on top of the stack
+                    <s ref@
+                    // Extract the recv_internal from the dict
+                    dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot
+                    swap
+                    // Delete the recv_internal from the dict
+                    0 swap @procdictkeylen idict- drop
+                    // Delete the recv_external from the dict (it's okay if it's not there)
+                    -1 swap @procdictkeylen idict- drop
+                    // Delete the __tact_selector_hack from the dict
+                    65535 swap @procdictkeylen idict- drop
+                    // Bring the code builder from the bottom of the stack
+                    // because if recv_external extraction is optional, and the number of elements on the stack is not fixed
+                    depth 1- roll
+                    // Swap with the dict from which we extracted recv_internal and (maybe) recv_external
+                    swap
+                    // Check if the dict is empty
+                    dup null?
+                    // Store a copy of this flag in the bottom of the stack
+                    dup depth 1- -roll
+                    {
+                        // If the dict is empty, just drop it (it will be null if it's empty)
+                        drop
+                    }
+                    {
+                        // If the dict is not empty, prepare continuation to be stored in c3
+                        <{
+                            // Save this dict as first ref in this continuation, it will be pushed in runtime by DICTPUSHCONST
+                            swap @procdictkeylen DICTPUSHCONST
+                            // Jump to the needed function by it's index
+                            DICTIGETJMPZ
+                            // If such key is not found, throw 11 along with the key as an argument
+                            11 THROWARG
+                        }> PUSHCONT
+                        // Store the continuation in c3
+                        c3 POP
+                    } cond
+                    // Function id is on top of the (runtime) stack
+                    DUP IFNOTJMP:<{
+                        // place recv_internal here
+                        DROP swap @addop
+                    }>
+                    // Bring back the flag, indicating if the dict is empty or not from the bottom of the stack
+                    depth 1- roll
+                    {
+                        // If the dict is empty, throw 11
+                        11 THROWARG
+                    }
+                    {
+                        // If the dict is not empty, jump to continuation from c3
+                        c3 PUSH JMPX
+                    } cond
+                }> b>
+            } : }END>c
+            current@ context! current!
+        } does @atend !
+  }>
+}END>c

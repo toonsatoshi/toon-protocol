@@ -1,0 +1,10 @@
+node_modules/
+dist/
+db.json
+.env
+toon-bot.log
+toon-contracts.zip
+toon-contracts-source.zip
+temp/testnet/
+*.js.map
+.DS_Store

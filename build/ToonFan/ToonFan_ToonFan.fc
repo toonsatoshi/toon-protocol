@@ -1,0 +1,687 @@
+#pragma version =0.4.6;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+;; ToonFan_ToonFan.headers.fc
+;;
+;; Header files for ToonFan
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_not_null
+forall X -> X __tact_not_null(X x) impure inline;
+
+;; __tact_context_get
+(int, slice, int, slice) __tact_context_get() inline;
+
+;; __tact_context_get_sender
+slice __tact_context_get_sender() inline;
+
+;; __tact_dict_get_slice_int
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline;
+
+;; __tact_dict_set_slice_int
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline;
+
+;; __tact_dict_get_int_cell
+cell __tact_dict_get_int_cell(cell d, int kl, int k) inline;
+
+;; __tact_dict_set_int_cell
+(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) inline;
+
+;; $DeployOk$_store
+builder $DeployOk$_store(builder build_0, (int) v) inline;
+
+;; $DeployOk$_store_cell
+cell $DeployOk$_store_cell((int) v, builder b) inline;
+
+;; $Proposal$_store
+builder $Proposal$_store(builder build_0, (slice, int, int, int, int) v) inline;
+
+;; $Proposal$_store_cell
+cell $Proposal$_store_cell((slice, int, int, int, int) v, builder b) inline;
+
+;; $Proposal$_load
+(slice, ((slice, int, int, int, int))) $Proposal$_load(slice sc_0) inline;
+
+;; $Proposal$_as_optional
+tuple $Proposal$_as_optional((slice, int, int, int, int) v) inline;
+
+;; $Proposal$_load_opt
+tuple $Proposal$_load_opt(cell cl) inline;
+
+;; $ToonFan$_store
+builder $ToonFan$_store(builder build_0, (slice, slice, cell, int, cell, int) v) inline;
+
+;; $ToonFan$_load
+(slice, ((slice, slice, cell, int, cell, int))) $ToonFan$_load(slice sc_0) inline;
+
+;; $Context$_get_value
+_ $Context$_get_value((int, slice, int, slice) v) inline;
+
+;; $Proposal$_not_null
+((slice, int, int, int, int)) $Proposal$_not_null(tuple v) inline;
+
+;; $ToonFan$init$_load
+(slice, ((slice, slice))) $ToonFan$init$_load(slice sc_0) inline;
+
+;; $ToonFan$_contract_init
+(slice, slice, cell, int, cell, int) $ToonFan$_contract_init(slice $artist, slice $registry) impure inline;
+
+;; $ToonFan$_contract_load
+(slice, slice, cell, int, cell, int) $ToonFan$_contract_load() impure inline;
+
+;; $ToonFan$_contract_store
+() $ToonFan$_contract_store((slice, slice, cell, int, cell, int) v) impure inline;
+
+;; $ToonFan$_fun_getFanPower
+((slice, slice, cell, int, cell, int), int) $ToonFan$_fun_getFanPower((slice, slice, cell, int, cell, int) $self, slice $fan) impure inline_ref;
+
+;; $ToonFan$_fun_isTopFan
+((slice, slice, cell, int, cell, int), int) $ToonFan$_fun_isTopFan((slice, slice, cell, int, cell, int) $self, slice $fan) impure inline_ref;
+
+;; $MessageParameters$_constructor_bounce_to_value_mode_body
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline;
+
+;; $ToonFan$_fun_notify
+((slice, slice, cell, int, cell, int), ()) $ToonFan$_fun_notify((slice, slice, cell, int, cell, int) $self, cell $body) impure inline;
+
+;; $SendParameters$_constructor_to_value_mode_body
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline;
+
+;; $DeployOk$_constructor_queryId
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline;
+
+;; $Proposal$_constructor_description_votesFor_votesAgainst_deadline_executed
+((slice, int, int, int, int)) $Proposal$_constructor_description_votesFor_votesAgainst_deadline_executed(slice $description, int $votesFor, int $votesAgainst, int $deadline, int $executed) inline;
+
+
+;; ToonFan_ToonFan.stdlib.fc
+global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
+global cell __tact_child_contract_codes;
+global int __tact_randomized;
+
+forall X -> X __tact_not_null(X x) impure inline {
+    throw_if(128, null?(x)); return x;
+}
+
+(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) """
+    DICTDEL
+""";
+
+(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) """
+    DICTGET NULLSWAPIFNOT
+""";
+
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
+
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
+
+forall X0, X1, X2, X3, X4 -> tuple __tact_tuple_create_5((X0, X1, X2, X3, X4) v) asm """
+    5 TUPLE
+""";
+
+forall X0, X1, X2, X3, X4 -> (X0, X1, X2, X3, X4) __tact_tuple_destroy_5(tuple v) asm """
+    5 UNTUPLE
+""";
+
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
+    var (r, ok) = __tact_dict_get(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline {
+    if (null?(v)) {
+        var (r, ok) = __tact_dict_delete(d, kl, k);
+        return (r, ());
+    } else {
+        return (dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+cell __tact_dict_get_int_cell(cell d, int kl, int k) inline {
+    var (r, ok) = idict_get_ref?(d, kl, k);
+    if (ok) {
+        return r;
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) inline {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set_ref(d, kl, k, v), ());
+    }
+}
+
+int $global_myBalance() impure asm """
+    BALANCE FIRST
+""";
+
+() $global_nativeReserve(int $amount, int $mode) impure asm """
+    RAWRESERVE
+""";
+
+() $global_message((int, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+    STZEROES
+    // → Stack state
+    // s0: Builder
+    // s1: `body`
+    // s2: `mode`
+    STDICT
+    ENDC
+    SWAP
+    SENDRAWMSG
+""";
+
+() $global_send((int, cell, cell, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+    STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+    // → Stack state
+    // s0: Builder
+    // s1: `data`
+    // s2: `code`
+    // s3: `body`
+    // s4: `mode`
+
+    // Group 2: Placing the Builder after code and data, then checking those for nullability
+    s2 XCHG0
+    DUP2
+    ISNULL
+    SWAP
+    ISNULL
+    AND
+    // → Stack state
+    // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+    // s1: `code`
+    // s2: `data`
+    // s3: Builder
+    // s4: `body`
+    // s5: `mode`
+
+    // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+    <{
+        DROP2 // drop `data` and `code`, since either of those is null
+        b{0} STSLICECONST
+    }> PUSHCONT
+
+    // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+    <{
+        // _ split_depth:(Maybe (## 5))
+        //   special:(Maybe TickTock)
+        //   code:(Maybe ^Cell)
+        //   data:(Maybe ^Cell)
+        //   library:(Maybe ^Cell)
+        // = StateInit;
+        ROT                // place message Builder on top
+        b{10} STSLICECONST // store Maybe = true, Either = false
+        // Start composing inlined StateInit
+        b{00} STSLICECONST // store split_depth and special first
+        STDICT             // store code
+        STDICT             // store data
+        b{0} STSLICECONST  // store library
+    }> PUSHCONT
+
+    // Group 3: IFELSE that does the branching shown above
+    IFELSE
+    // → Stack state
+    // s0: Builder
+    // s1: null or StateInit
+    // s2: `body`
+    // s3: `mode`
+
+    // Group 4: Finalizing the message
+    STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+    ENDC
+    // → Stack state
+    // s0: Cell
+    // s1: `mode`
+
+    // Group 5: Sending the message, with `mode` on top
+    SWAP
+    SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+""";
+
+int $global_now() impure asm """
+    NOW
+""";
+
+((slice, slice, cell, int, cell, int), ()) $ToonFan$_fun_notify((slice, slice, cell, int, cell, int) $self, cell $body) impure inline {
+    var (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId)) = $self;
+    slice $to = __tact_context_get_sender();
+    int $bounce = false;
+    if (false) {
+        int $balance = $global_myBalance();
+        int $balanceBeforeMessage = ($balance - $Context$_get_value(__tact_context_get()));
+        if (($balanceBeforeMessage < 0)) {
+            $global_nativeReserve(0, 0);
+            $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 130, $body));
+            return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), ());
+        }
+    }
+    $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 66, $body));
+    return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), ());
+}
+
+;; ToonFan_ToonFan.constants.fc
+;; Cell XUzfvTldbxM0VKpd/0w5n7i3PL4ypsiHd12JYaJ4kQ4=
+cell __gen_cell_cell_5d4cdfbd395d6f133454aa5dff4c399fb8b73cbe32a6c887775d8961a278910e() asm """
+    B{b5ee9c7241010101001e0000380000000046616e20546f6b656e73204d696e74656420286d6f636b29918db69a} B>boc PUSHREF
+""";
+
+;; String "Change royalty split percentage"
+slice __gen_slice_string_8380b9e8ae9fcba1ddac5a689e9cf557dbfc23f315183ea13417b1ab51b6750a() asm """
+    B{b5ee9c7241010101002100003e4368616e676520726f79616c74792073706c69742070657263656e7461676573722491} B>boc <s PUSHSLICE
+""";
+
+;; ToonFan_ToonFan.storage.fc
+;;
+;; Type: Context
+;; TLB: _ bounceable:bool sender:address value:int257 raw:^slice = Context
+;;
+
+_ $Context$_get_value((int, slice, int, slice) v) inline {
+    var (v'bounceable, v'sender, v'value, v'raw) = v;
+    return v'value;
+}
+
+;;
+;; Type: SendParameters
+;; TLB: _ mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell value:int257 to:address bounce:bool = SendParameters
+;;
+
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, null(), null(), $value, $to, true);
+}
+
+;;
+;; Type: MessageParameters
+;; TLB: _ mode:int257 body:Maybe ^cell value:int257 to:address bounce:bool = MessageParameters
+;;
+
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, $value, $to, $bounce);
+}
+
+;;
+;; Type: DeployOk
+;; Header: 0xaff90f57
+;; TLB: deploy_ok#aff90f57 queryId:uint64 = DeployOk
+;;
+
+builder $DeployOk$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $DeployOk$_store_cell((int) v, builder b) inline {
+    return $DeployOk$_store(b, v).end_cell();
+}
+
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline {
+    return ($queryId);
+}
+
+;;
+;; Type: Proposal
+;; TLB: _ description:^string votesFor:coins votesAgainst:coins deadline:uint32 executed:bool = Proposal
+;;
+
+builder $Proposal$_store(builder build_0, (slice, int, int, int, int) v) inline {
+    var (v'description, v'votesFor, v'votesAgainst, v'deadline, v'executed) = v;
+    build_0 = build_0.store_builder_ref(begin_cell().store_slice(v'description));
+    build_0 = build_0.store_varuint16(v'votesFor);
+    build_0 = build_0.store_varuint16(v'votesAgainst);
+    build_0 = build_0.store_uint(v'deadline, 32);
+    build_0 = build_0.store_int(v'executed, 1);
+    return build_0;
+}
+
+cell $Proposal$_store_cell((slice, int, int, int, int) v, builder b) inline {
+    return $Proposal$_store(b, v).end_cell();
+}
+
+(slice, ((slice, int, int, int, int))) $Proposal$_load(slice sc_0) inline {
+    var v'description = sc_0~load_ref().begin_parse();
+    var v'votesFor = sc_0~load_varuint16();
+    var v'votesAgainst = sc_0~load_varuint16();
+    var v'deadline = sc_0~load_uint(32);
+    var v'executed = sc_0~load_int(1);
+    return (sc_0, (v'description, v'votesFor, v'votesAgainst, v'deadline, v'executed));
+}
+
+tuple $Proposal$_as_optional((slice, int, int, int, int) v) inline {
+    var (v'description, v'votesFor, v'votesAgainst, v'deadline, v'executed) = v;
+    return __tact_tuple_create_5(v'description, v'votesFor, v'votesAgainst, v'deadline, v'executed);
+}
+
+tuple $Proposal$_load_opt(cell cl) inline {
+    if (null?(cl)) {
+        return null();
+    }
+    var sc = cl.begin_parse();
+    return $Proposal$_as_optional(sc~$Proposal$_load());
+}
+
+((slice, int, int, int, int)) $Proposal$_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (slice vvv'description, int vvv'votesFor, int vvv'votesAgainst, int vvv'deadline, int vvv'executed) = __tact_tuple_destroy_5(v);
+    return (vvv'description, vvv'votesFor, vvv'votesAgainst, vvv'deadline, vvv'executed);
+}
+
+((slice, int, int, int, int)) $Proposal$_constructor_description_votesFor_votesAgainst_deadline_executed(slice $description, int $votesFor, int $votesAgainst, int $deadline, int $executed) inline {
+    return ($description, $votesFor, $votesAgainst, $deadline, $executed);
+}
+
+;;
+;; Type: ToonFan
+;; TLB: _ artist:address registry:address fanPower:dict<address, int> totalFanPower:coins proposals:dict<int, ^Proposal{description:^string,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextProposalId:uint256 = ToonFan
+;;
+
+builder $ToonFan$_store(builder build_0, (slice, slice, cell, int, cell, int) v) inline {
+    var (v'artist, v'registry, v'fanPower, v'totalFanPower, v'proposals, v'nextProposalId) = v;
+    build_0 = build_0.store_slice(v'artist);
+    build_0 = build_0.store_slice(v'registry);
+    build_0 = build_0.store_dict(v'fanPower);
+    build_0 = build_0.store_varuint16(v'totalFanPower);
+    build_0 = build_0.store_dict(v'proposals);
+    build_0 = build_0.store_uint(v'nextProposalId, 256);
+    return build_0;
+}
+
+(slice, ((slice, slice, cell, int, cell, int))) $ToonFan$_load(slice sc_0) inline {
+    var v'artist = sc_0~load_msg_addr();
+    var v'registry = sc_0~load_msg_addr();
+    var v'fanPower = sc_0~load_dict();
+    var v'totalFanPower = sc_0~load_varuint16();
+    var v'proposals = sc_0~load_dict();
+    var v'nextProposalId = sc_0~load_uint(256);
+    return (sc_0, (v'artist, v'registry, v'fanPower, v'totalFanPower, v'proposals, v'nextProposalId));
+}
+
+(slice, ((slice, slice))) $ToonFan$init$_load(slice sc_0) inline {
+    var v'artist = sc_0~load_msg_addr();
+    var v'registry = sc_0~load_msg_addr();
+    return (sc_0, (v'artist, v'registry));
+}
+
+(slice, slice, cell, int, cell, int) $ToonFan$_contract_load() impure inline {
+    slice $sc = get_data().begin_parse();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$ToonFan$_load();
+    }
+    else {
+        (slice $artist, slice $registry) = $sc~$ToonFan$init$_load();
+        $sc.end_parse();
+        return $ToonFan$_contract_init($artist, $registry);
+    }
+}
+
+() $ToonFan$_contract_store((slice, slice, cell, int, cell, int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_int(true, 1);
+    b = $ToonFan$_store(b, v);
+    set_data(b.end_cell());
+}
+
+;;
+;; Contract ToonFan functions
+;;
+
+(slice, slice, cell, int, cell, int) $ToonFan$_contract_init(slice $artist, slice $registry) impure inline {
+    var (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId)) = (null(), null(), null(), null(), null(), null());
+    $self'artist = $artist;
+    $self'registry = $registry;
+    $self'totalFanPower = 0;
+    $self'nextProposalId = 0;
+    return ($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId);
+}
+
+((slice, slice, cell, int, cell, int), int) $ToonFan$_fun_getFanPower((slice, slice, cell, int, cell, int) $self, slice $fan) impure inline_ref {
+    var (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId)) = $self;
+    int $power = __tact_dict_get_slice_int($self'fanPower, 267, $fan, 257);
+    if ((~ null?($power))) {
+        var $fresh$ret_46 = __tact_not_null($power);
+        return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), $fresh$ret_46);
+    }
+    var $fresh$ret_47 = 0;
+    return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), $fresh$ret_47);
+}
+
+((slice, slice, cell, int, cell, int), int) $ToonFan$_fun_isTopFan((slice, slice, cell, int, cell, int) $self, slice $fan) impure inline_ref {
+    var (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId)) = $self;
+    int $power = __tact_dict_get_slice_int($self'fanPower, 267, $fan, 257);
+    if ((~ null?($power))) {
+        var $fresh$ret_48 = ((__tact_not_null($power) * 10) > $self'totalFanPower);
+        return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), $fresh$ret_48);
+    }
+    var $fresh$ret_49 = false;
+    return (($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId), $fresh$ret_49);
+}
+
+;;
+;; Get methods of a Contract ToonFan
+;;
+
+_ %getFanPower(slice $fan) method_id(111622) {
+    slice $fan = $fan;
+    var self = $ToonFan$_contract_load();
+    var res = self~$ToonFan$_fun_getFanPower($fan);
+    return res;
+}
+
+_ %isTopFan(slice $fan) method_id(121417) {
+    slice $fan = $fan;
+    var self = $ToonFan$_contract_load();
+    var res = self~$ToonFan$_fun_isTopFan($fan);
+    return res;
+}
+
+;;
+;; Routing of a Contract ToonFan
+;;
+
+;; message opcode reader utility: only binary receivers
+;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code
+(slice, int) ~load_opcode_internal(slice s) asm( -> 1 0) "32 LDUQ 130 THROWIFNOT";
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    cs~skip_bits(2);
+    var msg_bounceable = cs~load_int(1);
+    var msg_bounced = cs~load_int(1);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var ($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId) = $ToonFan$_contract_load();
+    
+    ;; Handle bounced messages
+    if (msg_bounced) { return (); }
+    int op = 0;
+    int in_msg_length = slice_bits(in_msg);
+    if (in_msg_length >= 32) {
+        op = in_msg~load_uint(32);
+        ;; Receive SyncParticipation message
+        if (op == 1457955072) {
+            var $msg'fan = in_msg~load_msg_addr();
+            var $msg'tipVolume = in_msg~load_varuint16();
+            var $msg'investmentVolume = in_msg~load_varuint16();
+            throw_unless(7381, ( equal_slices_bits(__tact_context_get_sender(), $self'artist) ));
+            int $currentPower = 0;
+            int $existing = __tact_dict_get_slice_int($self'fanPower, 267, $msg'fan, 257);
+            if ((~ null?($existing))) {
+                $currentPower = __tact_not_null($existing);
+            }
+            int $newPower = ($msg'tipVolume + $msg'investmentVolume);
+            $self'totalFanPower = (($self'totalFanPower - $currentPower) + $newPower);
+            $self'fanPower~__tact_dict_set_slice_int(267, $msg'fan, $newPower, 257);
+            $global_send($SendParameters$_constructor_to_value_mode_body($msg'fan, 0, 64, __gen_cell_cell_5d4cdfbd395d6f133454aa5dff4c399fb8b73cbe32a6c887775d8961a278910e()));
+            $ToonFan$_contract_store(($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId));
+            return ();
+        }
+        
+        ;; Receive VoteOnProposal message
+        if (op == 3302738496) {
+            var $msg'proposalId = in_msg~load_uint(256);
+            var $msg'support = in_msg~load_int(1);
+            tuple $p = $Proposal$_load_opt(__tact_dict_get_int_cell($self'proposals, 257, $msg'proposalId));
+            throw_unless(45856, (~ null?($p)));
+            var ($proposal'description, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed) = $Proposal$_not_null($p);
+            throw_unless(3787, ($global_now() <= $proposal'deadline));
+            int $weight = 0;
+            int $power = __tact_dict_get_slice_int($self'fanPower, 267, __tact_context_get_sender(), 257);
+            if ((~ null?($power))) {
+                $weight = __tact_not_null($power);
+            }
+            throw_unless(39864, ($weight > 0));
+            if ($msg'support) {
+                $proposal'votesFor = ($proposal'votesFor + $weight);
+            } else {
+                $proposal'votesAgainst = ($proposal'votesAgainst + $weight);
+            }
+            $self'proposals~__tact_dict_set_int_cell(257, $msg'proposalId, $Proposal$_store_cell(($proposal'description, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed), begin_cell()));
+            $ToonFan$_contract_store(($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId));
+            return ();
+        }
+        
+        ;; Receive Deploy message
+        if (op == 0x946a98b6) {
+            var $deploy'queryId = in_msg~load_uint(64);
+            ($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId)~$ToonFan$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId), begin_cell()));
+            $ToonFan$_contract_store(($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId));
+            return ();
+        }
+        
+    }
+    ;; Empty Receiver and Text Receivers
+    var text_op = slice_hash(in_msg);
+    ;; Receive "CreateProposal: Change Split Percentage" message
+    if (text_op == 0x32ca2c0b13694cccfdefd29871eca8792713d250bb4ac78e6a51b0e30c5599cf) {
+        throw_unless(35205, ( equal_slices_bits(__tact_context_get_sender(), $self'artist) ));
+        int $pId = $self'nextProposalId;
+        $self'nextProposalId = ($self'nextProposalId + 1);
+        var ($p'description, $p'votesFor, $p'votesAgainst, $p'deadline, $p'executed) = $Proposal$_constructor_description_votesFor_votesAgainst_deadline_executed(__gen_slice_string_8380b9e8ae9fcba1ddac5a689e9cf557dbfc23f315183ea13417b1ab51b6750a(), 0, 0, ($global_now() + 604800), false);
+        $self'proposals~__tact_dict_set_int_cell(257, $pId, $Proposal$_store_cell(($p'description, $p'votesFor, $p'votesAgainst, $p'deadline, $p'executed), begin_cell()));
+        $ToonFan$_contract_store(($self'artist, $self'registry, $self'fanPower, $self'totalFanPower, $self'proposals, $self'nextProposalId));
+        return ();
+    }
+    ;; Throw if not handled
+    throw(130);
+}
+
+
+() __tact_selector_hack_asm() impure asm """
+@atend @ 1 {
+        execute current@ context@ current!
+        {
+            // The core idea of this function is to save gas by avoiding unnecessary dict jump, when recv_internal/recv_external is called
+            // We want to extract recv_internal/recv_external from the dict and select needed function
+            // not by jumping to the needed function by it's index, but by using usual IF statements.
+
+            }END> b> // Close previous builder, now we have a cell of previous code on top of the stack
+
+            <{ // Start of the new code builder
+                SETCP0
+                // Swap the new code builder with the previous code, now we have previous code on top of the stack
+                swap
+                // Transform cell to slice and load first ref from the previous code, now we have the dict on top of the stack
+                <s ref@
+
+                // Extract the recv_internal from the dict
+                dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot
+                swap
+
+                // Delete the recv_internal from the dict
+                0 swap @procdictkeylen idict- drop
+                // Delete the recv_external from the dict (it's okay if it's not there)
+                -1 swap @procdictkeylen idict- drop
+                // Delete the __tact_selector_hack from the dict
+                65535 swap @procdictkeylen idict- drop
+
+                // Bring the code builder from the bottom of the stack
+                // because if recv_external extraction is optional, and the number of elements on the stack is not fixed
+                depth 1- roll
+                // Swap with the dict from which we extracted recv_internal and (maybe) recv_external
+                swap
+
+                // Check if the dict is empty
+                dup null?
+                // Store a copy of this flag in the bottom of the stack
+                dup depth 1- -roll
+                {
+                    // If the dict is empty, just drop it (it will be null if it's empty)
+                    drop
+                }
+                {
+                    // If the dict is not empty, prepare continuation to be stored in c3
+                    <{
+                        // Save this dict as first ref in this continuation, it will be pushed in runtime by DICTPUSHCONST
+                        swap @procdictkeylen DICTPUSHCONST
+                        // Jump to the needed function by it's index
+                        DICTIGETJMPZ
+                        // If such key is not found, throw 11 along with the key as an argument
+                        11 THROWARG
+                    }> PUSHCONT
+                    // Store the continuation in c3
+                    c3 POP
+                } cond
+
+                // Function id is on top of the (runtime) stack
+                DUP IFNOTJMP:<{
+                    // place recv_internal here
+                    DROP swap @addop
+                }>
+
+                // Bring back the flag, indicating if the dict is empty or not from the bottom of the stack
+                depth 1- roll
+                {
+                    // If the dict is empty, throw 11
+                    11 THROWARG
+                }
+                {
+                    // If the dict is not empty, jump to continuation from c3
+                    c3 PUSH JMPX
+                } cond
+            }> b>
+        } : }END>c
+        current@ context! current!
+    } does @atend !
+""";
+
+() __tact_selector_hack() method_id(65535) {
+    return __tact_selector_hack_asm();
+}

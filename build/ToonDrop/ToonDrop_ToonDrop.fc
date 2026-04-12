@@ -1,0 +1,723 @@
+#pragma version =0.4.6;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+;; ToonDrop_ToonDrop.headers.fc
+;;
+;; Header files for ToonDrop
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_not_null
+forall X -> X __tact_not_null(X x) impure inline;
+
+;; __tact_context_get
+(int, slice, int, slice) __tact_context_get() inline;
+
+;; __tact_context_get_sender
+slice __tact_context_get_sender() inline;
+
+;; __tact_string_builder_start
+tuple __tact_string_builder_start(builder b) inline;
+
+;; __tact_string_builder_start_string
+tuple __tact_string_builder_start_string() inline;
+
+;; __tact_string_builder_end
+cell __tact_string_builder_end(tuple builders) inline;
+
+;; __tact_string_builder_end_slice
+slice __tact_string_builder_end_slice(tuple builders) inline;
+
+;; __tact_string_builder_append
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref;
+
+;; __tact_dict_get_slice_int
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline;
+
+;; __tact_dict_set_slice_int
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline;
+
+;; $DeployOk$_store
+builder $DeployOk$_store(builder build_0, (int) v) inline;
+
+;; $DeployOk$_store_cell
+cell $DeployOk$_store_cell((int) v, builder b) inline;
+
+;; $ToonDrop$_store
+builder $ToonDrop$_store(builder build_0, (slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) v) inline;
+
+;; $ToonDrop$_load
+(slice, ((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int))) $ToonDrop$_load(slice sc_0) inline;
+
+;; $Context$_get_value
+_ $Context$_get_value((int, slice, int, slice) v) inline;
+
+;; $ToonDrop$init$_load
+(slice, ((slice, int, slice, slice, int, int, int, int))) $ToonDrop$init$_load(slice sc_0) inline;
+
+;; $ToonDrop$_contract_init
+(slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) $ToonDrop$_contract_init(slice $artist, int $trackId, slice $registry, slice $vault, int $royaltyPct, int $target, int $price, int $duration) impure inline;
+
+;; $ToonDrop$_contract_load
+(slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) $ToonDrop$_contract_load() impure inline;
+
+;; $ToonDrop$_contract_store
+() $ToonDrop$_contract_store((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) v) impure inline;
+
+;; $SendParameters$_constructor_to_value_mode_body
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline;
+
+;; $ToonDrop$_fun_finalize
+((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int), ()) $ToonDrop$_fun_finalize((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) $self, int $success) impure inline_ref;
+
+;; $ToonDrop$_fun_stats
+((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int), slice) $ToonDrop$_fun_stats((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) $self) impure inline_ref;
+
+;; $MessageParameters$_constructor_bounce_to_value_mode_body
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline;
+
+;; $ToonDrop$_fun_notify
+((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int), ()) $ToonDrop$_fun_notify((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) $self, cell $body) impure inline;
+
+;; $DeployOk$_constructor_queryId
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline;
+
+
+;; ToonDrop_ToonDrop.stdlib.fc
+global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
+global cell __tact_child_contract_codes;
+global int __tact_randomized;
+
+forall X -> X __tact_not_null(X x) impure inline {
+    throw_if(128, null?(x)); return x;
+}
+
+(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) """
+    DICTDEL
+""";
+
+(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) """
+    DICTGET NULLSWAPIFNOT
+""";
+
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
+
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
+
+tuple __tact_string_builder_start(builder b) inline {
+    return tpush(tpush(empty_tuple(), b), null());
+}
+
+tuple __tact_string_builder_start_string() inline {
+    return __tact_string_builder_start(begin_cell());
+}
+
+cell __tact_string_builder_end(tuple builders) inline {
+    (builder b, tuple tail) = uncons(builders);
+    cell c = b.end_cell();
+    while(~ null?(tail)) {
+        (b, tail) = uncons(tail);
+        c = b.store_ref(c).end_cell();
+    }
+    return c;
+}
+
+slice __tact_string_builder_end_slice(tuple builders) inline {
+    return __tact_string_builder_end(builders).begin_parse();
+}
+
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
+    int sliceRefs = slice_refs(sc);
+    int sliceBits = slice_bits(sc);
+
+    while((sliceBits > 0) | (sliceRefs > 0)) {
+
+        ;; Load the current builder
+        (builder b, tuple tail) = uncons(builders);
+        int remBytes = 127 - (builder_bits(b) / 8);
+        int exBytes = sliceBits / 8;
+
+        ;; Append bits
+        int amount = min(remBytes, exBytes);
+        if (amount > 0) {
+            slice read = sc~load_bits(amount * 8);
+            b = b.store_slice(read);
+        }
+
+        ;; Update builders
+        builders = cons(b, tail);
+
+        ;; Check if we need to add a new cell and continue
+        if (exBytes - amount > 0) {
+            var bb = begin_cell();
+            builders = cons(bb, builders);
+            sliceBits = (exBytes - amount) * 8;
+        } elseif (sliceRefs > 0) {
+            sc = sc~load_ref().begin_parse();
+            sliceRefs = slice_refs(sc);
+            sliceBits = slice_bits(sc);
+        } else {
+            sliceBits = 0;
+            sliceRefs = 0;
+        }
+    }
+
+    return ((builders), ());
+}
+
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
+    var (r, ok) = __tact_dict_get(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline {
+    if (null?(v)) {
+        var (r, ok) = __tact_dict_delete(d, kl, k);
+        return (r, ());
+    } else {
+        return (dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+int $global_now() impure asm """
+    NOW
+""";
+
+int $global_myBalance() impure asm """
+    BALANCE FIRST
+""";
+
+() $global_nativeReserve(int $amount, int $mode) impure asm """
+    RAWRESERVE
+""";
+
+() $global_message((int, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+    STZEROES
+    // → Stack state
+    // s0: Builder
+    // s1: `body`
+    // s2: `mode`
+    STDICT
+    ENDC
+    SWAP
+    SENDRAWMSG
+""";
+
+() $global_send((int, cell, cell, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+    STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+    // → Stack state
+    // s0: Builder
+    // s1: `data`
+    // s2: `code`
+    // s3: `body`
+    // s4: `mode`
+
+    // Group 2: Placing the Builder after code and data, then checking those for nullability
+    s2 XCHG0
+    DUP2
+    ISNULL
+    SWAP
+    ISNULL
+    AND
+    // → Stack state
+    // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+    // s1: `code`
+    // s2: `data`
+    // s3: Builder
+    // s4: `body`
+    // s5: `mode`
+
+    // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+    <{
+        DROP2 // drop `data` and `code`, since either of those is null
+        b{0} STSLICECONST
+    }> PUSHCONT
+
+    // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+    <{
+        // _ split_depth:(Maybe (## 5))
+        //   special:(Maybe TickTock)
+        //   code:(Maybe ^Cell)
+        //   data:(Maybe ^Cell)
+        //   library:(Maybe ^Cell)
+        // = StateInit;
+        ROT                // place message Builder on top
+        b{10} STSLICECONST // store Maybe = true, Either = false
+        // Start composing inlined StateInit
+        b{00} STSLICECONST // store split_depth and special first
+        STDICT             // store code
+        STDICT             // store data
+        b{0} STSLICECONST  // store library
+    }> PUSHCONT
+
+    // Group 3: IFELSE that does the branching shown above
+    IFELSE
+    // → Stack state
+    // s0: Builder
+    // s1: null or StateInit
+    // s2: `body`
+    // s3: `mode`
+
+    // Group 4: Finalizing the message
+    STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+    ENDC
+    // → Stack state
+    // s0: Cell
+    // s1: `mode`
+
+    // Group 5: Sending the message, with `mode` on top
+    SWAP
+    SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+""";
+
+slice $Int$_fun_toString(int $self) impure asm """
+    <{
+        // x
+        NEWC // x b
+        OVER // x b x
+        0 LESSINT // x b <0?
+        <{
+            // x b
+            45 PUSHINT // x b 45
+            SWAP // x 45 b
+            8 STU // x b
+            SWAP // b x
+            NEGATE // b -x
+            SWAP // -x b
+        }>CONT IF
+        // x b
+
+        SWAP // b x
+
+        <{
+            // b x
+            10 PUSHINT DIVMOD // b x/10 x%10
+            48 ADDCONST // b x/10 (x%10+48)
+            s2 s2 s0 XC2PU ISZERO // (x%10+48) b x/10 x/10==0?
+        }>CONT UNTIL
+        // ... b x
+
+        DROP // ... b
+        DEPTH DEC // ... b n
+        <{ 8 STU }>CONT REPEAT // b
+    }>CONT 1 1 CALLXARGS
+    // b
+
+    ENDC CTOS // s
+""";
+
+((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int), ()) $ToonDrop$_fun_notify((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) $self, cell $body) impure inline {
+    var (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount)) = $self;
+    slice $to = __tact_context_get_sender();
+    int $bounce = false;
+    if (false) {
+        int $balance = $global_myBalance();
+        int $balanceBeforeMessage = ($balance - $Context$_get_value(__tact_context_get()));
+        if (($balanceBeforeMessage < 0)) {
+            $global_nativeReserve(0, 0);
+            $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 130, $body));
+            return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount), ());
+        }
+    }
+    $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 66, $body));
+    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount), ());
+}
+
+;; ToonDrop_ToonDrop.constants.fc
+;; Cell 1D3I/FlBIEhHQkiRk4LtEEXbDwqKn1VgvX3GjSznO7g=
+cell __gen_cell_cell_d43dc8fc59412048474248919382ed1045db0f0a8a9f5560bd7dc68d2ce73bb8() asm """
+    B{b5ee9c72410101010016000028000000005261697365205375636365737366756ca5e61515} B>boc PUSHREF
+""";
+
+;; String "raised: "
+slice __gen_slice_string_3ecf9e8db58cf12f8d37a0cbb2ecbaed9254e448122f2c25c733e1f5b24fdb79() asm """
+    B{b5ee9c7241010101000a0000107261697365643a206d2cefc6} B>boc <s PUSHSLICE
+""";
+
+;; String "/"
+slice __gen_slice_string_2c1988d0c53291adf27e9866632c4c8e79b822a3ef85f43657c4bbd7eb6c6b31() asm """
+    B{b5ee9c724101010100030000022f29d5723f} B>boc <s PUSHSLICE
+""";
+
+;; String " | investors: "
+slice __gen_slice_string_8451830ef1fa2300e6d52b0962e7891d6328968e0a0fc06172f77907d826a3fc() asm """
+    B{b5ee9c7241010101001000001c207c20696e766573746f72733a201b8bd076} B>boc <s PUSHSLICE
+""";
+
+;; ToonDrop_ToonDrop.storage.fc
+;;
+;; Type: Context
+;; TLB: _ bounceable:bool sender:address value:int257 raw:^slice = Context
+;;
+
+_ $Context$_get_value((int, slice, int, slice) v) inline {
+    var (v'bounceable, v'sender, v'value, v'raw) = v;
+    return v'value;
+}
+
+;;
+;; Type: SendParameters
+;; TLB: _ mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell value:int257 to:address bounce:bool = SendParameters
+;;
+
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, null(), null(), $value, $to, true);
+}
+
+;;
+;; Type: MessageParameters
+;; TLB: _ mode:int257 body:Maybe ^cell value:int257 to:address bounce:bool = MessageParameters
+;;
+
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, $value, $to, $bounce);
+}
+
+;;
+;; Type: DeployOk
+;; Header: 0xaff90f57
+;; TLB: deploy_ok#aff90f57 queryId:uint64 = DeployOk
+;;
+
+builder $DeployOk$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $DeployOk$_store_cell((int) v, builder b) inline {
+    return $DeployOk$_store(b, v).end_cell();
+}
+
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline {
+    return ($queryId);
+}
+
+;;
+;; Type: ToonDrop
+;; TLB: _ artist:address trackId:uint256 registry:address vault:address royaltyPercentage:uint16 raiseTarget:coins currentRaise:coins slicePrice:coins deadline:uint32 isLocked:bool isSuccessful:bool investments:dict<address, int> investorCount:uint32 = ToonDrop
+;;
+
+builder $ToonDrop$_store(builder build_0, (slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) v) inline {
+    var (v'artist, v'trackId, v'registry, v'vault, v'royaltyPercentage, v'raiseTarget, v'currentRaise, v'slicePrice, v'deadline, v'isLocked, v'isSuccessful, v'investments, v'investorCount) = v;
+    build_0 = build_0.store_slice(v'artist);
+    build_0 = build_0.store_uint(v'trackId, 256);
+    build_0 = build_0.store_slice(v'registry);
+    var build_1 = begin_cell();
+    build_1 = build_1.store_slice(v'vault);
+    build_1 = build_1.store_uint(v'royaltyPercentage, 16);
+    build_1 = build_1.store_varuint16(v'raiseTarget);
+    build_1 = build_1.store_varuint16(v'currentRaise);
+    build_1 = build_1.store_varuint16(v'slicePrice);
+    build_1 = build_1.store_uint(v'deadline, 32);
+    build_1 = build_1.store_int(v'isLocked, 1);
+    build_1 = build_1.store_int(v'isSuccessful, 1);
+    build_1 = build_1.store_dict(v'investments);
+    build_1 = build_1.store_uint(v'investorCount, 32);
+    build_0 = store_builder_ref(build_0, build_1);
+    return build_0;
+}
+
+(slice, ((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int))) $ToonDrop$_load(slice sc_0) inline {
+    var v'artist = sc_0~load_msg_addr();
+    var v'trackId = sc_0~load_uint(256);
+    var v'registry = sc_0~load_msg_addr();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'vault = sc_1~load_msg_addr();
+    var v'royaltyPercentage = sc_1~load_uint(16);
+    var v'raiseTarget = sc_1~load_varuint16();
+    var v'currentRaise = sc_1~load_varuint16();
+    var v'slicePrice = sc_1~load_varuint16();
+    var v'deadline = sc_1~load_uint(32);
+    var v'isLocked = sc_1~load_int(1);
+    var v'isSuccessful = sc_1~load_int(1);
+    var v'investments = sc_1~load_dict();
+    var v'investorCount = sc_1~load_uint(32);
+    return (sc_0, (v'artist, v'trackId, v'registry, v'vault, v'royaltyPercentage, v'raiseTarget, v'currentRaise, v'slicePrice, v'deadline, v'isLocked, v'isSuccessful, v'investments, v'investorCount));
+}
+
+(slice, ((slice, int, slice, slice, int, int, int, int))) $ToonDrop$init$_load(slice sc_0) inline {
+    var v'artist = sc_0~load_msg_addr();
+    var v'trackId = sc_0~load_int(257);
+    var v'registry = sc_0~load_msg_addr();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'vault = sc_1~load_msg_addr();
+    var v'royaltyPct = sc_1~load_int(257);
+    var v'target = sc_1~load_int(257);
+    slice sc_2 = sc_1~load_ref().begin_parse();
+    var v'price = sc_2~load_int(257);
+    var v'duration = sc_2~load_int(257);
+    return (sc_0, (v'artist, v'trackId, v'registry, v'vault, v'royaltyPct, v'target, v'price, v'duration));
+}
+
+(slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) $ToonDrop$_contract_load() impure inline {
+    slice $sc = get_data().begin_parse();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$ToonDrop$_load();
+    }
+    else {
+        (slice $artist, int $trackId, slice $registry, slice $vault, int $royaltyPct, int $target, int $price, int $duration) = $sc~$ToonDrop$init$_load();
+        $sc.end_parse();
+        return $ToonDrop$_contract_init($artist, $trackId, $registry, $vault, $royaltyPct, $target, $price, $duration);
+    }
+}
+
+() $ToonDrop$_contract_store((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_int(true, 1);
+    b = $ToonDrop$_store(b, v);
+    set_data(b.end_cell());
+}
+
+;;
+;; Contract ToonDrop functions
+;;
+
+(slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) $ToonDrop$_contract_init(slice $artist, int $trackId, slice $registry, slice $vault, int $royaltyPct, int $target, int $price, int $duration) impure inline {
+    var (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount)) = (null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null());
+    $self'artist = $artist;
+    $self'trackId = $trackId;
+    $self'registry = $registry;
+    $self'vault = $vault;
+    $self'royaltyPercentage = $royaltyPct;
+    $self'raiseTarget = $target;
+    $self'slicePrice = $price;
+    $self'deadline = ($global_now() + $duration);
+    $self'currentRaise = 0;
+    $self'isLocked = false;
+    $self'isSuccessful = false;
+    $self'investorCount = 0;
+    return ($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount);
+}
+
+((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int), ()) $ToonDrop$_fun_finalize((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) $self, int $success) impure inline_ref {
+    var (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount)) = $self;
+    $self'isLocked = true;
+    $self'isSuccessful = $success;
+    if ($success) {
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'artist, 0, 64, __gen_cell_cell_d43dc8fc59412048474248919382ed1045db0f0a8a9f5560bd7dc68d2ce73bb8()));
+    }
+    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount), ());
+}
+
+((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int), slice) $ToonDrop$_fun_stats((slice, int, slice, slice, int, int, int, int, int, int, int, cell, int) $self) impure inline_ref {
+    var (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount)) = $self;
+    tuple $sb = __tact_string_builder_start_string();
+    $sb~__tact_string_builder_append(__gen_slice_string_3ecf9e8db58cf12f8d37a0cbb2ecbaed9254e448122f2c25c733e1f5b24fdb79());
+    $sb~__tact_string_builder_append($Int$_fun_toString($self'currentRaise));
+    $sb~__tact_string_builder_append(__gen_slice_string_2c1988d0c53291adf27e9866632c4c8e79b822a3ef85f43657c4bbd7eb6c6b31());
+    $sb~__tact_string_builder_append($Int$_fun_toString($self'raiseTarget));
+    $sb~__tact_string_builder_append(__gen_slice_string_8451830ef1fa2300e6d52b0962e7891d6328968e0a0fc06172f77907d826a3fc());
+    $sb~__tact_string_builder_append($Int$_fun_toString($self'investorCount));
+    var $fresh$ret_50 = __tact_string_builder_end_slice($sb);
+    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount), $fresh$ret_50);
+}
+
+;;
+;; Get methods of a Contract ToonDrop
+;;
+
+_ %stats() method_id(89570) {
+    var self = $ToonDrop$_contract_load();
+    var res = self~$ToonDrop$_fun_stats();
+    return res;
+}
+
+;;
+;; Routing of a Contract ToonDrop
+;;
+
+;; message opcode reader utility: only binary receivers
+;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code
+(slice, int) ~load_opcode_internal(slice s) asm( -> 1 0) "32 LDUQ 130 THROWIFNOT";
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    cs~skip_bits(2);
+    var msg_bounceable = cs~load_int(1);
+    var msg_bounced = cs~load_int(1);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var ($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount) = $ToonDrop$_contract_load();
+    
+    ;; Handle bounced messages
+    if (msg_bounced) { return (); }
+    int op = 0;
+    int in_msg_length = slice_bits(in_msg);
+    if (in_msg_length >= 32) {
+        op = in_msg~load_uint(32);
+        ;; Receive PurchaseSlice message
+        if (op == 3107486065) {
+            var $msg'amount = in_msg~load_varuint16();
+            throw_unless(27855, (~ $self'isLocked));
+            throw_unless(3806, ($global_now() <= $self'deadline));
+            slice $investor = __tact_context_get_sender();
+            int $amount = $msg'amount;
+            int $currentInv = 0;
+            int $existing = __tact_dict_get_slice_int($self'investments, 267, $investor, 257);
+            if ((~ null?($existing))) {
+                $currentInv = __tact_not_null($existing);
+            } else {
+                $self'investorCount = ($self'investorCount + 1);
+            }
+            $self'investments~__tact_dict_set_slice_int(267, $investor, ($currentInv + $amount), 257);
+            $self'currentRaise = ($self'currentRaise + $amount);
+            if (($self'currentRaise >= $self'raiseTarget)) {
+                ($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount)~$ToonDrop$_fun_finalize(true);
+            }
+            $ToonDrop$_contract_store(($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount));
+            return ();
+        }
+        
+        ;; Receive DistributeRoyalty message
+        if (op == 3470364060) {
+            var $msg = empty_tuple();
+            throw_unless(12570, $self'isSuccessful);
+            throw_unless(46155, ( equal_slices_bits(__tact_context_get_sender(), $self'vault) ));
+            int $totalRoyalty = $Context$_get_value(__tact_context_get());
+            $ToonDrop$_contract_store(($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount));
+            return ();
+        }
+        
+        ;; Receive Deploy message
+        if (op == 0x946a98b6) {
+            var $deploy'queryId = in_msg~load_uint(64);
+            ($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount)~$ToonDrop$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId), begin_cell()));
+            $ToonDrop$_contract_store(($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount));
+            return ();
+        }
+        
+    }
+    ;; Empty Receiver and Text Receivers
+    var text_op = slice_hash(in_msg);
+    ;; Receive "CheckDeadline" message
+    if (text_op == 0xaeed1ccdf669775eaacb65b293ce27fb10dc5d8c9e1f702d7dd1608a36d7c84d) {
+        if (( ((~ $self'isLocked)) ? (($global_now() > $self'deadline)) : (false) )) {
+            if (($self'currentRaise < $self'raiseTarget)) {
+                ($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount)~$ToonDrop$_fun_finalize(false);
+            } else {
+                ($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount)~$ToonDrop$_fun_finalize(true);
+            }
+        }
+        $ToonDrop$_contract_store(($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'currentRaise, $self'slicePrice, $self'deadline, $self'isLocked, $self'isSuccessful, $self'investments, $self'investorCount));
+        return ();
+    }
+    ;; Throw if not handled
+    throw(130);
+}
+
+
+() __tact_selector_hack_asm() impure asm """
+@atend @ 1 {
+        execute current@ context@ current!
+        {
+            // The core idea of this function is to save gas by avoiding unnecessary dict jump, when recv_internal/recv_external is called
+            // We want to extract recv_internal/recv_external from the dict and select needed function
+            // not by jumping to the needed function by it's index, but by using usual IF statements.
+
+            }END> b> // Close previous builder, now we have a cell of previous code on top of the stack
+
+            <{ // Start of the new code builder
+                SETCP0
+                // Swap the new code builder with the previous code, now we have previous code on top of the stack
+                swap
+                // Transform cell to slice and load first ref from the previous code, now we have the dict on top of the stack
+                <s ref@
+
+                // Extract the recv_internal from the dict
+                dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot
+                swap
+
+                // Delete the recv_internal from the dict
+                0 swap @procdictkeylen idict- drop
+                // Delete the recv_external from the dict (it's okay if it's not there)
+                -1 swap @procdictkeylen idict- drop
+                // Delete the __tact_selector_hack from the dict
+                65535 swap @procdictkeylen idict- drop
+
+                // Bring the code builder from the bottom of the stack
+                // because if recv_external extraction is optional, and the number of elements on the stack is not fixed
+                depth 1- roll
+                // Swap with the dict from which we extracted recv_internal and (maybe) recv_external
+                swap
+
+                // Check if the dict is empty
+                dup null?
+                // Store a copy of this flag in the bottom of the stack
+                dup depth 1- -roll
+                {
+                    // If the dict is empty, just drop it (it will be null if it's empty)
+                    drop
+                }
+                {
+                    // If the dict is not empty, prepare continuation to be stored in c3
+                    <{
+                        // Save this dict as first ref in this continuation, it will be pushed in runtime by DICTPUSHCONST
+                        swap @procdictkeylen DICTPUSHCONST
+                        // Jump to the needed function by it's index
+                        DICTIGETJMPZ
+                        // If such key is not found, throw 11 along with the key as an argument
+                        11 THROWARG
+                    }> PUSHCONT
+                    // Store the continuation in c3
+                    c3 POP
+                } cond
+
+                // Function id is on top of the (runtime) stack
+                DUP IFNOTJMP:<{
+                    // place recv_internal here
+                    DROP swap @addop
+                }>
+
+                // Bring back the flag, indicating if the dict is empty or not from the bottom of the stack
+                depth 1- roll
+                {
+                    // If the dict is empty, throw 11
+                    11 THROWARG
+                }
+                {
+                    // If the dict is not empty, jump to continuation from c3
+                    c3 PUSH JMPX
+                } cond
+            }> b>
+        } : }END>c
+        current@ context! current!
+    } does @atend !
+""";
+
+() __tact_selector_hack() method_id(65535) {
+    return __tact_selector_hack_asm();
+}

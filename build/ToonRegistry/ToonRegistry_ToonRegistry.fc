@@ -1,0 +1,906 @@
+#pragma version =0.4.6;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+;; ToonRegistry_ToonRegistry.headers.fc
+;;
+;; Header files for ToonRegistry
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_context_get
+(int, slice, int, slice) __tact_context_get() inline;
+
+;; __tact_context_get_sender
+slice __tact_context_get_sender() inline;
+
+;; __tact_dict_get_slice_slice
+slice __tact_dict_get_slice_slice(cell d, int kl, slice k) inline;
+
+;; __tact_dict_set_slice_slice
+(cell, ()) __tact_dict_set_slice_slice(cell d, int kl, slice k, slice v) inline;
+
+;; __tact_dict_get_slice_int
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline;
+
+;; __tact_dict_set_slice_int
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline;
+
+;; __tact_dict_get_int_slice
+slice __tact_dict_get_int_slice(cell d, int kl, int k) inline;
+
+;; __tact_dict_set_int_slice
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline;
+
+;; __tact_dict_get_int_int
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline;
+
+;; __tact_dict_set_int_int
+(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline;
+
+;; $DeployOk$_store
+builder $DeployOk$_store(builder build_0, (int) v) inline;
+
+;; $DeployOk$_store_cell
+cell $DeployOk$_store_cell((int) v, builder b) inline;
+
+;; $ArtistRegistered$_store
+builder $ArtistRegistered$_store(builder build_0, (slice, slice, int) v) inline;
+
+;; $ArtistRegistered$_store_cell
+cell $ArtistRegistered$_store_cell((slice, slice, int) v, builder b) inline;
+
+;; $TrackRegistered$_store
+builder $TrackRegistered$_store(builder build_0, (int, int, slice, int) v) inline;
+
+;; $TrackRegistered$_store_cell
+cell $TrackRegistered$_store_cell((int, int, slice, int) v, builder b) inline;
+
+;; $MintAuthorized$_store
+builder $MintAuthorized$_store(builder build_0, (slice, int, int) v) inline;
+
+;; $MintAuthorized$_store_cell
+cell $MintAuthorized$_store_cell((slice, int, int) v, builder b) inline;
+
+;; $DropRegistered$_store
+builder $DropRegistered$_store(builder build_0, (int, slice, int) v) inline;
+
+;; $DropRegistered$_store_cell
+cell $DropRegistered$_store_cell((int, slice, int) v, builder b) inline;
+
+;; $ToonRegistry$_store
+builder $ToonRegistry$_store(builder build_0, (cell, cell, cell, cell, cell, cell, slice, slice, int, int) v) inline;
+
+;; $ToonRegistry$_load
+(slice, ((cell, cell, cell, cell, cell, cell, slice, slice, int, int))) $ToonRegistry$_load(slice sc_0) inline;
+
+;; $Context$_get_value
+_ $Context$_get_value((int, slice, int, slice) v) inline;
+
+;; $ToonRegistry$init$_load
+(slice, ((slice, slice))) $ToonRegistry$init$_load(slice sc_0) inline;
+
+;; $ToonRegistry$_contract_init
+(cell, cell, cell, cell, cell, cell, slice, slice, int, int) $ToonRegistry$_contract_init(slice $mintAuthority, slice $vault) impure inline;
+
+;; $ToonRegistry$_contract_load
+(cell, cell, cell, cell, cell, cell, slice, slice, int, int) $ToonRegistry$_contract_load() impure inline;
+
+;; $ToonRegistry$_contract_store
+() $ToonRegistry$_contract_store((cell, cell, cell, cell, cell, cell, slice, slice, int, int) v) impure inline;
+
+;; $global_emit
+() $global_emit(cell $body) impure inline;
+
+;; $ToonRegistry$_fun_getArtistContract
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), slice) $ToonRegistry$_fun_getArtistContract((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, slice $wallet) impure inline_ref;
+
+;; $ToonRegistry$_fun_getTrackContract
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), slice) $ToonRegistry$_fun_getTrackContract((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, int $trackId) impure inline_ref;
+
+;; $ToonRegistry$_fun_getDropContract
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), slice) $ToonRegistry$_fun_getDropContract((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, int $trackId) impure inline_ref;
+
+;; $ToonRegistry$_fun_isRegisteredArtist
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), int) $ToonRegistry$_fun_isRegisteredArtist((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, slice $wallet) impure inline_ref;
+
+;; $ToonRegistry$_fun_isRegisteredTrack
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), int) $ToonRegistry$_fun_isRegisteredTrack((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, int $trackId) impure inline_ref;
+
+;; $ToonRegistry$_fun_fingerprintExists
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), int) $ToonRegistry$_fun_fingerprintExists((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, int $fingerprint) impure inline_ref;
+
+;; $ToonRegistry$_fun_getMintAuthority
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), slice) $ToonRegistry$_fun_getMintAuthority((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self) impure inline_ref;
+
+;; $ToonRegistry$_fun_isKnownArtistContract
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), int) $ToonRegistry$_fun_isKnownArtistContract((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, slice $contractAddr) impure inline_ref;
+
+;; $MessageParameters$_constructor_bounce_to_value_mode_body
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline;
+
+;; $ToonRegistry$_fun_notify
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), ()) $ToonRegistry$_fun_notify((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, cell $body) impure inline;
+
+;; $ArtistRegistered$_constructor_wallet_artistContract_registeredAt
+((slice, slice, int)) $ArtistRegistered$_constructor_wallet_artistContract_registeredAt(slice $wallet, slice $artistContract, int $registeredAt) inline;
+
+;; $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt
+((int, int, slice, int)) $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt(int $trackId, int $fingerprint, slice $trackContract, int $registeredAt) inline;
+
+;; $SendParameters$_constructor_to_value_mode_body
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline;
+
+;; $MintAuthorized$_constructor_recipient_amount_authorizedAt
+((slice, int, int)) $MintAuthorized$_constructor_recipient_amount_authorizedAt(slice $recipient, int $amount, int $authorizedAt) inline;
+
+;; $DropRegistered$_constructor_trackId_dropContract_registeredAt
+((int, slice, int)) $DropRegistered$_constructor_trackId_dropContract_registeredAt(int $trackId, slice $dropContract, int $registeredAt) inline;
+
+;; $DeployOk$_constructor_queryId
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline;
+
+
+;; ToonRegistry_ToonRegistry.stdlib.fc
+global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
+global cell __tact_child_contract_codes;
+global int __tact_randomized;
+
+(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) """
+    DICTDEL
+""";
+
+(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) """
+    DICTGET NULLSWAPIFNOT
+""";
+
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
+
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
+
+slice __tact_dict_get_slice_slice(cell d, int kl, slice k) inline {
+    var (r, ok) = __tact_dict_get(d, kl, k);
+    if (ok) {
+        return r;
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_slice_slice(cell d, int kl, slice k, slice v) inline {
+    if (null?(v)) {
+        var (r, ok) = __tact_dict_delete(d, kl, k);
+        return (r, ());
+    } else {
+        return (dict_set_builder(d, kl, k, begin_cell().store_slice(v)), ());
+    }
+}
+
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
+    var (r, ok) = __tact_dict_get(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline {
+    if (null?(v)) {
+        var (r, ok) = __tact_dict_delete(d, kl, k);
+        return (r, ());
+    } else {
+        return (dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r;
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set(d, kl, k, v), ());
+    }
+}
+
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+builder $global_beginCell() impure asm """
+    NEWC
+""";
+
+int $global_myBalance() impure asm """
+    BALANCE FIRST
+""";
+
+() $global_nativeReserve(int $amount, int $mode) impure asm """
+    RAWRESERVE
+""";
+
+() $global_message((int, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+    STZEROES
+    // → Stack state
+    // s0: Builder
+    // s1: `body`
+    // s2: `mode`
+    STDICT
+    ENDC
+    SWAP
+    SENDRAWMSG
+""";
+
+() $global_send((int, cell, cell, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+    STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+    // → Stack state
+    // s0: Builder
+    // s1: `data`
+    // s2: `code`
+    // s3: `body`
+    // s4: `mode`
+
+    // Group 2: Placing the Builder after code and data, then checking those for nullability
+    s2 XCHG0
+    DUP2
+    ISNULL
+    SWAP
+    ISNULL
+    AND
+    // → Stack state
+    // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+    // s1: `code`
+    // s2: `data`
+    // s3: Builder
+    // s4: `body`
+    // s5: `mode`
+
+    // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+    <{
+        DROP2 // drop `data` and `code`, since either of those is null
+        b{0} STSLICECONST
+    }> PUSHCONT
+
+    // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+    <{
+        // _ split_depth:(Maybe (## 5))
+        //   special:(Maybe TickTock)
+        //   code:(Maybe ^Cell)
+        //   data:(Maybe ^Cell)
+        //   library:(Maybe ^Cell)
+        // = StateInit;
+        ROT                // place message Builder on top
+        b{10} STSLICECONST // store Maybe = true, Either = false
+        // Start composing inlined StateInit
+        b{00} STSLICECONST // store split_depth and special first
+        STDICT             // store code
+        STDICT             // store data
+        b{0} STSLICECONST  // store library
+    }> PUSHCONT
+
+    // Group 3: IFELSE that does the branching shown above
+    IFELSE
+    // → Stack state
+    // s0: Builder
+    // s1: null or StateInit
+    // s2: `body`
+    // s3: `mode`
+
+    // Group 4: Finalizing the message
+    STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+    ENDC
+    // → Stack state
+    // s0: Cell
+    // s1: `mode`
+
+    // Group 5: Sending the message, with `mode` on top
+    SWAP
+    SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+""";
+
+() $global_sendRawMessage(cell $msg, int $mode) impure asm """
+    SENDRAWMSG
+""";
+
+cell $Builder$_fun_endCell(builder $self) impure asm """
+    ENDC
+""";
+
+builder $Builder$_fun_storeRef(cell $cell, builder $self) impure asm """
+    STREF
+""";
+
+() $global_emit(cell $body) impure inline {
+    cell $c = $Builder$_fun_endCell($Builder$_fun_storeRef($body, store_uint($global_beginCell(), 15211807202738752817960438464513, 104)));
+    $global_sendRawMessage($c, 0);
+}
+
+int $global_now() impure asm """
+    NOW
+""";
+
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), ()) $ToonRegistry$_fun_notify((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, cell $body) impure inline {
+    var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
+    slice $to = __tact_context_get_sender();
+    int $bounce = false;
+    if (false) {
+        int $balance = $global_myBalance();
+        int $balanceBeforeMessage = ($balance - $Context$_get_value(__tact_context_get()));
+        if (($balanceBeforeMessage < 0)) {
+            $global_nativeReserve(0, 0);
+            $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 130, $body));
+            return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), ());
+        }
+    }
+    $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 66, $body));
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), ());
+}
+
+;; ToonRegistry_ToonRegistry.storage.fc
+;;
+;; Type: Context
+;; TLB: _ bounceable:bool sender:address value:int257 raw:^slice = Context
+;;
+
+_ $Context$_get_value((int, slice, int, slice) v) inline {
+    var (v'bounceable, v'sender, v'value, v'raw) = v;
+    return v'value;
+}
+
+;;
+;; Type: SendParameters
+;; TLB: _ mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell value:int257 to:address bounce:bool = SendParameters
+;;
+
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, null(), null(), $value, $to, true);
+}
+
+;;
+;; Type: MessageParameters
+;; TLB: _ mode:int257 body:Maybe ^cell value:int257 to:address bounce:bool = MessageParameters
+;;
+
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, $value, $to, $bounce);
+}
+
+;;
+;; Type: DeployOk
+;; Header: 0xaff90f57
+;; TLB: deploy_ok#aff90f57 queryId:uint64 = DeployOk
+;;
+
+builder $DeployOk$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $DeployOk$_store_cell((int) v, builder b) inline {
+    return $DeployOk$_store(b, v).end_cell();
+}
+
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline {
+    return ($queryId);
+}
+
+;;
+;; Type: ArtistRegistered
+;; Header: 0xe2af76f9
+;; TLB: artist_registered#e2af76f9 wallet:address artistContract:address registeredAt:uint32 = ArtistRegistered
+;;
+
+builder $ArtistRegistered$_store(builder build_0, (slice, slice, int) v) inline {
+    var (v'wallet, v'artistContract, v'registeredAt) = v;
+    build_0 = store_uint(build_0, 3803150073, 32);
+    build_0 = build_0.store_slice(v'wallet);
+    build_0 = build_0.store_slice(v'artistContract);
+    build_0 = build_0.store_uint(v'registeredAt, 32);
+    return build_0;
+}
+
+cell $ArtistRegistered$_store_cell((slice, slice, int) v, builder b) inline {
+    return $ArtistRegistered$_store(b, v).end_cell();
+}
+
+((slice, slice, int)) $ArtistRegistered$_constructor_wallet_artistContract_registeredAt(slice $wallet, slice $artistContract, int $registeredAt) inline {
+    return ($wallet, $artistContract, $registeredAt);
+}
+
+;;
+;; Type: TrackRegistered
+;; Header: 0x74e4a736
+;; TLB: track_registered#74e4a736 trackId:uint256 fingerprint:uint256 trackContract:address registeredAt:uint32 = TrackRegistered
+;;
+
+builder $TrackRegistered$_store(builder build_0, (int, int, slice, int) v) inline {
+    var (v'trackId, v'fingerprint, v'trackContract, v'registeredAt) = v;
+    build_0 = store_uint(build_0, 1961142070, 32);
+    build_0 = build_0.store_uint(v'trackId, 256);
+    build_0 = build_0.store_uint(v'fingerprint, 256);
+    build_0 = build_0.store_slice(v'trackContract);
+    build_0 = build_0.store_uint(v'registeredAt, 32);
+    return build_0;
+}
+
+cell $TrackRegistered$_store_cell((int, int, slice, int) v, builder b) inline {
+    return $TrackRegistered$_store(b, v).end_cell();
+}
+
+((int, int, slice, int)) $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt(int $trackId, int $fingerprint, slice $trackContract, int $registeredAt) inline {
+    return ($trackId, $fingerprint, $trackContract, $registeredAt);
+}
+
+;;
+;; Type: MintAuthorized
+;; Header: 0xfa1d125c
+;; TLB: mint_authorized#fa1d125c recipient:address amount:coins authorizedAt:uint32 = MintAuthorized
+;;
+
+builder $MintAuthorized$_store(builder build_0, (slice, int, int) v) inline {
+    var (v'recipient, v'amount, v'authorizedAt) = v;
+    build_0 = store_uint(build_0, 4196209244, 32);
+    build_0 = build_0.store_slice(v'recipient);
+    build_0 = build_0.store_varuint16(v'amount);
+    build_0 = build_0.store_uint(v'authorizedAt, 32);
+    return build_0;
+}
+
+cell $MintAuthorized$_store_cell((slice, int, int) v, builder b) inline {
+    return $MintAuthorized$_store(b, v).end_cell();
+}
+
+((slice, int, int)) $MintAuthorized$_constructor_recipient_amount_authorizedAt(slice $recipient, int $amount, int $authorizedAt) inline {
+    return ($recipient, $amount, $authorizedAt);
+}
+
+;;
+;; Type: DropRegistered
+;; Header: 0x5206fbd1
+;; TLB: drop_registered#5206fbd1 trackId:uint256 dropContract:address registeredAt:uint32 = DropRegistered
+;;
+
+builder $DropRegistered$_store(builder build_0, (int, slice, int) v) inline {
+    var (v'trackId, v'dropContract, v'registeredAt) = v;
+    build_0 = store_uint(build_0, 1376189393, 32);
+    build_0 = build_0.store_uint(v'trackId, 256);
+    build_0 = build_0.store_slice(v'dropContract);
+    build_0 = build_0.store_uint(v'registeredAt, 32);
+    return build_0;
+}
+
+cell $DropRegistered$_store_cell((int, slice, int) v, builder b) inline {
+    return $DropRegistered$_store(b, v).end_cell();
+}
+
+((int, slice, int)) $DropRegistered$_constructor_trackId_dropContract_registeredAt(int $trackId, slice $dropContract, int $registeredAt) inline {
+    return ($trackId, $dropContract, $registeredAt);
+}
+
+;;
+;; Type: ToonRegistry
+;; TLB: _ artists:dict<address, address> artistContracts:dict<address, address> tracks:dict<int, address> trackContracts:dict<address, int> drops:dict<int, address> fingerprints:dict<int, bool> mintAuthority:address vault:address totalArtists:uint32 totalTracks:uint32 = ToonRegistry
+;;
+
+builder $ToonRegistry$_store(builder build_0, (cell, cell, cell, cell, cell, cell, slice, slice, int, int) v) inline {
+    var (v'artists, v'artistContracts, v'tracks, v'trackContracts, v'drops, v'fingerprints, v'mintAuthority, v'vault, v'totalArtists, v'totalTracks) = v;
+    build_0 = build_0.store_dict(v'artists);
+    var build_1 = begin_cell();
+    build_1 = build_1.store_dict(v'artistContracts);
+    build_1 = build_1.store_dict(v'tracks);
+    build_1 = build_1.store_dict(v'trackContracts);
+    var build_2 = begin_cell();
+    build_2 = build_2.store_dict(v'drops);
+    build_2 = build_2.store_dict(v'fingerprints);
+    build_2 = build_2.store_slice(v'mintAuthority);
+    build_2 = build_2.store_slice(v'vault);
+    build_2 = build_2.store_uint(v'totalArtists, 32);
+    build_2 = build_2.store_uint(v'totalTracks, 32);
+    build_1 = store_builder_ref(build_1, build_2);
+    build_0 = store_builder_ref(build_0, build_1);
+    return build_0;
+}
+
+(slice, ((cell, cell, cell, cell, cell, cell, slice, slice, int, int))) $ToonRegistry$_load(slice sc_0) inline {
+    var v'artists = sc_0~load_dict();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'artistContracts = sc_1~load_dict();
+    var v'tracks = sc_1~load_dict();
+    var v'trackContracts = sc_1~load_dict();
+    slice sc_2 = sc_1~load_ref().begin_parse();
+    var v'drops = sc_2~load_dict();
+    var v'fingerprints = sc_2~load_dict();
+    var v'mintAuthority = sc_2~load_msg_addr();
+    var v'vault = sc_2~load_msg_addr();
+    var v'totalArtists = sc_2~load_uint(32);
+    var v'totalTracks = sc_2~load_uint(32);
+    return (sc_0, (v'artists, v'artistContracts, v'tracks, v'trackContracts, v'drops, v'fingerprints, v'mintAuthority, v'vault, v'totalArtists, v'totalTracks));
+}
+
+(slice, ((slice, slice))) $ToonRegistry$init$_load(slice sc_0) inline {
+    var v'mintAuthority = sc_0~load_msg_addr();
+    var v'vault = sc_0~load_msg_addr();
+    return (sc_0, (v'mintAuthority, v'vault));
+}
+
+(cell, cell, cell, cell, cell, cell, slice, slice, int, int) $ToonRegistry$_contract_load() impure inline {
+    slice $sc = get_data().begin_parse();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$ToonRegistry$_load();
+    }
+    else {
+        (slice $mintAuthority, slice $vault) = $sc~$ToonRegistry$init$_load();
+        $sc.end_parse();
+        return $ToonRegistry$_contract_init($mintAuthority, $vault);
+    }
+}
+
+() $ToonRegistry$_contract_store((cell, cell, cell, cell, cell, cell, slice, slice, int, int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_int(true, 1);
+    b = $ToonRegistry$_store(b, v);
+    set_data(b.end_cell());
+}
+
+;;
+;; Contract ToonRegistry functions
+;;
+
+(cell, cell, cell, cell, cell, cell, slice, slice, int, int) $ToonRegistry$_contract_init(slice $mintAuthority, slice $vault) impure inline {
+    var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = (null(), null(), null(), null(), null(), null(), null(), null(), null(), null());
+    $self'mintAuthority = $mintAuthority;
+    $self'vault = $vault;
+    $self'totalArtists = 0;
+    $self'totalTracks = 0;
+    return ($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks);
+}
+
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), slice) $ToonRegistry$_fun_getArtistContract((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, slice $wallet) impure inline_ref {
+    var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
+    var $fresh$ret_24 = __tact_dict_get_slice_slice($self'artists, 267, $wallet);
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_24);
+}
+
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), slice) $ToonRegistry$_fun_getTrackContract((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, int $trackId) impure inline_ref {
+    var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
+    var $fresh$ret_25 = __tact_dict_get_int_slice($self'tracks, 257, $trackId);
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_25);
+}
+
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), slice) $ToonRegistry$_fun_getDropContract((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, int $trackId) impure inline_ref {
+    var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
+    var $fresh$ret_26 = __tact_dict_get_int_slice($self'drops, 257, $trackId);
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_26);
+}
+
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), int) $ToonRegistry$_fun_isRegisteredArtist((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, slice $wallet) impure inline_ref {
+    var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
+    var $fresh$ret_27 = (~ null?(__tact_dict_get_slice_slice($self'artists, 267, $wallet)));
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_27);
+}
+
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), int) $ToonRegistry$_fun_isRegisteredTrack((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, int $trackId) impure inline_ref {
+    var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
+    var $fresh$ret_28 = (~ null?(__tact_dict_get_int_slice($self'tracks, 257, $trackId)));
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_28);
+}
+
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), int) $ToonRegistry$_fun_fingerprintExists((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, int $fingerprint) impure inline_ref {
+    var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
+    var $fresh$ret_29 = (~ null?(__tact_dict_get_int_int($self'fingerprints, 257, $fingerprint, 1)));
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_29);
+}
+
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), slice) $ToonRegistry$_fun_getMintAuthority((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self) impure inline_ref {
+    var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
+    var $fresh$ret_30 = $self'mintAuthority;
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_30);
+}
+
+((cell, cell, cell, cell, cell, cell, slice, slice, int, int), int) $ToonRegistry$_fun_isKnownArtistContract((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, slice $contractAddr) impure inline_ref {
+    var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
+    var $fresh$ret_31 = (~ null?(__tact_dict_get_slice_slice($self'artistContracts, 267, $contractAddr)));
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_31);
+}
+
+;;
+;; Get methods of a Contract ToonRegistry
+;;
+
+_ %getArtistContract(slice $wallet) method_id(91748) {
+    slice $wallet = $wallet;
+    var self = $ToonRegistry$_contract_load();
+    var res = self~$ToonRegistry$_fun_getArtistContract($wallet);
+    return res;
+}
+
+_ %getTrackContract(int $trackId) method_id(96672) {
+    int $trackId = $trackId;
+    var self = $ToonRegistry$_contract_load();
+    var res = self~$ToonRegistry$_fun_getTrackContract($trackId);
+    return res;
+}
+
+_ %getDropContract(int $trackId) method_id(117014) {
+    int $trackId = $trackId;
+    var self = $ToonRegistry$_contract_load();
+    var res = self~$ToonRegistry$_fun_getDropContract($trackId);
+    return res;
+}
+
+_ %isRegisteredArtist(slice $wallet) method_id(87801) {
+    slice $wallet = $wallet;
+    var self = $ToonRegistry$_contract_load();
+    var res = self~$ToonRegistry$_fun_isRegisteredArtist($wallet);
+    return res;
+}
+
+_ %isRegisteredTrack(int $trackId) method_id(86961) {
+    int $trackId = $trackId;
+    var self = $ToonRegistry$_contract_load();
+    var res = self~$ToonRegistry$_fun_isRegisteredTrack($trackId);
+    return res;
+}
+
+_ %fingerprintExists(int $fingerprint) method_id(74238) {
+    int $fingerprint = $fingerprint;
+    var self = $ToonRegistry$_contract_load();
+    var res = self~$ToonRegistry$_fun_fingerprintExists($fingerprint);
+    return res;
+}
+
+_ %getMintAuthority() method_id(97950) {
+    var self = $ToonRegistry$_contract_load();
+    var res = self~$ToonRegistry$_fun_getMintAuthority();
+    return res;
+}
+
+;;
+;; Routing of a Contract ToonRegistry
+;;
+
+;; message opcode reader utility: only binary receivers
+;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code
+(slice, int) ~load_opcode_internal(slice s) asm( -> 1 0) "32 LDUQ 130 THROWIFNOT";
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    cs~skip_bits(2);
+    var msg_bounceable = cs~load_int(1);
+    var msg_bounced = cs~load_int(1);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var ($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks) = $ToonRegistry$_contract_load();
+    
+    ;; Handle bounced messages
+    if (msg_bounced) { return (); }
+    var op = in_msg~load_opcode_internal();
+    ;; Receive RegisterArtist message
+    if (op == 3754294261) {
+        var $msg'artistContract = in_msg~load_msg_addr();
+        slice $caller = __tact_context_get_sender();
+        throw_unless(9299, null?(__tact_dict_get_slice_slice($self'artists, 267, $caller)));
+        $self'artists~__tact_dict_set_slice_slice(267, $caller, $msg'artistContract);
+        $self'artistContracts~__tact_dict_set_slice_slice(267, $msg'artistContract, $caller);
+        $self'totalArtists = ($self'totalArtists + 1);
+        $global_emit($ArtistRegistered$_store_cell($ArtistRegistered$_constructor_wallet_artistContract_registeredAt($caller, $msg'artistContract, $global_now()), begin_cell()));
+        $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks));
+        return ();
+    }
+    
+    ;; Receive RegisterTrack message
+    if (op == 2360656451) {
+        var $msg'trackId = in_msg~load_uint(256);
+        var $msg'fingerprint = in_msg~load_uint(256);
+        var $msg'trackContract = in_msg~load_msg_addr();
+        slice $caller = __tact_context_get_sender();
+        throw_unless(26225, ($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)~$ToonRegistry$_fun_isKnownArtistContract($caller));
+        throw_unless(16165, null?(__tact_dict_get_int_slice($self'tracks, 257, $msg'trackId)));
+        throw_unless(15016, null?(__tact_dict_get_int_int($self'fingerprints, 257, $msg'fingerprint, 1)));
+        $self'tracks~__tact_dict_set_int_slice(257, $msg'trackId, $msg'trackContract);
+        $self'trackContracts~__tact_dict_set_slice_int(267, $msg'trackContract, $msg'trackId, 257);
+        $self'fingerprints~__tact_dict_set_int_int(257, $msg'fingerprint, true, 1);
+        $self'totalTracks = ($self'totalTracks + 1);
+        $global_emit($TrackRegistered$_store_cell($TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt($msg'trackId, $msg'fingerprint, $msg'trackContract, $global_now()), begin_cell()));
+        $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks));
+        return ();
+    }
+    
+    ;; Receive AuthorizeMint message
+    if (op == 3725821709) {
+        var $msg'recipient = in_msg~load_msg_addr();
+        var $msg'amount = in_msg~load_varuint16();
+        throw_unless(27890, ( equal_slices_bits(__tact_context_get_sender(), $self'mintAuthority) ));
+        throw_unless(9580, ($msg'amount > 0));
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 0, 64, $MintAuthorized$_store_cell($MintAuthorized$_constructor_recipient_amount_authorizedAt($msg'recipient, $msg'amount, $global_now()), begin_cell())));
+        $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks));
+        return ();
+    }
+    
+    ;; Receive RequestMint message
+    if (op == 277189457) {
+        var $msg'recipient = in_msg~load_msg_addr();
+        var $msg'amount = in_msg~load_varuint16();
+        throw_unless(50582, (~ null?(__tact_dict_get_slice_int($self'trackContracts, 267, __tact_context_get_sender(), 257))));
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 0, 64, $MintAuthorized$_store_cell($MintAuthorized$_constructor_recipient_amount_authorizedAt($msg'recipient, $msg'amount, $global_now()), begin_cell())));
+        $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks));
+        return ();
+    }
+    
+    ;; Receive UpdateMintAuthority message
+    if (op == 2021444180) {
+        var $msg'newAuthority = in_msg~load_msg_addr();
+        throw_unless(27890, ( equal_slices_bits(__tact_context_get_sender(), $self'mintAuthority) ));
+        $self'mintAuthority = $msg'newAuthority;
+        $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks));
+        return ();
+    }
+    
+    ;; Receive UpdateVaultAddress message
+    if (op == 3682064959) {
+        var $msg'newVault = in_msg~load_msg_addr();
+        throw_unless(27890, ( equal_slices_bits(__tact_context_get_sender(), $self'mintAuthority) ));
+        $self'vault = $msg'newVault;
+        $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks));
+        return ();
+    }
+    
+    ;; Receive RegisterDrop message
+    if (op == 2845755895) {
+        var $msg'trackId = in_msg~load_uint(256);
+        var $msg'dropContract = in_msg~load_msg_addr();
+        slice $caller = __tact_context_get_sender();
+        throw_unless(26225, ($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)~$ToonRegistry$_fun_isKnownArtistContract($caller));
+        throw_unless(44318, null?(__tact_dict_get_int_slice($self'drops, 257, $msg'trackId)));
+        $self'drops~__tact_dict_set_int_slice(257, $msg'trackId, $msg'dropContract);
+        $global_emit($DropRegistered$_store_cell($DropRegistered$_constructor_trackId_dropContract_registeredAt($msg'trackId, $msg'dropContract, $global_now()), begin_cell()));
+        $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks));
+        return ();
+    }
+    
+    ;; Receive Deploy message
+    if (op == 0x946a98b6) {
+        var $deploy'queryId = in_msg~load_uint(64);
+        ($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)~$ToonRegistry$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId), begin_cell()));
+        $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks));
+        return ();
+    }
+    
+    ;; Throw if not handled
+    throw(130);
+}
+
+
+() __tact_selector_hack_asm() impure asm """
+@atend @ 1 {
+        execute current@ context@ current!
+        {
+            // The core idea of this function is to save gas by avoiding unnecessary dict jump, when recv_internal/recv_external is called
+            // We want to extract recv_internal/recv_external from the dict and select needed function
+            // not by jumping to the needed function by it's index, but by using usual IF statements.
+
+            }END> b> // Close previous builder, now we have a cell of previous code on top of the stack
+
+            <{ // Start of the new code builder
+                SETCP0
+                // Swap the new code builder with the previous code, now we have previous code on top of the stack
+                swap
+                // Transform cell to slice and load first ref from the previous code, now we have the dict on top of the stack
+                <s ref@
+
+                // Extract the recv_internal from the dict
+                dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot
+                swap
+
+                // Delete the recv_internal from the dict
+                0 swap @procdictkeylen idict- drop
+                // Delete the recv_external from the dict (it's okay if it's not there)
+                -1 swap @procdictkeylen idict- drop
+                // Delete the __tact_selector_hack from the dict
+                65535 swap @procdictkeylen idict- drop
+
+                // Bring the code builder from the bottom of the stack
+                // because if recv_external extraction is optional, and the number of elements on the stack is not fixed
+                depth 1- roll
+                // Swap with the dict from which we extracted recv_internal and (maybe) recv_external
+                swap
+
+                // Check if the dict is empty
+                dup null?
+                // Store a copy of this flag in the bottom of the stack
+                dup depth 1- -roll
+                {
+                    // If the dict is empty, just drop it (it will be null if it's empty)
+                    drop
+                }
+                {
+                    // If the dict is not empty, prepare continuation to be stored in c3
+                    <{
+                        // Save this dict as first ref in this continuation, it will be pushed in runtime by DICTPUSHCONST
+                        swap @procdictkeylen DICTPUSHCONST
+                        // Jump to the needed function by it's index
+                        DICTIGETJMPZ
+                        // If such key is not found, throw 11 along with the key as an argument
+                        11 THROWARG
+                    }> PUSHCONT
+                    // Store the continuation in c3
+                    c3 POP
+                } cond
+
+                // Function id is on top of the (runtime) stack
+                DUP IFNOTJMP:<{
+                    // place recv_internal here
+                    DROP swap @addop
+                }>
+
+                // Bring back the flag, indicating if the dict is empty or not from the bottom of the stack
+                depth 1- roll
+                {
+                    // If the dict is empty, throw 11
+                    11 THROWARG
+                }
+                {
+                    // If the dict is not empty, jump to continuation from c3
+                    c3 PUSH JMPX
+                } cond
+            }> b>
+        } : }END>c
+        current@ context! current!
+    } does @atend !
+""";
+
+() __tact_selector_hack() method_id(65535) {
+    return __tact_selector_hack_asm();
+}

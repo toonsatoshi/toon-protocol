@@ -1,0 +1,47 @@
+{
+  "name": "toon-contracts",
+  "version": "1.0.0",
+  "description": "Toon Protocol — smart contracts on TON blockchain",
+  "scripts": {
+    "build": "blueprint build",
+    "build:all": "blueprint build --all",
+    "test": "jest",
+    "deploy:token": "blueprint run deployToonToken",
+    "deploy:registry": "blueprint run deployToonRegistry",
+    "deploy:protocol": "blueprint run deployToonProtocol",
+    "deploy:artist": "blueprint run deployToonArtist",
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "@ton/blueprint": "^0.44.1",
+    "@ton/core": "^0.63.1",
+    "@ton/sandbox": "^0.41.0",
+    "@ton/test-utils": "^0.12.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^25.5.2",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.4.9",
+    "typescript": "^6.0.2"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.spec.ts"
+    ]
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.103.0",
+    "@ton/crypto": "^3.3.0",
+    "@ton/ton": "^16.2.3",
+    "@tonconnect/sdk": "^3.4.1",
+    "axios": "^1.15.0",
+    "dotenv": "^17.4.1",
+    "node-id3": "^0.2.9",
+    "telegraf": "^4.16.3",
+    "ts-node": "^10.9.2"
+  }
+}

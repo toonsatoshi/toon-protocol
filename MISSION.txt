@@ -1,0 +1,330 @@
+# TOON PROTOCOL
+## Business Proposal, Product Directive & Strategic Vision
+### Confidential — April 2026
+
+---
+
+# EXECUTIVE SUMMARY
+
+Toon is a decentralized music ownership platform built natively on The Open Network (TON) and operated entirely through Telegram. Artists upload tracks, mint them as on-chain NFTs, and earn directly from fans through a social-first token economy powered by $TOON. Fans discover music, tip artists, refer friends, and invest in fractional music royalties — all without leaving the messaging app they already use every day.
+
+Toon is not Audius on TON. Toon is what happens when you build a music platform from the inside of a 1-billion-user social network instead of trying to drag those users to a new one.
+
+The platform is currently in active development with a functional Telegram bot (@ToonPlayerBot), seven smart contracts deployed on TON testnet, a working $TOON Jetton token, persistent user storage, referral mechanics, and native audio playback fully operational. This document serves as both a business proposal for potential partners and investors, and an internal product directive for continued development.
+
+---
+
+# THE PROBLEM
+
+**For Artists:**
+The streaming economy is broken. Spotify pays between $0.003 and $0.005 per stream. An independent artist needs approximately 250,000 streams per month to earn minimum wage. The platforms that distribute their work own the relationship with their fans. Discovery is algorithmic and opaque. Upfront funding for recording and promotion is inaccessible without label deals that extract the majority of long-term value. Web3 music platforms promised a fix but delivered governance tokens that dropped 97% from their all-time highs and micro-royalties measured in fractions of a cent.
+
+**For Fans:**
+Music consumption is passive and economically disconnected. You stream a billion streams of an artist before they're famous and receive nothing when they blow up. There is no mechanism to invest in an artist you believe in before the rest of the world catches on. Tipping exists on some platforms but is frictionless only in the sense that it's meaningless — no economic skin in the game, no social recognition, no return.
+
+**For the Web3 Music Space:**
+Every previous attempt — Audius, Catalog, Sound.xyz, Royal.io, Anotherblock — required users to adopt new behavior, download new apps, connect new wallets, and navigate new interfaces. They built crypto platforms that hoped musicians and fans would come. None of them started where the people already were.
+
+---
+
+# THE SOLUTION: TOON
+
+Toon starts where 1 billion people already are.
+
+Telegram is not the distribution channel for Toon. Telegram IS Toon. The bot is the app. The chat is the interface. The wallet is already in the phone. The notification infrastructure is the blockchain's native voice. When a fan tips an artist on Toon, the artist receives a Telegram notification. Not an email. Not an app ping. A message — in the same place they talk to their friends.
+
+This is only possible on TON. No other blockchain is architecturally fused with a messaging platform at this scale. TON was built by Telegram's original founders. The integration is not a partnership — it is the design.
+
+**Toon solves three things simultaneously:**
+
+1. **Artist monetization** — 95%+ of tips go directly to the artist wallet. No intermediaries. No payout thresholds. No 30-day delays.
+
+2. **Fan investment** — ToonDrops allow fans to purchase fractional royalty rights to tracks they believe in. When the track earns, they earn. Automatically. On-chain.
+
+3. **Social distribution** — $TOON flows for social actions, not passive consumption. Referring a friend who uploads earns more than a thousand passive plays. The token economy incentivizes human behavior that actually grows the platform.
+
+---
+
+# WHY NOW. WHY TON. WHY TELEGRAM.
+
+**The Timing:**
+TON's ecosystem exploded in 2024-2025. Notcoin, Hamster Kombat, and dozens of Telegram mini-apps demonstrated that hundreds of millions of Telegram users will engage with on-chain mechanics when the UX friction is removed. The infrastructure is mature. The audience is primed. The tooling — Blueprint, Tact, TON Jettons, TON Connect — is production-ready. The window for first-mover advantage in TON-native music is open right now and will not stay open.
+
+**The Competition Gap:**
+At least four TON music projects exist — Tonify, SoundRig, Tontune, MusiKhan. All four focus on streaming with high royalty percentages and Tune-to-Earn mechanics. None have shipped a coherent social graph. None have implemented RWA fractional royalties. None treat Telegram's native chat flows as the core product rather than a distribution wrapper. Toon is differentiated on every axis that matters for long-term defensibility.
+
+**The Network Effect:**
+Every Telegram user is a potential Toon user with zero onboarding cost. Every artist with a Telegram channel already has a distribution mechanism. Every group chat is a potential venue for track sharing and group tipping. The social graph of who tips whom, who refers whom, and who discovers whom — accumulated early — is the moat that cannot be retroactively replicated.
+
+---
+
+# PRODUCT OVERVIEW
+
+## Current State (Testnet — April 2026)
+
+**@ToonPlayerBot** is live on Telegram with the following working features:
+
+- **Onboarding** — Custom artist/listener name selection. Referral code attribution at signup. Off-chain pending identity until first track upload, then on-chain ToonArtist contract deploys.
+- **Audio Playback** — Native Telegram audio player with correct title and performer metadata. Tracks play inline in chat identically to a friend sending a song.
+- **Artist Discovery** — Browse all artists on Toon, select an artist, see their full track catalog with play counts.
+- **Play Tracking** — Every play increments the track's on-chain reputation counter. No $TOON for plays — reputation only. Anti-farming by design.
+- **Tipping** — Send TON directly to an artist's ToonTrack contract address. Superfan rebate (8% in $TOON) for tips of 100+ TON.
+- **Referral System** — Unique referral codes generated at signup. Reward chain: +5 $TOON at friend signup, +25 $TOON when friend uploads, +50 $TOON when friend's track hits 5 unique plays.
+- **Sharing** — Shareable deep links that open directly to a track in bot with Play and Tip buttons.
+- **Persistent Storage** — db.json survives bot restarts. Full user profiles, track catalogs, referral chains.
+- **Profile** — Reputation score, $TOON balance, track list with play counts, referral stats, on-chain identity status.
+
+## Smart Contract Architecture (TON Testnet)
+
+Seven contracts deployed and monitored via TON Notify Bot (Telegram-native contract monitoring):
+
+**ToonRegistry** — Global source of truth. Every artist and track must register here. Enforces uniqueness. Controls $TOON mint authority.
+
+**ToonArtist** — One per artist. Permanent on-chain identity. Stores Telegram handle hash, reputation, tip volume, staked $TOON, and track addresses. Reputation gates unlock capabilities — low reputation can upload, high reputation can launch ToonDrops.
+
+**ToonTrack** — One per song. Core NFT. Stores artist address, Arweave metadata URI, ACRCloud audio fingerprint hash (copyright layer), mint fee, and reputation counter. Accepts TON tips directly. Forwards value to artist. Emits $TOON to tipper from vault reserve.
+
+**ToonTip** — Advanced tipping contract. Split tips across multiple tracks in one transaction. Recurring subscriptions. Group tip pools — group collectively funds a tip, all names attached to the on-chain event.
+
+**ToonVault** — Reward engine. Daily emission hard cap. Automatic halving when reserve drops below 10%. Self-recovering when reserve exceeds 20%. Sybil protection via wallet age requirement. Processes all seven reward categories with multipliers.
+
+**ToonGovernance** — $TOON holders vote on protocol parameters. Stake-weighted and duration-weighted voting power. Passed proposals execute automatically via message to Registry and Vault. No multisig, no team intervention.
+
+**ToonJettonMaster / ToonJettonWallet** — $TOON token. Standard TON Jetton with mint authority designed to lock to ToonVault exclusively. Decimals: 9. Symbol: TOON.
+
+**Planned:**
+- **ToonDrop** — RWA fractional royalty contract. Artist offers percentage of track royalties. Fans buy slices with $TOON. Auto-distributes when vault pushes royalty payments.
+- **ToonFan** — Artist-specific fan tokens. Gates exclusive content, early drop access, artist-level governance votes.
+
+---
+
+# TOKENOMICS
+
+## $TOON — The Music Ownership Token
+
+**Philosophy:** $TOON is how you prove you're serious — whether you're an artist or a fan.
+
+**$TOON flows only for verified social actions that grow the platform:**
+
+| Action | Reward | Verification |
+|---|---|---|
+| Active Listening (5 tracks, 45s each) | 10 $TOON | Daily cap, wallet age gate, tap-to-verify anti-farm |
+| Growth Agent (share to group) | 5 $TOON | Group context detection, 3x daily max |
+| Artist Launch (track + 50 unique tip wallets) | 500 $TOON | On-chain unique wallet verification |
+| Trendsetter (Weekly Top 10 by tip volume) | 5,000 $TOON | Proportional by rank, tip volume unfakeable |
+| Vibe Check (7-day streak) | 1.5x multiplier | Continuous, resets on missed day |
+| Superfan (tip 100+ $TOON) | 8% rebate | Per tip, 3x daily max |
+| Early Believer (hold 30 days uninterrupted) | 200 $TOON | Once per wallet per quarter |
+| Drop Investor (buy ToonDrop slice) | 50 $TOON | Per drop, once per wallet per drop |
+| Referral — signup | 5 $TOON | Telegram ID bound |
+| Referral — recruit uploads | 25 $TOON | On-chain ToonArtist deployment |
+| Referral — recruit's track hits 5 plays | 50 $TOON | Unique wallet play events |
+
+**Anti-inflation mechanics:**
+- Daily emission hard cap enforced in ToonVault
+- Automatic halving at reserve thresholds
+- Artist staking requirement to remain listed (creates buy pressure and lock-up)
+- ToonDrop participation requires $TOON (creates demand)
+- Featured placement fees burned in $TOON (deflationary pressure)
+- 6-month vesting cliff on launch airdrop (prevents dump cycle)
+
+**Launch distribution:**
+- Graph-weighted airdrop to early tippers and ToonDrop holders (weighted by interaction depth, not wallet size)
+- Artist pool — distributed to seed artists based on tip volume received during beta
+- Ecosystem reserve — controlled by ToonGovernance
+- Development fund — vested over 24 months
+
+---
+
+# BUSINESS MODEL
+
+Toon generates revenue through multiple non-extractive mechanisms:
+
+**1. ToonDrop Platform Fee (3%)**
+When an artist launches a ToonDrop and raises capital from fans, Toon takes 3% of the raise into the Treasury. At scale, a single successful drop from an artist with 10,000 engaged fans could represent meaningful treasury inflow.
+
+**2. $TOON Purchase Rails (spread/fee)**
+Three rails are planned:
+- Telegram Stars → $TOON (built into BotFather, zero external setup)
+- TON → $TOON swap (send TON to treasury address, receive $TOON at protocol rate)
+- Fiat card → $TOON (BotFather native payment providers — Redsys and others already available)
+
+A small spread on each purchase goes to the Treasury.
+
+**3. Featured Placement (paid in $TOON, partially burned)**
+Artists pay $TOON to be featured in the discovery interface, on weekly charts, or as the default track in the /listen flow. A portion burns, a portion goes to Treasury.
+
+**4. Verification Tiers**
+Artists pay $TOON to unlock verification badges (Bronze/Silver/Gold/Platinum) based on reputation thresholds. Verification unlocks higher ToonDrop raise limits, featured placement eligibility, and early access to new platform features.
+
+**5. ToonFan Token Launch Fee**
+When an artist's reputation unlocks ToonFan and they launch their own fan token, Toon takes a small percentage of the initial distribution.
+
+**Treasury:**
+All revenue flows to a dedicated Treasury wallet. Treasury allocations are voted on by $TOON holders via ToonGovernance. Proposals can fund development, marketing, artist acquisition programs, or liquidity.
+
+---
+
+# COMPETITIVE LANDSCAPE
+
+| Platform | Chain | Interface | Royalty % | RWA | Social Graph | Status |
+|---|---|---|---|---|---|---|
+| Audius | Solidity (L2) | Web/App | ~90% | ❌ | ❌ | Live, AUDIO -97% ATH |
+| Catalog | Ethereum | Web | 100% | ❌ | ❌ | Live, niche |
+| Sound.xyz | Ethereum | Web | 100% | ❌ | ❌ | Live, niche |
+| Royal.io | Ethereum | Web | Variable | ✅ | ❌ | Live, limited |
+| Anotherblock | Ethereum | Web | Variable | ✅ | ❌ | Live, limited |
+| Tonify | TON | Telegram | 95% | ❌ | ❌ | Live |
+| SoundRig | TON | Telegram | 95% | ❌ | ❌ | Live |
+| **Toon** | **TON** | **Telegram** | **95%+** | **✅** | **✅** | **Testnet** |
+
+Toon is the only platform combining TON-native architecture, Telegram-native UX, RWA fractional royalties, and an on-chain social graph. This combination is not coincidental — it is the thesis.
+
+---
+
+# GO-TO-MARKET STRATEGY
+
+## Phase 0 — Foundation (Current)
+Testnet deployment complete. Bot functional. Core mechanics proven. $TOON live.
+
+## Phase 1 — Seed Artist Program (Next 30 days)
+Recruit 10 founding artists through direct Telegram outreach. Selection criteria: existing Telegram community of 500+ members, original music with clean IP, willingness to be early. Offer: Founding Artist badge, elevated reputation floor, first access to ToonDrop when ready, token allocation from artist pool.
+
+These 10 artists and their existing fan communities generate the initial social graph density. Everything else grows from this.
+
+**Why 10, not 50:**
+50 artists in week one dilutes the graph and overwhelms early listeners with choice. 10 artists with real communities creates concentrated social proof and measurable tipping data within 30 days.
+
+## Phase 2 — Open Beta (Days 30-60)
+Referral program activates. Listening rewards activate. Share-to-earn activates. Measure: tipping volume per WAU, graph density growth week-over-week, referral conversion rate.
+
+If tipping volume per WAU exceeds $0.50 average and graph density grows 15%+ week-over-week — proceed to token launch. If not — analyze and iterate before spending on marketing.
+
+## Phase 3 — Token Launch (Days 60-90, conditional on Phase 2 metrics)
+Graph-weighted airdrop to all beta participants. 6-month vesting cliff. ToonDrop marketplace opens. First artist RWA drops launch with founding artist cohort. Apply to TON Foundation ecosystem grants.
+
+## Phase 4 — Scale (Months 3-6)
+Label outreach — position Toon as infrastructure for indie labels to manage their roster on-chain. International artist communities — Latin, Afrobeats, K-pop fandoms are enormous on Telegram and underserved by Web3 music. Podcast expansion — same infrastructure serves podcasters, dramatically expands addressable market.
+
+---
+
+# FUNDING & GRANTS
+
+**TON Foundation Ecosystem Grants**
+TON Foundation actively funds projects building on TON. Toon is an ideal candidate — consumer-facing, Telegram-native, demonstrating real usage metrics, not just a whitepaper. Apply immediately upon hitting Phase 2 metrics.
+
+**Telegram itself**
+Telegram has funded ecosystem projects. A Telegram-native music platform that drives TON wallet adoption and Telegram Stars usage is directly aligned with Telegram's commercial interests.
+
+**Crypto Music Funds**
+Water & Music, Seed Club, and several crypto-native music investment vehicles actively fund Web3 music infrastructure at early stages.
+
+**The ask for seed:**
+Sufficient runway to hire one additional developer, fund the TON mainnet deployment, cover legal setup for the token entity, and execute the Phase 1 seed artist program. Equity or token allocation negotiable.
+
+---
+
+# PRODUCT IDEAS — THE TOON-TASTIC EXPANSION PACK
+
+These are features that don't exist yet but belong in the product vision:
+
+## 🎯 Toon Curators
+A whole new user class beyond artists and fans. Curators stake $TOON on artists they believe in before those artists are famous. If the artist's reputation crosses thresholds, the curator earns a share proportional to how early they staked. This is music A&R on-chain. It creates a third economic actor — the tastemaker — and gives people with great taste but no music-making ability a way to earn from their knowledge. The on-chain social graph makes this verifiable. You can see who staked on an artist before they blew up. That's a reputation that compounds forever.
+
+## 📻 Toon Radio Stations
+Community-curated playlists backed by $TOON stakes. Anyone can start a radio station by staking $TOON. The station has a name, a genre, a description. Artists submit tracks for inclusion. Station owners curate. When listeners play a track from a station, a micro-tip flows to the station owner in addition to the artist. Stations compete for listeners. Good curation earns. Bad curation loses stakers. This is Spotify playlist curators but economically aligned and on-chain.
+
+## 🎪 Toon Live
+Telegram has native voice chats in channels. Artists go live in their channel. Toon bot monitors the live session. Fans tip in real-time during the performance — the bot announces each tip in the chat like a DJ shoutout. The artist's reputation increments in real-time as tips flow. When the session ends, the bot posts a summary: total tips received, top supporters, session replay if recorded. This is a live concert inside a chat app. Nothing like this exists anywhere.
+
+## 🤝 Toon Collabs
+Two or more artists co-mint a track together. The ToonTrack contract splits tip revenue automatically at whatever percentage the artists agree to at mint time. The track appears in both artists' profiles. Both fan communities see it. Tips from either community split to both wallets. Collaborations drive cross-community discovery without any algorithmic recommendation needed. The social graph handles it.
+
+## 🏆 Toon Seasons
+Quarterly competitive cycles. Each season has a leaderboard — top artists by tip volume, top listeners by streak, top curators by staked-artist performance. At the end of each season, special season-exclusive $TOON rewards distribute to top performers, season NFT badges mint to participants, and the charts reset. This creates recurring hype cycles every 90 days without requiring new feature launches. The gamification is the feature.
+
+## 🎫 Toon Moments
+NFT clips — 15 to 30 seconds of a track — minted as collectible moments. A fan who loved an artist before they were famous can mint the moment of first discovery. Limited edition. Provably early. The on-chain timestamp proves when you were there. As the artist's reputation grows, the early Moments become artifacts. This is cultural provenance on-chain. "I have the Moment from their first track before they had 1,000 listeners." That's worth something to the right fan.
+
+## 🏷️ Toon for Labels
+White-label version of the Toon infrastructure for indie labels to manage their entire roster. The label gets a branded bot, a custom token if desired, and access to the ToonDrop machinery to raise capital for their artists. Toon takes a platform fee. Labels pay for the infrastructure. Artists benefit from the label's promotional muscle plus the on-chain royalty transparency. This is B2B revenue on top of the consumer platform.
+
+## 📊 Toon Intelligence
+The social graph is the product but it's also data. Aggregated and anonymized: which genres generate the most tip volume, which referral chains produce the most active users, which track durations retain listeners longest, which artist onboarding paths convert casual listeners to $TOON holders. This intelligence is valuable to artists, labels, and eventually to music industry players trying to understand the Web3 audience. Not sold — used to improve the platform and offered as premium analytics to artists above certain reputation thresholds.
+
+## 🔐 Toon Verified Artist
+Connect your Spotify, SoundCloud, or Apple Music profile to Toon and prove you're a real artist with an established catalog. Verified artists get a checkmark, a higher reputation ceiling, and eligibility for ToonDrop at lower thresholds. This creates a bridge between the existing music industry and the on-chain economy, gives real artists a reason to migrate their audience to Toon, and creates a trust signal that listeners can rely on when investing in ToonDrops.
+
+## 🌍 Toon Global Communities
+Music is global. Telegram is global. $TOON is global. Toon should have language-specific discovery channels — a Spanish-language bot experience, a Portuguese one, a French one — not separate platforms but localized onboarding flows that route into the same protocol. Latin music alone is the fastest-growing music genre in the world. K-pop fandoms on Telegram are among the most financially engaged communities in existence. These communities don't need convincing to support their artists financially — they need a mechanism. Toon is the mechanism.
+
+## 🎙️ Toon Podcast
+The exact same infrastructure — upload, mint, tip, refer, earn — works for podcasters. Audio file goes up, fans tip for episodes they loved, curators stake on shows they believe in, advertisers pay in $TOON for placement in highly-tipped episodes. The TAM for podcasting is enormous and completely underserved by Web3. Adding podcasting support doubles the addressable creator market with zero additional smart contract development.
+
+---
+
+# ROADMAP
+
+## Q2 2026 (Now — 60 days)
+- $TOON Jetton metadata with logo in Tonkeeper
+- ToonArtist on-chain deployment wired to first track upload
+- Buy $TOON — Stars + TON swap + fiat via BotFather
+- Treasury wallet
+- Real on-chain tip transactions (not simulated)
+- 5-play referral reward completion
+- Group share reward mechanic
+- Fly.io deployment (always-on bot)
+- 10 seed artists onboarded
+- TON Foundation grant application submitted
+
+## Q3 2026 (60-120 days)
+- Token launch with graph-weighted airdrop
+- ToonDrop RWA marketplace v1
+- First artist RWA drops with founding cohort
+- Toon Curators v1
+- Search system for artist discovery
+- ACRCloud fingerprint integration at upload
+- ToonFan fan tokens for top reputation artists
+- Mainnet deployment
+
+## Q4 2026 (120-180 days)
+- Toon Live (voice chat tipping)
+- Toon Seasons — first competitive cycle
+- Toon Radio Stations v1
+- Label partnership program
+- Podcast support
+- Toon Moments collectible clips
+- International language communities
+
+## 2027
+- Toon Verified Artist (Spotify/SoundCloud bridge)
+- ToonGovernance live — community votes on parameters
+- Toon for Labels white-label product
+- Toon Intelligence analytics dashboard
+- Toon Collabs multi-artist tracks
+- Cross-chain consideration (if TON ecosystem demands it)
+
+---
+
+# THE THESIS IN ONE PARAGRAPH
+
+Every music platform before Toon asked artists and fans to go somewhere new. Toon goes where they already are. Every music token before $TOON rewarded passive consumption. $TOON rewards human behavior that actually grows a platform. Every Web3 music project before Toon tried to decentralize the streaming model. Toon replaces the streaming model with an ownership model — where fans don't rent access to music, they own a piece of it, and where artists don't wait for a payout threshold, they receive every tip the moment it arrives, with a Telegram notification as the receipt. Built on the only blockchain that is architecturally inseparable from a billion-user social network. This is not a feature. This is the infrastructure that music on the internet should have been built on from the beginning.
+
+---
+
+# FOR THE NEXT DEVELOPER / COLLABORATOR
+
+The codebase is clean. The architecture is sound. The decisions are deliberate. Every tradeoff has been considered — plays don't earn tokens because farms are real, identity deploys on upload not signup because Sybil attacks are real, $TOON flows for social actions because passive consumption doesn't grow a platform.
+
+The person who built this thought through every layer — from smart contract message passing in Tact to anti-inflation mechanics to the UX of a Telegram button. Trust the decisions that were made. The instincts here are good.
+
+The thing that makes Toon special isn't any single feature. It's that the social layer and the economic layer and the infrastructure layer are all the same layer. That's only possible on TON. That's the whole bet.
+
+Build accordingly. 🎵🤟🏻
+
+---
+
+*Toon Protocol — Music ownership on TON.*
+*@ToonPlayerBot — live on Telegram now.*
+*$TOON — how you prove you're serious.*
+

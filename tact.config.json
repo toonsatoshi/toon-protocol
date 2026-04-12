@@ -1,0 +1,75 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
+  "projects": [
+    {
+      "name": "MusicNft",
+      "path": "contracts/music_nft.tact",
+      "output": "build/MusicNft",
+      "options": { "debug": false, "external": false },
+      "mode": "full"
+    },
+    {
+      "name": "ToonJettonMaster",
+      "path": "contracts/toon_jetton_master.tact",
+      "output": "build/ToonJettonMaster",
+      "options": { "debug": false, "external": false },
+      "mode": "full"
+    },
+    {
+      "name": "ToonVault",
+      "path": "contracts/toon_vault.tact",
+      "output": "build/ToonVault",
+      "options": { "debug": false, "external": false },
+      "mode": "full"
+    },
+    {
+      "name": "ToonRegistry",
+      "path": "contracts/toon_registry.tact",
+      "output": "build/ToonRegistry",
+      "options": { "debug": false, "external": false },
+      "mode": "full"
+    },
+    {
+      "name": "ToonArtist",
+      "path": "contracts/toon_artist.tact",
+      "output": "build/ToonArtist",
+      "options": { "debug": false, "external": false },
+      "mode": "full"
+    },
+    {
+      "name": "ToonTrack",
+      "path": "contracts/toon_track.tact",
+      "output": "build/ToonTrack",
+      "options": { "debug": false, "external": false },
+      "mode": "full"
+    },
+    {
+      "name": "ToonTip",
+      "path": "contracts/toon_tip.tact",
+      "output": "build/ToonTip",
+      "options": { "debug": false, "external": false },
+      "mode": "full"
+    },
+    {
+      "name": "ToonFan",
+      "path": "contracts/toon_fan.tact",
+      "output": "build/ToonFan",
+      "options": { "debug": false, "external": false },
+      "mode": "full"
+    },
+    {
+      "name": "ToonDrop",
+      "path": "contracts/toon_drop.tact",
+      "output": "build/ToonDrop",
+      "options": { "debug": false, "external": false },
+      "mode": "full"
+    },
+    {
+      "name": "ToonGovernance",
+      "path": "contracts/toon_governance.tact",
+      "output": "build/ToonGovernance",
+      "options": { "debug": false, "external": false },
+      "mode": "full"
+    }
+  ]
+}

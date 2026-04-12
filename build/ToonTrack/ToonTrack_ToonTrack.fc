@@ -1,0 +1,572 @@
+#pragma version =0.4.6;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+;; ToonTrack_ToonTrack.headers.fc
+;;
+;; Header files for ToonTrack
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_context_get
+(int, slice, int, slice) __tact_context_get() inline;
+
+;; __tact_context_get_sender
+slice __tact_context_get_sender() inline;
+
+;; $DeployOk$_store
+builder $DeployOk$_store(builder build_0, (int) v) inline;
+
+;; $DeployOk$_store_cell
+cell $DeployOk$_store_cell((int) v, builder b) inline;
+
+;; $RequestMint$_store
+builder $RequestMint$_store(builder build_0, (slice, int) v) inline;
+
+;; $RequestMint$_store_cell
+cell $RequestMint$_store_cell((slice, int) v, builder b) inline;
+
+;; $ToonTrack$_store
+builder $ToonTrack$_store(builder build_0, (slice, slice, slice, int, int, int) v) inline;
+
+;; $ToonTrack$_load
+(slice, ((slice, slice, slice, int, int, int))) $ToonTrack$_load(slice sc_0) inline;
+
+;; $Context$_get_value
+_ $Context$_get_value((int, slice, int, slice) v) inline;
+
+;; $ToonTrack$init$_load
+(slice, ((slice, slice, slice, int, int))) $ToonTrack$init$_load(slice sc_0) inline;
+
+;; $ToonTrack$_contract_init
+(slice, slice, slice, int, int, int) $ToonTrack$_contract_init(slice $artist, slice $registry, slice $metadataUri, int $fingerprint, int $mintFee) impure inline;
+
+;; $ToonTrack$_contract_load
+(slice, slice, slice, int, int, int) $ToonTrack$_contract_load() impure inline;
+
+;; $ToonTrack$_contract_store
+() $ToonTrack$_contract_store((slice, slice, slice, int, int, int) v) impure inline;
+
+;; $ToonTrack$_fun_reputation
+((slice, slice, slice, int, int, int), int) $ToonTrack$_fun_reputation((slice, slice, slice, int, int, int) $self) impure inline_ref;
+
+;; $ToonTrack$_fun_artist
+((slice, slice, slice, int, int, int), slice) $ToonTrack$_fun_artist((slice, slice, slice, int, int, int) $self) impure inline_ref;
+
+;; $ToonTrack$_fun_metadataUri
+((slice, slice, slice, int, int, int), slice) $ToonTrack$_fun_metadataUri((slice, slice, slice, int, int, int) $self) impure inline_ref;
+
+;; $ToonTrack$_fun_fingerprint
+((slice, slice, slice, int, int, int), int) $ToonTrack$_fun_fingerprint((slice, slice, slice, int, int, int) $self) impure inline_ref;
+
+;; $ToonTrack$_fun_mintFee
+((slice, slice, slice, int, int, int), int) $ToonTrack$_fun_mintFee((slice, slice, slice, int, int, int) $self) impure inline_ref;
+
+;; $MessageParameters$_constructor_bounce_to_value_mode_body
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline;
+
+;; $ToonTrack$_fun_notify
+((slice, slice, slice, int, int, int), ()) $ToonTrack$_fun_notify((slice, slice, slice, int, int, int) $self, cell $body) impure inline;
+
+;; $DeployOk$_constructor_queryId
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline;
+
+;; $SendParameters$_constructor_to_value_mode_body
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline;
+
+;; $RequestMint$_constructor_recipient_amount
+((slice, int)) $RequestMint$_constructor_recipient_amount(slice $recipient, int $amount) inline;
+
+
+;; ToonTrack_ToonTrack.stdlib.fc
+global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
+global cell __tact_child_contract_codes;
+global int __tact_randomized;
+
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
+
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
+
+int $global_myBalance() impure asm """
+    BALANCE FIRST
+""";
+
+() $global_nativeReserve(int $amount, int $mode) impure asm """
+    RAWRESERVE
+""";
+
+() $global_message((int, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+    STZEROES
+    // → Stack state
+    // s0: Builder
+    // s1: `body`
+    // s2: `mode`
+    STDICT
+    ENDC
+    SWAP
+    SENDRAWMSG
+""";
+
+() $global_send((int, cell, cell, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+    STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+    // → Stack state
+    // s0: Builder
+    // s1: `data`
+    // s2: `code`
+    // s3: `body`
+    // s4: `mode`
+
+    // Group 2: Placing the Builder after code and data, then checking those for nullability
+    s2 XCHG0
+    DUP2
+    ISNULL
+    SWAP
+    ISNULL
+    AND
+    // → Stack state
+    // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+    // s1: `code`
+    // s2: `data`
+    // s3: Builder
+    // s4: `body`
+    // s5: `mode`
+
+    // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+    <{
+        DROP2 // drop `data` and `code`, since either of those is null
+        b{0} STSLICECONST
+    }> PUSHCONT
+
+    // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+    <{
+        // _ split_depth:(Maybe (## 5))
+        //   special:(Maybe TickTock)
+        //   code:(Maybe ^Cell)
+        //   data:(Maybe ^Cell)
+        //   library:(Maybe ^Cell)
+        // = StateInit;
+        ROT                // place message Builder on top
+        b{10} STSLICECONST // store Maybe = true, Either = false
+        // Start composing inlined StateInit
+        b{00} STSLICECONST // store split_depth and special first
+        STDICT             // store code
+        STDICT             // store data
+        b{0} STSLICECONST  // store library
+    }> PUSHCONT
+
+    // Group 3: IFELSE that does the branching shown above
+    IFELSE
+    // → Stack state
+    // s0: Builder
+    // s1: null or StateInit
+    // s2: `body`
+    // s3: `mode`
+
+    // Group 4: Finalizing the message
+    STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+    ENDC
+    // → Stack state
+    // s0: Cell
+    // s1: `mode`
+
+    // Group 5: Sending the message, with `mode` on top
+    SWAP
+    SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+""";
+
+((slice, slice, slice, int, int, int), ()) $ToonTrack$_fun_notify((slice, slice, slice, int, int, int) $self, cell $body) impure inline {
+    var (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation)) = $self;
+    slice $to = __tact_context_get_sender();
+    int $bounce = false;
+    if (false) {
+        int $balance = $global_myBalance();
+        int $balanceBeforeMessage = ($balance - $Context$_get_value(__tact_context_get()));
+        if (($balanceBeforeMessage < 0)) {
+            $global_nativeReserve(0, 0);
+            $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 130, $body));
+            return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), ());
+        }
+    }
+    $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 66, $body));
+    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), ());
+}
+
+;; ToonTrack_ToonTrack.constants.fc
+;; Cell Lo1lpMDsh3PszFr9saIqcnEDSqQUPTd6LRLgMZfdkVE=
+cell __gen_cell_cell_2e8d65a4c0ec8773eccc5afdb1a22a7271034aa4143d377a2d12e03197dd9151() asm """
+    B{b5ee9c7241010101001200002000000000546970207265636569766564d6a94f2b} B>boc PUSHREF
+""";
+
+;; ToonTrack_ToonTrack.storage.fc
+;;
+;; Type: Context
+;; TLB: _ bounceable:bool sender:address value:int257 raw:^slice = Context
+;;
+
+_ $Context$_get_value((int, slice, int, slice) v) inline {
+    var (v'bounceable, v'sender, v'value, v'raw) = v;
+    return v'value;
+}
+
+;;
+;; Type: SendParameters
+;; TLB: _ mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell value:int257 to:address bounce:bool = SendParameters
+;;
+
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, null(), null(), $value, $to, true);
+}
+
+;;
+;; Type: MessageParameters
+;; TLB: _ mode:int257 body:Maybe ^cell value:int257 to:address bounce:bool = MessageParameters
+;;
+
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, $value, $to, $bounce);
+}
+
+;;
+;; Type: DeployOk
+;; Header: 0xaff90f57
+;; TLB: deploy_ok#aff90f57 queryId:uint64 = DeployOk
+;;
+
+builder $DeployOk$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $DeployOk$_store_cell((int) v, builder b) inline {
+    return $DeployOk$_store(b, v).end_cell();
+}
+
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline {
+    return ($queryId);
+}
+
+;;
+;; Type: RequestMint
+;; Header: 0x10859351
+;; TLB: request_mint#10859351 recipient:address amount:coins = RequestMint
+;;
+
+builder $RequestMint$_store(builder build_0, (slice, int) v) inline {
+    var (v'recipient, v'amount) = v;
+    build_0 = store_uint(build_0, 277189457, 32);
+    build_0 = build_0.store_slice(v'recipient);
+    build_0 = build_0.store_varuint16(v'amount);
+    return build_0;
+}
+
+cell $RequestMint$_store_cell((slice, int) v, builder b) inline {
+    return $RequestMint$_store(b, v).end_cell();
+}
+
+((slice, int)) $RequestMint$_constructor_recipient_amount(slice $recipient, int $amount) inline {
+    return ($recipient, $amount);
+}
+
+;;
+;; Type: ToonTrack
+;; TLB: _ artist:address registry:address metadataUri:^string fingerprint:uint256 mintFee:coins reputation:uint32 = ToonTrack
+;;
+
+builder $ToonTrack$_store(builder build_0, (slice, slice, slice, int, int, int) v) inline {
+    var (v'artist, v'registry, v'metadataUri, v'fingerprint, v'mintFee, v'reputation) = v;
+    build_0 = build_0.store_slice(v'artist);
+    build_0 = build_0.store_slice(v'registry);
+    build_0 = build_0.store_builder_ref(begin_cell().store_slice(v'metadataUri));
+    build_0 = build_0.store_uint(v'fingerprint, 256);
+    build_0 = build_0.store_varuint16(v'mintFee);
+    build_0 = build_0.store_uint(v'reputation, 32);
+    return build_0;
+}
+
+(slice, ((slice, slice, slice, int, int, int))) $ToonTrack$_load(slice sc_0) inline {
+    var v'artist = sc_0~load_msg_addr();
+    var v'registry = sc_0~load_msg_addr();
+    var v'metadataUri = sc_0~load_ref().begin_parse();
+    var v'fingerprint = sc_0~load_uint(256);
+    var v'mintFee = sc_0~load_varuint16();
+    var v'reputation = sc_0~load_uint(32);
+    return (sc_0, (v'artist, v'registry, v'metadataUri, v'fingerprint, v'mintFee, v'reputation));
+}
+
+(slice, ((slice, slice, slice, int, int))) $ToonTrack$init$_load(slice sc_0) inline {
+    var v'artist = sc_0~load_msg_addr();
+    var v'registry = sc_0~load_msg_addr();
+    var v'metadataUri = sc_0~load_ref().begin_parse();
+    var v'fingerprint = sc_0~load_int(257);
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'mintFee = sc_1~load_int(257);
+    return (sc_0, (v'artist, v'registry, v'metadataUri, v'fingerprint, v'mintFee));
+}
+
+(slice, slice, slice, int, int, int) $ToonTrack$_contract_load() impure inline {
+    slice $sc = get_data().begin_parse();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$ToonTrack$_load();
+    }
+    else {
+        (slice $artist, slice $registry, slice $metadataUri, int $fingerprint, int $mintFee) = $sc~$ToonTrack$init$_load();
+        $sc.end_parse();
+        return $ToonTrack$_contract_init($artist, $registry, $metadataUri, $fingerprint, $mintFee);
+    }
+}
+
+() $ToonTrack$_contract_store((slice, slice, slice, int, int, int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_int(true, 1);
+    b = $ToonTrack$_store(b, v);
+    set_data(b.end_cell());
+}
+
+;;
+;; Contract ToonTrack functions
+;;
+
+(slice, slice, slice, int, int, int) $ToonTrack$_contract_init(slice $artist, slice $registry, slice $metadataUri, int $fingerprint, int $mintFee) impure inline {
+    var (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation)) = (null(), null(), null(), null(), null(), null());
+    $self'artist = $artist;
+    $self'registry = $registry;
+    $self'metadataUri = $metadataUri;
+    $self'fingerprint = $fingerprint;
+    $self'mintFee = $mintFee;
+    $self'reputation = 0;
+    return ($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation);
+}
+
+((slice, slice, slice, int, int, int), int) $ToonTrack$_fun_reputation((slice, slice, slice, int, int, int) $self) impure inline_ref {
+    var (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation)) = $self;
+    var $fresh$ret_40 = $self'reputation;
+    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_40);
+}
+
+((slice, slice, slice, int, int, int), slice) $ToonTrack$_fun_artist((slice, slice, slice, int, int, int) $self) impure inline_ref {
+    var (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation)) = $self;
+    var $fresh$ret_41 = $self'artist;
+    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_41);
+}
+
+((slice, slice, slice, int, int, int), slice) $ToonTrack$_fun_metadataUri((slice, slice, slice, int, int, int) $self) impure inline_ref {
+    var (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation)) = $self;
+    var $fresh$ret_42 = $self'metadataUri;
+    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_42);
+}
+
+((slice, slice, slice, int, int, int), int) $ToonTrack$_fun_fingerprint((slice, slice, slice, int, int, int) $self) impure inline_ref {
+    var (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation)) = $self;
+    var $fresh$ret_43 = $self'fingerprint;
+    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_43);
+}
+
+((slice, slice, slice, int, int, int), int) $ToonTrack$_fun_mintFee((slice, slice, slice, int, int, int) $self) impure inline_ref {
+    var (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation)) = $self;
+    var $fresh$ret_44 = $self'mintFee;
+    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_44);
+}
+
+;;
+;; Get methods of a Contract ToonTrack
+;;
+
+_ %reputation() method_id(75930) {
+    var self = $ToonTrack$_contract_load();
+    var res = self~$ToonTrack$_fun_reputation();
+    return res;
+}
+
+_ %artist() method_id(110042) {
+    var self = $ToonTrack$_contract_load();
+    var res = self~$ToonTrack$_fun_artist();
+    return res;
+}
+
+_ %metadataUri() method_id(82975) {
+    var self = $ToonTrack$_contract_load();
+    var res = self~$ToonTrack$_fun_metadataUri();
+    return res;
+}
+
+_ %fingerprint() method_id(71046) {
+    var self = $ToonTrack$_contract_load();
+    var res = self~$ToonTrack$_fun_fingerprint();
+    return res;
+}
+
+_ %mintFee() method_id(96203) {
+    var self = $ToonTrack$_contract_load();
+    var res = self~$ToonTrack$_fun_mintFee();
+    return res;
+}
+
+;;
+;; Routing of a Contract ToonTrack
+;;
+
+;; message opcode reader utility: only binary receivers
+;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code
+(slice, int) ~load_opcode_internal(slice s) asm( -> 1 0) "32 LDUQ 130 THROWIFNOT";
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    cs~skip_bits(2);
+    var msg_bounceable = cs~load_int(1);
+    var msg_bounced = cs~load_int(1);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var ($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation) = $ToonTrack$_contract_load();
+    
+    ;; Handle bounced messages
+    if (msg_bounced) { return (); }
+    int op = 0;
+    int in_msg_length = slice_bits(in_msg);
+    if (in_msg_length >= 32) {
+        op = in_msg~load_uint(32);
+        ;; Receive Deploy message
+        if (op == 0x946a98b6) {
+            var $deploy'queryId = in_msg~load_uint(64);
+            ($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation)~$ToonTrack$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId), begin_cell()));
+            $ToonTrack$_contract_store(($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation));
+            return ();
+        }
+        
+    }
+    ;; Receive empty message
+    if ((op == 0) & (in_msg_length <= 32)) {
+        var ($ctx'bounceable, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+        throw_unless(44191, ($ctx'value >= $self'mintFee));
+        $self'reputation = ($self'reputation + 1);
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'artist, ($ctx'value - 50000000), 0, __gen_cell_cell_2e8d65a4c0ec8773eccc5afdb1a22a7271034aa4143d377a2d12e03197dd9151()));
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 20000000, 0, $RequestMint$_store_cell($RequestMint$_constructor_recipient_amount($ctx'sender, 1000000000), begin_cell())));
+        $ToonTrack$_contract_store(($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation));
+        return ();
+    }
+    ;; Empty Receiver and Text Receivers
+    var text_op = slice_hash(in_msg);
+    ;; Receive "tip" message
+    if (text_op == 0x775fac1ca69e924416b5b310799513dc523abbb3839c6cb016e4d19ec1bd34d4) {
+        var ($ctx'bounceable, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+        throw_unless(44191, ($ctx'value >= $self'mintFee));
+        $self'reputation = ($self'reputation + 1);
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'artist, ($ctx'value - 50000000), 0, __gen_cell_cell_2e8d65a4c0ec8773eccc5afdb1a22a7271034aa4143d377a2d12e03197dd9151()));
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 20000000, 0, $RequestMint$_store_cell($RequestMint$_constructor_recipient_amount($ctx'sender, 1000000000), begin_cell())));
+        $ToonTrack$_contract_store(($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation));
+        return ();
+    }
+    ;; Throw if not handled
+    throw(130);
+}
+
+
+() __tact_selector_hack_asm() impure asm """
+@atend @ 1 {
+        execute current@ context@ current!
+        {
+            // The core idea of this function is to save gas by avoiding unnecessary dict jump, when recv_internal/recv_external is called
+            // We want to extract recv_internal/recv_external from the dict and select needed function
+            // not by jumping to the needed function by it's index, but by using usual IF statements.
+
+            }END> b> // Close previous builder, now we have a cell of previous code on top of the stack
+
+            <{ // Start of the new code builder
+                SETCP0
+                // Swap the new code builder with the previous code, now we have previous code on top of the stack
+                swap
+                // Transform cell to slice and load first ref from the previous code, now we have the dict on top of the stack
+                <s ref@
+
+                // Extract the recv_internal from the dict
+                dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot
+                swap
+
+                // Delete the recv_internal from the dict
+                0 swap @procdictkeylen idict- drop
+                // Delete the recv_external from the dict (it's okay if it's not there)
+                -1 swap @procdictkeylen idict- drop
+                // Delete the __tact_selector_hack from the dict
+                65535 swap @procdictkeylen idict- drop
+
+                // Bring the code builder from the bottom of the stack
+                // because if recv_external extraction is optional, and the number of elements on the stack is not fixed
+                depth 1- roll
+                // Swap with the dict from which we extracted recv_internal and (maybe) recv_external
+                swap
+
+                // Check if the dict is empty
+                dup null?
+                // Store a copy of this flag in the bottom of the stack
+                dup depth 1- -roll
+                {
+                    // If the dict is empty, just drop it (it will be null if it's empty)
+                    drop
+                }
+                {
+                    // If the dict is not empty, prepare continuation to be stored in c3
+                    <{
+                        // Save this dict as first ref in this continuation, it will be pushed in runtime by DICTPUSHCONST
+                        swap @procdictkeylen DICTPUSHCONST
+                        // Jump to the needed function by it's index
+                        DICTIGETJMPZ
+                        // If such key is not found, throw 11 along with the key as an argument
+                        11 THROWARG
+                    }> PUSHCONT
+                    // Store the continuation in c3
+                    c3 POP
+                } cond
+
+                // Function id is on top of the (runtime) stack
+                DUP IFNOTJMP:<{
+                    // place recv_internal here
+                    DROP swap @addop
+                }>
+
+                // Bring back the flag, indicating if the dict is empty or not from the bottom of the stack
+                depth 1- roll
+                {
+                    // If the dict is empty, throw 11
+                    11 THROWARG
+                }
+                {
+                    // If the dict is not empty, jump to continuation from c3
+                    c3 PUSH JMPX
+                } cond
+            }> b>
+        } : }END>c
+        current@ context! current!
+    } does @atend !
+""";
+
+() __tact_selector_hack() method_id(65535) {
+    return __tact_selector_hack_asm();
+}

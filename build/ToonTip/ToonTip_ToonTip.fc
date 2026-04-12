@@ -1,0 +1,685 @@
+#pragma version =0.4.6;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+;; ToonTip_ToonTip.headers.fc
+;;
+;; Header files for ToonTip
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_not_null
+forall X -> X __tact_not_null(X x) impure inline;
+
+;; __tact_context_get
+(int, slice, int, slice) __tact_context_get() inline;
+
+;; __tact_context_get_sender
+slice __tact_context_get_sender() inline;
+
+;; __tact_dict_get_int_slice
+slice __tact_dict_get_int_slice(cell d, int kl, int k) inline;
+
+;; __tact_dict_set_int_slice
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline;
+
+;; __tact_dict_get_int_int
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline;
+
+;; __tact_dict_get_int_cell
+cell __tact_dict_get_int_cell(cell d, int kl, int k) inline;
+
+;; __tact_dict_set_int_cell
+(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) inline;
+
+;; $DeployOk$_store
+builder $DeployOk$_store(builder build_0, (int) v) inline;
+
+;; $DeployOk$_store_cell
+cell $DeployOk$_store_cell((int) v, builder b) inline;
+
+;; $Pool$_store
+builder $Pool$_store(builder build_0, (slice, int, int, int, int, cell, int) v) inline;
+
+;; $Pool$_store_cell
+cell $Pool$_store_cell((slice, int, int, int, int, cell, int) v, builder b) inline;
+
+;; $Pool$_load
+(slice, ((slice, int, int, int, int, cell, int))) $Pool$_load(slice sc_0) inline;
+
+;; $Pool$_as_optional
+tuple $Pool$_as_optional((slice, int, int, int, int, cell, int) v) inline;
+
+;; $Pool$_load_opt
+tuple $Pool$_load_opt(cell cl) inline;
+
+;; $ToonTip$_store
+builder $ToonTip$_store(builder build_0, (slice, cell, int) v) inline;
+
+;; $ToonTip$_load
+(slice, ((slice, cell, int))) $ToonTip$_load(slice sc_0) inline;
+
+;; $Context$_get_value
+_ $Context$_get_value((int, slice, int, slice) v) inline;
+
+;; $Pool$_not_null
+((slice, int, int, int, int, cell, int)) $Pool$_not_null(tuple v) inline;
+
+;; $Pool$_to_tuple
+tuple $Pool$_to_tuple(((slice, int, int, int, int, cell, int)) v) inline;
+
+;; $Pool$_to_opt_tuple
+tuple $Pool$_to_opt_tuple(tuple v) inline;
+
+;; $Pool$_to_opt_external
+tuple $Pool$_to_opt_external(tuple v) inline;
+
+;; $ToonTip$init$_load
+(slice, ((slice))) $ToonTip$init$_load(slice sc_0) inline;
+
+;; $ToonTip$_contract_init
+(slice, cell, int) $ToonTip$_contract_init(slice $registry) impure inline;
+
+;; $ToonTip$_contract_load
+(slice, cell, int) $ToonTip$_contract_load() impure inline;
+
+;; $ToonTip$_contract_store
+() $ToonTip$_contract_store((slice, cell, int) v) impure inline;
+
+;; $ToonTip$_fun_getPool
+((slice, cell, int), tuple) $ToonTip$_fun_getPool((slice, cell, int) $self, int $poolId) impure inline_ref;
+
+;; $MessageParameters$_constructor_bounce_to_value_mode_body
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline;
+
+;; $ToonTip$_fun_notify
+((slice, cell, int), ()) $ToonTip$_fun_notify((slice, cell, int) $self, cell $body) impure inline;
+
+;; $SendParameters$_constructor_to_value_mode_body
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline;
+
+;; $Pool$_constructor_trackAddress_targetAmount_currentAmount_deadline_completed_contributorCount_contributors
+((slice, int, int, int, int, cell, int)) $Pool$_constructor_trackAddress_targetAmount_currentAmount_deadline_completed_contributorCount_contributors(slice $trackAddress, int $targetAmount, int $currentAmount, int $deadline, int $completed, int $contributorCount, cell $contributors) inline;
+
+;; $DeployOk$_constructor_queryId
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline;
+
+
+;; ToonTip_ToonTip.stdlib.fc
+global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
+global cell __tact_child_contract_codes;
+global int __tact_randomized;
+
+forall X -> X __tact_not_null(X x) impure inline {
+    throw_if(128, null?(x)); return x;
+}
+
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
+
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
+
+forall X0, X1, X2, X3, X4, X5, X6 -> tuple __tact_tuple_create_7((X0, X1, X2, X3, X4, X5, X6) v) asm """
+    7 TUPLE
+""";
+
+forall X0, X1, X2, X3, X4, X5, X6 -> (X0, X1, X2, X3, X4, X5, X6) __tact_tuple_destroy_7(tuple v) asm """
+    7 UNTUPLE
+""";
+
+slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r;
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set(d, kl, k, v), ());
+    }
+}
+
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
+    }
+}
+
+cell __tact_dict_get_int_cell(cell d, int kl, int k) inline {
+    var (r, ok) = idict_get_ref?(d, kl, k);
+    if (ok) {
+        return r;
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) inline {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set_ref(d, kl, k, v), ());
+    }
+}
+
+int $global_myBalance() impure asm """
+    BALANCE FIRST
+""";
+
+() $global_nativeReserve(int $amount, int $mode) impure asm """
+    RAWRESERVE
+""";
+
+() $global_message((int, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+    STZEROES
+    // → Stack state
+    // s0: Builder
+    // s1: `body`
+    // s2: `mode`
+    STDICT
+    ENDC
+    SWAP
+    SENDRAWMSG
+""";
+
+() $global_send((int, cell, cell, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+    STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+    // → Stack state
+    // s0: Builder
+    // s1: `data`
+    // s2: `code`
+    // s3: `body`
+    // s4: `mode`
+
+    // Group 2: Placing the Builder after code and data, then checking those for nullability
+    s2 XCHG0
+    DUP2
+    ISNULL
+    SWAP
+    ISNULL
+    AND
+    // → Stack state
+    // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+    // s1: `code`
+    // s2: `data`
+    // s3: Builder
+    // s4: `body`
+    // s5: `mode`
+
+    // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+    <{
+        DROP2 // drop `data` and `code`, since either of those is null
+        b{0} STSLICECONST
+    }> PUSHCONT
+
+    // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+    <{
+        // _ split_depth:(Maybe (## 5))
+        //   special:(Maybe TickTock)
+        //   code:(Maybe ^Cell)
+        //   data:(Maybe ^Cell)
+        //   library:(Maybe ^Cell)
+        // = StateInit;
+        ROT                // place message Builder on top
+        b{10} STSLICECONST // store Maybe = true, Either = false
+        // Start composing inlined StateInit
+        b{00} STSLICECONST // store split_depth and special first
+        STDICT             // store code
+        STDICT             // store data
+        b{0} STSLICECONST  // store library
+    }> PUSHCONT
+
+    // Group 3: IFELSE that does the branching shown above
+    IFELSE
+    // → Stack state
+    // s0: Builder
+    // s1: null or StateInit
+    // s2: `body`
+    // s3: `mode`
+
+    // Group 4: Finalizing the message
+    STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+    ENDC
+    // → Stack state
+    // s0: Cell
+    // s1: `mode`
+
+    // Group 5: Sending the message, with `mode` on top
+    SWAP
+    SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+""";
+
+int $global_now() impure asm """
+    NOW
+""";
+
+((slice, cell, int), ()) $ToonTip$_fun_notify((slice, cell, int) $self, cell $body) impure inline {
+    var (($self'registry, $self'pools, $self'nextPoolId)) = $self;
+    slice $to = __tact_context_get_sender();
+    int $bounce = false;
+    if (false) {
+        int $balance = $global_myBalance();
+        int $balanceBeforeMessage = ($balance - $Context$_get_value(__tact_context_get()));
+        if (($balanceBeforeMessage < 0)) {
+            $global_nativeReserve(0, 0);
+            $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 130, $body));
+            return (($self'registry, $self'pools, $self'nextPoolId), ());
+        }
+    }
+    $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 66, $body));
+    return (($self'registry, $self'pools, $self'nextPoolId), ());
+}
+
+;; ToonTip_ToonTip.constants.fc
+;; Cell XORQOtmAr+EBKGxL+j8xCplKjX5eb82vcv/EbyvcC2c=
+cell __gen_cell_cell_5ce4503ad980afe101286c4bfa3f310a994a8d7e5e6fcdaf72ffc46f2bdc0b67() asm """
+    B{b5ee9c7241010101000900000e00000000746970282fc199} B>boc PUSHREF
+""";
+
+;; ToonTip_ToonTip.storage.fc
+;;
+;; Type: Context
+;; TLB: _ bounceable:bool sender:address value:int257 raw:^slice = Context
+;;
+
+_ $Context$_get_value((int, slice, int, slice) v) inline {
+    var (v'bounceable, v'sender, v'value, v'raw) = v;
+    return v'value;
+}
+
+;;
+;; Type: SendParameters
+;; TLB: _ mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell value:int257 to:address bounce:bool = SendParameters
+;;
+
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, null(), null(), $value, $to, true);
+}
+
+;;
+;; Type: MessageParameters
+;; TLB: _ mode:int257 body:Maybe ^cell value:int257 to:address bounce:bool = MessageParameters
+;;
+
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, $value, $to, $bounce);
+}
+
+;;
+;; Type: DeployOk
+;; Header: 0xaff90f57
+;; TLB: deploy_ok#aff90f57 queryId:uint64 = DeployOk
+;;
+
+builder $DeployOk$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $DeployOk$_store_cell((int) v, builder b) inline {
+    return $DeployOk$_store(b, v).end_cell();
+}
+
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline {
+    return ($queryId);
+}
+
+;;
+;; Type: Pool
+;; TLB: _ trackAddress:address targetAmount:coins currentAmount:coins deadline:uint32 completed:bool contributors:dict<int, address> contributorCount:uint16 = Pool
+;;
+
+builder $Pool$_store(builder build_0, (slice, int, int, int, int, cell, int) v) inline {
+    var (v'trackAddress, v'targetAmount, v'currentAmount, v'deadline, v'completed, v'contributors, v'contributorCount) = v;
+    build_0 = build_0.store_slice(v'trackAddress);
+    build_0 = build_0.store_varuint16(v'targetAmount);
+    build_0 = build_0.store_varuint16(v'currentAmount);
+    build_0 = build_0.store_uint(v'deadline, 32);
+    build_0 = build_0.store_int(v'completed, 1);
+    build_0 = build_0.store_dict(v'contributors);
+    build_0 = build_0.store_uint(v'contributorCount, 16);
+    return build_0;
+}
+
+cell $Pool$_store_cell((slice, int, int, int, int, cell, int) v, builder b) inline {
+    return $Pool$_store(b, v).end_cell();
+}
+
+(slice, ((slice, int, int, int, int, cell, int))) $Pool$_load(slice sc_0) inline {
+    var v'trackAddress = sc_0~load_msg_addr();
+    var v'targetAmount = sc_0~load_varuint16();
+    var v'currentAmount = sc_0~load_varuint16();
+    var v'deadline = sc_0~load_uint(32);
+    var v'completed = sc_0~load_int(1);
+    var v'contributors = sc_0~load_dict();
+    var v'contributorCount = sc_0~load_uint(16);
+    return (sc_0, (v'trackAddress, v'targetAmount, v'currentAmount, v'deadline, v'completed, v'contributors, v'contributorCount));
+}
+
+tuple $Pool$_as_optional((slice, int, int, int, int, cell, int) v) inline {
+    var (v'trackAddress, v'targetAmount, v'currentAmount, v'deadline, v'completed, v'contributors, v'contributorCount) = v;
+    return __tact_tuple_create_7(v'trackAddress, v'targetAmount, v'currentAmount, v'deadline, v'completed, v'contributors, v'contributorCount);
+}
+
+tuple $Pool$_load_opt(cell cl) inline {
+    if (null?(cl)) {
+        return null();
+    }
+    var sc = cl.begin_parse();
+    return $Pool$_as_optional(sc~$Pool$_load());
+}
+
+((slice, int, int, int, int, cell, int)) $Pool$_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (slice vvv'trackAddress, int vvv'targetAmount, int vvv'currentAmount, int vvv'deadline, int vvv'completed, cell vvv'contributors, int vvv'contributorCount) = __tact_tuple_destroy_7(v);
+    return (vvv'trackAddress, vvv'targetAmount, vvv'currentAmount, vvv'deadline, vvv'completed, vvv'contributors, vvv'contributorCount);
+}
+
+tuple $Pool$_to_tuple(((slice, int, int, int, int, cell, int)) v) inline {
+    var (v'trackAddress, v'targetAmount, v'currentAmount, v'deadline, v'completed, v'contributors, v'contributorCount) = v;
+    return __tact_tuple_create_7(v'trackAddress, v'targetAmount, v'currentAmount, v'deadline, v'completed, v'contributors, v'contributorCount);
+}
+
+tuple $Pool$_to_opt_tuple(tuple v) inline {
+    if (null?(v)) { return null(); } 
+    return $Pool$_to_tuple($Pool$_not_null(v)); 
+}
+
+tuple $Pool$_to_opt_external(tuple v) inline {
+    var loaded = $Pool$_to_opt_tuple(v);
+    if (null?(loaded)) {
+        return null();
+    } else {
+        return (loaded);
+    }
+}
+
+((slice, int, int, int, int, cell, int)) $Pool$_constructor_trackAddress_targetAmount_currentAmount_deadline_completed_contributorCount_contributors(slice $trackAddress, int $targetAmount, int $currentAmount, int $deadline, int $completed, int $contributorCount, cell $contributors) inline {
+    return ($trackAddress, $targetAmount, $currentAmount, $deadline, $completed, $contributors, $contributorCount);
+}
+
+;;
+;; Type: ToonTip
+;; TLB: _ registry:address pools:dict<int, ^Pool{trackAddress:address,targetAmount:coins,currentAmount:coins,deadline:uint32,completed:bool,contributors:dict<int, address>,contributorCount:uint16}> nextPoolId:uint256 = ToonTip
+;;
+
+builder $ToonTip$_store(builder build_0, (slice, cell, int) v) inline {
+    var (v'registry, v'pools, v'nextPoolId) = v;
+    build_0 = build_0.store_slice(v'registry);
+    build_0 = build_0.store_dict(v'pools);
+    build_0 = build_0.store_uint(v'nextPoolId, 256);
+    return build_0;
+}
+
+(slice, ((slice, cell, int))) $ToonTip$_load(slice sc_0) inline {
+    var v'registry = sc_0~load_msg_addr();
+    var v'pools = sc_0~load_dict();
+    var v'nextPoolId = sc_0~load_uint(256);
+    return (sc_0, (v'registry, v'pools, v'nextPoolId));
+}
+
+(slice, ((slice))) $ToonTip$init$_load(slice sc_0) inline {
+    var v'registry = sc_0~load_msg_addr();
+    return (sc_0, (v'registry));
+}
+
+(slice, cell, int) $ToonTip$_contract_load() impure inline {
+    slice $sc = get_data().begin_parse();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$ToonTip$_load();
+    }
+    else {
+        (slice $registry) = $sc~$ToonTip$init$_load();
+        $sc.end_parse();
+        return $ToonTip$_contract_init($registry);
+    }
+}
+
+() $ToonTip$_contract_store((slice, cell, int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_int(true, 1);
+    b = $ToonTip$_store(b, v);
+    set_data(b.end_cell());
+}
+
+;;
+;; Contract ToonTip functions
+;;
+
+(slice, cell, int) $ToonTip$_contract_init(slice $registry) impure inline {
+    var (($self'registry, $self'pools, $self'nextPoolId)) = (null(), null(), null());
+    $self'registry = $registry;
+    $self'nextPoolId = 0;
+    return ($self'registry, $self'pools, $self'nextPoolId);
+}
+
+((slice, cell, int), tuple) $ToonTip$_fun_getPool((slice, cell, int) $self, int $poolId) impure inline_ref {
+    var (($self'registry, $self'pools, $self'nextPoolId)) = $self;
+    var $fresh$ret_45 = $Pool$_load_opt(__tact_dict_get_int_cell($self'pools, 257, $poolId));
+    return (($self'registry, $self'pools, $self'nextPoolId), $fresh$ret_45);
+}
+
+;;
+;; Get methods of a Contract ToonTip
+;;
+
+_ %getPool(int $poolId) method_id(87704) {
+    int $poolId = $poolId;
+    var self = $ToonTip$_contract_load();
+    var res = self~$ToonTip$_fun_getPool($poolId);
+    return $Pool$_to_opt_external(res);
+}
+
+;;
+;; Routing of a Contract ToonTip
+;;
+
+;; message opcode reader utility: only binary receivers
+;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code
+(slice, int) ~load_opcode_internal(slice s) asm( -> 1 0) "32 LDUQ 130 THROWIFNOT";
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    cs~skip_bits(2);
+    var msg_bounceable = cs~load_int(1);
+    var msg_bounced = cs~load_int(1);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var ($self'registry, $self'pools, $self'nextPoolId) = $ToonTip$_contract_load();
+    
+    ;; Handle bounced messages
+    if (msg_bounced) { return (); }
+    var op = in_msg~load_opcode_internal();
+    ;; Receive SplitTip message
+    if (op == 3337696097) {
+        var $msg'targets = in_msg~load_dict();
+        var $msg'ratios = in_msg~load_dict();
+        var $msg'count = in_msg~load_uint(8);
+        int $totalValue = $Context$_get_value(__tact_context_get());
+        int $i = 0;
+        while (($i < $msg'count)) {
+            slice $target = __tact_dict_get_int_slice($msg'targets, 257, $i);
+            int $ratio = __tact_dict_get_int_int($msg'ratios, 257, $i, 257);
+            if (( ((~ null?($target))) ? ((~ null?($ratio))) : (false) )) {
+                int $share = (($totalValue * __tact_not_null($ratio)) / 10000);
+                if (($share > 0)) {
+                    if (($i == ($msg'count - 1))) {
+                        $global_send($SendParameters$_constructor_to_value_mode_body(__tact_not_null($target), 0, 64, __gen_cell_cell_5ce4503ad980afe101286c4bfa3f310a994a8d7e5e6fcdaf72ffc46f2bdc0b67()));
+                    } else {
+                        $global_send($SendParameters$_constructor_to_value_mode_body(__tact_not_null($target), $share, 1, __gen_cell_cell_5ce4503ad980afe101286c4bfa3f310a994a8d7e5e6fcdaf72ffc46f2bdc0b67()));
+                    }
+                }
+            }
+            $i = ($i + 1);
+        }
+        $ToonTip$_contract_store(($self'registry, $self'pools, $self'nextPoolId));
+        return ();
+    }
+    
+    ;; Receive CreatePool message
+    if (op == 4088183678) {
+        var $msg'trackAddress = in_msg~load_msg_addr();
+        var $msg'threshold = in_msg~load_varuint16();
+        var $msg'deadline = in_msg~load_uint(32);
+        int $poolId = $self'nextPoolId;
+        $self'nextPoolId = ($self'nextPoolId + 1);
+        var ($newPool'trackAddress, $newPool'targetAmount, $newPool'currentAmount, $newPool'deadline, $newPool'completed, $newPool'contributors, $newPool'contributorCount) = $Pool$_constructor_trackAddress_targetAmount_currentAmount_deadline_completed_contributorCount_contributors($msg'trackAddress, $msg'threshold, 0, $msg'deadline, false, 0, null());
+        $self'pools~__tact_dict_set_int_cell(257, $poolId, $Pool$_store_cell(($newPool'trackAddress, $newPool'targetAmount, $newPool'currentAmount, $newPool'deadline, $newPool'completed, $newPool'contributors, $newPool'contributorCount), begin_cell()));
+        $ToonTip$_contract_store(($self'registry, $self'pools, $self'nextPoolId));
+        return ();
+    }
+    
+    ;; Receive ContributeToPool message
+    if (op == 1517965325) {
+        var $msg'poolId = in_msg~load_uint(256);
+        tuple $pool = $Pool$_load_opt(__tact_dict_get_int_cell($self'pools, 257, $msg'poolId));
+        throw_unless(43006, (~ null?($pool)));
+        var ($p'trackAddress, $p'targetAmount, $p'currentAmount, $p'deadline, $p'completed, $p'contributors, $p'contributorCount) = $Pool$_not_null($pool);
+        throw_unless(41869, (~ $p'completed));
+        throw_unless(34194, ($global_now() <= $p'deadline));
+        int $contribution = ($Context$_get_value(__tact_context_get()) - 50000000);
+        throw_unless(10958, ($contribution > 0));
+        $p'currentAmount = ($p'currentAmount + $contribution);
+        $p'contributors~__tact_dict_set_int_slice(257, $p'contributorCount, __tact_context_get_sender());
+        $p'contributorCount = ($p'contributorCount + 1);
+        if (($p'currentAmount >= $p'targetAmount)) {
+            $p'completed = true;
+            $global_send($SendParameters$_constructor_to_value_mode_body($p'trackAddress, 0, 64, __gen_cell_cell_5ce4503ad980afe101286c4bfa3f310a994a8d7e5e6fcdaf72ffc46f2bdc0b67()));
+        }
+        $self'pools~__tact_dict_set_int_cell(257, $msg'poolId, $Pool$_store_cell(($p'trackAddress, $p'targetAmount, $p'currentAmount, $p'deadline, $p'completed, $p'contributors, $p'contributorCount), begin_cell()));
+        $ToonTip$_contract_store(($self'registry, $self'pools, $self'nextPoolId));
+        return ();
+    }
+    
+    ;; Receive Deploy message
+    if (op == 0x946a98b6) {
+        var $deploy'queryId = in_msg~load_uint(64);
+        ($self'registry, $self'pools, $self'nextPoolId)~$ToonTip$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId), begin_cell()));
+        $ToonTip$_contract_store(($self'registry, $self'pools, $self'nextPoolId));
+        return ();
+    }
+    
+    ;; Throw if not handled
+    throw(130);
+}
+
+
+() __tact_selector_hack_asm() impure asm """
+@atend @ 1 {
+        execute current@ context@ current!
+        {
+            // The core idea of this function is to save gas by avoiding unnecessary dict jump, when recv_internal/recv_external is called
+            // We want to extract recv_internal/recv_external from the dict and select needed function
+            // not by jumping to the needed function by it's index, but by using usual IF statements.
+
+            }END> b> // Close previous builder, now we have a cell of previous code on top of the stack
+
+            <{ // Start of the new code builder
+                SETCP0
+                // Swap the new code builder with the previous code, now we have previous code on top of the stack
+                swap
+                // Transform cell to slice and load first ref from the previous code, now we have the dict on top of the stack
+                <s ref@
+
+                // Extract the recv_internal from the dict
+                dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot
+                swap
+
+                // Delete the recv_internal from the dict
+                0 swap @procdictkeylen idict- drop
+                // Delete the recv_external from the dict (it's okay if it's not there)
+                -1 swap @procdictkeylen idict- drop
+                // Delete the __tact_selector_hack from the dict
+                65535 swap @procdictkeylen idict- drop
+
+                // Bring the code builder from the bottom of the stack
+                // because if recv_external extraction is optional, and the number of elements on the stack is not fixed
+                depth 1- roll
+                // Swap with the dict from which we extracted recv_internal and (maybe) recv_external
+                swap
+
+                // Check if the dict is empty
+                dup null?
+                // Store a copy of this flag in the bottom of the stack
+                dup depth 1- -roll
+                {
+                    // If the dict is empty, just drop it (it will be null if it's empty)
+                    drop
+                }
+                {
+                    // If the dict is not empty, prepare continuation to be stored in c3
+                    <{
+                        // Save this dict as first ref in this continuation, it will be pushed in runtime by DICTPUSHCONST
+                        swap @procdictkeylen DICTPUSHCONST
+                        // Jump to the needed function by it's index
+                        DICTIGETJMPZ
+                        // If such key is not found, throw 11 along with the key as an argument
+                        11 THROWARG
+                    }> PUSHCONT
+                    // Store the continuation in c3
+                    c3 POP
+                } cond
+
+                // Function id is on top of the (runtime) stack
+                DUP IFNOTJMP:<{
+                    // place recv_internal here
+                    DROP swap @addop
+                }>
+
+                // Bring back the flag, indicating if the dict is empty or not from the bottom of the stack
+                depth 1- roll
+                {
+                    // If the dict is empty, throw 11
+                    11 THROWARG
+                }
+                {
+                    // If the dict is not empty, jump to continuation from c3
+                    c3 PUSH JMPX
+                } cond
+            }> b>
+        } : }END>c
+        current@ context! current!
+    } does @atend !
+""";
+
+() __tact_selector_hack() method_id(65535) {
+    return __tact_selector_hack_asm();
+}
