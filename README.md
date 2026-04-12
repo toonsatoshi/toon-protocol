@@ -24,12 +24,12 @@ Decentralized music platform on TON blockchain. All contracts written in Tact v1
 
 | Contract | Address |
 |---|---|
-| MusicNft (genesis) | `EQAIeBoceFVe3YIDBgyRpvw781c9DemRz7ugOdFWzhPHqMqG` |
-| ToonRegistry | `EQCCpa_PD5dvLLfQ0mVQZL3eXBi3kpqHBXKjNtsFpWUJmUJz` |
-| ToonVault | `EQBnWxnXhusmO7RRY15TV-TvAb5bW68CiP2nS_xhEqzl6EFm` |
-| ToonTip | `EQB6QBKUGHBtu0nqWiaLVfNXSm9sDWTOt_zH_iYFiTu-O8Q_` |
-| ToonGovernance | `EQDSeY24XQT4EgHvPTbQ1JZz0U-NgpEV6y6Eza9uP7iEJfGp` |
-| $TOON / ToonJettonMaster | `EQB2bHVyNiuYB467DRzKI_MSA-Z3XDGsjw-SREE7isBm6Rvt` |
+| MusicNft (genesis) | `EQDuvlwNaE0FsYbpqc9ndQ7ZohwzNx5tg0Uqbl7AuQR4U_2Q` |
+| ToonRegistry | `EQCoYE83sBNZe1fvHgy7nBQA6QUsE2o6xOO25MVZv-0Ny9X7` |
+| ToonVault | `EQB_hKFaklmxhTauyq1KdZ5P3vs-wSBKQuQXvXlRqaA1GLpl` |
+| ToonTip | `EQD2ODMBEg5IMQ9UW-6carDKQytq1ar5eS9J3Z1NIgXWhI0k` |
+| ToonGovernance | `EQBCO3z22pcX_AWGhOgcBzLieqTSxLFYzDvHpdUAkTbAhFcp` |
+| $TOON / ToonJettonMaster | `EQCiETxRxLgjpM50n8YcpUaBhJqnq0SFwZLlhBWs4-_wZVkQ` |
 
 ## Build
 
