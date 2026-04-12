@@ -17,7 +17,9 @@ message RequestMint {
 // ─────────────────────────────────────────────────────────────────────────────
 //  ToonTrack
 // ─────────────────────────────────────────────────────────────────────────────
-
+//
+//  Status: IMPLEMENTED (Music NFT Identity)
+//
 contract ToonTrack with Deployable {
 
     // ── Storage ──────────────────────────────────────────────────────────────
@@ -33,6 +35,9 @@ contract ToonTrack with Deployable {
     // ── Constants ──────────────────────────────────────────────────────────
 
     const MINT_REWARD: Int = 1000000000; // 1 $TOON reward for tipping (mock)
+    const GAS_FORWARD_ARTIST: Int = 50000000; // 0.05 TON
+    const GAS_REGISTRY_FEE:   Int = 20000000; // 0.02 TON
+    const MIN_TIP_OVERHEAD:   Int = 80000000; // 0.08 TON safety buffer
 
     // ── Constructor ──────────────────────────────────────────────────────────
 
@@ -54,7 +59,8 @@ contract ToonTrack with Deployable {
     ///   3. Request $TOON mint for the tipper via Registry.
     receive() {
         let ctx: Context = context();
-        require(ctx.value >= self.mintFee, "ToonTrack: tip below minimum floor");
+        let minRequired: Int = self.mintFee + self.MIN_TIP_OVERHEAD;
+        require(ctx.value >= minRequired, "ToonTrack: tip below minimum floor (including gas)");
 
         // 1. Increment reputation
         self.reputation = self.reputation + 1;
@@ -62,7 +68,7 @@ contract ToonTrack with Deployable {
         // 2. Forward value to artist (leaving some for gas/mint)
         send(SendParameters{
             to: self.artist,
-            value: ctx.value - 50000000, // Leave 0.05 TON for processing
+            value: ctx.value - self.GAS_FORWARD_ARTIST,
             mode: 0,
             body: "Tip received".asComment()
         });
@@ -70,7 +76,7 @@ contract ToonTrack with Deployable {
         // 3. Request $TOON mint for the tipper (Tip-to-Earn)
         send(SendParameters{
             to: self.registry,
-            value: 20000000, // 0.02 TON fee for the registry to process/emit
+            value: self.GAS_REGISTRY_FEE,
             mode: 0,
             body: RequestMint{
                 recipient: ctx.sender,
@@ -82,20 +88,21 @@ contract ToonTrack with Deployable {
     /// Explicit "tip" comment support
     receive("tip") {
         let ctx: Context = context();
-        require(ctx.value >= self.mintFee, "ToonTrack: tip below minimum floor");
+        let minRequired: Int = self.mintFee + self.MIN_TIP_OVERHEAD;
+        require(ctx.value >= minRequired, "ToonTrack: tip below minimum floor (including gas)");
         
         self.reputation = self.reputation + 1;
 
         send(SendParameters{
             to: self.artist,
-            value: ctx.value - 50000000, // Leave 0.05 TON for processing
+            value: ctx.value - self.GAS_FORWARD_ARTIST,
             mode: 0,
             body: "Tip received".asComment()
         });
 
         send(SendParameters{
             to: self.registry,
-            value: 20000000, // 0.02 TON
+            value: self.GAS_REGISTRY_FEE,
             mode: 0,
             body: RequestMint{
                 recipient: ctx.sender,

@@ -1,4 +1,4 @@
-// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/projects/toon-bot/toon-contracts/build/ToonRegistry/ToonRegistry_ToonRegistry.fc` 
+// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/toon-protocol-main/build/ToonRegistry/ToonRegistry_ToonRegistry.fc` 
 PROGRAM{
   DECLPROC __tact_context_get
   DECLPROC __tact_context_get_sender
@@ -515,6 +515,12 @@ PROGRAM{
       LDMSGADDR
       DROP
       __tact_context_get_sender INLINECALLDICT
+      55621 PUSHINT
+          B{b5ee9c72410101010024000043800000000000000000000000000000000000000000000000000000000000000000104aec829d} B>boc <s PUSHSLICE
+      s3 s(-1) PUXC
+      SDEQ
+      NOT
+      THROWANYIFNOT
       9299 PUSHINT
       s10 PUSH
       267 PUSHINT
@@ -552,6 +558,20 @@ PROGRAM{
       LDMSGADDR
       DROP
       __tact_context_get_sender INLINECALLDICT
+      10615 PUSHINT
+          B{b5ee9c72410101010024000043800000000000000000000000000000000000000000000000000000000000000000104aec829d} B>boc <s PUSHSLICE
+      s3 s(-1) PUXC
+      SDEQ
+      NOT
+      THROWANYIFNOT
+      18543 PUSHINT
+      s4 PUSH
+      0 NEQINT
+      THROWANYIFNOT
+      26462 PUSHINT
+      s3 PUSH
+      0 NEQINT
+      THROWANYIFNOT
       s9 s11 XCHG
       5 7 REVERSE
       s6 s10 XCHG
@@ -619,6 +639,12 @@ PROGRAM{
       LDMSGADDR
       LDVARUINT16
       DROP
+      38991 PUSHINT
+          B{b5ee9c72410101010024000043800000000000000000000000000000000000000000000000000000000000000000104aec829d} B>boc <s PUSHSLICE
+      s3 s(-1) PUXC
+      SDEQ
+      NOT
+      THROWANYIFNOT
       27890 PUSHINT
       __tact_context_get_sender INLINECALLDICT
       s5 PUSH
@@ -716,6 +742,12 @@ PROGRAM{
       LDMSGADDR
       LDVARUINT16
       DROP
+      38991 PUSHINT
+          B{b5ee9c72410101010024000043800000000000000000000000000000000000000000000000000000000000000000104aec829d} B>boc <s PUSHSLICE
+      s3 s(-1) PUXC
+      SDEQ
+      NOT
+      THROWANYIFNOT
       50582 PUSHINT
       267 PUSHINT
       __tact_context_get_sender INLINECALLDICT
@@ -813,6 +845,12 @@ PROGRAM{
       NIP
       LDMSGADDR
       DROP
+      31774 PUSHINT
+          B{b5ee9c72410101010024000043800000000000000000000000000000000000000000000000000000000000000000104aec829d} B>boc <s PUSHSLICE
+      s2 s(-1) PUXC
+      SDEQ
+      NOT
+      THROWANYIFNOT
       27890 PUSHINT
       __tact_context_get_sender INLINECALLDICT
       s0 s4 XCHG2
@@ -830,6 +868,12 @@ PROGRAM{
       2 1 BLKDROP2
       LDMSGADDR
       DROP
+      57962 PUSHINT
+          B{b5ee9c72410101010024000043800000000000000000000000000000000000000000000000000000000000000000104aec829d} B>boc <s PUSHSLICE
+      s2 s(-1) PUXC
+      SDEQ
+      NOT
+      THROWANYIFNOT
       27890 PUSHINT
       __tact_context_get_sender INLINECALLDICT
       s3 PUSH
@@ -848,6 +892,12 @@ PROGRAM{
       LDMSGADDR
       DROP
       __tact_context_get_sender INLINECALLDICT
+      47432 PUSHINT
+          B{b5ee9c72410101010024000043800000000000000000000000000000000000000000000000000000000000000000104aec829d} B>boc <s PUSHSLICE
+      s3 s(-1) PUXC
+      SDEQ
+      NOT
+      THROWANYIFNOT
       s9 s10 XCHG
       s8 s10 XCHG
       s7 s10 XCHG

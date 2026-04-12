@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonGovernance
-BoC Size: 2848 bytes
+BoC Size: 4159 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 23
+Total structures: 27
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -66,39 +66,55 @@ TL-B: `unstake_governance#03686687 amount:coins = UnstakeGovernance`
 Signature: `UnstakeGovernance{amount:coins}`
 
 ### ProposeParameterUpdate
-TL-B: `propose_parameter_update#e5b64f00 parameter:^string newValue:uint32 description:^string = ProposeParameterUpdate`
-Signature: `ProposeParameterUpdate{parameter:^string,newValue:uint32,description:^string}`
+TL-B: `propose_parameter_update#bba923e1 parameter:^string newValue:uint64 description:^string = ProposeParameterUpdate`
+Signature: `ProposeParameterUpdate{parameter:^string,newValue:uint64,description:^string}`
 
-### VoteOnGlobalProposal
-TL-B: `vote_on_global_proposal#c9831521 proposalId:uint256 support:bool = VoteOnGlobalProposal`
-Signature: `VoteOnGlobalProposal{proposalId:uint256,support:bool}`
+### ProposeAddressUpdate
+TL-B: `propose_address_update#59d0887c parameter:^string newAddress:address description:^string = ProposeAddressUpdate`
+Signature: `ProposeAddressUpdate{parameter:^string,newAddress:address,description:^string}`
+
+### VoteOnProposal
+TL-B: `vote_on_proposal#c4dbca40 proposalId:uint256 support:bool = VoteOnProposal`
+Signature: `VoteOnProposal{proposalId:uint256,support:bool}`
+
+### VoteOnAddressProposal
+TL-B: `vote_on_address_proposal#7c14af8e proposalId:uint256 support:bool = VoteOnAddressProposal`
+Signature: `VoteOnAddressProposal{proposalId:uint256,support:bool}`
 
 ### ExecuteProposal
 TL-B: `execute_proposal#e47ed13b proposalId:uint256 = ExecuteProposal`
 Signature: `ExecuteProposal{proposalId:uint256}`
 
+### ExecuteAddressProposal
+TL-B: `execute_address_proposal#81a594dc proposalId:uint256 = ExecuteAddressProposal`
+Signature: `ExecuteAddressProposal{proposalId:uint256}`
+
 ### UpdateEmissionCap
 TL-B: `update_emission_cap#4bd7a705 newCap:coins = UpdateEmissionCap`
 Signature: `UpdateEmissionCap{newCap:coins}`
+
+### UpdateMinWalletAge
+TL-B: `update_min_wallet_age#c1dbfed1 newAgeDays:uint32 = UpdateMinWalletAge`
+Signature: `UpdateMinWalletAge{newAgeDays:uint32}`
 
 ### UpdateMintAuthority
 TL-B: `update_mint_authority#787cca54 newAuthority:address = UpdateMintAuthority`
 Signature: `UpdateMintAuthority{newAuthority:address}`
 
-### UpdateVaultAddress
-TL-B: `update_vault_address#db77da3f newVault:address = UpdateVaultAddress`
-Signature: `UpdateVaultAddress{newVault:address}`
-
 ### GlobalProposal
-TL-B: `_ parameter:^string newValue:uint32 description:^string proposer:address votesFor:coins votesAgainst:coins deadline:uint32 executed:bool = GlobalProposal`
-Signature: `GlobalProposal{parameter:^string,newValue:uint32,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}`
+TL-B: `_ parameter:^string newValue:uint64 description:^string proposer:address votesFor:coins votesAgainst:coins deadline:uint32 executed:bool = GlobalProposal`
+Signature: `GlobalProposal{parameter:^string,newValue:uint64,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}`
+
+### AddressProposal
+TL-B: `_ parameter:^string newAddress:address description:^string proposer:address votesFor:coins votesAgainst:coins deadline:uint32 executed:bool = AddressProposal`
+Signature: `AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}`
 
 ### ToonGovernance$Data
-TL-B: `_ registry:address vault:address stakes:dict<address, int> totalStaked:coins proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint32,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextProposalId:uint256 hasVoted:dict<int, bool> = ToonGovernance`
-Signature: `ToonGovernance{registry:address,vault:address,stakes:dict<address, int>,totalStaked:coins,proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint32,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}>,nextProposalId:uint256,hasVoted:dict<int, bool>}`
+TL-B: `_ registry:address vault:address stakes:dict<address, int> totalStaked:coins proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint64,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextProposalId:uint256 addressProposals:dict<int, ^AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextAddressProposalId:uint256 hasVoted:dict<int, bool> hasVotedAddress:dict<int, bool> = ToonGovernance`
+Signature: `ToonGovernance{registry:address,vault:address,stakes:dict<address, int>,totalStaked:coins,proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint64,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}>,nextProposalId:uint256,addressProposals:dict<int, ^AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}>,nextAddressProposalId:uint256,hasVoted:dict<int, bool>,hasVotedAddress:dict<int, bool>}`
 
 ## Get methods
-Total get methods: 5
+Total get methods: 7
 
 ## totalStaked
 No arguments
@@ -109,7 +125,14 @@ Argument: voter
 ## getProposal
 Argument: proposalId
 
+## getAddressProposal
+Argument: proposalId
+
 ## hasAddressVoted
+Argument: proposalId
+Argument: voter
+
+## hasAddressVotedOnAddressProposal
 Argument: proposalId
 Argument: voter
 
@@ -153,18 +176,18 @@ Argument: proposalId
 * 135: Code of a contract was not found
 * 136: Invalid standard address
 * 138: Not a basechain address
+* 2999: ToonGovernance: quorum not met
 * 9622: ToonGovernance: already executed
-* 18501: ToonGovernance: unknown parameter
-* 18782: ToonGovernance: proposal failed
 * 22462: ToonGovernance: already voted on this proposal
-* 23211: ToonGovernance: must be a staker to propose
-* 23798: ToonGovernance: proposal already executed
-* 24645: ToonGovernance: voting deadline passed
-* 27449: ToonGovernance: quorum not met (25%)
+* 26849: ToonGovernance: voting closed
+* 33397: ToonGovernance: address proposal does not exist
+* 36734: ToonGovernance: unknown numeric parameter
 * 37276: ToonGovernance: voting still open
 * 39639: ToonGovernance: proposal does not exist
+* 53903: ToonGovernance: unknown address parameter
 * 61996: ToonGovernance: no voting weight
 * 63274: ToonGovernance: insufficient stake
+* 63731: ToonGovernance: must stake to propose
 
 ## Trait inheritance diagram
 

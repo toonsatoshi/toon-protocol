@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonDrop
-BoC Size: 1292 bytes
+BoC Size: 3455 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 17
+Total structures: 19
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -61,23 +61,52 @@ Signature: `FactoryDeploy{queryId:uint64,cashback:address}`
 TL-B: `purchase_slice#b9387971 amount:coins = PurchaseSlice`
 Signature: `PurchaseSlice{amount:coins}`
 
-### DistributeRoyalty
-TL-B: `distribute_royalty#ced98d9c  = DistributeRoyalty`
-Signature: `DistributeRoyalty{}`
+### DepositRoyalty
+TL-B: `deposit_royalty#a2eddc91  = DepositRoyalty`
+Signature: `DepositRoyalty{}`
+
+### ClaimRoyaltyShare
+TL-B: `claim_royalty_share#bab2d365  = ClaimRoyaltyShare`
+Signature: `ClaimRoyaltyShare{}`
 
 ### Refund
-TL-B: `refund#3e4e80d2 investor:address = Refund`
-Signature: `Refund{investor:address}`
+TL-B: `refund#ad7c3add  = Refund`
+Signature: `Refund{}`
+
+### RecoverStuckFunds
+TL-B: `recover_stuck_funds#d2e2fa27 recipient:address = RecoverStuckFunds`
+Signature: `RecoverStuckFunds{recipient:address}`
 
 ### ToonDrop$Data
-TL-B: `_ artist:address trackId:uint256 registry:address vault:address royaltyPercentage:uint16 raiseTarget:coins currentRaise:coins slicePrice:coins deadline:uint32 isLocked:bool isSuccessful:bool investments:dict<address, int> investorCount:uint32 = ToonDrop`
-Signature: `ToonDrop{artist:address,trackId:uint256,registry:address,vault:address,royaltyPercentage:uint16,raiseTarget:coins,currentRaise:coins,slicePrice:coins,deadline:uint32,isLocked:bool,isSuccessful:bool,investments:dict<address, int>,investorCount:uint32}`
+TL-B: `_ artist:address trackId:uint256 registry:address vault:address royaltyPercentage:uint16 raiseTarget:coins slicePrice:coins deadline:uint32 currentRaise:coins isLocked:bool isSuccessful:bool investorCount:uint32 investments:dict<address, int> totalRoyaltiesReceived:coins claimedRoyalties:dict<address, int> = ToonDrop`
+Signature: `ToonDrop{artist:address,trackId:uint256,registry:address,vault:address,royaltyPercentage:uint16,raiseTarget:coins,slicePrice:coins,deadline:uint32,currentRaise:coins,isLocked:bool,isSuccessful:bool,investorCount:uint32,investments:dict<address, int>,totalRoyaltiesReceived:coins,claimedRoyalties:dict<address, int>}`
 
 ## Get methods
-Total get methods: 1
+Total get methods: 8
 
 ## stats
 No arguments
+
+## isSuccessful
+No arguments
+
+## isLocked
+No arguments
+
+## currentRaise
+No arguments
+
+## totalRoyalties
+No arguments
+
+## investorClaimable
+Argument: investor
+
+## investorTotal
+Argument: investor
+
+## investorClaimed
+Argument: investor
 
 ## Exit codes
 * 2: Stack underflow
@@ -116,10 +145,20 @@ No arguments
 * 135: Code of a contract was not found
 * 136: Invalid standard address
 * 138: Not a basechain address
-* 3806: ToonDrop: offering deadline passed
-* 12570: ToonDrop: not successful, cannot distribute royalties
-* 27855: ToonDrop: offering is locked
-* 46155: ToonDrop: only vault can distribute royalties
+* 7135: ToonDrop: no royalties deposited yet
+* 21463: ToonDrop: below slice price
+* 21490: ToonDrop: no investment from caller
+* 22138: ToonDrop: claimable amount below dust threshold
+* 25836: ToonDrop: no recoverable balance
+* 29578: ToonDrop: raise not successful
+* 29924: ToonDrop: refunds only available after a failed raise
+* 34782: ToonDrop: deadline passed
+* 36515: ToonDrop: deposit too small to cover gas reserve
+* 40273: ToonDrop: offering locked
+* 41896: ToonDrop: nothing to refund
+* 48799: ToonDrop: only artist can recover stuck funds
+* 57653: ToonDrop: raise must be finalized first
+* 63106: ToonDrop: only vault may deposit royalties
 
 ## Trait inheritance diagram
 

@@ -586,6 +586,11 @@ slice __gen_slice_string_6d297540b3a6c7ff19491518e8ecf5b21afcda3397774e00351b197
     B{b5ee9c7241010101000700000a6f6e63653a7a3770c8} B>boc <s PUSHSLICE
 """;
 
+;; EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c
+slice __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c() asm """
+    B{b5ee9c72410101010024000043800000000000000000000000000000000000000000000000000000000000000000104aec829d} B>boc <s PUSHSLICE
+""";
+
 ;; Cell bZxKvf4bg3ieQ02BG1I+13YwIRObf5dSZu0owkHo1tQ=
 cell __gen_cell_cell_6d9c4abdfe1b83789e434d811b523ed7763021139b7f975266ed28c241e8d6d4() asm """
     B{b5ee9c7241010101001100001e00000000746f6f6e5f72657761726419eb5d8f} B>boc PUSHREF
@@ -821,8 +826,8 @@ builder $ToonVault$_store(builder build_0, (slice, slice, slice, int, int, int, 
     tuple $sb = __tact_string_builder_start_string();
     $sb~__tact_string_builder_append(__gen_slice_string_3f036ef3ca2b18c7eb8d8166dbce0af9ff2bf48fc42b7ccddfa4d142bcee8e9a());
     $sb~__tact_string_builder_append(__tact_address_to_user_friendly($wallet));
-    var $fresh$ret_0 = __tact_sha256(__tact_string_builder_end_slice($sb));
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_0);
+    var $fresh$ret_17 = __tact_sha256(__tact_string_builder_end_slice($sb));
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_17);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_countKey((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId, slice $wallet) impure inline_ref {
@@ -832,23 +837,23 @@ builder $ToonVault$_store(builder build_0, (slice, slice, slice, int, int, int, 
     $sb~__tact_string_builder_append($Int$_fun_toString($rewardId));
     $sb~__tact_string_builder_append(__gen_slice_string_d4945957eae362fe7564b6491c1f1933ef0e8c8d8c854b880ee9333b04f49c43());
     $sb~__tact_string_builder_append(__tact_address_to_user_friendly($wallet));
-    var $fresh$ret_1 = __tact_sha256(__tact_string_builder_end_slice($sb));
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_1);
+    var $fresh$ret_18 = __tact_sha256(__tact_string_builder_end_slice($sb));
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_18);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_pairingKey((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $userA, int $userB) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
     ifnot ($userB) {
-        var $fresh$ret_2 = 0;
-        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_2);
+        var $fresh$ret_19 = 0;
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_19);
     }
     tuple $sb = __tact_string_builder_start_string();
     $sb~__tact_string_builder_append(__gen_slice_string_ea085cf26ac7df9b02bce3ab22665d787f9436a17dd8405923fe84c726a1702c());
     $sb~__tact_string_builder_append($Int$_fun_toString($userA));
     $sb~__tact_string_builder_append(__gen_slice_string_d4945957eae362fe7564b6491c1f1933ef0e8c8d8c854b880ee9333b04f49c43());
     $sb~__tact_string_builder_append($Int$_fun_toString($userB));
-    var $fresh$ret_3 = __tact_sha256(__tact_string_builder_end_slice($sb));
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_3);
+    var $fresh$ret_20 = __tact_sha256(__tact_string_builder_end_slice($sb));
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_20);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_onceKey((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId, slice $wallet) impure inline_ref {
@@ -858,8 +863,8 @@ builder $ToonVault$_store(builder build_0, (slice, slice, slice, int, int, int, 
     $sb~__tact_string_builder_append($Int$_fun_toString($rewardId));
     $sb~__tact_string_builder_append(__gen_slice_string_d4945957eae362fe7564b6491c1f1933ef0e8c8d8c854b880ee9333b04f49c43());
     $sb~__tact_string_builder_append(__tact_address_to_user_friendly($wallet));
-    var $fresh$ret_4 = __tact_sha256(__tact_string_builder_end_slice($sb));
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_4);
+    var $fresh$ret_21 = __tact_sha256(__tact_string_builder_end_slice($sb));
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_21);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_verifyOracleSignature((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, (slice, int, int, int, int, int, int, int, int, int, int) $msg) impure inline_ref {
@@ -868,8 +873,8 @@ builder $ToonVault$_store(builder build_0, (slice, slice, slice, int, int, int, 
     cell $payloadCell = $Builder$_fun_endCell(store_uint(store_uint(store_uint($Builder$_fun_storeCoins($Builder$_fun_storeBool($msg'hasVibeStreak, store_uint(store_uint($Builder$_fun_storeAddress(store_uint($global_beginCell(), $msg'telegramId, 64), $msg'walletAddress), $msg'rewardId, 8), $msg'walletAgeDays, 32)), $msg'tipAmount), $msg'claimId, 64), $msg'expiry, 32), $msg'referrerId, 64));
     int $h = $Cell$_fun_hash($payloadCell);
     slice $sigSlice = $Cell$_fun_asSlice($Builder$_fun_endCell(store_uint(store_uint($global_beginCell(), $msg'sigHigh, 256), $msg'sigLow, 256)));
-    var $fresh$ret_5 = $global_checkSignature($h, $sigSlice, $self'oraclePublicKey);
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_5);
+    var $fresh$ret_22 = $global_checkSignature($h, $sigSlice, $self'oraclePublicKey);
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_22);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), ()) $ToonVault$_fun_checkDayReset((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $today) impure inline_ref {
@@ -895,27 +900,27 @@ builder $ToonVault$_store(builder build_0, (slice, slice, slice, int, int, int, 
     if ($self'halved) {
         $cap = ($cap / 2);
     }
-    var $fresh$ret_6 = $cap;
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_6);
+    var $fresh$ret_23 = $cap;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_23);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_activityMultiplier((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
     ifnot ($self'targetDailyActivity) {
-        var $fresh$ret_7 = 10000;
-        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_7);
+        var $fresh$ret_24 = 10000;
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_24);
     }
     int $actual = $self'dailyClaimCount;
     if (($actual <= $self'targetDailyActivity)) {
-        var $fresh$ret_8 = 10000;
-        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_8);
+        var $fresh$ret_25 = 10000;
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_25);
     }
     int $ratio = (($self'targetDailyActivity * 10000) / $actual);
     if (($ratio < 1000)) {
         $ratio = 1000;
     }
-    var $fresh$ret_9 = $ratio;
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_9);
+    var $fresh$ret_26 = $ratio;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_26);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_applyMultiplier((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $amount, int $hasStreak) impure inline_ref {
@@ -926,122 +931,122 @@ builder $ToonVault$_store(builder build_0, (slice, slice, slice, int, int, int, 
     }
     int $feedback = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_activityMultiplier();
     $res = (($res * $feedback) / 10000);
-    var $fresh$ret_10 = $res;
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_10);
+    var $fresh$ret_27 = $res;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_27);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_decayedReward((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $base, int $claimCount) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
     ifnot ($claimCount) {
-        var $fresh$ret_11 = $base;
-        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_11);
+        var $fresh$ret_28 = $base;
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_28);
     }
     if (($claimCount == 1)) {
-        var $fresh$ret_12 = (($base * 75) / 100);
-        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_12);
+        var $fresh$ret_29 = (($base * 75) / 100);
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_29);
     }
     if (($claimCount == 2)) {
-        var $fresh$ret_13 = (($base * 50) / 100);
-        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_13);
+        var $fresh$ret_30 = (($base * 50) / 100);
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_30);
     }
     if (($claimCount <= 9)) {
-        var $fresh$ret_14 = (($base * 25) / 100);
-        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_14);
+        var $fresh$ret_31 = (($base * 25) / 100);
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_31);
     }
-    var $fresh$ret_15 = (($base * 10) / 100);
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_15);
+    var $fresh$ret_32 = (($base * 10) / 100);
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_32);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_pairingDecay((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $amount, int $pairCount) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
     ifnot ($pairCount) {
-        var $fresh$ret_16 = $amount;
-        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_16);
+        var $fresh$ret_33 = $amount;
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_33);
     }
     if (($pairCount == 1)) {
-        var $fresh$ret_17 = (($amount * 80) / 100);
-        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_17);
+        var $fresh$ret_34 = (($amount * 80) / 100);
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_34);
     }
     if (($pairCount == 2)) {
-        var $fresh$ret_18 = (($amount * 60) / 100);
-        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_18);
+        var $fresh$ret_35 = (($amount * 60) / 100);
+        return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_35);
     }
-    var $fresh$ret_19 = (($amount * 40) / 100);
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_19);
+    var $fresh$ret_36 = (($amount * 40) / 100);
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_36);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_isOneTimeReward((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
-    var $fresh$ret_20 = ( (( (($rewardId == 3)) ? (true) : (($rewardId == 4)) )) ? (true) : (($rewardId == 6)) );
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_20);
+    var $fresh$ret_37 = ( (( (($rewardId == 3)) ? (true) : (($rewardId == 4)) )) ? (true) : (($rewardId == 6)) );
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_37);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_totalReserve((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
-    var $fresh$ret_21 = $self'totalReserve;
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_21);
+    var $fresh$ret_38 = $self'totalReserve;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_38);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_dailyEmitted((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
-    var $fresh$ret_22 = $self'dailyEmitted;
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_22);
+    var $fresh$ret_39 = $self'dailyEmitted;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_39);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_dailyClaimCount((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
-    var $fresh$ret_23 = $self'dailyClaimCount;
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_23);
+    var $fresh$ret_40 = $self'dailyClaimCount;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_40);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_isHalved((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
-    var $fresh$ret_24 = $self'halved;
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_24);
+    var $fresh$ret_41 = $self'halved;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_41);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_currentEmissionCap((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
-    var $fresh$ret_25 = $self'emissionCap;
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_25);
+    var $fresh$ret_42 = $self'emissionCap;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_42);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_minWalletAgeDays((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
-    var $fresh$ret_26 = $self'minWalletAgeDays;
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_26);
+    var $fresh$ret_43 = $self'minWalletAgeDays;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_43);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_effectiveDailyCap((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
-    var $fresh$ret_27 = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_halvedBaseCap();
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_27);
+    var $fresh$ret_44 = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_halvedBaseCap();
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_44);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), slice) $ToonVault$_fun_governance((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
-    var $fresh$ret_28 = $self'governance;
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_28);
+    var $fresh$ret_45 = $self'governance;
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_45);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_walletClaimCount((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId, slice $wallet) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
     int $k = ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_countKey($rewardId, $wallet);
     int $v = __tact_dict_get_int_int($self'claimCounts, 257, $k, 257);
-    var $fresh$ret_29 = ((~ null?($v)) ? __tact_not_null($v) : 0);
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_29);
+    var $fresh$ret_46 = ((~ null?($v)) ? __tact_not_null($v) : 0);
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_46);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_isOneTimeClaimed((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $rewardId, slice $wallet) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
-    var $fresh$ret_30 = (~ null?(__tact_dict_get_int_int($self'lifetimeClaimed, 257, ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_onceKey($rewardId, $wallet), 1)));
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_30);
+    var $fresh$ret_47 = (~ null?(__tact_dict_get_int_int($self'lifetimeClaimed, 257, ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_onceKey($rewardId, $wallet), 1)));
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_47);
 }
 
 ((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell), int) $ToonVault$_fun_isClaimIdUsed((slice, slice, slice, int, int, int, int, int, int, int, int, int, cell, cell, cell, cell, cell) $self, int $claimId) impure inline_ref {
     var (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)) = $self;
-    var $fresh$ret_31 = (~ null?(__tact_dict_get_int_int($self'usedClaimIds, 257, $claimId, 1)));
-    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_31);
+    var $fresh$ret_48 = (~ null?(__tact_dict_get_int_int($self'usedClaimIds, 257, $claimId, 1)));
+    return (($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed), $fresh$ret_48);
 }
 
 ;;
@@ -1162,6 +1167,8 @@ _ %isClaimIdUsed(int $claimId) method_id(103612) {
         slice sc_1 = in_msg~load_ref().begin_parse();
         var $msg'sigLow = sc_1~load_uint(256);
         var $msg'referrerId = sc_1~load_uint(64);
+        throw_unless(40789, ( (($msg'rewardId >= 1)) ? (($msg'rewardId <= 7)) : (false) ));
+        throw_unless(43615, ( ~ equal_slices_bits($msg'walletAddress, __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c()) ));
         throw_unless(44370, ($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed)~$ToonVault$_fun_verifyOracleSignature($ClaimReward$_tensor_cast(($msg'walletAddress, $msg'rewardId, $msg'telegramId, $msg'walletAgeDays, $msg'hasVibeStreak, $msg'tipAmount, $msg'claimId, $msg'expiry, $msg'sigHigh, $msg'sigLow, $msg'referrerId))));
         throw_unless(4234, ($msg'expiry >= $global_now()));
         throw_unless(11229, null?(__tact_dict_get_int_int($self'usedClaimIds, 257, $msg'claimId, 1)));
@@ -1293,7 +1300,7 @@ _ %isClaimIdUsed(int $claimId) method_id(103612) {
     ;; Receive UpdateRegistry message
     if (op == 272637735) {
         var $msg'newRegistry = in_msg~load_msg_addr();
-        throw_unless(55903, ( equal_slices_bits(__tact_context_get_sender(), $self'owner) ));
+        throw_unless(52129, ( equal_slices_bits(__tact_context_get_sender(), $self'owner) ));
         $self'registry = $msg'newRegistry;
         $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, $self'emissionCap, $self'minWalletAgeDays, $self'targetDailyActivity, $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'lifetimeClaimed));
         return ();

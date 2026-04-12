@@ -80,7 +80,7 @@ contract ToonJettonMaster(
     mintAuthority: Address,
     totalSupply:   Int as coins,
     metadataUri:   String,
-) {
+) with Deployable {
     receive(msg: TokenBurnNotification) {
         require(sender() == self.mintAuthority, "Not authorized");
         self.totalSupply = self.totalSupply - msg.amount;

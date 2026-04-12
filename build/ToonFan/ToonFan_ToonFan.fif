@@ -1,4 +1,4 @@
-// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/projects/toon-bot/toon-contracts/build/ToonFan/ToonFan_ToonFan.fc` 
+// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/toon-protocol-main/build/ToonFan/ToonFan_ToonFan.fc` 
 PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get

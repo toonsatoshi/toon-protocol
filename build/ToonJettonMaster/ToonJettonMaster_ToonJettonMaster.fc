@@ -11,8 +11,17 @@
 ;; __tact_not_null
 forall X -> X __tact_not_null(X x) impure inline;
 
+;; __tact_context_get
+(int, slice, int, slice) __tact_context_get() inline;
+
 ;; __tact_context_get_sender
 slice __tact_context_get_sender() inline;
+
+;; $DeployOk$_store
+builder $DeployOk$_store(builder build_0, (int) v) inline;
+
+;; $DeployOk$_store_cell
+cell $DeployOk$_store_cell((int) v, builder b) inline;
 
 ;; $TokenExcesses$_store
 builder $TokenExcesses$_store(builder build_0, (int) v) inline;
@@ -28,6 +37,9 @@ builder $ToonJettonMaster$_store(builder build_0, (slice, slice, int, slice) v) 
 
 ;; $StateInit$_get_code
 _ $StateInit$_get_code((cell, cell) v) inline;
+
+;; $Context$_get_value
+_ $Context$_get_value((int, slice, int, slice) v) inline;
 
 ;; $JettonData$_to_external
 (int, int, slice, cell, cell) $JettonData$_to_external(((int, int, slice, cell, cell)) v) inline;
@@ -62,11 +74,20 @@ builder $ToonJettonWallet$init$_store(builder build_0, (int, slice, slice) v) in
 ;; $ToonJettonMaster$_fun_metadataUri
 ((slice, slice, int, slice), slice) $ToonJettonMaster$_fun_metadataUri((slice, slice, int, slice) $self) impure inline_ref;
 
+;; $MessageParameters$_constructor_bounce_to_value_mode_body
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline;
+
+;; $ToonJettonMaster$_fun_notify
+((slice, slice, int, slice), ()) $ToonJettonMaster$_fun_notify((slice, slice, int, slice) $self, cell $body) impure inline;
+
 ;; $SendParameters$_constructor_to_value_mode_body
 ((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline;
 
 ;; $TokenExcesses$_constructor_queryId
 ((int)) $TokenExcesses$_constructor_queryId(int $queryId) inline;
+
+;; $DeployOk$_constructor_queryId
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline;
 
 
 ;; ToonJettonMaster_ToonJettonMaster.stdlib.fc
@@ -91,6 +112,10 @@ forall X -> X __tact_not_null(X x) impure inline {
     throw_if(128, null?(x)); return x;
 }
 
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
+
 slice __tact_context_get_sender() inline {
     return __tact_context_sender;
 }
@@ -101,6 +126,34 @@ builder $global_beginCell() impure asm """
 
 slice $global_myAddress() impure asm """
     MYADDR
+""";
+
+int $global_myBalance() impure asm """
+    BALANCE FIRST
+""";
+
+() $global_nativeReserve(int $amount, int $mode) impure asm """
+    RAWRESERVE
+""";
+
+() $global_message((int, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+    STZEROES
+    // → Stack state
+    // s0: Builder
+    // s1: `body`
+    // s2: `mode`
+    STDICT
+    ENDC
+    SWAP
+    SENDRAWMSG
 """;
 
 () $global_send((int, cell, cell, cell, int, slice, int) $params) impure asm """
@@ -188,6 +241,23 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
 
 slice $String$_fun_asSlice(slice $self) impure asm "NOP";
 
+((slice, slice, int, slice), ()) $ToonJettonMaster$_fun_notify((slice, slice, int, slice) $self, cell $body) impure inline {
+    var (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri)) = $self;
+    slice $to = __tact_context_get_sender();
+    int $bounce = false;
+    if (false) {
+        int $balance = $global_myBalance();
+        int $balanceBeforeMessage = ($balance - $Context$_get_value(__tact_context_get()));
+        if (($balanceBeforeMessage < 0)) {
+            $global_nativeReserve(0, 0);
+            $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 130, $body));
+            return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), ());
+        }
+    }
+    $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 66, $body));
+    return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), ());
+}
+
 ;; ToonJettonMaster_ToonJettonMaster.constants.fc
 ;; Cell 4psPeqWJ+DodTYuvzWeuCjs/cDTcmO5q+s8jRBFnHk4=
 cell __gen_cell_cell_e29b0f7aa589f83a1d4d8bafcd67ae0a3b3f7034dc98ee6afacf234411671e4e() asm """
@@ -206,12 +276,52 @@ _ $StateInit$_get_code((cell, cell) v) inline {
 }
 
 ;;
+;; Type: Context
+;; TLB: _ bounceable:bool sender:address value:int257 raw:^slice = Context
+;;
+
+_ $Context$_get_value((int, slice, int, slice) v) inline {
+    var (v'bounceable, v'sender, v'value, v'raw) = v;
+    return v'value;
+}
+
+;;
 ;; Type: SendParameters
 ;; TLB: _ mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell value:int257 to:address bounce:bool = SendParameters
 ;;
 
 ((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline {
     return ($mode, $body, null(), null(), $value, $to, true);
+}
+
+;;
+;; Type: MessageParameters
+;; TLB: _ mode:int257 body:Maybe ^cell value:int257 to:address bounce:bool = MessageParameters
+;;
+
+((int, cell, int, slice, int)) $MessageParameters$_constructor_bounce_to_value_mode_body(int $bounce, slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, $value, $to, $bounce);
+}
+
+;;
+;; Type: DeployOk
+;; Header: 0xaff90f57
+;; TLB: deploy_ok#aff90f57 queryId:uint64 = DeployOk
+;;
+
+builder $DeployOk$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $DeployOk$_store_cell((int) v, builder b) inline {
+    return $DeployOk$_store(b, v).end_cell();
+}
+
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline {
+    return ($queryId);
 }
 
 ;;
@@ -438,6 +548,14 @@ _ %metadataUri() method_id(82975) {
             throw_unless(14534, ( equal_slices_bits(__tact_context_get_sender(), $self'owner) ));
             $self'metadataUri = $msg'newUri;
             $ToonJettonMaster$_contract_store(($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri));
+            return ();
+        }
+        
+        ;; Receive Deploy message
+        if (op == 0x946a98b6) {
+            var $deploy'queryId = in_msg~load_uint(64);
+            ($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri)~$ToonJettonMaster$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId), begin_cell()));
+            
             return ();
         }
         

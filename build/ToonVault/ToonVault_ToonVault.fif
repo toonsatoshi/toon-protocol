@@ -1214,6 +1214,22 @@ PROGRAM{
       256 LDU
       64 LDU
       DROP
+      40789 PUSHINT
+      s10 PUSH
+      0 GTINT
+      IF:<{
+        s10 PUSH
+        8 LESSINT
+      }>ELSE<{
+        FALSE
+      }>
+      THROWANYIFNOT
+      43615 PUSHINT
+          B{b5ee9c72410101010024000043800000000000000000000000000000000000000000000000000000000000000000104aec829d} B>boc <s PUSHSLICE
+      s12 s(-1) PUXC
+      SDEQ
+      NOT
+      THROWANYIFNOT
       44370 PUSHINT
       s11 PUSH
       s11 s2 s(-1) PUXC2
@@ -1980,7 +1996,7 @@ PROGRAM{
       s0 s15 XCHG
       LDMSGADDR
       DROP
-      55903 PUSHINT
+      52129 PUSHINT
       __tact_context_get_sender INLINECALLDICT
       16 s() PUSH
       SDEQ

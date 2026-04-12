@@ -363,32 +363,32 @@ builder $ToonTrack$_store(builder build_0, (slice, slice, slice, int, int, int) 
 
 ((slice, slice, slice, int, int, int), int) $ToonTrack$_fun_reputation((slice, slice, slice, int, int, int) $self) impure inline_ref {
     var (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation)) = $self;
-    var $fresh$ret_40 = $self'reputation;
-    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_40);
+    var $fresh$ret_65 = $self'reputation;
+    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_65);
 }
 
 ((slice, slice, slice, int, int, int), slice) $ToonTrack$_fun_artist((slice, slice, slice, int, int, int) $self) impure inline_ref {
     var (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation)) = $self;
-    var $fresh$ret_41 = $self'artist;
-    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_41);
+    var $fresh$ret_66 = $self'artist;
+    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_66);
 }
 
 ((slice, slice, slice, int, int, int), slice) $ToonTrack$_fun_metadataUri((slice, slice, slice, int, int, int) $self) impure inline_ref {
     var (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation)) = $self;
-    var $fresh$ret_42 = $self'metadataUri;
-    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_42);
+    var $fresh$ret_67 = $self'metadataUri;
+    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_67);
 }
 
 ((slice, slice, slice, int, int, int), int) $ToonTrack$_fun_fingerprint((slice, slice, slice, int, int, int) $self) impure inline_ref {
     var (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation)) = $self;
-    var $fresh$ret_43 = $self'fingerprint;
-    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_43);
+    var $fresh$ret_68 = $self'fingerprint;
+    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_68);
 }
 
 ((slice, slice, slice, int, int, int), int) $ToonTrack$_fun_mintFee((slice, slice, slice, int, int, int) $self) impure inline_ref {
     var (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation)) = $self;
-    var $fresh$ret_44 = $self'mintFee;
-    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_44);
+    var $fresh$ret_69 = $self'mintFee;
+    return (($self'artist, $self'registry, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation), $fresh$ret_69);
 }
 
 ;;
@@ -465,7 +465,8 @@ _ %mintFee() method_id(96203) {
     ;; Receive empty message
     if ((op == 0) & (in_msg_length <= 32)) {
         var ($ctx'bounceable, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-        throw_unless(44191, ($ctx'value >= $self'mintFee));
+        int $minRequired = ($self'mintFee + 80000000);
+        throw_unless(43013, ($ctx'value >= $minRequired));
         $self'reputation = ($self'reputation + 1);
         $global_send($SendParameters$_constructor_to_value_mode_body($self'artist, ($ctx'value - 50000000), 0, __gen_cell_cell_2e8d65a4c0ec8773eccc5afdb1a22a7271034aa4143d377a2d12e03197dd9151()));
         $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 20000000, 0, $RequestMint$_store_cell($RequestMint$_constructor_recipient_amount($ctx'sender, 1000000000), begin_cell())));
@@ -477,7 +478,8 @@ _ %mintFee() method_id(96203) {
     ;; Receive "tip" message
     if (text_op == 0x775fac1ca69e924416b5b310799513dc523abbb3839c6cb016e4d19ec1bd34d4) {
         var ($ctx'bounceable, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-        throw_unless(44191, ($ctx'value >= $self'mintFee));
+        int $minRequired = ($self'mintFee + 80000000);
+        throw_unless(43013, ($ctx'value >= $minRequired));
         $self'reputation = ($self'reputation + 1);
         $global_send($SendParameters$_constructor_to_value_mode_body($self'artist, ($ctx'value - 50000000), 0, __gen_cell_cell_2e8d65a4c0ec8773eccc5afdb1a22a7271034aa4143d377a2d12e03197dd9151()));
         $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 20000000, 0, $RequestMint$_store_cell($RequestMint$_constructor_recipient_amount($ctx'sender, 1000000000), begin_cell())));

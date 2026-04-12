@@ -1,4 +1,4 @@
-// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/projects/toon-bot/toon-contracts/build/ToonTrack/ToonTrack_ToonTrack.fc` 
+// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/toon-protocol-main/build/ToonTrack/ToonTrack_ToonTrack.fc` 
 PROGRAM{
   DECLPROC __tact_context_get
   DECLPROC __tact_context_get_sender
@@ -287,8 +287,12 @@ PROGRAM{
       __tact_context_get INLINECALLDICT
       DROP
       s2 POP
-      44191 PUSHINT
-      s2 s7 PUSH2
+      s6 PUSH
+      80000000 PUSHINT
+      ADD
+      s2 PUSH
+      43013 PUSHINT
+      s0 s2 XCHG
       GEQ
       THROWANYIFNOT
       s0 s7 XCHG
@@ -456,8 +460,12 @@ PROGRAM{
       __tact_context_get INLINECALLDICT
       DROP
       s2 POP
-      44191 PUSHINT
-      s2 s7 PUSH2
+      s6 PUSH
+      80000000 PUSHINT
+      ADD
+      s2 PUSH
+      43013 PUSHINT
+      s0 s2 XCHG
       GEQ
       THROWANYIFNOT
       s0 s7 XCHG

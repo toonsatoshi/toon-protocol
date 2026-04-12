@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonArtist
-BoC Size: 2185 bytes
+BoC Size: 1872 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 20
+Total structures: 21
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -81,6 +81,10 @@ Signature: `UpdateMetadata{newUri:^string}`
 TL-B: `add_track#21a5a79d trackId:uint256 fingerprint:uint256 trackContract:address = AddTrack`
 Signature: `AddTrack{trackId:uint256,fingerprint:uint256,trackContract:address}`
 
+### ArtistDetails
+TL-B: `_ reputation:uint32 totalTipVolume:coins stakedToon:coins isActive:bool totalTracks:uint32 = ArtistDetails`
+Signature: `ArtistDetails{reputation:uint32,totalTipVolume:coins,stakedToon:coins,isActive:bool,totalTracks:uint32}`
+
 ### ToonArtist$Data
 TL-B: `_ owner:address registry:address telegramHash:uint256 metadataUri:^string reputation:uint32 totalTipVolume:coins stakedToon:coins tracks:dict<int, address> totalTracks:uint32 = ToonArtist`
 Signature: `ToonArtist{owner:address,registry:address,telegramHash:uint256,metadataUri:^string,reputation:uint32,totalTipVolume:coins,stakedToon:coins,tracks:dict<int, address>,totalTracks:uint32}`
@@ -94,7 +98,7 @@ No arguments
 ## canLaunchToonDrop
 No arguments
 
-## details
+## getDetails
 No arguments
 
 ## getTrack
@@ -150,9 +154,12 @@ No arguments
 * 136: Invalid standard address
 * 138: Not a basechain address
 * 6995: ToonArtist: stake required for additional tracks
+* 9033: ToonArtist: stake amount must be positive
+* 17513: ToonArtist: invalid track contract address
 * 33141: ToonArtist: only owner can stake
 * 34415: ToonArtist: only owner can update metadata
 * 36510: ToonArtist: only owner can unstake
+* 42813: ToonArtist: empty metadata URI
 * 44170: ToonArtist: only owner can add tracks
 * 59865: ToonArtist: insufficient stake
 

@@ -1,12 +1,16 @@
 // automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/toon-protocol-main/build/ToonJettonMaster/ToonJettonMaster_ToonJettonMaster.fc` 
 PROGRAM{
   DECLPROC __tact_not_null
+  DECLPROC __tact_context_get
   DECLPROC __tact_context_get_sender
+  DECLPROC $DeployOk$_store
+  DECLPROC $DeployOk$_store_cell
   DECLPROC $TokenExcesses$_store
   DECLPROC $TokenExcesses$_store_cell
   DECLPROC $ToonJettonMaster$_store
   DECLPROC $ToonJettonMaster$_load
   DECLPROC $StateInit$_get_code
+  DECLPROC $Context$_get_value
   DECLPROC $JettonData$_to_external
   DECLPROC $ToonJettonWallet$init$_store
   DECLPROC $ToonJettonMaster$_contract_load
@@ -18,8 +22,11 @@ PROGRAM{
   DECLPROC $ToonJettonMaster$_fun_owner
   DECLPROC $ToonJettonMaster$_fun_mintAuthority
   DECLPROC $ToonJettonMaster$_fun_metadataUri
+  DECLPROC $MessageParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $ToonJettonMaster$_fun_notify
   DECLPROC $SendParameters$_constructor_to_value_mode_body
   DECLPROC $TokenExcesses$_constructor_queryId
+  DECLPROC $DeployOk$_constructor_queryId
   106029 DECLMETHOD %get_jetton_data
   86140 DECLMETHOD %totalSupply
   83229 DECLMETHOD %owner
@@ -36,8 +43,23 @@ PROGRAM{
     ISNULL
     128 THROWIF
   }>
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    4 UNTUPLE
+  }>
   __tact_context_get_sender PROCINLINE:<{
     __tact_context_sender GETGLOB
+  }>
+  $DeployOk$_store PROCINLINE:<{
+    2952335191 PUSHINT
+    ROT
+    32 STU
+    64 STU
+  }>
+  $DeployOk$_store_cell PROCINLINE:<{
+    SWAP
+    $DeployOk$_store INLINECALLDICT
+    ENDC
   }>
   $TokenExcesses$_store PROCINLINE:<{
     3576854235 PUSHINT
@@ -73,6 +95,10 @@ PROGRAM{
   }>
   $StateInit$_get_code PROCINLINE:<{
     DROP
+  }>
+  $Context$_get_value PROCINLINE:<{
+    s1 s3 XCHG
+    3 BLKDROP
   }>
   $JettonData$_to_external PROCINLINE:<{
   }>
@@ -135,6 +161,36 @@ PROGRAM{
   $ToonJettonMaster$_fun_metadataUri PROCREF:<{
     DUP
   }>
+  $MessageParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
+    s3 s3 XCHG2
+    s0 s4 XCHG
+  }>
+  $ToonJettonMaster$_fun_notify PROCINLINE:<{
+    __tact_context_get_sender INLINECALLDICT
+    FALSE
+    0 PUSHINT
+    s0 s3 XCHG2
+    66 PUSHINT
+    SWAP
+    $MessageParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+        NEWC
+        b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+        1 STI               // store `bounce`
+        b{000} STSLICECONST // store bounced = false and src = addr_none
+        STSLICE             // store `to`
+        SWAP
+        STGRAMS             // store `value`
+        106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+        STZEROES
+        // → Stack state
+        // s0: Builder
+        // s1: `body`
+        // s2: `mode`
+        STDICT
+        ENDC
+        SWAP
+        SENDRAWMSG
+  }>
   $SendParameters$_constructor_to_value_mode_body PROCINLINE:<{
     2SWAP
     PUSHNULL
@@ -143,6 +199,8 @@ PROGRAM{
     TRUE
   }>
   $TokenExcesses$_constructor_queryId PROCINLINE:<{
+  }>
+  $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
   %get_jetton_data PROC:<{
     $ToonJettonMaster$_contract_load INLINECALLDICT
@@ -326,10 +384,11 @@ PROGRAM{
         $ToonJettonMaster$_contract_store INLINECALLDICT
         RETALT
       }>
-      SWAP
+      OVER
       293200627 PUSHINT
       EQUAL
       IFJMP:<{
+        NIP
         s4 POP
         s0 s3 XCHG
         LDREF
@@ -342,6 +401,21 @@ PROGRAM{
         THROWANYIFNOT
         s3 s3 s0 XCHG3
         $ToonJettonMaster$_contract_store INLINECALLDICT
+        RETALT
+      }>
+      SWAP
+      2490013878 PUSHINT
+      EQUAL
+      IFJMP:<{
+        64 LDU
+        DROP
+        $DeployOk$_constructor_queryId INLINECALLDICT
+        NEWC
+        $DeployOk$_store_cell INLINECALLDICT
+        s4 s3 s0 XCHG3
+        s1 s2 XCHG
+        $ToonJettonMaster$_fun_notify INLINECALLDICT
+        4 BLKDROP
         RETALT
       }>
       s0 s3 XCHG

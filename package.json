@@ -6,10 +6,10 @@
     "build": "blueprint build",
     "build:all": "blueprint build --all",
     "test": "jest",
-    "deploy:token": "blueprint run deployToonToken",
-    "deploy:registry": "blueprint run deployToonRegistry",
-    "deploy:protocol": "blueprint run deployToonProtocol",
-    "deploy:artist": "blueprint run deployToonArtist",
+    "deploy:token": "blueprint run deployToonToken --testnet",
+    "deploy:registry": "blueprint run deployToonRegistry --testnet",
+    "deploy:protocol": "blueprint run deployToonProtocol --testnet",
+    "deploy:artist": "blueprint run deployToonArtist --testnet",
     "start": "node index.js"
   },
   "engines": {

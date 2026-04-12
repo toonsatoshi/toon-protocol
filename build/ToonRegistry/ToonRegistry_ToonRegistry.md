@@ -1,6 +1,6 @@
 # Tact compilation report
 Contract: ToonRegistry
-BoC Size: 2069 bytes
+BoC Size: 2503 bytes
 
 ## Structures (Structs and Messages)
 Total structures: 25
@@ -168,12 +168,20 @@ No arguments
 * 138: Not a basechain address
 * 9299: ToonRegistry: wallet already has an artist identity
 * 9580: ToonRegistry: mint amount must be positive
+* 10615: ToonRegistry: invalid track contract address
 * 15016: ToonRegistry: duplicate content fingerprint detected
 * 16165: ToonRegistry: trackId already exists
+* 18543: ToonRegistry: trackId cannot be zero
 * 26225: ToonRegistry: caller is not a registered ToonArtist contract
+* 26462: ToonRegistry: fingerprint cannot be zero
 * 27890: ToonRegistry: caller is not the mint authority
+* 31774: ToonRegistry: invalid new authority address
+* 38991: ToonRegistry: invalid recipient address
 * 44318: ToonRegistry: drop already exists for this track
+* 47432: ToonRegistry: invalid drop contract address
 * 50582: ToonRegistry: caller is not a registered ToonTrack contract
+* 55621: ToonRegistry: invalid artist contract address
+* 57962: ToonRegistry: invalid vault address
 
 ## Trait inheritance diagram
 

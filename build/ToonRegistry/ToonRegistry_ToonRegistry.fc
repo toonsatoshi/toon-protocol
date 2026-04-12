@@ -380,6 +380,12 @@ int $global_now() impure asm """
     return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), ());
 }
 
+;; ToonRegistry_ToonRegistry.constants.fc
+;; EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c
+slice __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c() asm """
+    B{b5ee9c72410101010024000043800000000000000000000000000000000000000000000000000000000000000000104aec829d} B>boc <s PUSHSLICE
+""";
+
 ;; ToonRegistry_ToonRegistry.storage.fc
 ;;
 ;; Type: Context
@@ -604,50 +610,50 @@ builder $ToonRegistry$_store(builder build_0, (cell, cell, cell, cell, cell, cel
 
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, int), slice) $ToonRegistry$_fun_getArtistContract((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, slice $wallet) impure inline_ref {
     var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
-    var $fresh$ret_24 = __tact_dict_get_slice_slice($self'artists, 267, $wallet);
-    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_24);
+    var $fresh$ret_49 = __tact_dict_get_slice_slice($self'artists, 267, $wallet);
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_49);
 }
 
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, int), slice) $ToonRegistry$_fun_getTrackContract((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, int $trackId) impure inline_ref {
     var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
-    var $fresh$ret_25 = __tact_dict_get_int_slice($self'tracks, 257, $trackId);
-    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_25);
+    var $fresh$ret_50 = __tact_dict_get_int_slice($self'tracks, 257, $trackId);
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_50);
 }
 
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, int), slice) $ToonRegistry$_fun_getDropContract((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, int $trackId) impure inline_ref {
     var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
-    var $fresh$ret_26 = __tact_dict_get_int_slice($self'drops, 257, $trackId);
-    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_26);
+    var $fresh$ret_51 = __tact_dict_get_int_slice($self'drops, 257, $trackId);
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_51);
 }
 
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, int), int) $ToonRegistry$_fun_isRegisteredArtist((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, slice $wallet) impure inline_ref {
     var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
-    var $fresh$ret_27 = (~ null?(__tact_dict_get_slice_slice($self'artists, 267, $wallet)));
-    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_27);
+    var $fresh$ret_52 = (~ null?(__tact_dict_get_slice_slice($self'artists, 267, $wallet)));
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_52);
 }
 
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, int), int) $ToonRegistry$_fun_isRegisteredTrack((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, int $trackId) impure inline_ref {
     var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
-    var $fresh$ret_28 = (~ null?(__tact_dict_get_int_slice($self'tracks, 257, $trackId)));
-    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_28);
+    var $fresh$ret_53 = (~ null?(__tact_dict_get_int_slice($self'tracks, 257, $trackId)));
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_53);
 }
 
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, int), int) $ToonRegistry$_fun_fingerprintExists((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, int $fingerprint) impure inline_ref {
     var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
-    var $fresh$ret_29 = (~ null?(__tact_dict_get_int_int($self'fingerprints, 257, $fingerprint, 1)));
-    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_29);
+    var $fresh$ret_54 = (~ null?(__tact_dict_get_int_int($self'fingerprints, 257, $fingerprint, 1)));
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_54);
 }
 
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, int), slice) $ToonRegistry$_fun_getMintAuthority((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self) impure inline_ref {
     var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
-    var $fresh$ret_30 = $self'mintAuthority;
-    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_30);
+    var $fresh$ret_55 = $self'mintAuthority;
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_55);
 }
 
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, int), int) $ToonRegistry$_fun_isKnownArtistContract((cell, cell, cell, cell, cell, cell, slice, slice, int, int) $self, slice $contractAddr) impure inline_ref {
     var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)) = $self;
-    var $fresh$ret_31 = (~ null?(__tact_dict_get_slice_slice($self'artistContracts, 267, $contractAddr)));
-    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_31);
+    var $fresh$ret_56 = (~ null?(__tact_dict_get_slice_slice($self'artistContracts, 267, $contractAddr)));
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks), $fresh$ret_56);
 }
 
 ;;
@@ -731,6 +737,7 @@ _ %getMintAuthority() method_id(97950) {
     if (op == 3754294261) {
         var $msg'artistContract = in_msg~load_msg_addr();
         slice $caller = __tact_context_get_sender();
+        throw_unless(55621, ( ~ equal_slices_bits($msg'artistContract, __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c()) ));
         throw_unless(9299, null?(__tact_dict_get_slice_slice($self'artists, 267, $caller)));
         $self'artists~__tact_dict_set_slice_slice(267, $caller, $msg'artistContract);
         $self'artistContracts~__tact_dict_set_slice_slice(267, $msg'artistContract, $caller);
@@ -746,6 +753,9 @@ _ %getMintAuthority() method_id(97950) {
         var $msg'fingerprint = in_msg~load_uint(256);
         var $msg'trackContract = in_msg~load_msg_addr();
         slice $caller = __tact_context_get_sender();
+        throw_unless(10615, ( ~ equal_slices_bits($msg'trackContract, __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c()) ));
+        throw_unless(18543, ($msg'trackId != 0));
+        throw_unless(26462, ($msg'fingerprint != 0));
         throw_unless(26225, ($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)~$ToonRegistry$_fun_isKnownArtistContract($caller));
         throw_unless(16165, null?(__tact_dict_get_int_slice($self'tracks, 257, $msg'trackId)));
         throw_unless(15016, null?(__tact_dict_get_int_int($self'fingerprints, 257, $msg'fingerprint, 1)));
@@ -762,6 +772,7 @@ _ %getMintAuthority() method_id(97950) {
     if (op == 3725821709) {
         var $msg'recipient = in_msg~load_msg_addr();
         var $msg'amount = in_msg~load_varuint16();
+        throw_unless(38991, ( ~ equal_slices_bits($msg'recipient, __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c()) ));
         throw_unless(27890, ( equal_slices_bits(__tact_context_get_sender(), $self'mintAuthority) ));
         throw_unless(9580, ($msg'amount > 0));
         $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 0, 64, $MintAuthorized$_store_cell($MintAuthorized$_constructor_recipient_amount_authorizedAt($msg'recipient, $msg'amount, $global_now()), begin_cell())));
@@ -773,6 +784,7 @@ _ %getMintAuthority() method_id(97950) {
     if (op == 277189457) {
         var $msg'recipient = in_msg~load_msg_addr();
         var $msg'amount = in_msg~load_varuint16();
+        throw_unless(38991, ( ~ equal_slices_bits($msg'recipient, __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c()) ));
         throw_unless(50582, (~ null?(__tact_dict_get_slice_int($self'trackContracts, 267, __tact_context_get_sender(), 257))));
         $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 0, 64, $MintAuthorized$_store_cell($MintAuthorized$_constructor_recipient_amount_authorizedAt($msg'recipient, $msg'amount, $global_now()), begin_cell())));
         $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks));
@@ -782,6 +794,7 @@ _ %getMintAuthority() method_id(97950) {
     ;; Receive UpdateMintAuthority message
     if (op == 2021444180) {
         var $msg'newAuthority = in_msg~load_msg_addr();
+        throw_unless(31774, ( ~ equal_slices_bits($msg'newAuthority, __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c()) ));
         throw_unless(27890, ( equal_slices_bits(__tact_context_get_sender(), $self'mintAuthority) ));
         $self'mintAuthority = $msg'newAuthority;
         $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks));
@@ -791,6 +804,7 @@ _ %getMintAuthority() method_id(97950) {
     ;; Receive UpdateVaultAddress message
     if (op == 3682064959) {
         var $msg'newVault = in_msg~load_msg_addr();
+        throw_unless(57962, ( ~ equal_slices_bits($msg'newVault, __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c()) ));
         throw_unless(27890, ( equal_slices_bits(__tact_context_get_sender(), $self'mintAuthority) ));
         $self'vault = $msg'newVault;
         $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks));
@@ -802,6 +816,7 @@ _ %getMintAuthority() method_id(97950) {
         var $msg'trackId = in_msg~load_uint(256);
         var $msg'dropContract = in_msg~load_msg_addr();
         slice $caller = __tact_context_get_sender();
+        throw_unless(47432, ( ~ equal_slices_bits($msg'dropContract, __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c()) ));
         throw_unless(26225, ($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'totalArtists, $self'totalTracks)~$ToonRegistry$_fun_isKnownArtistContract($caller));
         throw_unless(44318, null?(__tact_dict_get_int_slice($self'drops, 257, $msg'trackId)));
         $self'drops~__tact_dict_set_int_slice(257, $msg'trackId, $msg'dropContract);

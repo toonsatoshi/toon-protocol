@@ -71,7 +71,9 @@ message DropRegistered {
 // ─────────────────────────────────────────────────────────────────────────────
 //  ToonRegistry
 // ─────────────────────────────────────────────────────────────────────────────
-
+//
+//  Status: IMPLEMENTED (Global Source of Truth)
+//
 contract ToonRegistry with Deployable {
 
     // ── Storage ──────────────────────────────────────────────────────────────
@@ -120,6 +122,7 @@ contract ToonRegistry with Deployable {
     receive(msg: RegisterArtist) {
         let caller: Address = sender();
 
+        require(msg.artistContract != newAddress(0, 0), "ToonRegistry: invalid artist contract address");
         require(
             self.artists.get(caller) == null,
             "ToonRegistry: wallet already has an artist identity"
@@ -147,6 +150,10 @@ contract ToonRegistry with Deployable {
     ///   3. The content fingerprint must never have appeared before.
     receive(msg: RegisterTrack) {
         let caller: Address = sender();
+
+        require(msg.trackContract != newAddress(0, 0), "ToonRegistry: invalid track contract address");
+        require(msg.trackId != 0, "ToonRegistry: trackId cannot be zero");
+        require(msg.fingerprint != 0, "ToonRegistry: fingerprint cannot be zero");
 
         // Caller must be a known ToonArtist contract
         require(
@@ -185,6 +192,7 @@ contract ToonRegistry with Deployable {
     /// Registry-level mint gate. Only mintAuthority may call this.
     /// Downstream $TOON jetton master must trust only this contract.
     receive(msg: AuthorizeMint) {
+        require(msg.recipient != newAddress(0, 0), "ToonRegistry: invalid recipient address");
         require(
             sender() == self.mintAuthority,
             "ToonRegistry: caller is not the mint authority"
@@ -208,6 +216,7 @@ contract ToonRegistry with Deployable {
     }
 
     receive(msg: RequestMint) {
+        require(msg.recipient != newAddress(0, 0), "ToonRegistry: invalid recipient address");
         // Only a known ToonTrack contract can request minting
         require(
             self.trackContracts.get(sender()) != null,
@@ -229,6 +238,7 @@ contract ToonRegistry with Deployable {
 
     /// Rotate the mint authority. Only the current authority can do this.
     receive(msg: UpdateMintAuthority) {
+        require(msg.newAuthority != newAddress(0, 0), "ToonRegistry: invalid new authority address");
         require(
             sender() == self.mintAuthority,
             "ToonRegistry: caller is not the mint authority"
@@ -241,6 +251,7 @@ contract ToonRegistry with Deployable {
     /// Can only be called by mintAuthority (deployer during setup).
     /// Resolves the Registry ↔ Vault circular deploy dependency.
     receive(msg: UpdateVaultAddress) {
+        require(msg.newVault != newAddress(0, 0), "ToonRegistry: invalid vault address");
         require(
             sender() == self.mintAuthority,
             "ToonRegistry: caller is not the mint authority"
@@ -251,6 +262,7 @@ contract ToonRegistry with Deployable {
     receive(msg: RegisterDrop) {
         let caller: Address = sender();
 
+        require(msg.dropContract != newAddress(0, 0), "ToonRegistry: invalid drop contract address");
         // Caller must be a known ToonArtist contract
         require(
             self.isKnownArtistContract(caller),
@@ -305,9 +317,7 @@ contract ToonRegistry with Deployable {
 
     // ── Internal Helpers ──────────────────────────────────────────────────────
 
-    /// Walks the artists map to confirm a given address is a registered
-    /// ToonArtist contract (not just a wallet). O(n) — acceptable at
-    /// protocol scale; replace with a reverse map if the set grows large.
+    /// Checks if a given address is a registered ToonArtist contract.
     fun isKnownArtistContract(contractAddr: Address): Bool {
         return self.artistContracts.get(contractAddr) != null;
     }

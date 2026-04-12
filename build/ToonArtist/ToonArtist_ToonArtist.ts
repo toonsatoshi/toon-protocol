@@ -1062,6 +1062,75 @@ export function dictValueParserAddTrack(): DictionaryValue<AddTrack> {
     }
 }
 
+export type ArtistDetails = {
+    $$type: 'ArtistDetails';
+    reputation: bigint;
+    totalTipVolume: bigint;
+    stakedToon: bigint;
+    isActive: boolean;
+    totalTracks: bigint;
+}
+
+export function storeArtistDetails(src: ArtistDetails) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(src.reputation, 32);
+        b_0.storeCoins(src.totalTipVolume);
+        b_0.storeCoins(src.stakedToon);
+        b_0.storeBit(src.isActive);
+        b_0.storeUint(src.totalTracks, 32);
+    };
+}
+
+export function loadArtistDetails(slice: Slice) {
+    const sc_0 = slice;
+    const _reputation = sc_0.loadUintBig(32);
+    const _totalTipVolume = sc_0.loadCoins();
+    const _stakedToon = sc_0.loadCoins();
+    const _isActive = sc_0.loadBit();
+    const _totalTracks = sc_0.loadUintBig(32);
+    return { $$type: 'ArtistDetails' as const, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, isActive: _isActive, totalTracks: _totalTracks };
+}
+
+export function loadTupleArtistDetails(source: TupleReader) {
+    const _reputation = source.readBigNumber();
+    const _totalTipVolume = source.readBigNumber();
+    const _stakedToon = source.readBigNumber();
+    const _isActive = source.readBoolean();
+    const _totalTracks = source.readBigNumber();
+    return { $$type: 'ArtistDetails' as const, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, isActive: _isActive, totalTracks: _totalTracks };
+}
+
+export function loadGetterTupleArtistDetails(source: TupleReader) {
+    const _reputation = source.readBigNumber();
+    const _totalTipVolume = source.readBigNumber();
+    const _stakedToon = source.readBigNumber();
+    const _isActive = source.readBoolean();
+    const _totalTracks = source.readBigNumber();
+    return { $$type: 'ArtistDetails' as const, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, isActive: _isActive, totalTracks: _totalTracks };
+}
+
+export function storeTupleArtistDetails(source: ArtistDetails) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.reputation);
+    builder.writeNumber(source.totalTipVolume);
+    builder.writeNumber(source.stakedToon);
+    builder.writeBoolean(source.isActive);
+    builder.writeNumber(source.totalTracks);
+    return builder.build();
+}
+
+export function dictValueParserArtistDetails(): DictionaryValue<ArtistDetails> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeArtistDetails(src)).endCell());
+        },
+        parse: (src) => {
+            return loadArtistDetails(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type ToonArtist$Data = {
     $$type: 'ToonArtist$Data';
     owner: Address;
@@ -1177,7 +1246,7 @@ function initToonArtist_init_args(src: ToonArtist_init_args) {
 }
 
 async function ToonArtist_init(owner: Address, registry: Address, telegramHash: bigint, metadataUri: string) {
-    const __code = Cell.fromHex('b5ee9c724102280100087d000228ff008e88f4a413f4bcf2c80bed5320e303ed43d9011b020271020c020120030501a7ba89aed44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e2db3c6c91804000224020120060a020162070801a6ab6eed44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e2db3c6c912201a6a91ded44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e2db3c6c910900022801a7b7217da89a1a400031c4df481f481a7ffa803a003a63ff401a803a1f401e809a63e6020722070206e206c206a2068d8331c39f481f481020203ae01a803a028866009a2aa04dae0a8e00020688261c5b678d92300b0002220201200d120201200e1001a7b48e9da89a1a400031c4df481f481a7ffa803a003a63ff401a803a1f401e809a63e6020722070206e206c206a2068d8331c39f481f481020203ae01a803a028866009a2aa04dae0a8e00020688261c5b678d92300f000a248103e8be01a7b6029da89a1a400031c4df481f481a7ffa803a003a63ff401a803a1f401e809a63e6020722070206e206c206a2068d8331c39f481f481020203ae01a803a028866009a2aa04dae0a8e00020688261c5b678d923011000220020166131901a7ac3576a268690000c7137d207d2069ffea00e800e98ffd006a00e87d007a02698f98081c881c081b881b081a881a360cc70e7d207d20408080eb806a00e80a21980268aa8136b82a3800081a2098716d9e3648c01404f4c86f00016f8c6d6f8c8bc72657075746174696f6e3a208db3c258e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d0db3c8b9207c20746970733a208db3c248e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d0181818150492db3c8bb207c207374616b65643a208db3c238e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d0db3c8bb207c206163746976653a20818181816030cdb3c5580db3c18221702688e888b379657381adb3c8e878b26e6f81adb3ce26f2201c993216eb396016f2259ccc9e831d01089107810671056104510344130181800b620d74a21d7499720c20022c200b18e48036f22807f22cf31ab02a105ab025155b60820c2009a20aa0215d71803ce4014de596f025341a1c20099c8016f025044a1aa028e123133c20099d430d020d74a21d749927020e2e2e85f0301abaff376a268690000c7137d207d2069ffea00e800e98ffd006a00e87d007a02698f98081c881c081b881b081a881a360cc70e7d207d20408080eb806a00e80a21980268aa8136b82a3800081a2098712a846d9e3648c01a001c810101230259f40c6fa192306ddf02f630eda2edfb01d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e20a925f0ae07029d74920c21fe30001c000011c2604f43109d31f2182101179e2f3ba8e4531353803d430d08200866ff84228c705f2f410681057104644554313c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db31e02182104435ea95bae302218210dfc52f97bae30221821021a5a79dbae302218210946a98b6ba1d1e2125007e313908fa003082008175f84229c705f2f4a010685515c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db3102b8313908fa003082008e9ef84229c705f2f48200e9d95321bef2f4a1708040882955205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00106855151f20003200000000556e7374616b65642024544f4f4e20286d6f636b290052c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db3103fe313908d3ffd3fffa40308200ac8af8422bc705f2f42bc2008ea010795e3510481039489a811b530cdb3c1df2f40a107910681057104610354430de702380405143c8552082108cb4c2435004cb1f12cbffcbffcec92a0350445a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf818ae2f400c92223240012228218174876e800be001a58cf8680cf8480f400f400cf8100a201fb00102981010159206e953059f45a30944133f414e208a402a60a106810571046103550444313c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db3100e08e6c313908d33f30c8018210aff90f5758cb1fcb3fc9107910681057104610354430f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db31e00a01dec121b08e3c38f8416f24135f0312a01068105710461035443302c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54e008f90182f01bb9cd5336387bc2aaa2f0088c6feb124b79ae38f229da1812e8471232681fedbae3025f09f2c082270076f8416f24135f0312a01068105710461035443302c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54498f5fb1');
+    const __code = Cell.fromHex('b5ee9c7241022301000744000228ff008e88f4a413f4bcf2c80bed5320e303ed43d90117020271020c020120030501a7ba89aed44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e2db3c6c91804000224020120060a020162070801a6ab6eed44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e2db3c6c911d01a6a91ded44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e2db3c6c910900022801a7b7217da89a1a400031c4df481f481a7ffa803a003a63ff401a803a1f401e809a63e6020722070206e206c206a2068d8331c39f481f481020203ae01a803a028866009a2aa04dae0a8e00020688261c5b678d92300b0002220201200d120201200e1001a7b48e9da89a1a400031c4df481f481a7ffa803a003a63ff401a803a1f401e809a63e6020722070206e206c206a2068d8331c39f481f481020203ae01a803a028866009a2aa04dae0a8e00020688261c5b678d92300f000a248103e8be01a7b6029da89a1a400031c4df481f481a7ffa803a003a63ff401a803a1f401e809a63e6020722070206e206c206a2068d8331c39f481f481020203ae01a803a028866009a2aa04dae0a8e00020688261c5b678d923011000220020273131501a6a9f9ed44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e2db3c6c951401305474325582db3c103c4ba02a10ad109c108b107a106910581d01aaabe6ed44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e25508db3c6c9116001c810101230259f40c6fa192306ddf02f630eda2edfb01d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e20a925f0ae07029d74920c21fe30001c00001182103f43109d31f2182101179e2f3ba8e5631353803d430d08200866ff84228c705f2f48200a73d8b08522001f90101f901bdf2f410681057104644554313c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db31e02182104435ea95bae302218210dfc52f97bae30221191a1c008e313908fa003082008175f84229c705f2f481234921c200f2f4a010685515c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db3102b8313908fa003082008e9ef84229c705f2f48200e9d95321bef2f4a1708040882955205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00106855151b1f003200000000556e7374616b65642024544f4f4e20286d6f636b2903f6821021a5a79dba8f70313908d3ffd3fffa40308200ac8af8422bc705f2f48144698d08600000000000000000000000000000000000000000000000000000000000000000045220c705b3f2f42bc2008ea010795e3510481039489a811b530cdb3c1df2f40a107910681057104610354430de702380405143c8e0211d1e200012228218174876e800be01e4552082108cb4c2435004cb1f12cbffcbffcec92a0350445a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00102981010159206e953059f45a30944133f414e208a402a60a1068105710461035504443131f0052c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db3100ee8210946a98b6ba8e6c313908d33f30c8018210aff90f5758cb1fcb3fc9107910681057104610354430f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db31e00a01dec121b08e3c38f8416f24135f0312a01068105710461035443302c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54e008f90182f01bb9cd5336387bc2aaa2f0088c6feb124b79ae38f229da1812e8471232681fedbae3025f09f2c082220076f8416f24135f0312a01068105710461035443302c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54928d6dcb');
     const builder = beginCell();
     builder.storeUint(0, 1);
     initToonArtist_init_args({ $$type: 'ToonArtist_init_args', owner, registry, telegramHash, metadataUri })(builder);
@@ -1223,9 +1292,12 @@ export const ToonArtist_errors = {
     136: { message: "Invalid standard address" },
     138: { message: "Not a basechain address" },
     6995: { message: "ToonArtist: stake required for additional tracks" },
+    9033: { message: "ToonArtist: stake amount must be positive" },
+    17513: { message: "ToonArtist: invalid track contract address" },
     33141: { message: "ToonArtist: only owner can stake" },
     34415: { message: "ToonArtist: only owner can update metadata" },
     36510: { message: "ToonArtist: only owner can unstake" },
+    42813: { message: "ToonArtist: empty metadata URI" },
     44170: { message: "ToonArtist: only owner can add tracks" },
     59865: { message: "ToonArtist: insufficient stake" },
 } as const
@@ -1268,9 +1340,12 @@ export const ToonArtist_errors_backward = {
     "Invalid standard address": 136,
     "Not a basechain address": 138,
     "ToonArtist: stake required for additional tracks": 6995,
+    "ToonArtist: stake amount must be positive": 9033,
+    "ToonArtist: invalid track contract address": 17513,
     "ToonArtist: only owner can stake": 33141,
     "ToonArtist: only owner can update metadata": 34415,
     "ToonArtist: only owner can unstake": 36510,
+    "ToonArtist: empty metadata URI": 42813,
     "ToonArtist: only owner can add tracks": 44170,
     "ToonArtist: insufficient stake": 59865,
 } as const
@@ -1295,6 +1370,7 @@ const ToonArtist_types: ABIType[] = [
     {"name":"UnstakeToon","header":3754241943,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
     {"name":"UpdateMetadata","header":293200627,"fields":[{"name":"newUri","type":{"kind":"simple","type":"string","optional":false}}]},
     {"name":"AddTrack","header":564504477,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"fingerprint","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"trackContract","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"ArtistDetails","header":null,"fields":[{"name":"reputation","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"totalTipVolume","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"stakedToon","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"isActive","type":{"kind":"simple","type":"bool","optional":false}},{"name":"totalTracks","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
     {"name":"ToonArtist$Data","header":null,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"telegramHash","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"metadataUri","type":{"kind":"simple","type":"string","optional":false}},{"name":"reputation","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"totalTipVolume","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"stakedToon","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"tracks","type":{"kind":"dict","key":"int","value":"address"}},{"name":"totalTracks","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
 ]
 
@@ -1313,7 +1389,7 @@ const ToonArtist_opcodes = {
 const ToonArtist_getters: ABIGetter[] = [
     {"name":"isActive","methodId":82798,"arguments":[],"returnType":{"kind":"simple","type":"bool","optional":false}},
     {"name":"canLaunchToonDrop","methodId":99444,"arguments":[],"returnType":{"kind":"simple","type":"bool","optional":false}},
-    {"name":"details","methodId":118890,"arguments":[],"returnType":{"kind":"simple","type":"string","optional":false}},
+    {"name":"getDetails","methodId":121337,"arguments":[],"returnType":{"kind":"simple","type":"ArtistDetails","optional":false}},
     {"name":"getTrack","methodId":122854,"arguments":[{"name":"trackId","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"address","optional":true}},
     {"name":"reputation","methodId":75930,"arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"owner","methodId":83229,"arguments":[],"returnType":{"kind":"simple","type":"address","optional":false}},
@@ -1324,7 +1400,7 @@ const ToonArtist_getters: ABIGetter[] = [
 export const ToonArtist_getterMapping: { [key: string]: string } = {
     'isActive': 'getIsActive',
     'canLaunchToonDrop': 'getCanLaunchToonDrop',
-    'details': 'getDetails',
+    'getDetails': 'getGetDetails',
     'getTrack': 'getGetTrack',
     'reputation': 'getReputation',
     'owner': 'getOwner',
@@ -1423,10 +1499,10 @@ export class ToonArtist implements Contract {
         return result;
     }
     
-    async getDetails(provider: ContractProvider) {
+    async getGetDetails(provider: ContractProvider) {
         const builder = new TupleBuilder();
-        const source = (await provider.get('details', builder.build())).stack;
-        const result = source.readString();
+        const source = (await provider.get('getDetails', builder.build())).stack;
+        const result = loadGetterTupleArtistDetails(source);
         return result;
     }
     

@@ -860,18 +860,18 @@ export type ProposeParameterUpdate = {
 export function storeProposeParameterUpdate(src: ProposeParameterUpdate) {
     return (builder: Builder) => {
         const b_0 = builder;
-        b_0.storeUint(3853930240, 32);
+        b_0.storeUint(3148424161, 32);
         b_0.storeStringRefTail(src.parameter);
-        b_0.storeUint(src.newValue, 32);
+        b_0.storeUint(src.newValue, 64);
         b_0.storeStringRefTail(src.description);
     };
 }
 
 export function loadProposeParameterUpdate(slice: Slice) {
     const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3853930240) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 3148424161) { throw Error('Invalid prefix'); }
     const _parameter = sc_0.loadStringRefTail();
-    const _newValue = sc_0.loadUintBig(32);
+    const _newValue = sc_0.loadUintBig(64);
     const _description = sc_0.loadStringRefTail();
     return { $$type: 'ProposeParameterUpdate' as const, parameter: _parameter, newValue: _newValue, description: _description };
 }
@@ -909,55 +909,167 @@ export function dictValueParserProposeParameterUpdate(): DictionaryValue<Propose
     }
 }
 
-export type VoteOnGlobalProposal = {
-    $$type: 'VoteOnGlobalProposal';
+export type ProposeAddressUpdate = {
+    $$type: 'ProposeAddressUpdate';
+    parameter: string;
+    newAddress: Address;
+    description: string;
+}
+
+export function storeProposeAddressUpdate(src: ProposeAddressUpdate) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(1506838652, 32);
+        b_0.storeStringRefTail(src.parameter);
+        b_0.storeAddress(src.newAddress);
+        b_0.storeStringRefTail(src.description);
+    };
+}
+
+export function loadProposeAddressUpdate(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1506838652) { throw Error('Invalid prefix'); }
+    const _parameter = sc_0.loadStringRefTail();
+    const _newAddress = sc_0.loadAddress();
+    const _description = sc_0.loadStringRefTail();
+    return { $$type: 'ProposeAddressUpdate' as const, parameter: _parameter, newAddress: _newAddress, description: _description };
+}
+
+export function loadTupleProposeAddressUpdate(source: TupleReader) {
+    const _parameter = source.readString();
+    const _newAddress = source.readAddress();
+    const _description = source.readString();
+    return { $$type: 'ProposeAddressUpdate' as const, parameter: _parameter, newAddress: _newAddress, description: _description };
+}
+
+export function loadGetterTupleProposeAddressUpdate(source: TupleReader) {
+    const _parameter = source.readString();
+    const _newAddress = source.readAddress();
+    const _description = source.readString();
+    return { $$type: 'ProposeAddressUpdate' as const, parameter: _parameter, newAddress: _newAddress, description: _description };
+}
+
+export function storeTupleProposeAddressUpdate(source: ProposeAddressUpdate) {
+    const builder = new TupleBuilder();
+    builder.writeString(source.parameter);
+    builder.writeAddress(source.newAddress);
+    builder.writeString(source.description);
+    return builder.build();
+}
+
+export function dictValueParserProposeAddressUpdate(): DictionaryValue<ProposeAddressUpdate> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeProposeAddressUpdate(src)).endCell());
+        },
+        parse: (src) => {
+            return loadProposeAddressUpdate(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type VoteOnProposal = {
+    $$type: 'VoteOnProposal';
     proposalId: bigint;
     support: boolean;
 }
 
-export function storeVoteOnGlobalProposal(src: VoteOnGlobalProposal) {
+export function storeVoteOnProposal(src: VoteOnProposal) {
     return (builder: Builder) => {
         const b_0 = builder;
-        b_0.storeUint(3380811041, 32);
+        b_0.storeUint(3302738496, 32);
         b_0.storeUint(src.proposalId, 256);
         b_0.storeBit(src.support);
     };
 }
 
-export function loadVoteOnGlobalProposal(slice: Slice) {
+export function loadVoteOnProposal(slice: Slice) {
     const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3380811041) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 3302738496) { throw Error('Invalid prefix'); }
     const _proposalId = sc_0.loadUintBig(256);
     const _support = sc_0.loadBit();
-    return { $$type: 'VoteOnGlobalProposal' as const, proposalId: _proposalId, support: _support };
+    return { $$type: 'VoteOnProposal' as const, proposalId: _proposalId, support: _support };
 }
 
-export function loadTupleVoteOnGlobalProposal(source: TupleReader) {
+export function loadTupleVoteOnProposal(source: TupleReader) {
     const _proposalId = source.readBigNumber();
     const _support = source.readBoolean();
-    return { $$type: 'VoteOnGlobalProposal' as const, proposalId: _proposalId, support: _support };
+    return { $$type: 'VoteOnProposal' as const, proposalId: _proposalId, support: _support };
 }
 
-export function loadGetterTupleVoteOnGlobalProposal(source: TupleReader) {
+export function loadGetterTupleVoteOnProposal(source: TupleReader) {
     const _proposalId = source.readBigNumber();
     const _support = source.readBoolean();
-    return { $$type: 'VoteOnGlobalProposal' as const, proposalId: _proposalId, support: _support };
+    return { $$type: 'VoteOnProposal' as const, proposalId: _proposalId, support: _support };
 }
 
-export function storeTupleVoteOnGlobalProposal(source: VoteOnGlobalProposal) {
+export function storeTupleVoteOnProposal(source: VoteOnProposal) {
     const builder = new TupleBuilder();
     builder.writeNumber(source.proposalId);
     builder.writeBoolean(source.support);
     return builder.build();
 }
 
-export function dictValueParserVoteOnGlobalProposal(): DictionaryValue<VoteOnGlobalProposal> {
+export function dictValueParserVoteOnProposal(): DictionaryValue<VoteOnProposal> {
     return {
         serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeVoteOnGlobalProposal(src)).endCell());
+            builder.storeRef(beginCell().store(storeVoteOnProposal(src)).endCell());
         },
         parse: (src) => {
-            return loadVoteOnGlobalProposal(src.loadRef().beginParse());
+            return loadVoteOnProposal(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type VoteOnAddressProposal = {
+    $$type: 'VoteOnAddressProposal';
+    proposalId: bigint;
+    support: boolean;
+}
+
+export function storeVoteOnAddressProposal(src: VoteOnAddressProposal) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(2081730446, 32);
+        b_0.storeUint(src.proposalId, 256);
+        b_0.storeBit(src.support);
+    };
+}
+
+export function loadVoteOnAddressProposal(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2081730446) { throw Error('Invalid prefix'); }
+    const _proposalId = sc_0.loadUintBig(256);
+    const _support = sc_0.loadBit();
+    return { $$type: 'VoteOnAddressProposal' as const, proposalId: _proposalId, support: _support };
+}
+
+export function loadTupleVoteOnAddressProposal(source: TupleReader) {
+    const _proposalId = source.readBigNumber();
+    const _support = source.readBoolean();
+    return { $$type: 'VoteOnAddressProposal' as const, proposalId: _proposalId, support: _support };
+}
+
+export function loadGetterTupleVoteOnAddressProposal(source: TupleReader) {
+    const _proposalId = source.readBigNumber();
+    const _support = source.readBoolean();
+    return { $$type: 'VoteOnAddressProposal' as const, proposalId: _proposalId, support: _support };
+}
+
+export function storeTupleVoteOnAddressProposal(source: VoteOnAddressProposal) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.proposalId);
+    builder.writeBoolean(source.support);
+    return builder.build();
+}
+
+export function dictValueParserVoteOnAddressProposal(): DictionaryValue<VoteOnAddressProposal> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeVoteOnAddressProposal(src)).endCell());
+        },
+        parse: (src) => {
+            return loadVoteOnAddressProposal(src.loadRef().beginParse());
         }
     }
 }
@@ -1009,6 +1121,53 @@ export function dictValueParserExecuteProposal(): DictionaryValue<ExecuteProposa
     }
 }
 
+export type ExecuteAddressProposal = {
+    $$type: 'ExecuteAddressProposal';
+    proposalId: bigint;
+}
+
+export function storeExecuteAddressProposal(src: ExecuteAddressProposal) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(2175112412, 32);
+        b_0.storeUint(src.proposalId, 256);
+    };
+}
+
+export function loadExecuteAddressProposal(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2175112412) { throw Error('Invalid prefix'); }
+    const _proposalId = sc_0.loadUintBig(256);
+    return { $$type: 'ExecuteAddressProposal' as const, proposalId: _proposalId };
+}
+
+export function loadTupleExecuteAddressProposal(source: TupleReader) {
+    const _proposalId = source.readBigNumber();
+    return { $$type: 'ExecuteAddressProposal' as const, proposalId: _proposalId };
+}
+
+export function loadGetterTupleExecuteAddressProposal(source: TupleReader) {
+    const _proposalId = source.readBigNumber();
+    return { $$type: 'ExecuteAddressProposal' as const, proposalId: _proposalId };
+}
+
+export function storeTupleExecuteAddressProposal(source: ExecuteAddressProposal) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.proposalId);
+    return builder.build();
+}
+
+export function dictValueParserExecuteAddressProposal(): DictionaryValue<ExecuteAddressProposal> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeExecuteAddressProposal(src)).endCell());
+        },
+        parse: (src) => {
+            return loadExecuteAddressProposal(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type UpdateEmissionCap = {
     $$type: 'UpdateEmissionCap';
     newCap: bigint;
@@ -1052,6 +1211,53 @@ export function dictValueParserUpdateEmissionCap(): DictionaryValue<UpdateEmissi
         },
         parse: (src) => {
             return loadUpdateEmissionCap(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type UpdateMinWalletAge = {
+    $$type: 'UpdateMinWalletAge';
+    newAgeDays: bigint;
+}
+
+export function storeUpdateMinWalletAge(src: UpdateMinWalletAge) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(3252420305, 32);
+        b_0.storeUint(src.newAgeDays, 32);
+    };
+}
+
+export function loadUpdateMinWalletAge(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 3252420305) { throw Error('Invalid prefix'); }
+    const _newAgeDays = sc_0.loadUintBig(32);
+    return { $$type: 'UpdateMinWalletAge' as const, newAgeDays: _newAgeDays };
+}
+
+export function loadTupleUpdateMinWalletAge(source: TupleReader) {
+    const _newAgeDays = source.readBigNumber();
+    return { $$type: 'UpdateMinWalletAge' as const, newAgeDays: _newAgeDays };
+}
+
+export function loadGetterTupleUpdateMinWalletAge(source: TupleReader) {
+    const _newAgeDays = source.readBigNumber();
+    return { $$type: 'UpdateMinWalletAge' as const, newAgeDays: _newAgeDays };
+}
+
+export function storeTupleUpdateMinWalletAge(source: UpdateMinWalletAge) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.newAgeDays);
+    return builder.build();
+}
+
+export function dictValueParserUpdateMinWalletAge(): DictionaryValue<UpdateMinWalletAge> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeUpdateMinWalletAge(src)).endCell());
+        },
+        parse: (src) => {
+            return loadUpdateMinWalletAge(src.loadRef().beginParse());
         }
     }
 }
@@ -1103,53 +1309,6 @@ export function dictValueParserUpdateMintAuthority(): DictionaryValue<UpdateMint
     }
 }
 
-export type UpdateVaultAddress = {
-    $$type: 'UpdateVaultAddress';
-    newVault: Address;
-}
-
-export function storeUpdateVaultAddress(src: UpdateVaultAddress) {
-    return (builder: Builder) => {
-        const b_0 = builder;
-        b_0.storeUint(3682064959, 32);
-        b_0.storeAddress(src.newVault);
-    };
-}
-
-export function loadUpdateVaultAddress(slice: Slice) {
-    const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3682064959) { throw Error('Invalid prefix'); }
-    const _newVault = sc_0.loadAddress();
-    return { $$type: 'UpdateVaultAddress' as const, newVault: _newVault };
-}
-
-export function loadTupleUpdateVaultAddress(source: TupleReader) {
-    const _newVault = source.readAddress();
-    return { $$type: 'UpdateVaultAddress' as const, newVault: _newVault };
-}
-
-export function loadGetterTupleUpdateVaultAddress(source: TupleReader) {
-    const _newVault = source.readAddress();
-    return { $$type: 'UpdateVaultAddress' as const, newVault: _newVault };
-}
-
-export function storeTupleUpdateVaultAddress(source: UpdateVaultAddress) {
-    const builder = new TupleBuilder();
-    builder.writeAddress(source.newVault);
-    return builder.build();
-}
-
-export function dictValueParserUpdateVaultAddress(): DictionaryValue<UpdateVaultAddress> {
-    return {
-        serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeUpdateVaultAddress(src)).endCell());
-        },
-        parse: (src) => {
-            return loadUpdateVaultAddress(src.loadRef().beginParse());
-        }
-    }
-}
-
 export type GlobalProposal = {
     $$type: 'GlobalProposal';
     parameter: string;
@@ -1166,7 +1325,7 @@ export function storeGlobalProposal(src: GlobalProposal) {
     return (builder: Builder) => {
         const b_0 = builder;
         b_0.storeStringRefTail(src.parameter);
-        b_0.storeUint(src.newValue, 32);
+        b_0.storeUint(src.newValue, 64);
         b_0.storeStringRefTail(src.description);
         b_0.storeAddress(src.proposer);
         b_0.storeCoins(src.votesFor);
@@ -1179,7 +1338,7 @@ export function storeGlobalProposal(src: GlobalProposal) {
 export function loadGlobalProposal(slice: Slice) {
     const sc_0 = slice;
     const _parameter = sc_0.loadStringRefTail();
-    const _newValue = sc_0.loadUintBig(32);
+    const _newValue = sc_0.loadUintBig(64);
     const _description = sc_0.loadStringRefTail();
     const _proposer = sc_0.loadAddress();
     const _votesFor = sc_0.loadCoins();
@@ -1237,6 +1396,93 @@ export function dictValueParserGlobalProposal(): DictionaryValue<GlobalProposal>
     }
 }
 
+export type AddressProposal = {
+    $$type: 'AddressProposal';
+    parameter: string;
+    newAddress: Address;
+    description: string;
+    proposer: Address;
+    votesFor: bigint;
+    votesAgainst: bigint;
+    deadline: bigint;
+    executed: boolean;
+}
+
+export function storeAddressProposal(src: AddressProposal) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeStringRefTail(src.parameter);
+        b_0.storeAddress(src.newAddress);
+        b_0.storeStringRefTail(src.description);
+        b_0.storeAddress(src.proposer);
+        b_0.storeCoins(src.votesFor);
+        b_0.storeCoins(src.votesAgainst);
+        b_0.storeUint(src.deadline, 32);
+        b_0.storeBit(src.executed);
+    };
+}
+
+export function loadAddressProposal(slice: Slice) {
+    const sc_0 = slice;
+    const _parameter = sc_0.loadStringRefTail();
+    const _newAddress = sc_0.loadAddress();
+    const _description = sc_0.loadStringRefTail();
+    const _proposer = sc_0.loadAddress();
+    const _votesFor = sc_0.loadCoins();
+    const _votesAgainst = sc_0.loadCoins();
+    const _deadline = sc_0.loadUintBig(32);
+    const _executed = sc_0.loadBit();
+    return { $$type: 'AddressProposal' as const, parameter: _parameter, newAddress: _newAddress, description: _description, proposer: _proposer, votesFor: _votesFor, votesAgainst: _votesAgainst, deadline: _deadline, executed: _executed };
+}
+
+export function loadTupleAddressProposal(source: TupleReader) {
+    const _parameter = source.readString();
+    const _newAddress = source.readAddress();
+    const _description = source.readString();
+    const _proposer = source.readAddress();
+    const _votesFor = source.readBigNumber();
+    const _votesAgainst = source.readBigNumber();
+    const _deadline = source.readBigNumber();
+    const _executed = source.readBoolean();
+    return { $$type: 'AddressProposal' as const, parameter: _parameter, newAddress: _newAddress, description: _description, proposer: _proposer, votesFor: _votesFor, votesAgainst: _votesAgainst, deadline: _deadline, executed: _executed };
+}
+
+export function loadGetterTupleAddressProposal(source: TupleReader) {
+    const _parameter = source.readString();
+    const _newAddress = source.readAddress();
+    const _description = source.readString();
+    const _proposer = source.readAddress();
+    const _votesFor = source.readBigNumber();
+    const _votesAgainst = source.readBigNumber();
+    const _deadline = source.readBigNumber();
+    const _executed = source.readBoolean();
+    return { $$type: 'AddressProposal' as const, parameter: _parameter, newAddress: _newAddress, description: _description, proposer: _proposer, votesFor: _votesFor, votesAgainst: _votesAgainst, deadline: _deadline, executed: _executed };
+}
+
+export function storeTupleAddressProposal(source: AddressProposal) {
+    const builder = new TupleBuilder();
+    builder.writeString(source.parameter);
+    builder.writeAddress(source.newAddress);
+    builder.writeString(source.description);
+    builder.writeAddress(source.proposer);
+    builder.writeNumber(source.votesFor);
+    builder.writeNumber(source.votesAgainst);
+    builder.writeNumber(source.deadline);
+    builder.writeBoolean(source.executed);
+    return builder.build();
+}
+
+export function dictValueParserAddressProposal(): DictionaryValue<AddressProposal> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeAddressProposal(src)).endCell());
+        },
+        parse: (src) => {
+            return loadAddressProposal(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type ToonGovernance$Data = {
     $$type: 'ToonGovernance$Data';
     registry: Address;
@@ -1245,7 +1491,10 @@ export type ToonGovernance$Data = {
     totalStaked: bigint;
     proposals: Dictionary<bigint, GlobalProposal>;
     nextProposalId: bigint;
+    addressProposals: Dictionary<bigint, AddressProposal>;
+    nextAddressProposalId: bigint;
     hasVoted: Dictionary<bigint, boolean>;
+    hasVotedAddress: Dictionary<bigint, boolean>;
 }
 
 export function storeToonGovernance$Data(src: ToonGovernance$Data) {
@@ -1257,7 +1506,12 @@ export function storeToonGovernance$Data(src: ToonGovernance$Data) {
         b_0.storeCoins(src.totalStaked);
         b_0.storeDict(src.proposals, Dictionary.Keys.BigInt(257), dictValueParserGlobalProposal());
         b_0.storeUint(src.nextProposalId, 256);
-        b_0.storeDict(src.hasVoted, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
+        const b_1 = new Builder();
+        b_1.storeDict(src.addressProposals, Dictionary.Keys.BigInt(257), dictValueParserAddressProposal());
+        b_1.storeUint(src.nextAddressProposalId, 256);
+        b_1.storeDict(src.hasVoted, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
+        b_1.storeDict(src.hasVotedAddress, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
+        b_0.storeRef(b_1.endCell());
     };
 }
 
@@ -1269,8 +1523,12 @@ export function loadToonGovernance$Data(slice: Slice) {
     const _totalStaked = sc_0.loadCoins();
     const _proposals = Dictionary.load(Dictionary.Keys.BigInt(257), dictValueParserGlobalProposal(), sc_0);
     const _nextProposalId = sc_0.loadUintBig(256);
-    const _hasVoted = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_0);
-    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, hasVoted: _hasVoted };
+    const sc_1 = sc_0.loadRef().beginParse();
+    const _addressProposals = Dictionary.load(Dictionary.Keys.BigInt(257), dictValueParserAddressProposal(), sc_1);
+    const _nextAddressProposalId = sc_1.loadUintBig(256);
+    const _hasVoted = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_1);
+    const _hasVotedAddress = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_1);
+    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress };
 }
 
 export function loadTupleToonGovernance$Data(source: TupleReader) {
@@ -1280,8 +1538,11 @@ export function loadTupleToonGovernance$Data(source: TupleReader) {
     const _totalStaked = source.readBigNumber();
     const _proposals = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), dictValueParserGlobalProposal(), source.readCellOpt());
     const _nextProposalId = source.readBigNumber();
+    const _addressProposals = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), dictValueParserAddressProposal(), source.readCellOpt());
+    const _nextAddressProposalId = source.readBigNumber();
     const _hasVoted = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
-    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, hasVoted: _hasVoted };
+    const _hasVotedAddress = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
+    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress };
 }
 
 export function loadGetterTupleToonGovernance$Data(source: TupleReader) {
@@ -1291,8 +1552,11 @@ export function loadGetterTupleToonGovernance$Data(source: TupleReader) {
     const _totalStaked = source.readBigNumber();
     const _proposals = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), dictValueParserGlobalProposal(), source.readCellOpt());
     const _nextProposalId = source.readBigNumber();
+    const _addressProposals = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), dictValueParserAddressProposal(), source.readCellOpt());
+    const _nextAddressProposalId = source.readBigNumber();
     const _hasVoted = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
-    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, hasVoted: _hasVoted };
+    const _hasVotedAddress = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
+    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress };
 }
 
 export function storeTupleToonGovernance$Data(source: ToonGovernance$Data) {
@@ -1303,7 +1567,10 @@ export function storeTupleToonGovernance$Data(source: ToonGovernance$Data) {
     builder.writeNumber(source.totalStaked);
     builder.writeCell(source.proposals.size > 0 ? beginCell().storeDictDirect(source.proposals, Dictionary.Keys.BigInt(257), dictValueParserGlobalProposal()).endCell() : null);
     builder.writeNumber(source.nextProposalId);
+    builder.writeCell(source.addressProposals.size > 0 ? beginCell().storeDictDirect(source.addressProposals, Dictionary.Keys.BigInt(257), dictValueParserAddressProposal()).endCell() : null);
+    builder.writeNumber(source.nextAddressProposalId);
     builder.writeCell(source.hasVoted.size > 0 ? beginCell().storeDictDirect(source.hasVoted, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool()).endCell() : null);
+    builder.writeCell(source.hasVotedAddress.size > 0 ? beginCell().storeDictDirect(source.hasVotedAddress, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool()).endCell() : null);
     return builder.build();
 }
 
@@ -1333,7 +1600,7 @@ function initToonGovernance_init_args(src: ToonGovernance_init_args) {
 }
 
 async function ToonGovernance_init(registry: Address, vault: Address) {
-    const __code = Cell.fromHex('b5ee9c7241022a01000b1400022cff008e88f4a413f4bcf2c80bed53208e8130e1ed43d9010f020271020702016a030501a7b21bfb513434800063873e903e903d013e803500743d0134fffd010c040dc40d840d440d1b05e7fe903e901640b4405b5b5b5c150880f89541b6cf1b1c481ba48c1b66481bbcb4201bca1bc238881ba48c1b77a0040062810101240259f40d6fa192306ddf206e92306d8e1bd0d401d001d31fd401d001fa40fa00fa00d31fd20055706c186f08e20177b36a3b513434800063873e903e903d013e803500743d0134fffd010c040dc40d840d440d1b05e7fe903e901640b4405b5b5b5c150880f8b6cf1b1c6006000223020120080d0201c7090b017aaa84ed44d0d200018e1cfa40fa40f404fa00d401d0f404d3fff4043010371036103510346c179ffa40fa405902d1016d6d6d70542203e25516db3c6c710a0132db3c8101012202714133f40c6fa19401d70030925b6de26eb31b017aa8d0ed44d0d200018e1cfa40fa40f404fa00d401d0f404d3fff4043010371036103510346c179ffa40fa405902d1016d6d6d70542203e25506db3c6c710c008c810101240259f40d6fa192306ddf206e92306d8e1bd0d401d001d31fd401d001fa40fa00fa00d31fd20055706c186f08e2206e923070e0206ef2d0806f2810375f0724ab01bc017bbb7cced44d0d200018e1cfa40fa40f404fa00d401d0f404d3fff4043010371036103510346c179ffa40fa405902d1016d6d6d70542203e25506db3c6c7180e004881010b26028101014133f40a6fa19401d70030925b6de2206eb395206ef2d080923070e204ec01d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e1cfa40fa40f404fa00d401d0f404d3fff4043010371036103510346c179ffa40fa405902d1016d6d6d70542203e208925f08e006d70d1ff2e0822182104435ea95bae30221820b686687bae302218210e5b64f00bae302211011141700e831fa003081010bf84225598101014133f40a6fa19401d70030925b6de2206eb395206ef2d080923070e281010bf8425123a0103612810101216e955b59f4593098c801cf004133f441e25023a010461035443302c87f01ca0055605067ce14ce12f40001fa0201c8f40012cbff12f400cdc9ed5401fe31fa003081010bf84225598101014133f40a6fa19401d70030925b6de28200f72a216eb39821206ef2d08023be9170e2f2f4206ef2d08021a1208e1d81010bf842103658810101216e955b59f4593098c801cf004133f441e28e1e3081010bf842102570810101216e955b59f4593098c801cf004133f441e2e25023a1f8421201c2708040885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0010461035443302c87f01ca0055605067ce14ce12f40001fa0201c8f40012cbff12f400cdc9ed5413003200000000556e7374616b65642024544f4f4e20286d6f636b2902fe31d401d001d31fd430d081010bf84227598101014133f40a6fa19401d70030925b6de2815aab216eb39801206ef2d080c200923170e2f2f48148458bb656d697373696f6e4361708524001f90101f901ba917f8e188bd6d696e74417574686f726974798524001f90101f901bae2917fe30ef2f428a4810101f8427020f8231516002e8bc6d696e57616c6c65744167658524001f90101f901ba00b68208127500a010685e3470c8557007c8ce18cd15cb1f03c8ce13cdce01fa0201fa0212cb1fca00c918206e953059f45a30944133f415e210465513c87f01ca0055605067ce14ce12f40001fa0201c8f40012cbff12f400cdc9ed5402fe8210c9831521bae302218210e47ed13bbae302018210946a98b6ba8e5cd33f30c8018210aff90f5758cb1fcb3fc91057104610354430f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00c87f01ca0055605067ce14ce12f40001fa0201c8f40012cbff12f400cdc9ed54e05f08f2c082182302fe31d3ffd20030228101012359f40d6fa192306ddf206e92306d8e1bd0d401d001d31fd401d001fa40fa00fa00d31fd20055706c186f08e282009ad7216eb3f2f4206ef2d0806f28816045f82323bbf2f4815cf621b3f2f481010bf8422e598101014133f40a6fa19401d70030925b6de28200f22c216eb39170e30df2f4f842191a001021206ef2d080c20002de07111007106f105e104d103c021111020111120152b0db3c8157be2281010123714133f40c6fa19401d70030925b6de26ef2f4810101017f71216e955b59f45a3098c801cf004133f442e209991110206ef2d0801ca09b1110206ef2d0801ba00a0be2104d103c50a281010150afc81b22047ac86f00016f8c6d6f8c028e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d012db3c8b13a8db3c01db3c21211c200242fa44c88b111801ce028307a0a9380758cb07cbffc9d020db3c01c8cecec9d0db3c1d1e0094c8ce8b20000801cec9d0709421c701b38e2a01d30783069320c2008e1b03aa005323b091a4de03ab0023840fbc9903840fb0811021b203dee8303101e8318307a90c01c8cb07cb07c9d001a08d10105090d1115191d2125292d3135393d4145494d5155595d61656985898d9195999da1a5a9adb1b5b9bdc1c5c9cdd1d5d9dde1e5e8c0c4c8ccd0d4d8dce0e4b57e0c89522d749c2178ae86c21c9d01f009a02d307d307d30703aa0f02aa0712b101b120ab11803fb0aa02523078d7245004ce23ab0b803fb0aa02523078d72401ce23ab05803fb0aa02523078d72401ce03803fb0aa02522078d7245003ce0144db3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da112100b620d74a21d7499720c20022c200b18e48036f22807f22cf31ab02a105ab025155b60820c2009a20aa0215d71803ce4014de596f025341a1c20099c8016f025044a1aa028e123133c20099d430d020d74a21d749927020e2e2e85f0300a0557007c8ce18cd15cb1f03c8ce13cdce01fa0201fa0212cb1fca00c910354880206e953059f45a30944133f415e25514c87f01ca0055605067ce14ce12f40001fa0201c8f40012cbff12f400cdc9ed5401ea31d3ff30218101012259f40d6fa192306ddf206e92306d8e1bd0d401d001d31fd401d001fa40fa00fa00d31fd20055706c186f08e282009ad7216eb3f2f4206ef2d0806f288200919cf82323bcf2f481259601b3f2f481495e5dbcf2f4816b392aab015240bcf2f47f8101012851680610584843c82402d4557007c8ce18cd15cb1f03c8ce13cdce01fa0201fa0212cb1fca00c910354140206e953059f45a30944133f415e28bb656d697373696f6e4361708523001f90101f901bae30f10465513c87f01ca0055605067ce14ce12f40001fa0201c8f40012cbff12f400cdc9ed542526009a3270804002c80182104bd7a70558cb1f01fa02c92650335a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0002e6318bd6d696e74417574686f726974798522001f90101f901ba8ed68bc6d696e57616c6c657441676581201f90101f901ba8ebd708040882655205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00dee30d2728004000000000676f7665726e616e63655f7570646174655f77616c6c65745f616765017c31708040882755205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0029004a00000000676f7665726e616e63655f657865637574655f6d696e745f617574686f72697479d379b5c1');
+    const __code = Cell.fromHex('b5ee9c7241023c01001033000228ff008e88f4a413f4bcf2c80bed5320e303ed43d90115020271020d020120030501bfb812ced44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1206e92306d99206ef2d0806f286f08e2206e92306dde8040062810101250259f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e2020148060b020158070901bea86fed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1206e92306d99206ef2d0806f286f08e2206e92306dde080062810101270259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e20192aae6ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25519db3c6ca10a0132db3c8101012202714133f40c6fa19401d70030925b6de26eb32d018fb36a3b51343480006388be903e903d013e803500743d0134fffd0134fffd013d010c041a841a441a0419db06a3853e903e901640b4405b5b5b5b5b5c151801815410f8b6cf1b28600c0002260201200e130201c70f110192aa84ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25519db3c6ca1100132db3c8101012302714133f40c6fa19401d70030925b6de26eb32d0192a8d0ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1120180810101270259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e2206e923070e0206ef2d0806f28db3c380193bb7cced44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1814004881010b29028101014133f40a6fa19401d70030925b6de2206eb395206ef2d080923070e203f23001d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e20b925f0be009d70d1ff2e0822182104435ea95bae30221820b686687bae3022116181d01b031fa003081010bf84228598101014133f40a6fa19401d70030925b6de2206eb395206ef2d080923070e281010bf8425123a0103912810101216e955b59f4593098c801cf004133f441e25056a01079106810570610354403170054c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5404fe31fa003081010bf84228598101014133f40a6fa19401d70030925b6de28200f72a216eb39821206ef2d08023be9170e2f2f4206ef2d08021a181010bf842103958810101216e955b59f4593098c801cf004133f441e25056a1f842708040885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb08a8ae2191a1b1c002400000000556e7374616b65642024544f4f4e00065bcf81001a58cf8680cf8480f400f400cf810076f400c901fb001079106810570610354403c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed54044a8210bba923e1bae302218210c4dbca40bae302218210e47ed13bbae30221821059d0887cba1e20232801f831d401d001d33fd430d081010bf8422a598101014133f40a6fa19401d70030925b6de28200f8f3216eb39801206ef2d080c200923170e2f2f482008f7e8bb656d697373696f6e4361708524001f90101f901ba917f8e178bc6d696e57616c6c65744167658524001f90101f901bae2f2f425a4810101f8427020f8231f00dc8208127500a010685e3470c8557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c9103615206e953059f45a30944133f415e21079106810571046443512c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5402fc31d3ffd20030258101012359f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e282009ad7216eb3f2f4206ef2d0806f288168e1f82323bbf2f481259621b3f2f481010bf8425611598101014133f40a6fa19401d70030925b6de28200f22c216eb39170e30df2f42b2102faf8420a11130a091112090811110807111007106f105e104d103c021114020111150152b0db3c8157be2381010123714133f40c6fa19401d70030925b6de26ef2f412810101017f71216e955b59f45a3098c801cf004133f442e21112991113206ef2d0801ca09b1113206ef2d0801ba00a0be2106f105e104d103c50a22d2200d681010111121ac8557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c910364bb0206e953059f45a30944133f415e2108910681057104650550304c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5401fa31d3ff30248101012259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e282009ad7216eb3f2f4206ef2d0806f288200919cf82323bcf2f481259621b3f2f454776554776527810bb7081111111811111110111711100f11160f0e11150e0d11140d0c11130c2404fc0b11120b0a11180a0911190908111a08db3c01111301f2f47f810101c856100756100706111006105f104e03111403111550e2557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c94c301b206e953059f45a30944133f415e28bb656d697373696f6e4361708528001f90101f901bae30f09104810671438252627009a3770804007c80182104bd7a70558cb1f01fa02c92250885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0000cc8bc6d696e57616c6c657441676581801f90101f901ba8e4b70804007c8018210c1dbfed158cb1fcb1fc92250885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb009135e200584330c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5403f88eee31d401d001fa40d430d081010bf8422a598101014133f40a6fa19401d70030925b6de28200f8f3216eb39801206ef2d080c200923170e2f2f48200d28f8bd6d696e74417574686f726974798524001f90101f901baf2f423a4810101f8427020f8238208127500a010685e3470c8e02182107c14af8ebae30221292a3500c2557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c91413206e953059f45a30944133f415e2107910681057104610354143c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5402fc31d3ffd20030238101012359f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e282008275216eb3f2f4206ef2d0806f288168e1f82323bbf2f481259621b3f2f481010bf8425611598101014133f40a6fa19401d70030925b6de28200f22c216eb39170e30df2f42b2c001021206ef2d080c20002fef8420a11130a091112090811110807111007106f105e104d103c021114020111150152b0db3c8157be2281010123714133f40c6fa19401d70030925b6de26ef2f4810101017f71216e955b59f45a3098c801cf004133f442e21112991113206ef2d0801ca09b1113206ef2d0801ba00a0be2106f105e104d103c50a28101012d34047ac86f00016f8c6d6f8c028e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d012db3c8b13a8db3c01db3c33332e320242fa44c88b111801ce028307a0a9380758cb07cbffc9d020db3c01c8cecec9d0db3c2f300094c8ce8b20000801cec9d0709421c701b38e2a01d30783069320c2008e1b03aa005323b091a4de03ab0023840fbc9903840fb0811021b203dee8303101e8318307a90c01c8cb07cb07c9d001a08d10105090d1115191d2125292d3135393d4145494d5155595d61656985898d9195999da1a5a9adb1b5b9bdc1c5c9cdd1d5d9dde1e5e8c0c4c8ccd0d4d8dce0e4b57e0c89522d749c2178ae86c21c9d031009a02d307d307d30703aa0f02aa0712b101b120ab11803fb0aa02523078d7245004ce23ab0b803fb0aa02523078d72401ce23ab05803fb0aa02523078d72401ce03803fb0aa02522078d7245003ce0144db3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da113300b620d74a21d7499720c20022c200b18e48036f22807f22cf31ab02a105ab025155b60820c2009a20aa0215d71803ce4014de596f025341a1c20099c8016f025044a1aa028e123133c20099d430d020d74a21d749927020e2e2e85f0300cc11121ac8557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c910344bb0206e953059f45a30944133f415e21089106810571046035045c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed540230821081a594dcbae302018210946a98b6bae3025f0bf2c082363b01fa31d3ff30228101012259f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e282008275216eb3f2f4206ef2d0806f288200919cf82323bcf2f481259621b3f2f454776554776527810bb7081111111811111110111711100f11160f0e11150e0d11140d0c11130c3703fe0b11120b0a11180a0911190908111a08db3c01111301f2f47f810101c856100756100706111006105f104e03111403111550e2557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c9103d4cb0206e953059f45a30944133f415e28bd6d696e74417574686f7269747981801f90101f901ba9135e30d5049181738393a001e5b6c425210bc9427ab01bc923070e2009670804007c8018210787cca5458cb1fcec9230350885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00005c16154330c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5400dad33f30c8018210aff90f5758cb1fcb3fc9108a10791068105710461035443012f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed54b53ddab9');
     const builder = beginCell();
     builder.storeUint(0, 1);
     initToonGovernance_init_args({ $$type: 'ToonGovernance_init_args', registry, vault })(builder);
@@ -1378,18 +1645,18 @@ export const ToonGovernance_errors = {
     135: { message: "Code of a contract was not found" },
     136: { message: "Invalid standard address" },
     138: { message: "Not a basechain address" },
+    2999: { message: "ToonGovernance: quorum not met" },
     9622: { message: "ToonGovernance: already executed" },
-    18501: { message: "ToonGovernance: unknown parameter" },
-    18782: { message: "ToonGovernance: proposal failed" },
     22462: { message: "ToonGovernance: already voted on this proposal" },
-    23211: { message: "ToonGovernance: must be a staker to propose" },
-    23798: { message: "ToonGovernance: proposal already executed" },
-    24645: { message: "ToonGovernance: voting deadline passed" },
-    27449: { message: "ToonGovernance: quorum not met (25%)" },
+    26849: { message: "ToonGovernance: voting closed" },
+    33397: { message: "ToonGovernance: address proposal does not exist" },
+    36734: { message: "ToonGovernance: unknown numeric parameter" },
     37276: { message: "ToonGovernance: voting still open" },
     39639: { message: "ToonGovernance: proposal does not exist" },
+    53903: { message: "ToonGovernance: unknown address parameter" },
     61996: { message: "ToonGovernance: no voting weight" },
     63274: { message: "ToonGovernance: insufficient stake" },
+    63731: { message: "ToonGovernance: must stake to propose" },
 } as const
 
 export const ToonGovernance_errors_backward = {
@@ -1429,18 +1696,18 @@ export const ToonGovernance_errors_backward = {
     "Code of a contract was not found": 135,
     "Invalid standard address": 136,
     "Not a basechain address": 138,
+    "ToonGovernance: quorum not met": 2999,
     "ToonGovernance: already executed": 9622,
-    "ToonGovernance: unknown parameter": 18501,
-    "ToonGovernance: proposal failed": 18782,
     "ToonGovernance: already voted on this proposal": 22462,
-    "ToonGovernance: must be a staker to propose": 23211,
-    "ToonGovernance: proposal already executed": 23798,
-    "ToonGovernance: voting deadline passed": 24645,
-    "ToonGovernance: quorum not met (25%)": 27449,
+    "ToonGovernance: voting closed": 26849,
+    "ToonGovernance: address proposal does not exist": 33397,
+    "ToonGovernance: unknown numeric parameter": 36734,
     "ToonGovernance: voting still open": 37276,
     "ToonGovernance: proposal does not exist": 39639,
+    "ToonGovernance: unknown address parameter": 53903,
     "ToonGovernance: no voting weight": 61996,
     "ToonGovernance: insufficient stake": 63274,
+    "ToonGovernance: must stake to propose": 63731,
 } as const
 
 const ToonGovernance_types: ABIType[] = [
@@ -1459,14 +1726,18 @@ const ToonGovernance_types: ABIType[] = [
     {"name":"FactoryDeploy","header":1829761339,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"cashback","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"StakeToon","header":1144384149,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
     {"name":"UnstakeGovernance","header":57173639,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
-    {"name":"ProposeParameterUpdate","header":3853930240,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}}]},
-    {"name":"VoteOnGlobalProposal","header":3380811041,"fields":[{"name":"proposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"support","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"ProposeParameterUpdate","header":3148424161,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}}]},
+    {"name":"ProposeAddressUpdate","header":1506838652,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}}]},
+    {"name":"VoteOnProposal","header":3302738496,"fields":[{"name":"proposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"support","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"VoteOnAddressProposal","header":2081730446,"fields":[{"name":"proposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"support","type":{"kind":"simple","type":"bool","optional":false}}]},
     {"name":"ExecuteProposal","header":3833516347,"fields":[{"name":"proposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}}]},
+    {"name":"ExecuteAddressProposal","header":2175112412,"fields":[{"name":"proposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}}]},
     {"name":"UpdateEmissionCap","header":1272424197,"fields":[{"name":"newCap","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"UpdateMinWalletAge","header":3252420305,"fields":[{"name":"newAgeDays","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
     {"name":"UpdateMintAuthority","header":2021444180,"fields":[{"name":"newAuthority","type":{"kind":"simple","type":"address","optional":false}}]},
-    {"name":"UpdateVaultAddress","header":3682064959,"fields":[{"name":"newVault","type":{"kind":"simple","type":"address","optional":false}}]},
-    {"name":"GlobalProposal","header":null,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}},{"name":"proposer","type":{"kind":"simple","type":"address","optional":false}},{"name":"votesFor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"votesAgainst","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"deadline","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"executed","type":{"kind":"simple","type":"bool","optional":false}}]},
-    {"name":"ToonGovernance$Data","header":null,"fields":[{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"vault","type":{"kind":"simple","type":"address","optional":false}},{"name":"stakes","type":{"kind":"dict","key":"address","value":"int"}},{"name":"totalStaked","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"proposals","type":{"kind":"dict","key":"int","value":"GlobalProposal","valueFormat":"ref"}},{"name":"nextProposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"hasVoted","type":{"kind":"dict","key":"int","value":"bool"}}]},
+    {"name":"GlobalProposal","header":null,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}},{"name":"proposer","type":{"kind":"simple","type":"address","optional":false}},{"name":"votesFor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"votesAgainst","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"deadline","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"executed","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"AddressProposal","header":null,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}},{"name":"proposer","type":{"kind":"simple","type":"address","optional":false}},{"name":"votesFor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"votesAgainst","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"deadline","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"executed","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"ToonGovernance$Data","header":null,"fields":[{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"vault","type":{"kind":"simple","type":"address","optional":false}},{"name":"stakes","type":{"kind":"dict","key":"address","value":"int"}},{"name":"totalStaked","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"proposals","type":{"kind":"dict","key":"int","value":"GlobalProposal","valueFormat":"ref"}},{"name":"nextProposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"addressProposals","type":{"kind":"dict","key":"int","value":"AddressProposal","valueFormat":"ref"}},{"name":"nextAddressProposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"hasVoted","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"hasVotedAddress","type":{"kind":"dict","key":"int","value":"bool"}}]},
 ]
 
 const ToonGovernance_opcodes = {
@@ -1475,19 +1746,24 @@ const ToonGovernance_opcodes = {
     "FactoryDeploy": 1829761339,
     "StakeToon": 1144384149,
     "UnstakeGovernance": 57173639,
-    "ProposeParameterUpdate": 3853930240,
-    "VoteOnGlobalProposal": 3380811041,
+    "ProposeParameterUpdate": 3148424161,
+    "ProposeAddressUpdate": 1506838652,
+    "VoteOnProposal": 3302738496,
+    "VoteOnAddressProposal": 2081730446,
     "ExecuteProposal": 3833516347,
+    "ExecuteAddressProposal": 2175112412,
     "UpdateEmissionCap": 1272424197,
+    "UpdateMinWalletAge": 3252420305,
     "UpdateMintAuthority": 2021444180,
-    "UpdateVaultAddress": 3682064959,
 }
 
 const ToonGovernance_getters: ABIGetter[] = [
     {"name":"totalStaked","methodId":89512,"arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"getStake","methodId":128972,"arguments":[{"name":"voter","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"getProposal","methodId":84079,"arguments":[{"name":"proposalId","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"GlobalProposal","optional":true}},
+    {"name":"getAddressProposal","methodId":65836,"arguments":[{"name":"proposalId","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"AddressProposal","optional":true}},
     {"name":"hasAddressVoted","methodId":98948,"arguments":[{"name":"proposalId","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"voter","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"hasAddressVotedOnAddressProposal","methodId":85734,"arguments":[{"name":"proposalId","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"voter","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
     {"name":"quorumMet","methodId":99536,"arguments":[{"name":"proposalId","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
 ]
 
@@ -1495,7 +1771,9 @@ export const ToonGovernance_getterMapping: { [key: string]: string } = {
     'totalStaked': 'getTotalStaked',
     'getStake': 'getGetStake',
     'getProposal': 'getGetProposal',
+    'getAddressProposal': 'getGetAddressProposal',
     'hasAddressVoted': 'getHasAddressVoted',
+    'hasAddressVotedOnAddressProposal': 'getHasAddressVotedOnAddressProposal',
     'quorumMet': 'getQuorumMet',
 }
 
@@ -1503,8 +1781,11 @@ const ToonGovernance_receivers: ABIReceiver[] = [
     {"receiver":"internal","message":{"kind":"typed","type":"StakeToon"}},
     {"receiver":"internal","message":{"kind":"typed","type":"UnstakeGovernance"}},
     {"receiver":"internal","message":{"kind":"typed","type":"ProposeParameterUpdate"}},
-    {"receiver":"internal","message":{"kind":"typed","type":"VoteOnGlobalProposal"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"VoteOnProposal"}},
     {"receiver":"internal","message":{"kind":"typed","type":"ExecuteProposal"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"ProposeAddressUpdate"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"VoteOnAddressProposal"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"ExecuteAddressProposal"}},
     {"receiver":"internal","message":{"kind":"typed","type":"Deploy"}},
 ]
 
@@ -1543,7 +1824,7 @@ export class ToonGovernance implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: StakeToon | UnstakeGovernance | ProposeParameterUpdate | VoteOnGlobalProposal | ExecuteProposal | Deploy) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: StakeToon | UnstakeGovernance | ProposeParameterUpdate | VoteOnProposal | ExecuteProposal | ProposeAddressUpdate | VoteOnAddressProposal | ExecuteAddressProposal | Deploy) {
         
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'StakeToon') {
@@ -1555,11 +1836,20 @@ export class ToonGovernance implements Contract {
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'ProposeParameterUpdate') {
             body = beginCell().store(storeProposeParameterUpdate(message)).endCell();
         }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'VoteOnGlobalProposal') {
-            body = beginCell().store(storeVoteOnGlobalProposal(message)).endCell();
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'VoteOnProposal') {
+            body = beginCell().store(storeVoteOnProposal(message)).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'ExecuteProposal') {
             body = beginCell().store(storeExecuteProposal(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'ProposeAddressUpdate') {
+            body = beginCell().store(storeProposeAddressUpdate(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'VoteOnAddressProposal') {
+            body = beginCell().store(storeVoteOnAddressProposal(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'ExecuteAddressProposal') {
+            body = beginCell().store(storeExecuteAddressProposal(message)).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Deploy') {
             body = beginCell().store(storeDeploy(message)).endCell();
@@ -1594,11 +1884,29 @@ export class ToonGovernance implements Contract {
         return result;
     }
     
+    async getGetAddressProposal(provider: ContractProvider, proposalId: bigint) {
+        const builder = new TupleBuilder();
+        builder.writeNumber(proposalId);
+        const source = (await provider.get('getAddressProposal', builder.build())).stack;
+        const result_p = source.readTupleOpt();
+        const result = result_p ? loadTupleAddressProposal(result_p) : null;
+        return result;
+    }
+    
     async getHasAddressVoted(provider: ContractProvider, proposalId: bigint, voter: Address) {
         const builder = new TupleBuilder();
         builder.writeNumber(proposalId);
         builder.writeAddress(voter);
         const source = (await provider.get('hasAddressVoted', builder.build())).stack;
+        const result = source.readBoolean();
+        return result;
+    }
+    
+    async getHasAddressVotedOnAddressProposal(provider: ContractProvider, proposalId: bigint, voter: Address) {
+        const builder = new TupleBuilder();
+        builder.writeNumber(proposalId);
+        builder.writeAddress(voter);
+        const source = (await provider.get('hasAddressVotedOnAddressProposal', builder.build())).stack;
         const result = source.readBoolean();
         return result;
     }

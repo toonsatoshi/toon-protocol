@@ -81,6 +81,8 @@ message TreasuryWithdraw { amount: Int as coins; recipient: Address; }
 
 // ── ToonVault ────────────────────────────────────────────────────────────────
 //
+//  Status: IMPLEMENTED (Main reward engine)
+//
 //  Three-layer trust stack:
 //   1. Oracle attestation  — every ClaimReward carries an Ed25519 sig from
 //      the bot's oracle key.  The vault verifies on-chain.  Forging a valid
@@ -290,6 +292,10 @@ contract ToonVault with Deployable {
     // ─────────────────────────────────────────────────────────────────────────
 
     receive(msg: ClaimReward) {
+        // ── 0. Boundary validation ───────────────────────────────────────
+        require(msg.rewardId >= REWARD_ACTIVE_LISTENER && msg.rewardId <= REWARD_DROP_INVESTOR, "ToonVault: invalid rewardId");
+        require(msg.walletAddress != newAddress(0, 0), "ToonVault: invalid wallet address");
+
         // ── 1. Oracle signature verification ─────────────────────────────
         require(self.verifyOracleSignature(msg), "ToonVault: invalid oracle signature");
 
@@ -446,7 +452,7 @@ contract ToonVault with Deployable {
     }
 
     receive(msg: UpdateRegistry) {
-        require(sender() == self.owner, "ToonArtist: not owner"); // Fixed comment/check consistency if needed, but registry check is fine.
+        require(sender() == self.owner, "ToonVault: not owner");
         self.registry = msg.newRegistry;
     }
 

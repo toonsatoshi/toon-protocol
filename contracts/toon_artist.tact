@@ -32,9 +32,19 @@ message AddTrack {
     trackContract: Address;
 }
 
+struct ArtistDetails {
+    reputation: Int as uint32;
+    totalTipVolume: Int as coins;
+    stakedToon: Int as coins;
+    isActive: Bool;
+    totalTracks: Int as uint32;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  ToonArtist
 // ─────────────────────────────────────────────────────────────────────────────
+//
+//  Status: IMPLEMENTED (Artist Identity & Reputation)
 //
 //  On-chain identity for a Toon artist.
 //
@@ -76,6 +86,7 @@ contract ToonArtist with Deployable {
 
     receive(msg: UpdateMetadata) {
         require(sender() == self.owner, "ToonArtist: only owner can update metadata");
+        require(msg.newUri != "", "ToonArtist: empty metadata URI");
         self.metadataUri = msg.newUri;
     }
 
@@ -89,9 +100,11 @@ contract ToonArtist with Deployable {
 
     receive(msg: StakeToon) {
         require(sender() == self.owner, "ToonArtist: only owner can stake");
+        require(msg.amount > 0, "ToonArtist: stake amount must be positive");
         self.stakedToon = self.stakedToon + msg.amount;
     }
 
+    // Status: EXPERIMENTAL (Mock implementation)
     receive(msg: UnstakeToon) {
         require(sender() == self.owner, "ToonArtist: only owner can unstake");
         require(self.stakedToon >= msg.amount, "ToonArtist: insufficient stake");
@@ -109,6 +122,7 @@ contract ToonArtist with Deployable {
     // Subsequent tracks: require MIN_STAKE to prevent spam.
     receive(msg: AddTrack) {
         require(sender() == self.owner, "ToonArtist: only owner can add tracks");
+        require(msg.trackContract != newAddress(0, 0), "ToonArtist: invalid track contract address");
 
         if (self.totalTracks > 0) {
             require(self.isActive(), "ToonArtist: stake required for additional tracks");
@@ -138,17 +152,14 @@ contract ToonArtist with Deployable {
         return self.reputation >= self.TOON_DROP_THRESHOLD;
     }
 
-    get fun details(): String {
-        let sb: StringBuilder = beginString();
-        sb.append("reputation: ");
-        sb.append(self.reputation.toString());
-        sb.append(" | tips: ");
-        sb.append(self.totalTipVolume.toString());
-        sb.append(" | staked: ");
-        sb.append(self.stakedToon.toString());
-        sb.append(" | active: ");
-        if (self.isActive()) { sb.append("yes"); } else { sb.append("no"); }
-        return sb.toString();
+    get fun getDetails(): ArtistDetails {
+        return ArtistDetails{
+            reputation: self.reputation,
+            totalTipVolume: self.totalTipVolume,
+            stakedToon: self.stakedToon,
+            isActive: self.isActive(),
+            totalTracks: self.totalTracks
+        };
     }
 
     get fun getTrack(trackId: Int): Address? { return self.tracks.get(trackId); }

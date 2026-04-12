@@ -1,6 +1,6 @@
 # Tact compilation report
 Contract: ToonTrack
-BoC Size: 1130 bytes
+BoC Size: 1056 bytes
 
 ## Structures (Structs and Messages)
 Total structures: 16
@@ -124,7 +124,7 @@ No arguments
 * 135: Code of a contract was not found
 * 136: Invalid standard address
 * 138: Not a basechain address
-* 44191: ToonTrack: tip below minimum floor
+* 43013: ToonTrack: tip below minimum floor (including gas)
 
 ## Trait inheritance diagram
 

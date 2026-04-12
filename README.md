@@ -25,10 +25,10 @@ Decentralized music platform on TON blockchain. All contracts written in Tact v1
 | Contract | Address |
 |---|---|
 | MusicNft (genesis) | `EQDuvlwNaE0FsYbpqc9ndQ7ZohwzNx5tg0Uqbl7AuQR4U_2Q` |
-| ToonRegistry | `EQCoYE83sBNZe1fvHgy7nBQA6QUsE2o6xOO25MVZv-0Ny9X7` |
-| ToonVault | `EQB_hKFaklmxhTauyq1KdZ5P3vs-wSBKQuQXvXlRqaA1GLpl` |
-| ToonTip | `EQD2ODMBEg5IMQ9UW-6carDKQytq1ar5eS9J3Z1NIgXWhI0k` |
-| ToonGovernance | `EQBCO3z22pcX_AWGhOgcBzLieqTSxLFYzDvHpdUAkTbAhFcp` |
+| ToonRegistry | `EQBBMhyv8xZDs06bHFMrkSbPmYG_kpDGwcU7igzcLslolruj` |
+| ToonVault | `EQCzrg1AV_okCWLe6n0J4KQX1Af5HCgV65j7k2-O6Yl3Tz6N` |
+| ToonTip | `EQAg5uf01-Jva3lUwcDkVIeaI8Yp4ioylWvziHJw_IQzealU` |
+| ToonGovernance | `EQByvlBuigXPaIwmoUpA334CoBbF3bqi57dWADmGSHXhw8SQ` |
 | $TOON / ToonJettonMaster | `EQCiETxRxLgjpM50n8YcpUaBhJqnq0SFwZLlhBWs4-_wZVkQ` |
 
 ## Build
@@ -63,3 +63,18 @@ Logo: https://i.imgur.com/rCzW5A4.png — host on IPFS before mainnet.
 - **ToonVault holds mint authority** — all $TOON flows through the vault
 - **Daily emission cap + halving** — inflation-resistant token economics
 - **7-day wallet age minimum** — Sybil circuit breaker on reward claims
+
+## Roadmap & Implementation Status
+
+| Feature | Status | Details |
+|---|---|---|
+| Ed25519 Oracle Rewards | **Implemented** | Hardened with signed payloads, claim IDs, and expiry. |
+| Dynamic Emission Feedback | **Implemented** | Rewards automatically scale based on daily claim volume. |
+| Anti-Sybil Pairing Decay | **Implemented** | Multi-user interaction uniqueness weighted on-chain. |
+| Music NFT Minting | **Implemented** | Verifiable on-chain track ownership. |
+| Governance Voting | **Implemented** | $TOON holders can vote on protocol parameters (Emission Cap, etc). |
+| TonConnect 2.0 | **Implemented** | Fully integrated for all on-chain actions. |
+| Buy $TOON (Stars/Fiat) | **Mocked** | Payments are real, but token transfers are currently simulated in DB. |
+| Anti-Farming Cooldowns | **Implemented** | Both bot-layer and contract-layer burst protection. |
+| Toon Mini App | **Planned** | Transitioning from Bot to full Web3 UI. |
+| Mainnet Migration | **Planned** | Post-audit and testnet stabilization. |

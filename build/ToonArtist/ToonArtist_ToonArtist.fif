@@ -1,12 +1,8 @@
-// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/projects/toon-bot/toon-contracts/build/ToonArtist/ToonArtist_ToonArtist.fc` 
+// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/toon-protocol-main/build/ToonArtist/ToonArtist_ToonArtist.fc` 
 PROGRAM{
   DECLPROC __tact_context_get
   DECLPROC __tact_context_get_sender
-  DECLPROC __tact_string_builder_start
-  DECLPROC __tact_string_builder_start_string
-  DECLPROC __tact_string_builder_end
-  DECLPROC __tact_string_builder_end_slice
-  DECLPROC __tact_string_builder_append
+  DECLPROC __tact_slice_neq
   DECLPROC __tact_dict_get_int_slice
   DECLPROC __tact_dict_set_int_slice
   DECLPROC $DeployOk$_store
@@ -16,13 +12,15 @@ PROGRAM{
   DECLPROC $ToonArtist$_store
   DECLPROC $ToonArtist$_load
   DECLPROC $Context$_get_value
+  DECLPROC $ArtistDetails$_to_external
   DECLPROC $ToonArtist$init$_load
   DECLPROC $ToonArtist$_contract_init
   DECLPROC $ToonArtist$_contract_load
   DECLPROC $ToonArtist$_contract_store
   DECLPROC $ToonArtist$_fun_isActive
   DECLPROC $ToonArtist$_fun_canLaunchToonDrop
-  DECLPROC $ToonArtist$_fun_details
+  DECLPROC $ArtistDetails$_constructor_reputation_totalTipVolume_stakedToon_isActive_totalTracks
+  DECLPROC $ToonArtist$_fun_getDetails
   DECLPROC $ToonArtist$_fun_getTrack
   DECLPROC $ToonArtist$_fun_reputation
   DECLPROC $ToonArtist$_fun_owner
@@ -35,7 +33,7 @@ PROGRAM{
   DECLPROC $DeployOk$_constructor_queryId
   82798 DECLMETHOD %isActive
   99444 DECLMETHOD %canLaunchToonDrop
-  118890 DECLMETHOD %details
+  121337 DECLMETHOD %getDetails
   122854 DECLMETHOD %getTrack
   75930 DECLMETHOD %reputation
   83229 DECLMETHOD %owner
@@ -54,103 +52,12 @@ PROGRAM{
   __tact_context_get_sender PROCINLINE:<{
     __tact_context_sender GETGLOB
   }>
-  __tact_string_builder_start PROCINLINE:<{
-    NIL
+  __tact_slice_neq PROCINLINE:<{
     SWAP
-    TPUSH
-    PUSHNULL
-    TPUSH
-  }>
-  __tact_string_builder_start_string PROCINLINE:<{
-    NEWC
-    __tact_string_builder_start INLINECALLDICT
-  }>
-  __tact_string_builder_end PROCINLINE:<{
-    UNCONS
+    HASHSU
     SWAP
-    ENDC
-    WHILE:<{
-      OVER
-      ISNULL
-      NOT
-    }>DO<{
-      SWAP
-      UNCONS
-      -ROT
-      STREF
-      ENDC
-    }>
-    NIP
-  }>
-  __tact_string_builder_end_slice PROCINLINE:<{
-    __tact_string_builder_end INLINECALLDICT
-    CTOS
-  }>
-  __tact_string_builder_append PROCREF:<{
-    DUP
-    SREFS
-    OVER
-    SBITS
-    WHILE:<{
-      DUP
-      0 GTINT
-      s2 PUSH
-      0 GTINT
-      OR
-    }>DO<{
-      s0 s3 XCHG
-      UNCONS
-      127 PUSHINT
-      s2 PUSH
-      BBITS
-      3 RSHIFT#
-      SUB
-      s0 s5 XCHG
-      3 RSHIFT#
-      s5 s5 XCPU
-      MIN
-      DUP
-      0 GTINT
-      IF:<{
-        DUP
-        3 LSHIFT#
-        s1 s5 XCHG
-        LDSLICEX
-        s0 s3 XCHG
-        STSLICE
-        s0 s1 s4 XCHG3
-      }>
-      -ROT
-      CONS
-      s4 s1 PUSH2
-      SUB
-      0 GTINT
-      IF:<{
-        NEWC
-        SWAP
-        CONS
-        s4 s4 XCHG2
-        SUB
-        3 LSHIFT#
-      }>ELSE<{
-        NIP
-        s3 POP
-        0 GTINT
-        IF:<{
-          LDREF
-          DROP
-          CTOS
-          DUP
-          SREFS
-          OVER
-          SBITS
-        }>ELSE<{
-          0 PUSHINT
-          DUP
-        }>
-      }>
-    }>
-    3 BLKDROP
+    HASHSU
+    NEQ
   }>
   __tact_dict_get_int_slice PROCINLINE:<{
     -ROT
@@ -252,6 +159,8 @@ PROGRAM{
     s1 s3 XCHG
     3 BLKDROP
   }>
+  $ArtistDetails$_to_external PROCINLINE:<{
+  }>
   $ToonArtist$init$_load PROCINLINE:<{
     LDMSGADDR
     LDMSGADDR
@@ -306,128 +215,22 @@ PROGRAM{
     1000 PUSHINT
     GEQ
   }>
-  $ToonArtist$_fun_details PROCREF:<{
-    __tact_string_builder_start_string INLINECALLDICT
-        B{b5ee9c7241010101000e00001872657075746174696f6e3a20dff35631} B>boc <s PUSHSLICE
-    __tact_string_builder_append INLINECALLDICT
-    s5 PUSH
-        <{
-            // x
-            NEWC // x b
-            OVER // x b x
-            0 LESSINT // x b <0?
-            <{
-                // x b
-                45 PUSHINT // x b 45
-                SWAP // x 45 b
-                8 STU // x b
-                SWAP // b x
-                NEGATE // b -x
-                SWAP // -x b
-            }>CONT IF
-            // x b
-            SWAP // b x
-            <{
-                // b x
-                10 PUSHINT DIVMOD // b x/10 x%10
-                48 ADDCONST // b x/10 (x%10+48)
-                s2 s2 s0 XC2PU ISZERO // (x%10+48) b x/10 x/10==0?
-            }>CONT UNTIL
-            // ... b x
-            DROP // ... b
-            DEPTH DEC // ... b n
-            <{ 8 STU }>CONT REPEAT // b
-        }>CONT 1 1 CALLXARGS
-        // b
-        ENDC CTOS // s
-    __tact_string_builder_append INLINECALLDICT
-        B{b5ee9c7241010101000b000012207c20746970733a20cde71b5a} B>boc <s PUSHSLICE
-    __tact_string_builder_append INLINECALLDICT
-    s4 PUSH
-        <{
-            // x
-            NEWC // x b
-            OVER // x b x
-            0 LESSINT // x b <0?
-            <{
-                // x b
-                45 PUSHINT // x b 45
-                SWAP // x 45 b
-                8 STU // x b
-                SWAP // b x
-                NEGATE // b -x
-                SWAP // -x b
-            }>CONT IF
-            // x b
-            SWAP // b x
-            <{
-                // b x
-                10 PUSHINT DIVMOD // b x/10 x%10
-                48 ADDCONST // b x/10 (x%10+48)
-                s2 s2 s0 XC2PU ISZERO // (x%10+48) b x/10 x/10==0?
-            }>CONT UNTIL
-            // ... b x
-            DROP // ... b
-            DEPTH DEC // ... b n
-            <{ 8 STU }>CONT REPEAT // b
-        }>CONT 1 1 CALLXARGS
-        // b
-        ENDC CTOS // s
-    __tact_string_builder_append INLINECALLDICT
-        B{b5ee9c7241010101000d000016207c207374616b65643a20526b543d} B>boc <s PUSHSLICE
-    __tact_string_builder_append INLINECALLDICT
-    s3 PUSH
-        <{
-            // x
-            NEWC // x b
-            OVER // x b x
-            0 LESSINT // x b <0?
-            <{
-                // x b
-                45 PUSHINT // x b 45
-                SWAP // x 45 b
-                8 STU // x b
-                SWAP // b x
-                NEGATE // b -x
-                SWAP // -x b
-            }>CONT IF
-            // x b
-            SWAP // b x
-            <{
-                // b x
-                10 PUSHINT DIVMOD // b x/10 x%10
-                48 ADDCONST // b x/10 (x%10+48)
-                s2 s2 s0 XC2PU ISZERO // (x%10+48) b x/10 x/10==0?
-            }>CONT UNTIL
-            // ... b x
-            DROP // ... b
-            DEPTH DEC // ... b n
-            <{ 8 STU }>CONT REPEAT // b
-        }>CONT 1 1 CALLXARGS
-        // b
-        ENDC CTOS // s
-    __tact_string_builder_append INLINECALLDICT
-        B{b5ee9c7241010101000d000016207c206163746976653a20f5cb0869} B>boc <s PUSHSLICE
-    __tact_string_builder_append INLINECALLDICT
-    9 -ROLL
+  $ArtistDetails$_constructor_reputation_totalTipVolume_stakedToon_isActive_totalTracks PROCINLINE:<{
+  }>
+  $ToonArtist$_fun_getDetails PROCREF:<{
+    s4 s3 s2 PUSH3
+    9 3 BLKSWAP
     $ToonArtist$_fun_isActive INLINECALLDICT
-    IF:<{
-          B{b5ee9c7241010101000500000679657378d8b031} B>boc <s PUSHSLICE
-      s1 s10 XCHG
-      __tact_string_builder_append INLINECALLDICT
-    }>ELSE<{
-          B{b5ee9c724101010100040000046e6f198fd58e} B>boc <s PUSHSLICE
-      s1 s10 XCHG
-      __tact_string_builder_append INLINECALLDICT
-    }>
-    __tact_string_builder_end_slice INLINECALLDICT
-    s8 s9 XCHG
-    s7 s8 XCHG
-    s6 s7 XCHG
-    s5 s6 XCHG
-    s4 s5 XCHG
-    s3 s4 XCHG
-    s1 s3 s0 XCHG3
+    s3 s12 XCHG
+    s11 s10 s0 XCHG3
+    s10 PUSH
+    $ArtistDetails$_constructor_reputation_totalTipVolume_stakedToon_isActive_totalTracks INLINECALLDICT
+    s10 s13 XCHG
+    s9 s12 XCHG
+    s8 s11 XCHG
+    s7 s10 XCHG
+    s6 s9 XCHG
+    s5 s8 XCHG
   }>
   $ToonArtist$_fun_getTrack PROCREF:<{
     257 PUSHINT
@@ -498,10 +301,11 @@ PROGRAM{
     $ToonArtist$_fun_canLaunchToonDrop INLINECALLDICT
     9 1 BLKDROP2
   }>
-  %details PROC:<{
+  %getDetails PROC:<{
     $ToonArtist$_contract_load INLINECALLDICT
-    $ToonArtist$_fun_details INLINECALLDICT
-    9 1 BLKDROP2
+    $ToonArtist$_fun_getDetails INLINECALLDICT
+    9 5 BLKDROP2
+    $ArtistDetails$_to_external INLINECALLDICT
   }>
   %getTrack PROC:<{
     $ToonArtist$_contract_load INLINECALLDICT
@@ -576,6 +380,11 @@ PROGRAM{
         s8 PUSH
         SDEQ
         THROWANYIFNOT
+        42813 PUSHINT
+            B{b5ee9c724101010100020000004cacb9cd} B>boc <s PUSHSLICE
+        s2 s(-1) PUXC
+        __tact_slice_neq INLINECALLDICT
+        THROWANYIFNOT
         s6 s8 XCHG
         s5 s7 XCHG
         s4 s6 XCHG
@@ -597,6 +406,10 @@ PROGRAM{
         __tact_context_get_sender INLINECALLDICT
         s9 PUSH
         SDEQ
+        THROWANYIFNOT
+        9033 PUSHINT
+        OVER
+        0 GTINT
         THROWANYIFNOT
         ADD
         s6 s8 XCHG
@@ -715,6 +528,12 @@ PROGRAM{
         __tact_context_get_sender INLINECALLDICT
         s11 PUSH
         SDEQ
+        THROWANYIFNOT
+        17513 PUSHINT
+            B{b5ee9c72410101010024000043800000000000000000000000000000000000000000000000000000000000000000104aec829d} B>boc <s PUSHSLICE
+        s2 s(-1) PUXC
+        SDEQ
+        NOT
         THROWANYIFNOT
         s11 PUSH
         0 GTINT

@@ -1,6 +1,6 @@
 # Tact compilation report
 Contract: ToonJettonMaster
-BoC Size: 1227 bytes
+BoC Size: 1300 bytes
 
 ## Structures (Structs and Messages)
 Total structures: 24
@@ -167,6 +167,8 @@ No arguments
 graph TD
 ToonJettonMaster
 ToonJettonMaster --> BaseTrait
+ToonJettonMaster --> Deployable
+Deployable --> BaseTrait
 ```
 
 ## Contract dependency diagram

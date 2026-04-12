@@ -1,6 +1,6 @@
 # Tact compilation report
 Contract: ToonVault
-BoC Size: 5577 bytes
+BoC Size: 5637 bytes
 
 ## Structures (Structs and Messages)
 Total structures: 25
@@ -191,13 +191,14 @@ Argument: claimId
 * 16587: ToonVault: claim cooldown active
 * 26099: ToonVault: no Telegram identity
 * 36280: ToonVault: insufficient reserve
+* 40789: ToonVault: invalid rewardId
+* 43615: ToonVault: invalid wallet address
 * 44370: ToonVault: invalid oracle signature
 * 47601: ToonVault: cap out of valid range
 * 50533: ToonVault: only governance can set target activity
 * 52129: ToonVault: not owner
 * 53827: ToonVault: only governance can update emission cap
 * 54161: ToonVault: one-time reward already claimed
-* 55903: ToonArtist: not owner
 * 57033: ToonVault: daily emission cap reached
 * 58627: ToonVault: only governance can update min wallet age
 

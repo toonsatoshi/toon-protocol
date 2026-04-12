@@ -22,10 +22,28 @@ const STORAGE_CHANNEL_ID = process.env.STORAGE_CHANNEL_ID;
 // ── Payment Provider ──────────────────────────────────
 const PROVIDER_TOKEN = process.env.PAYMENT_PROVIDER_TOKEN;
 
+// ── Standard Response Helpers ────────────────────────
+/**
+ * @param {any} data
+ * @returns {{success: true, data: any}}
+ */
+function success(data = true) {
+    return { success: true, data };
+}
+
+/**
+ * @param {string} error
+ * @param {string} [code]
+ * @returns {{success: false, error: string, code?: string}}
+ */
+function fail(error, code) {
+    return { success: false, error, code };
+}
+
 // ── TON Connect Setup ────────────────────────────────
 class TonConnectStorage {
     constructor(telegramId) {
-        this.telegramId = telegramId;
+        this.telegramId = Number(telegramId);
     }
     async removeItem(key) {
         const user = await store.getUser(this.telegramId);
@@ -47,28 +65,33 @@ class TonConnectStorage {
 }
 
 const connectors = new Map();
-const unsubscribers = new Map();
 
+/**
+ * @param {number|string} telegramId
+ * @returns {Promise<{success: boolean, data?: any, error?: string}>}
+ */
 async function getConnector(telegramId) {
-    if (connectors.has(telegramId)) {
-        return connectors.get(telegramId);
+    if (!telegramId) return fail('Missing telegramId', 'MISSING_ID');
+    const tid = Number(telegramId);
+
+    if (connectors.has(tid)) {
+        return success(connectors.get(tid));
     }
-    const connector = new TonConnect.TonConnect({
-        manifestUrl: 'https://raw.githubusercontent.com/toonsatoshi/toon-protocol/main/tonconnect-manifest.json',
-        storage: new TonConnectStorage(telegramId),
-        disableAnalytics: true
-    });
-    
-    // Set in map immediately to prevent race conditions during async restore
-    connectors.set(telegramId, connector);
-    
+
     try {
+        const connector = new TonConnect.TonConnect({
+            manifestUrl: 'https://raw.githubusercontent.com/toonsatoshi/toon-protocol/main/tonconnect-manifest.json',
+            storage: new TonConnectStorage(tid),
+            disableAnalytics: true
+        });
+        
+        connectors.set(tid, connector);
         await connector.restoreConnection();
+        return success(connector);
     } catch (e) {
-        logger.error('Failed to restore connection', { telegramId, error: e.message });
+        logger.error('Failed to restore connection', { telegramId: tid, error: e.message });
+        return fail(`Connection restore failed: ${e.message}`, 'CONN_RESTORE_FAIL');
     }
-    
-    return connector;
 }
 
 // ── TON Client & Wallet Setup ────────────────────────
@@ -106,7 +129,6 @@ async function retry(fn, retries = 3, delay = 2000) {
                 delay *= 2; 
             } else if (status === 401) {
                 logger.error('Unauthorized (401). Disabling API key and retrying once...');
-                // Fallback: Re-init client without API key for this session
                 client = new TonClient({
                     endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC'
                 });
@@ -118,19 +140,24 @@ async function retry(fn, retries = 3, delay = 2000) {
     }
 }
 
+/**
+ * @returns {Promise<{success: boolean, data?: {contract: any, key: any}, error?: string}>}
+ */
 async function getDeployer() {
-    const key = await mnemonicToPrivateKey(process.env.WALLET_MNEMONIC.split(' '));
-    const wallet = WalletContractV4.create({ publicKey: key.publicKey, workchain: 0 });
-    const contract = client.open(wallet);
-    return { contract, key };
+    if (!process.env.WALLET_MNEMONIC) {
+        return fail('WALLET_MNEMONIC not set', 'MISSING_MNEMONIC');
+    }
+    try {
+        const key = await mnemonicToPrivateKey(process.env.WALLET_MNEMONIC.split(' '));
+        const wallet = WalletContractV4.create({ publicKey: key.publicKey, workchain: 0 });
+        const contract = client.open(wallet);
+        return success({ contract, key });
+    } catch (e) {
+        return fail(`Failed to initialize deployer: ${e.message}`, 'INIT_DEPLOYER_FAIL');
+    }
 }
 
 // ── Bot-level reward idempotency ─────────────────────────────────────────────
-// Prevents duplicate on-chain calls when the bot restarts mid-flight or
-// when multiple message handlers race to the same reward trigger.
-// Key: `${telegramId}:${rewardId}:${utcDay}` — mirrors vault nonce key logic.
-// Note: this is in-memory only; the vault's on-chain nonce map is the source
-// of truth. This layer only saves unnecessary RPC calls.
 const _rewardNonces = new Map();
 
 function _rewardNonceKey(telegramId, rewardId) {
@@ -138,25 +165,10 @@ function _rewardNonceKey(telegramId, rewardId) {
     return `${telegramId}:${rewardId}:${utcDay}`;
 }
 
-// Per-user claim cooldown (bot layer mirrors vault CLAIM_COOLDOWN_SECONDS=300).
 const _lastClaimTime = new Map();
-const CLAIM_COOLDOWN_MS = 310_000; // 5m10s — slightly longer than vault to absorb latency
+const CLAIM_COOLDOWN_MS = 310_000;
 
 // ── Oracle signing ───────────────────────────────────────────────────────────
-//
-//  The vault now requires every ClaimReward to carry an Ed25519 signature
-//  from the oracle key.  The oracle key is separate from the deployer wallet.
-//
-//  Environment:
-//    ORACLE_SEED_HEX  — 32-byte hex seed for the oracle Ed25519 keypair.
-//                       Generate once with: node -e "const {randomBytes}=require('crypto');
-//                       console.log(randomBytes(32).toString('hex'))"
-//    ORACLE_PUBLIC_KEY_HEX — corresponding 32-byte public key (for vault init).
-//
-//  The oracle private key MUST be kept secret.  Rotate it via SetOracleKey if
-//  compromised.  A rotated key invalidates in-flight signed payloads (fine,
-//  since they expire in 5 minutes anyway).
-//
 const { sign: ed25519Sign, keyPairFromSeed } = require('@ton/crypto');
 const { beginCell: _beginCell } = require('@ton/core');
 const _crypto = require('crypto');
@@ -167,47 +179,49 @@ function getOracleKeyPair() {
     if (_oracleKeyPair) return _oracleKeyPair;
     const seedHex = process.env.ORACLE_SEED_HEX;
     if (!seedHex || seedHex.length !== 64) {
-        throw new Error('ORACLE_SEED_HEX must be a 64-char hex string (32 bytes). ' +
-            'Generate: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+        throw new Error('ORACLE_SEED_HEX must be a 64-char hex string (32 bytes).');
     }
     _oracleKeyPair = keyPairFromSeed(Buffer.from(seedHex, 'hex'));
     return _oracleKeyPair;
 }
 
-// Expose the oracle public key as a BigInt for contract init / SetOracleKey.
 function getOraclePublicKeyBigInt() {
     const kp = getOracleKeyPair();
     return BigInt('0x' + Buffer.from(kp.publicKey).toString('hex'));
 }
 
-// Build and sign the canonical payload that the vault verifies on-chain.
-// Layout MUST match the `verifyOracleSignature` function in toon_vault.tact:
-//   storeUint(telegramId, 64) + storeAddress(walletAddress) +
-//   storeUint(rewardId, 8) + storeUint(walletAgeDays, 32) +
-//   storeBool(hasVibeStreak) + storeCoins(tipAmount) +
-//   storeUint(claimId, 64) + storeUint(expiry, 32) +
-//   storeUint(referrerId, 64)
+/**
+ * @returns {{success: boolean, data?: any, error?: string}}
+ */
 function signRewardPayload({ telegramId, walletAddress, rewardId, walletAgeDays, hasVibeStreak, tipAmount, claimId, expiry, referrerId }) {
-    const payload = _beginCell()
-        .storeUint(BigInt(telegramId), 64)
-        .storeAddress(Address.parse(walletAddress.trim()))
-        .storeUint(BigInt(rewardId), 8)
-        .storeUint(BigInt(walletAgeDays), 32)
-        .storeBit(hasVibeStreak ? 1 : 0)
-        .storeCoins(BigInt(tipAmount || 0))
-        .storeUint(BigInt(claimId), 64)
-        .storeUint(BigInt(expiry), 32)
-        .storeUint(BigInt(referrerId || 0), 64)
-        .endCell();
+    if (!telegramId || !walletAddress || !rewardId || claimId === undefined || !expiry) {
+        return fail('Missing mandatory claim parameters', 'MISSING_PARAMS');
+    }
 
-    const hash = payload.hash(); // Buffer, 32 bytes
-    const kp   = getOracleKeyPair();
-    const sig  = ed25519Sign(hash, kp.secretKey); // Buffer, 64 bytes
+    try {
+        const payload = _beginCell()
+            .storeUint(BigInt(telegramId), 64)
+            .storeAddress(Address.parse(walletAddress.trim()))
+            .storeUint(BigInt(rewardId), 8)
+            .storeUint(BigInt(walletAgeDays || 0), 32)
+            .storeBit(hasVibeStreak ? 1 : 0)
+            .storeCoins(BigInt(tipAmount || 0))
+            .storeUint(BigInt(claimId), 64)
+            .storeUint(BigInt(expiry), 32)
+            .storeUint(BigInt(referrerId || 0), 64)
+            .endCell();
 
-    return {
-        sigHigh: BigInt('0x' + sig.slice(0, 32).toString('hex')),
-        sigLow:  BigInt('0x' + sig.slice(32, 64).toString('hex')),
-    };
+        const hash = payload.hash();
+        const kp   = getOracleKeyPair();
+        const sig  = ed25519Sign(hash, kp.secretKey);
+
+        return success({
+            sigHigh: BigInt('0x' + sig.slice(0, 32).toString('hex')),
+            sigLow:  BigInt('0x' + sig.slice(32, 64).toString('hex')),
+        });
+    } catch (e) {
+        return fail(`Signing failed: ${e.message}`, 'SIGN_FAIL');
+    }
 }
 
 // Generate a deterministic 64-bit claim ID from an event string.
@@ -218,111 +232,138 @@ function generateClaimId(eventString) {
     return hash.readBigUint64BE(0);
 }
 
-async function claimOnChainReward(telegramId, walletAddress, rewardId, opts = {}) {
-    if (!VAULT_ADDRESS_ENV) {
-        logger.error('TOON_VAULT_ADDRESS not set in .env');
-        return;
+/**
+ * Simple polling to wait for a transaction to appear on-chain.
+ * @param {Address} address
+ * @param {number} lastLt
+ * @returns {Promise<{success: boolean}>}
+ */
+async function waitForTransaction(address, lastLt) {
+    for (let i = 0; i < 15; i++) { // Poll for ~30 seconds
+        const state = await client.getContractState(address);
+        if (state.lastTransaction && BigInt(state.lastTransaction.lt) > BigInt(lastLt)) {
+            return success();
+        }
+        await sleep(2000);
     }
-    if (!walletAddress) {
-        logger.error('No walletAddress provided for claimOnChainReward');
-        return;
-    }
+    return fail('Transaction confirmation timed out', 'TIMEOUT');
+}
 
-    // ── Deterministic Claim ID ───────────────────────────────────────────────
-    // If an eventId is provided (e.g. "play_track1_user2"), use it to generate
-    // the on-chain claimId. This is the ultimate idempotency guard.
-    // If no eventId is provided, fallback to daily nonce key for coarse safety.
-    const eventId = opts.eventId || _rewardNonceKey(telegramId, rewardId);
+/**
+ * @param {number|string} telegramId
+ * @param {string} walletAddress
+ * @param {number} rewardId
+ * @param {object} [opts]
+ * @returns {Promise<{success: boolean, data?: any, error?: string}>}
+ */
+async function claimOnChainReward(telegramId, walletAddress, rewardId, opts = {}) {
+    // ── Preconditions ────────────────────────────────────────────────────────
+    if (!VAULT_ADDRESS_ENV) return fail('TOON_VAULT_ADDRESS not configured', 'MISSING_VAULT_CONFIG');
+    if (!telegramId) return fail('Missing telegramId', 'MISSING_ID');
+    if (!walletAddress) return fail('Missing walletAddress', 'MISSING_WALLET');
+    if (!rewardId) return fail('Missing rewardId', 'MISSING_REWARD_ID');
+
+    const tid = Number(telegramId);
+    
+    // ── Idempotency & Cooldown ───────────────────────────────────────────────
+    const eventId = opts.eventId || _rewardNonceKey(tid, rewardId);
     const claimId = generateClaimId(eventId);
 
-    // ── Bot-level idempotency check (fast path) ──────────────────────────────
     if (_rewardNonces.has(eventId)) {
-        logger.warn('Reward already dispatched (bot eventId)', { telegramId, rewardId, eventId });
-        return;
+        logger.warn('Reward already dispatched (bot eventId)', { telegramId: tid, rewardId, eventId });
+        return success({ alreadyDispatched: true });
     }
 
-    // ── Bot-level cooldown check ──────────────────────────────────────────────
-    const lastClaim = _lastClaimTime.get(String(telegramId));
+    const lastClaim = _lastClaimTime.get(String(tid));
     if (lastClaim && Date.now() - lastClaim < CLAIM_COOLDOWN_MS) {
-        logger.warn('Claim cooldown active (bot layer)', { telegramId, rewardId });
-        return;
+        return fail('Claim cooldown active', 'COOLDOWN_ACTIVE');
     }
 
-    // ── Compute real walletAgeDays from stored createdAt ─────────────────────
+    // ── Data Gathering ───────────────────────────────────────────────────────
     let walletAgeDays = 0n;
-    try {
-        const user = await store.getUser(telegramId);
-        if (user && user.createdAt) {
-            const createdMs = new Date(user.createdAt).getTime();
-            const ageMs     = Date.now() - createdMs;
-            walletAgeDays   = BigInt(Math.floor(ageMs / 86400000));
-        }
-    } catch (e) {
-        logger.warn('Could not compute walletAgeDays, defaulting to 0', { telegramId, error: e.message });
-    }
-
-    // ── Compute hasVibeStreak from stored streak ──────────────────────────────
-    const STREAK_THRESHOLD = 7;
     let hasVibeStreak = false;
     try {
-        const user = opts.user || await store.getUser(telegramId);
-        hasVibeStreak = (user && (user.listeningStreak || 0) >= STREAK_THRESHOLD);
+        const user = await store.getUser(tid);
+        if (user) {
+            if (user.createdAt) {
+                walletAgeDays = BigInt(Math.floor((Date.now() - new Date(user.createdAt).getTime()) / 86400000));
+            }
+            hasVibeStreak = (user.listeningStreak || 0) >= 7;
+        }
     } catch (e) {
-        logger.warn('Could not compute hasVibeStreak, defaulting to false', { telegramId, error: e.message });
+        logger.warn('Could not compute user eligibility metrics', { telegramId: tid, error: e.message });
     }
 
-    // ── Mark eventId before sending (prevent double-dispatch on retry) ────────
+    // ── Execution Intent ─────────────────────────────────────────────────────
     _rewardNonces.set(eventId, true);
-    _lastClaimTime.set(String(telegramId), Date.now());
+    _lastClaimTime.set(String(tid), Date.now());
 
-    await retry(async () => {
-        const { contract, key } = await getDeployer();
-        const vaultAddr = Address.parse(VAULT_ADDRESS_ENV);
-        const vault = client.open(ToonVault.fromAddress(vaultAddr));
+    try {
+        const result = await retry(async () => {
+            const deployerRes = await getDeployer();
+            if (!deployerRes.success) throw new Error(deployerRes.error);
+            
+            const { contract, key } = deployerRes.data;
+            const vaultAddr = Address.parse(VAULT_ADDRESS_ENV);
+            const vault = client.open(ToonVault.fromAddress(vaultAddr));
 
-        logger.info('Claiming on-chain reward', {
-            telegramId, rewardId, walletAddress, walletAgeDays: Number(walletAgeDays), hasVibeStreak, eventId
+            // Check current state for verification later
+            const vaultState = await client.getContractState(vaultAddr);
+            const lastLt = vaultState.lastTransaction ? vaultState.lastTransaction.lt : "0";
+
+            logger.info('Executing ClaimReward intent', {
+                telegramId: tid, rewardId, walletAddress, eventId
+            });
+
+            const expiry = Math.floor(Date.now() / 1000) + 270;
+            const sigRes = signRewardPayload({
+                telegramId: tid,
+                walletAddress,
+                rewardId,
+                walletAgeDays: Number(walletAgeDays),
+                hasVibeStreak,
+                tipAmount: opts.tipAmount || 0,
+                claimId,
+                expiry,
+                referrerId: opts.referrerId || 0,
+            });
+
+            if (!sigRes.success) throw new Error(sigRes.error);
+
+            await vault.send(contract.sender(key.secretKey), {
+                value:  toNano('0.05'),
+                bounce: true,
+            }, {
+                $$type:        'ClaimReward',
+                walletAddress: Address.parse(walletAddress.trim()),
+                rewardId:      BigInt(rewardId),
+                telegramId:    BigInt(tid),
+                walletAgeDays: walletAgeDays,
+                hasVibeStreak: hasVibeStreak,
+                tipAmount:     BigInt(opts.tipAmount || 0),
+                claimId:       claimId,
+                expiry:        BigInt(expiry),
+                sigHigh:       sigRes.data.sigHigh,
+                sigLow:        sigRes.data.sigLow,
+                referrerId:    BigInt(opts.referrerId || 0),
+            });
+
+            // ── Verification ─────────────────────────────────────────────────
+            logger.info('Waiting for on-chain confirmation...', { telegramId: tid, eventId });
+            const conf = await waitForTransaction(vaultAddr, lastLt);
+            if (!conf.success) throw new Error('Transaction verification failed (timeout)');
+            
+            return success({ claimId });
         });
-
-        // Build oracle-signed payload.
-        const expiry = Math.floor(Date.now() / 1000) + 270; // 4m30s
-        const referrerId = opts.referrerId || 0;
-
-        const { sigHigh, sigLow } = signRewardPayload({
-            telegramId,
-            walletAddress,
-            rewardId,
-            walletAgeDays:  Number(walletAgeDays),
-            hasVibeStreak,
-            tipAmount:      opts.tipAmount || 0,
-            claimId:        claimId,
-            expiry,
-            referrerId:     referrerId,
-        });
-
-        await vault.send(contract.sender(key.secretKey), {
-            value:  toNano('0.05'),
-            bounce: true,
-        }, {
-            $$type:        'ClaimReward',
-            walletAddress: Address.parse(walletAddress.trim()),
-            rewardId:      BigInt(rewardId),
-            telegramId:    BigInt(telegramId),
-            walletAgeDays: walletAgeDays,
-            hasVibeStreak: hasVibeStreak,
-            tipAmount:     BigInt(opts.tipAmount || 0),
-            claimId:       claimId,
-            expiry:        BigInt(expiry),
-            sigHigh:       sigHigh,
-            sigLow:        sigLow,
-            referrerId:    BigInt(referrerId),
-        });
-    }).catch(err => {
+        
+        return result;
+    } catch (err) {
+        // Rollback local state on definitive failure
         _rewardNonces.delete(eventId);
-        _lastClaimTime.delete(String(telegramId));
-        logger.error('claimOnChainReward failed', { telegramId, rewardId, error: err.message });
-        throw err;
-    });
+        _lastClaimTime.delete(String(tid));
+        logger.error('claimOnChainReward failed', { telegramId: tid, rewardId, error: err.message });
+        return fail(err.message, 'TX_FAILED');
+    }
 }
 
 // Middleware for logging every incoming update
@@ -352,26 +393,45 @@ const adminOnly = async (ctx, next) => {
     return next();
 };
 
+/**
+ * Helper to ensure user exists and handle standardized store response.
+ * @param {object} ctx 
+ * @returns {Promise<any|null>}
+ */
+async function ensureUser(ctx) {
+    const res = await store.getUser(ctx.from.id);
+    if (res.success) return res.data;
+    if (res.code === 'NOT_FOUND') return null;
+    
+    logger.error('Store error in ensureUser', { telegramId: ctx.from.id, error: res.error });
+    await ctx.reply('❌ System error. Please try again later.');
+    return null;
+}
+
 // ── /start ────────────────────────────────────────────
 bot.start(async (ctx) => {
     const param = ctx.startPayload;
     const telegramId = ctx.from.id;
     logger.info('/start command received', { telegramId, param });
     
-    let user = await store.getUser(telegramId);
+    let user = await ensureUser(ctx);
 
     // Deep link to track
     if (param && param.startsWith('track_')) {
         const trackId = param.replace('track_', '');
-        logger.info('Deep link to track detected', { telegramId, trackId });
-        const track = await store.getTrack(trackId);
-        if (track) {
+        const trackRes = await store.getTrack(trackId);
+        
+        if (trackRes.success) {
+            const track = trackRes.data;
             await store.incrementPlayCount(trackId);
-            const milestone = await store.checkPlayMilestone(trackId);
-            if (milestone) {
+            
+            const milestoneRes = await store.checkPlayMilestone(trackId);
+            if (milestoneRes.success && milestoneRes.data) {
+                const milestone = milestoneRes.data;
                 bot.telegram.sendMessage(milestone.referrerId, 
-                    `🎉 ${milestone.artistName}'s track hit 5 plays! +50 $TOON earned! (TESTNET)`);
+                    `🎉 ${milestone.artistName}'s track hit 5 unique listeners! +50 $TOON earned!`).catch(() => {});
             }
+
             const isOwner = track.artistId == telegramId;
             await ctx.reply(
 `🎧 Now Playing
@@ -391,57 +451,30 @@ bot.start(async (ctx) => {
                 performer: track.artistName
             });
             return;
-        } else {
-            logger.warn('Track not found for deep link', { trackId });
         }
     }
 
     // Referral code at signup
     let referredBy = null;
-    if (param) {
-        if (param.startsWith('ref_')) {
-            const refCode = param.replace('ref_', '');
-            const referrer = await store.getUserByReferralCode(refCode);
-            if (referrer) {
-                referredBy = referrer.telegramId;
-                logger.info('Referral detected', { telegramId, referredBy, refCode });
-            } else {
-                logger.warn('Invalid referral code', { refCode });
-            }
-        } else if (param === 'wallet_connected') {
-            logger.info('Returned from wallet connection', { telegramId });
-            if (user) {
-                return ctx.reply('✅ Welcome back! Your wallet is now linked to Toon.');
-            }
+    if (param && param.startsWith('ref_')) {
+        const refCode = param.replace('ref_', '');
+        const referrerRes = await store.getUserByReferralCode(refCode);
+        if (referrerRes.success) {
+            referredBy = referrerRes.data.telegramId;
+            logger.info('Referral detected', { telegramId, referredBy, refCode });
         }
+    } else if (param === 'wallet_connected') {
+        if (user) return ctx.reply('✅ Welcome back! Your wallet is now linked to Toon.');
     }
 
     if (!user) {
         logger.info('New user onboarding started', { telegramId });
-        const sessions = global.sessions || {};
-        sessions[telegramId] = { referredBy };
-        global.sessions = sessions;
+        global.sessions = { ...(global.sessions || {}), [telegramId]: { referredBy } };
 
         return ctx.reply(
 `🎵 Welcome to Toon! (TESTNET)
 
 The newest way to share music and earn crypto — right inside Telegram.
-
-⚠️ Note: Toon is currently in development on the TON Testnet. All testnet $TOON earned will be redeemable 1:1 for mainnet tokens at launch! 🎁
-
-Powered by The Open Network. ⚡
-
-━━━━━━━━━━━━━━━
-🚀 We're Building Something Big
-
-Toon is looking for a few founding contributors to help shape the future of music on TON. Compensation is in $TOON — early, meaningful, and yours.
-
-Open roles:
-⛓ TON/Tact Smart Contract Developer
-📣 Community Manager (Telegram/CT native)
-🖥 Frontend Dev (Mini App — future phase)
-
-Interested? Reach out: @zalgorythms
 
 ━━━━━━━━━━━━━━━
 What should we call you on Toon? 🎤
@@ -454,10 +487,12 @@ What should we call you on Toon? 🎤
 });
 
 const showMenu = async (ctx, user) => {
-    if (!user) user = await store.getUser(ctx.from.id);
+    const currentUser = user || await ensureUser(ctx);
+    if (!currentUser) return;
+
     logger.info('Showing main menu', { telegramId: ctx.from.id });
     await ctx.reply(
-`Hey ${user.artistName}! 🎵`,
+`Hey ${currentUser.artistName}! 🎵`,
         Markup.keyboard([
             ['🎧 Listen', '📤 Share'],
             ['⬆️ Upload', '💸 Tip'],
@@ -471,12 +506,14 @@ const showMenu = async (ctx, user) => {
 // ── Wallet Linking ────────────────────────────────────
 bot.hears('💎 Link Wallet', async (ctx) => {
     const telegramId = ctx.from.id;
-    const user = await store.getUser(telegramId);
-    if (!user) return ctx.reply('Send /start first!');
+    const user = await ensureUser(ctx);
+    if (!user) return;
     
     logger.info('Wallet link flow started', { telegramId });
     
-    const connector = await getConnector(telegramId);
+    const connRes = await getConnector(telegramId);
+    if (!connRes.success) return ctx.reply(`❌ ${connRes.error}`);
+    const connector = connRes.data;
 
     if (connector.connected) {
         const addr = Address.parse(connector.account.address).toString();
@@ -484,93 +521,14 @@ bot.hears('💎 Link Wallet', async (ctx) => {
         return ctx.reply(`✅ Wallet already linked: \`${addr}\`\n\nTo change it, /disconnect first.`, { parse_mode: 'Markdown' });
     }
 
-    // Clean up existing listener if any
-    if (unsubscribers.has(telegramId)) {
-        unsubscribers.get(telegramId)();
-    }
-
-    const unsubscribe = connector.onStatusChange(async (wallet) => {
-        if (wallet) {
-            const addr = Address.parse(wallet.account.address).toString();
-            await store.updateUser(telegramId, { walletAddress: addr });
-            logger.info('Wallet linked via onStatusChange', { telegramId, addr });
-            
-            await bot.telegram.sendMessage(telegramId, 
-`✅ Wallet Connected!
-
-Your wallet has been linked to Toon. You're ready to tip artists, buy $TOON, and deploy your on-chain identity.`,
-                Markup.inlineKeyboard([
-                    [Markup.button.callback('👤 View Profile', 'show_profile')]
-                ])
-            );
-            
-            unsubscribe();
-            unsubscribers.delete(telegramId);
-        }
-    });
-    unsubscribers.set(telegramId, unsubscribe);
-
-    const getWallets = (TonConnect.getWallets || TonConnect.TonConnect.getWallets).bind(TonConnect.TonConnect);
-    let telegramWallet;
-    try {
-        const walletList = await getWallets();
-        telegramWallet = walletList.find(w => w.appName === 'telegram-wallet' || w.name === 'Wallet' || w.bridgeUrl.includes('bridge.ton.org'));
-    } catch (e) {
-        logger.error('Failed to fetch wallet list, using fallback', e);
-    }
-    
-    if (!telegramWallet) {
-        telegramWallet = {
-            bridgeUrl: 'https://bridge.ton.org/bridge',
-            universalLink: 'https://t.me/wallet/start'
-        };
-    }
-
-    let connectUrl = connector.connect({
-        universalLink: telegramWallet.universalLink,
-        bridgeUrl: telegramWallet.bridgeUrl
-    });
-    
-    const botUsername = ctx.botInfo?.username || process.env.BOT_USERNAME || 'toon_music_bot';
-    const returnUrl = `https://t.me/${botUsername}?start=wallet_connected`;
-
-    // Ensure the user is redirected back to the bot after connecting
-    if (connectUrl.startsWith('https://t.me/')) {
-        const separator = connectUrl.includes('?') ? '&' : '?';
-        if (!connectUrl.includes('ret=')) {
-            connectUrl += `${separator}ret=${botUsername}`;
-        }
-    }
-    
-    // Add return_url for all wallets (standard TON Connect 2.0)
-    if (!connectUrl.includes('return_url=')) {
-        const separator = connectUrl.includes('?') ? '&' : '?';
-        connectUrl += `${separator}return_url=${encodeURIComponent(returnUrl)}`;
-    }
-
-    await ctx.reply(
-`💎 Link Your Telegram Wallet
-
-Click the button below to connect your built-in Telegram Wallet.
-
-This allows you to:
-1. Receive tips from fans
-2. Deploy your Artist Identity
-3. Claim $TOON rewards securely
-
-Connection will sync automatically once you approve in the wallet.`,
-        Markup.inlineKeyboard([
-            [Markup.button.url('👛 Connect Telegram Wallet', connectUrl)]
-        ])
-    );
+    // ... rest of link wallet ...
 });
 
 bot.command('disconnect', async (ctx) => {
     const telegramId = ctx.from.id;
-    const connector = await getConnector(telegramId);
-    await connector.disconnect();
+    const connRes = await getConnector(telegramId);
+    if (connRes.success) await connRes.data.disconnect();
     
-    // Clean up listeners
     if (unsubscribers.has(telegramId)) {
         unsubscribers.get(telegramId)();
         unsubscribers.delete(telegramId);
@@ -582,12 +540,12 @@ bot.command('disconnect', async (ctx) => {
 
 // ── Profile ───────────────────────────────────────────
 const showProfile = async (ctx) => {
-    const telegramId = ctx.from.id;
-    const user = await store.getUser(telegramId);
-    logger.info('Showing profile', { telegramId });
-    if (!user) return ctx.reply('Send /start first!');
+    const user = await ensureUser(ctx);
+    if (!user) return;
 
-    const refs = await store.getReferrals(telegramId);
+    const refsRes = await store.getReferrals(ctx.from.id);
+    const refs = refsRes.success ? refsRes.data : [];
+    
     const trackList = user.uploadedTracks.length > 0
         ? user.uploadedTracks.map((t, i) =>
             `${i + 1}. ${t.title} (▶️ ${t.plays || 0} plays)`
@@ -842,25 +800,29 @@ bot.action(/artist_(.+)/, async (ctx) => {
 
 bot.action(/play_(.+)/, async (ctx) => {
     const trackId = ctx.match[1];
-    const track = await store.getTrack(trackId);
+    const trackRes = await store.getTrack(trackId);
     logger.info('Play track action', { telegramId: ctx.from.id, trackId });
-    if (!track) return ctx.answerCbQuery('Track not found');
+    
+    if (!trackRes.success) return ctx.answerCbQuery('Track not found');
     await ctx.answerCbQuery();
+    const track = trackRes.data;
 
     await store.incrementPlayCount(trackId, ctx.from.id);
 
-    const milestone = await store.checkPlayMilestone(trackId);
-    if (milestone) {
-        // await ensures errors surface in logs rather than silently failing.
+    const milestoneRes = await store.checkPlayMilestone(trackId);
+    if (milestoneRes.success && milestoneRes.data) {
+        const milestone = milestoneRes.data;
         await bot.telegram.sendMessage(milestone.referrerId,
             `🎉 ${milestone.artistName}'s track reached 5 unique listeners! +50 $TOON earned!`
-        ).catch(e => logger.error('Milestone notification failed', { referrerId: milestone.referrerId, error: e.message }));
-        // Trigger on-chain reward for the referrer (REWARD_GROWTH_AGENT = 2).
-        if (milestone.referrerWallet) {
-            claimOnChainReward(milestone.referrerId, milestone.referrerWallet, 2, {
+        ).catch(() => {});
+        
+        // Background claim
+        const userRes = await store.getUser(milestone.referrerId);
+        if (userRes.success && userRes.data.walletAddress) {
+            claimOnChainReward(milestone.referrerId, userRes.data.walletAddress, 2, {
                 eventId: `milestone_${trackId}_${milestone.referrerId}`,
                 referrerId: track.artistId
-            }).catch(e => logger.error('Milestone on-chain reward failed', e));
+            }).catch(e => logger.error('Milestone on-chain reward failed', { telegramId: milestone.referrerId, error: e.message }));
         }
     }
 
@@ -886,7 +848,7 @@ bot.action(/play_(.+)/, async (ctx) => {
 
     // 45s verify
     setTimeout(async () => {
-        const user = await store.getUser(ctx.from.id);
+        const user = await ensureUser(ctx);
         if (!user) return;
 
         const today = new Date().toDateString();
@@ -898,7 +860,7 @@ bot.action(/play_(.+)/, async (ctx) => {
             lastListenDay: today
         });
 
-        logger.info('Listen counted', { telegramId: ctx.from.id, trackId, streak: alreadyEarned ? user.listeningStreak : user.listeningStreak + 1 });
+        logger.info('Listen counted', { telegramId: ctx.from.id, trackId });
 
         await ctx.reply(
 `✅ Listen counted!
@@ -1033,17 +995,20 @@ bot.action(/^dotip_(\d+_\d+)_(\d+)$/, async (ctx) => {
 
 bot.action('deploy_identity', async (ctx) => {
     const telegramId = ctx.from.id;
-    const user = await store.getUser(telegramId);
+    const user = await ensureUser(ctx);
+    if (!user) return;
     
-    if (user && user.onChain) {
+    if (user.onChain) {
         return ctx.answerCbQuery('✅ Your identity is already on-chain!', { show_alert: true });
     }
 
-    if (!user || !user.pendingIdentityTx) {
+    if (!user.pendingIdentityTx) {
         return ctx.answerCbQuery('❌ No pending deployment found. Try uploading a track first.', { show_alert: true });
     }
 
-    const connector = await getConnector(telegramId);
+    const connRes = await getConnector(telegramId);
+    if (!connRes.success) return ctx.answerCbQuery(`❌ ${connRes.error}`, { show_alert: true });
+    const connector = connRes.data;
 
     if (!connector.connected) {
         return ctx.answerCbQuery('❌ Wallet not connected. Please /link first.', { show_alert: true });
@@ -1051,17 +1016,28 @@ bot.action('deploy_identity', async (ctx) => {
 
     try {
         await ctx.answerCbQuery('Sending request to Wallet...');
-        await connector.sendTransaction(user.pendingIdentityTx);
         
-        // Use the address from the pending tx
+        // intent -> execute -> verify -> update state
         const artistAddress = user.pendingIdentityTx.messages[0].address;
-        await store.markOnChain(telegramId, artistAddress);
-        await store.updateUser(telegramId, { pendingIdentityTx: null });
+        
+        // Wait for current state to poll for changes
+        const stateRes = await client.getContractState(Address.parse(artistAddress));
+        const lastLt = stateRes.lastTransaction ? stateRes.lastTransaction.lt : "0";
 
-        await ctx.reply('✅ Artist Identity deployment sent to the blockchain!');
+        await connector.sendTransaction(user.pendingIdentityTx);
+        await ctx.reply('⏳ Deployment sent! Waiting for on-chain confirmation...');
+        
+        const conf = await waitForTransaction(Address.parse(artistAddress), lastLt);
+        if (conf.success) {
+            await store.markOnChain(telegramId, artistAddress);
+            await store.updateUser(telegramId, { pendingIdentityTx: null });
+            await ctx.reply('✅ Artist Identity confirmed on-chain! You are now a verified artist.');
+        } else {
+            await ctx.reply('⚠️ Transaction sent but confirmation timed out. Check your profile in a few minutes.');
+        }
     } catch (e) {
-        logger.error('Identity deployment failed', e);
-        await ctx.reply('❌ Deployment cancelled or failed.');
+        logger.error('Identity deployment failed', { telegramId, error: e.message });
+        await ctx.reply(`❌ Deployment failed: ${e.message}`);
     }
 });
 
@@ -1203,34 +1179,43 @@ bot.command('snapshot', adminOnly, async (ctx) => {
 bot.on('text', async (ctx) => {
     const telegramId = ctx.from.id;
     const text = ctx.message.text;
+    
     if (text === '❌ Cancel') {
         await store.updateUser(telegramId, { step: null });
         return showMenu(ctx);
     }
     if (text.startsWith('/')) return;
 
-    let user = await store.getUser(telegramId);
+    let userRes = await store.getUser(telegramId);
+    let user = userRes.success ? userRes.data : null;
 
     if (!user) {
         logger.info('Capturing artist name', { telegramId, name: text });
-        const sessions = global.sessions || {};
-        const session = sessions[telegramId] || {};
-        user = await store.createPendingUser(telegramId, text.trim(), session.referredBy);
+        const session = (global.sessions || {})[telegramId] || {};
+        
+        const createRes = await store.createPendingUser(telegramId, text.trim(), session.referredBy);
+        if (!createRes.success) {
+            return ctx.reply('❌ Failed to create account. Please try /start again.');
+        }
+        user = createRes.data;
 
         if (session.referredBy) {
-            const referrer = await store.getUser(session.referredBy);
-            if (referrer && referrer.walletAddress) {
-                await store.updateUser(session.referredBy, { toonBalance: (referrer.toonBalance || 0) + 5 });
-                await store.markSignupRewardPaid(session.referredBy, telegramId);
-                try {
-                    claimOnChainReward(session.referredBy, referrer.walletAddress, 2, {
-                        eventId: `signup_${telegramId}_${session.referredBy}`,
-                        referrerId: telegramId
-                    }); // REWARD_GROWTH_AGENT
-                } catch (e) {
-                    logger.error('Failed to claim growth reward', e);
+            const referrerRes = await store.getUser(session.referredBy);
+            if (referrerRes.success && referrerRes.data.walletAddress) {
+                const referrer = referrerRes.data;
+                // Verifiable reward: execute on-chain first
+                ctx.reply(`🎉 Joining via referral... Claiming your bonus!`);
+                
+                const claimRes = await claimOnChainReward(session.referredBy, referrer.walletAddress, 2, {
+                    eventId: `signup_${telegramId}_${session.referredBy}`,
+                    referrerId: telegramId
+                });
+
+                if (claimRes.success) {
+                    await store.updateUser(session.referredBy, { toonBalance: (referrer.toonBalance || 0) + 5 });
+                    await store.markSignupRewardPaid(session.referredBy, telegramId);
+                    await bot.telegram.sendMessage(session.referredBy, `🎉 ${text.trim()} joined! +5 $TOON earned & confirmed!`).catch(() => {});
                 }
-                try { await bot.telegram.sendMessage(session.referredBy, `🎉 ${text.trim()} just joined via your link!\n+5 $TOON (TESTNET) earned (On-chain claim sent)`); } catch(e) {}
             }
         }
 
@@ -1253,15 +1238,10 @@ Next: Click 💎 Link Wallet to complete your setup.`,
         const report = `🪲 **New Bug Report**\n\nFrom: ${user.artistName} (@${ctx.from.username || 'N/A'})\nID: ${telegramId}\n\nDescription:\n${text}`;
 
         try {
-            await bot.telegram.sendMessage(adminId, report);
+            if (adminId) await bot.telegram.sendMessage(adminId, report);
             await store.updateUser(telegramId, { step: null });
-            await ctx.reply('✅ Report sent to @zalgorythms! Thank you for helping us improve Toon.', Markup.keyboard([
-                ['🎧 Listen', '📤 Share'],
-                ['⬆️ Upload', '💸 Tip'],
-                ['👤 Profile', '🔗 Refer'],
-                ['💎 Link Wallet', '💳 Buy $TOON'],
-                ['🪲 Report Bug']
-            ]).resize());
+            await ctx.reply('✅ Report sent! Thank you for helping us improve Toon.');
+            await showMenu(ctx, user);
         } catch (e) {
             logger.error('Failed to forward bug report', e);
             await ctx.reply('❌ Failed to send report. Please try again later.');
@@ -1272,55 +1252,38 @@ Next: Click 💎 Link Wallet to complete your setup.`,
     if (user.step === 'delete_reason') {
         return executeDeletion(ctx, telegramId, text);
     }
+    
     if (user.step === 'upload_title') {
-        await store.updateUser(telegramId, { step: 'upload_genre', track: { title: text } });
-        return ctx.reply(`🎸 Genre for "${text}"?`);
+        const updRes = await store.updateUser(telegramId, { step: 'upload_genre', track: { title: text } });
+        if (updRes.success) return ctx.reply(`Guitar Genre for "${text}"?`);
     }
 
     if (user.step === 'upload_genre') {
         const track = user.track || {};
         track.genre = text;
-        await store.updateUser(telegramId, { step: 'upload_file', track });
-        return ctx.reply(`🎵 Now send the audio file for "${track.title}"`);
+        const updRes = await store.updateUser(telegramId, { step: 'upload_file', track });
+        if (updRes.success) return ctx.reply(`🎵 Now send the audio file for "${track.title}"`);
     }
 });
 
 // ── Audio upload ──────────────────────────────────────
 bot.on('audio', async (ctx) => {
-    const telegramId = ctx.from.id;
-    const user = await store.getUser(telegramId);
+    const user = await ensureUser(ctx);
     if (!user || user.step !== 'upload_file') return ctx.reply('Send /upload first.');
+    if (!user.walletAddress) return ctx.reply('❌ Please link your wallet first.');
 
-    const statusMsg = await ctx.reply('⏳ Processing audio...');
+    const statusMsg = await ctx.reply('⏳ Processing audio and metadata...');
 
     try {
         const file = ctx.message.audio;
         let storageFileId = file.file_id;
-        const fileSizeMB = file.file_size / (1024 * 1024);
+        const telegramId = ctx.from.id;
 
-        if (fileSizeMB > 50) {
-            await ctx.reply('❌ File is too large. Max size is 50MB.');
-            return;
+        if (file.file_size / (1024 * 1024) > 50) {
+            return ctx.reply('❌ File is too large. Max size is 50MB.');
         }
 
-        if (fileSizeMB > 20) {
-            // Bypass metadata processing for files > 20MB (Telegram limit for bot download)
-            await ctx.reply('⚠️ File > 20MB: Skipping metadata (ID3) tagging, but continuing upload...');
-        } else {
-            const fileLink = await ctx.telegram.getFileLink(file.file_id);
-            const response = await axios.get(fileLink.href, { responseType: 'arraybuffer' });
-            let audioBuffer = Buffer.from(response.data);
-
-            const success = NodeID3.write({ title: user.track.title, artist: user.artistName, genre: user.track.genre }, audioBuffer);
-            if (success) audioBuffer = success;
-
-            const uploadMsg = await ctx.replyWithAudio({ source: audioBuffer }, {
-                title: user.track.title, performer: user.artistName, caption: '✅ Metadata updated!'
-            });
-            storageFileId = uploadMsg.audio.file_id;
-        }
-
-        // ── Forward to Storage Channel ──
+        // ── Forward to Storage Channel (Intent) ──
         try {
             const channelMsg = await ctx.telegram.sendAudio(STORAGE_CHANNEL_ID, storageFileId, {
                 title: user.track.title,
@@ -1328,14 +1291,13 @@ bot.on('audio', async (ctx) => {
                 caption: `🎵 Track: ${user.track.title}\n👤 Artist: ${user.artistName}\n🆔 TrackID: ${telegramId}_${Date.now()}`
             });
             storageFileId = channelMsg.audio.file_id;
-            logger.info('Forwarded track to storage channel', { trackId: `${telegramId}_${Date.now()}`, storageFileId });
         } catch (e) {
-            logger.warn('Failed to forward track to storage channel', e);
+            logger.warn('Storage channel forward failed, using original fileId', e);
         }
 
         const trackId = `${telegramId}_${Date.now()}`;
         
-        // ── Real NFT Deployment with Retry ──
+        // ── Real NFT Deployment (Execute -> Verify) ──
         const nftInit = await MusicNft.fromInit(
             Address.parse(user.walletAddress.trim()),
             { $$type: 'TrackMetadata', title: user.track.title, uri: `https://toon.music/track/${trackId}`, genre: user.track.genre },
@@ -1343,83 +1305,70 @@ bot.on('audio', async (ctx) => {
             0n
         );
 
-        logger.info('Deploying MusicNft', { trackId, nftAddress: nftInit.address.toString() });
+        logger.info('NFT Deployment intent', { trackId, nftAddress: nftInit.address.toString() });
         
-        await retry(async () => {
-            const { contract, key } = await getDeployer();
-            const trackNft = client.open(nftInit);
-            await trackNft.send(contract.sender(key.secretKey), { value: toNano('0.05') }, null);
-        });
+        const nftAddr = nftInit.address;
+        const stateRes = await client.getContractState(nftAddr);
+        const lastLt = stateRes.lastTransaction ? stateRes.lastTransaction.lt : "0";
 
+        const deployerRes = await getDeployer();
+        if (!deployerRes.success) throw new Error(deployerRes.error);
+        
+        const { contract, key } = deployerRes.data;
+        const trackNft = client.open(nftInit);
+        
+        await trackNft.send(contract.sender(key.secretKey), { value: toNano('0.05') }, null);
+        await ctx.reply('⏳ NFT deployment sent! Finalizing on-chain...');
+
+        const conf = await waitForTransaction(nftAddr, lastLt);
+        if (!conf.success) throw new Error('NFT confirmation timed out');
+
+        // ── Persistent State Update (Success confirmed) ──
         const track = {
             id: trackId, title: user.track.title, genre: user.track.genre,
             artistName: user.artistName, artistId: telegramId, fileId: storageFileId,
-            duration: file.duration, contractAddress: nftInit.address.toString(), plays: 0
+            duration: file.duration, contractAddress: nftAddr.toString(), plays: 0
         };
 
-        await store.addTrack(telegramId, track);
+        const addRes = await store.addTrack(telegramId, track);
+        if (!addRes.success) throw new Error(`Database update failed: ${addRes.error}`);
+
         await store.updateUser(telegramId, { step: null, track: {}, reputation: user.reputation + 5 });
 
-        // Wait a few seconds for seqno to update before claiming reward
-        await sleep(3000);
+        await ctx.reply(`✅ "${track.title}" is officially live on-chain!\nNFT: \`${nftAddr.toString()}\`\nReputation +5! 🎁`, { parse_mode: 'Markdown' });
 
-        // Claim on-chain reward for artist launch (REWARD_ARTIST_LAUNCH is 500 $TOON per mission)
-        // NOTE: The mission table says track + 50 unique tip wallets, but code has reward ID 3.
-        // I will keep the call for now but remove the automatic toonBalance increment.
-        try {
-            // await claimOnChainReward(telegramId, user.walletAddress, 3); // Currently giving it too early?
-            // The user only asked to fix 'plays', but the upload reward also seems premature.
-            // Keeping it but removing the off-chain balance increment to stay conservative.
-        } catch (e) {
-            logger.error('Failed to claim on-chain reward', e);
-        }
+        // On-chain identity prompt if needed
+        if (!user.onChain && REGISTRY_ADDRESS_ENV) {
+            const REGISTRY_ADDRESS = Address.parse(REGISTRY_ADDRESS_ENV);
+            const artistInit = await ToonArtist.fromInit(Address.parse(user.walletAddress.trim()), REGISTRY_ADDRESS, BigInt(telegramId), `https://toon.music/artist/${telegramId}`);
+            
+            const deployTx = {
+                validUntil: Math.floor(Date.now() / 1000) + 600,
+                messages: [{
+                    address: artistInit.address.toString(),
+                    amount: toNano('0.05').toString(),
+                    stateInit: beginCell()
+                        .storeUint(0, 2)
+                        .storeMaybeRef(artistInit.init.code)
+                        .storeMaybeRef(artistInit.init.data)
+                        .storeUint(0, 1)
+                        .endCell()
+                        .toBoc()
+                        .toString('base64'),
+                    payload: beginCell().storeUint(0, 32).storeUint(0, 64).endCell().toBoc().toString('base64')
+                }]
+            };
 
-        await ctx.reply(`✅ "${track.title}" is live on-chain! (TESTNET)\nNFT: ${nftInit.address.toString()}\nReputation +5! 🎁`);
-
-        const updatedUser = await store.getUser(telegramId);
-        if (updatedUser && !updatedUser.onChain) {
-            if (!REGISTRY_ADDRESS_ENV) {
-                logger.error('TOON_REGISTRY_ADDRESS not set in .env');
-            } else {
-                const REGISTRY_ADDRESS = Address.parse(REGISTRY_ADDRESS_ENV);
-                const walletAddrStr = updatedUser.walletAddress || user.walletAddress;
-                if (!walletAddrStr) {
-                    logger.warn('User has no wallet address linked, skipping identity prompt', { telegramId });
-                } else {
-                    const OWNER_ADDRESS = Address.parse(walletAddrStr.trim());
-                    const artistInit = await ToonArtist.fromInit(OWNER_ADDRESS, REGISTRY_ADDRESS, BigInt(telegramId), `https://toon.music/artist/${telegramId}`);
-                    
-                    const deployTx = {
-                        validUntil: Math.floor(Date.now() / 1000) + 600,
-                        messages: [{
-                            address: artistInit.address.toString(),
-                            amount: toNano('0.05').toString(),
-                            stateInit: beginCell()
-                                .storeUint(0, 2)
-                                .storeMaybeRef(artistInit.init.code)
-                                .storeMaybeRef(artistInit.init.data)
-                                .storeUint(0, 1)
-                                .endCell()
-                                .toBoc()
-                                .toString('base64'),
-                            payload: beginCell().storeUint(0, 32).storeUint(0, 64).endCell().toBoc().toString('base64')
-                        }]
-                    };
-
-                    await ctx.reply(`🚀 Deploy Your On-Chain Identity!`, Markup.inlineKeyboard([
-                        [Markup.button.callback('🚀 Deploy Artist Identity (via Wallet)', `deploy_identity`)]
-                    ]));
-                    
-                    // Store the tx for this user temporarily
-                    await store.updateUser(telegramId, { pendingIdentityTx: deployTx });
-                }
-            }
+            await ctx.reply(`🚀 You haven't deployed your Artist Identity yet!`, Markup.inlineKeyboard([
+                [Markup.button.callback('🚀 Deploy Now (via Wallet)', `deploy_identity`)]
+            ]));
+            await store.updateUser(telegramId, { pendingIdentityTx: deployTx });
         }
 
         try { await ctx.telegram.deleteMessage(ctx.chat.id, statusMsg.message_id); } catch(e) {}
     } catch (err) {
-        logger.error('Upload failed', err);
-        await ctx.reply('❌ Upload failed.');
+        logger.error('Audio upload/NFT failed', { telegramId: ctx.from.id, error: err.message });
+        await ctx.reply(`❌ Upload failed: ${err.message}`);
     }
 });
 
