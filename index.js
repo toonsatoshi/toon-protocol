@@ -1328,7 +1328,7 @@ Next: Click 💎 Link Wallet to complete your setup.`,
     
     if (user.step === 'upload_title') {
         const updRes = await store.updateUser(telegramId, { step: 'upload_genre', track: { title: text } });
-        if (updRes.success) return ctx.reply(`Guitar Genre for "${text}"?`);
+        if (updRes.success) return ctx.reply(`Genre for "${text}"?`);
     }
 
     if (user.step === 'upload_genre') {
