@@ -1164,6 +1164,15 @@ bot.action('deploy_identity', async (ctx) => {
         return ctx.answerCbQuery('❌ No pending deployment found. Try uploading a track first.', { show_alert: true });
     }
 
+    if (!REGISTRY_ADDRESS_ENV) {
+        logger.error('TOON_REGISTRY_ADDRESS not configured');
+        return ctx.answerCbQuery('❌ System configuration error (REGISTRY).', { show_alert: true });
+    }
+
+    if (!user.walletAddress) {
+        return ctx.answerCbQuery('❌ Wallet not linked. Please /link first.', { show_alert: true });
+    }
+
     const connRes = await getConnector(telegramId);
     if (!connRes.success) return ctx.answerCbQuery(`❌ ${connRes.error}`, { show_alert: true });
     const connector = connRes.data;
@@ -1185,16 +1194,20 @@ bot.action('deploy_identity', async (ctx) => {
     }
 
     try {
+        // 1. Answer IMMEDIATELY to stop the 10s callback clock
+        await ctx.answerCbQuery().catch(() => {});
+
         const walletAddr = Address.parse(connector.account.address);
         const balance = await client.getBalance(walletAddr);
         
         if (balance < toNano('0.1')) {
-            return ctx.reply(`⚠️ Insufficient balance for gas fees. You need at least 0.1 TON to deploy your identity. Current balance: ${Number(balance) / 1e9} TON.\n\nYou can get Testnet TON from the @testgiver_ton_bot`, {
+            await ctx.reply(`⚠️ Insufficient balance for gas fees. You need at least 0.1 TON to deploy your identity. Current balance: ${Number(balance) / 1e9} TON.\n\nYou can get Testnet TON from the @testgiver_ton_bot`, {
                 reply_markup: Markup.inlineKeyboard([
                     [Markup.button.url('💎 Get Testnet TON', 'https://t.me/testgiver_ton_bot')],
                     [Markup.button.callback('🔄 Check Again', 'deploy_identity')]
                 ]).reply_markup
             }).catch(() => {});
+            return;
         }
 
         // Regenerate fresh transaction to avoid validUntil expiration
@@ -1227,8 +1240,13 @@ bot.action('deploy_identity', async (ctx) => {
         const stateRes = await client.getContractState(artistAddress);
         const lastLt = stateRes.lastTransaction ? stateRes.lastTransaction.lt : "0";
 
-        // 1. Answer immediately to open the wallet
-        await ctx.answerCbQuery(undefined, { url: 'https://t.me/wallet/start' });
+        // Open wallet automatically for the user to sign
+        await ctx.reply('⏳ Requesting wallet signature...').catch(() => {});
+        await bot.telegram.sendMessage(telegramId, 'Please open your wallet to sign the deployment.', {
+            reply_markup: Markup.inlineKeyboard([
+                [Markup.button.url('💎 Open Wallet', 'https://t.me/wallet/start')]
+            ]).reply_markup
+        }).catch(() => {});
 
         // 2. Initiate transaction and await its result
         await connector.sendTransaction(freshDeployTx);
