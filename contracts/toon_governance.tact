@@ -375,7 +375,7 @@ contract ToonGovernance with Deployable {
 
     get fun totalStaked(): Int { return self.totalStaked; }
 
-    get fun getStake(voter: Address): Int {
+    get fun stake(voter: Address): Int {
         let s: Int? = self.stakes.get(voter);
         return s != null ? s!! : 0;
     }

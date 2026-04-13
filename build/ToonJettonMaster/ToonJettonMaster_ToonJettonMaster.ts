@@ -908,6 +908,65 @@ export function dictValueParserTokenTransfer(): DictionaryValue<TokenTransfer> {
     }
 }
 
+export type TokenMint = {
+    $$type: 'TokenMint';
+    queryId: bigint;
+    amount: bigint;
+    receiver: Address;
+}
+
+export function storeTokenMint(src: TokenMint) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(376746144, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.receiver);
+    };
+}
+
+export function loadTokenMint(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 376746144) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _receiver = sc_0.loadAddress();
+    return { $$type: 'TokenMint' as const, queryId: _queryId, amount: _amount, receiver: _receiver };
+}
+
+export function loadTupleTokenMint(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _receiver = source.readAddress();
+    return { $$type: 'TokenMint' as const, queryId: _queryId, amount: _amount, receiver: _receiver };
+}
+
+export function loadGetterTupleTokenMint(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _receiver = source.readAddress();
+    return { $$type: 'TokenMint' as const, queryId: _queryId, amount: _amount, receiver: _receiver };
+}
+
+export function storeTupleTokenMint(source: TokenMint) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.receiver);
+    return builder.build();
+}
+
+export function dictValueParserTokenMint(): DictionaryValue<TokenMint> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenMint(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenMint(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type TokenTransferInternal = {
     $$type: 'TokenTransferInternal';
     queryId: bigint;
@@ -1454,7 +1513,7 @@ function initToonJettonMaster_init_args(src: ToonJettonMaster_init_args) {
 }
 
 async function ToonJettonMaster_init(owner: Address, mintAuthority: Address, totalSupply: bigint, metadataUri: string) {
-    const __code = Cell.fromHex('b5ee9c7241021f010005080003f6ff008e88f4a413f4bcf2c80bed53208f6630eda2edfb01d072d721d200d200fa4021103450666f04f86102f862ed44d0fa40fa40fa00d401d01443306c1405925f05e023d749c21fe30003f90182f0f3dc17dc1650158ebec105f84bc3a4dc7a5feaa1a87885db6d780b28ed4d6805bae3025f04f2c082e1ed43d901191d020271020902016a03080202720406012da07fb51343e903e903e803500740510cc1b0536cf1b10605000220012da077b51343e903e903e803500740510cc1b0536cf1b10607000223012fb01f3b51343e903e903e803500740510cc1b0536cf1b1060100201200a17012fb9e2ded44d0fa40fa40fa00d401d01443306c14db3c6c4580b012cc87101cb0721cf16c97f70f828f828db3c30245447400c011688c855215afa0212cecec90d03feff008e88f4a413f4bcf2c80bed53208f6a3001d072d721d200d200fa4021103450666f04f86102f862ed44d0fa00fa40fa4055206c1304925f04e002d70d1ff2e0822182100f8a7ea5bae302218210178d4519ba8e1531d33f31fa0030a002c855205afa0212cecec9ed54e0018210595f07bcbae3025f04f2c082e1ed43d90e12140202710f110127be28ef6a2687d007d207d202a903609ed9e3618c100002210127bcb6076a2687d007d207d202a903609ed9e3618c1801fe31d33ffa00fa40d72c01916d93fa4001e201f40431fa008138c6f84229c705f2f48200d5575375bef2f45164a15054708040544950528ac855508210178d45195007cb1f15cb3f5003fa02ce01206e9430cf84809201cee201fa02cec9102410231025146d50436d5033c8cf8580ca00cf8440ce01fa028069cf40025c6e011300506eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0002c855205afa0212cecec9ed5402f6d33ffa00d72c01916d93fa4001e2318138c6f84226c705f2f48200d5575342bef2f45131a170541325804006c8553082107bdd97de5005cb1f13cb3f01fa02ce01206e9430cf84809201cee2c9250350445a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf818ae2f400c901fb00021516001a58cf8680cf8480f400f400cf810018c855205afa0212cecec9ed54012fbbe24ed44d0fa40fa40fa00d401d01443306c14db3c6c4181800022202ee03d31f2182107bdd97debae302218210787cca54ba8e246c21fa40308138c6f84223c705f2f44003c855305034cece01fa0201c8cecdc9ed54db31e02182101179e2f3ba8e25313403d430d08138c6f84223c705f2f44330c855305034cece01fa0201c8cecdc9ed54db31e0018210946a98b6bae302031a1c01f831d33ffa00fa4031d72c01916d93fa4001e2318200a5c3f84225c705f2f45055a1246eb38e5004206ef2d08070804003c8018210d53276db58cb1fcb3fc941305a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00923430e240031b0026c855305034cece01fa0201c8cecdc9ed54db310076d33f30c8018210aff90f5758cb1fcb3fc9443012f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb005f04db3101c481642cf84222c705f2f4028218e8d4a51000a0f842708040885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb005003c855305034cece01fa0201c8cecdc9ed541e0014000000006d696e746564e8e26791');
+    const __code = Cell.fromHex('b5ee9c72410222010005c9000228ff008e88f4a413f4bcf2c80bed5320e303ed43d90110020271020902016a03080202720406012da07fb51343e903e903e803500740510cc1b0536cf1b10605000220012da077b51343e903e903e803500740510cc1b0536cf1b10607000223012fb01f3b51343e903e903e803500740510cc1b0536cf1b1060180201200a0f0201660b0d0133adbcf6a2687d207d207d006a00e80a2198360a2a81ed9e3620c00c016670f82812db3c705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d014012faf16f6a2687d207d207d006a00e80a2198360a6d9e3622c00e012cc87101cb0721cf16c97f70f828f828db3c302454474014012fbbe24ed44d0fa40fa40fa00d401d01443306c14db3c6c4181a03ee3001d072d721d200d200fa4021103450666f04f86102f862ed44d0fa40fa40fa00d401d01443306c1405925f05e003d70d1ff2e0822182101674b0a0bae3022182107bdd97debae302218210787cca54ba8e226c21fa40308138c6f84223c705f2f44003c855305034cece01fa0201c8cecdc9ed54e02111132102b831d33ffa00fa403081642cf84225c705f2f45151a070f8285270db3c5c705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d070804070f828238b08105b104a1023102ec8141200e655508210178d45195007cb1f15cb3f5003fa02ce01206e9430cf84809201cee201fa02cec91615141039509210465522c8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb004003c855305034cece01fa0201c8cecdc9ed5402de31d33ffa00fa40d72c01916d93fa4001e23170f8284130db3c705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d082008659f84258c705f2f45055a1246eb3923430e30d4003c855305034cece01fa0201c8cecdc9ed541420011688c855215afa0212cecec91503feff008e88f4a413f4bcf2c80bed53208f6a3001d072d721d200d200fa4021103450666f04f86102f862ed44d0fa00fa40fa4055206c1304925f04e002d70d1ff2e0822182100f8a7ea5bae302218210178d4519ba8e1531d33f31fa0030a002c855205afa0212cecec9ed54e0018210595f07bcbae3025f04f2c082e1ed43d9161b1d02027117190127be28ef6a2687d007d207d202a903609ed9e3618c180002210127bcb6076a2687d007d207d202a903609ed9e3618c1a00022201fe31d33ffa00fa40d72c01916d93fa4001e201f40431fa008138c6f84229c705f2f48200d5575375bef2f45164a15054708040544950528ac855508210178d45195007cb1f15cb3f5003fa02ce01206e9430cf84809201cee201fa02cec9102410231025146d50436d5033c8cf8580ca00cf8440ce01fa028069cf40025c6e011c00506eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0002c855205afa0212cecec9ed5402f6d33ffa00d72c01916d93fa4001e2318138c6f84226c705f2f48200d5575342bef2f45131a170541325804006c8553082107bdd97de5005cb1f13cb3f01fa02ce01206e9430cf84809201cee2c9250350445a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf818ae2f400c901fb00021e1f001a58cf8680cf8480f400f400cf810018c855205afa0212cecec9ed5400a004206ef2d08070804003c8018210d53276db58cb1fcb3fc941305a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0000ec82101179e2f3ba8e23313403d430d08138c6f84223c705f2f44330c855305034cece01fa0201c8cecdc9ed54e0018210946a98b6ba8e39d33f30c8018210aff90f5758cb1fcb3fc9443012f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb005f04e05f05f2c0821c28819f');
     const builder = beginCell();
     initToonJettonMaster_init_args({ $$type: 'ToonJettonMaster_init_args', owner, mintAuthority, totalSupply, metadataUri })(builder);
     const __data = builder.endCell();
@@ -1500,7 +1559,7 @@ export const ToonJettonMaster_errors = {
     138: { message: "Not a basechain address" },
     14534: { message: "Not owner" },
     25644: { message: "Only ToonVault can mint" },
-    42435: { message: "Not authorized" },
+    34393: { message: "Unauthorized burn notification" },
     54615: { message: "Insufficient balance" },
 } as const
 
@@ -1543,7 +1602,7 @@ export const ToonJettonMaster_errors_backward = {
     "Not a basechain address": 138,
     "Not owner": 14534,
     "Only ToonVault can mint": 25644,
-    "Not authorized": 42435,
+    "Unauthorized burn notification": 34393,
     "Insufficient balance": 54615,
 } as const
 
@@ -1563,6 +1622,7 @@ const ToonJettonMaster_types: ABIType[] = [
     {"name":"FactoryDeploy","header":1829761339,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"cashback","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"JettonData","header":null,"fields":[{"name":"totalSupply","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mintable","type":{"kind":"simple","type":"bool","optional":false}},{"name":"adminAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"content","type":{"kind":"simple","type":"cell","optional":false}},{"name":"walletCode","type":{"kind":"simple","type":"cell","optional":false}}]},
     {"name":"TokenTransfer","header":260734629,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"destination","type":{"kind":"simple","type":"address","optional":false}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}},{"name":"customPayload","type":{"kind":"simple","type":"cell","optional":true}},{"name":"forward_ton_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
+    {"name":"TokenMint","header":376746144,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"receiver","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"TokenTransferInternal","header":395134233,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"from","type":{"kind":"simple","type":"address","optional":false}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}},{"name":"forward_ton_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
     {"name":"TokenNotification","header":1935855772,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"from","type":{"kind":"simple","type":"address","optional":false}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
     {"name":"TokenBurn","header":1499400124,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}}]},
@@ -1579,6 +1639,7 @@ const ToonJettonMaster_opcodes = {
     "DeployOk": 2952335191,
     "FactoryDeploy": 1829761339,
     "TokenTransfer": 260734629,
+    "TokenMint": 376746144,
     "TokenTransferInternal": 395134233,
     "TokenNotification": 1935855772,
     "TokenBurn": 1499400124,
@@ -1590,6 +1651,7 @@ const ToonJettonMaster_opcodes = {
 
 const ToonJettonMaster_getters: ABIGetter[] = [
     {"name":"get_jetton_data","methodId":106029,"arguments":[],"returnType":{"kind":"simple","type":"JettonData","optional":false}},
+    {"name":"get_wallet_address","methodId":103289,"arguments":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"address","optional":false}},
     {"name":"totalSupply","methodId":86140,"arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"owner","methodId":83229,"arguments":[],"returnType":{"kind":"simple","type":"address","optional":false}},
     {"name":"mintAuthority","methodId":130596,"arguments":[],"returnType":{"kind":"simple","type":"address","optional":false}},
@@ -1598,6 +1660,7 @@ const ToonJettonMaster_getters: ABIGetter[] = [
 
 export const ToonJettonMaster_getterMapping: { [key: string]: string } = {
     'get_jetton_data': 'getGetJettonData',
+    'get_wallet_address': 'getGetWalletAddress',
     'totalSupply': 'getTotalSupply',
     'owner': 'getOwner',
     'mintAuthority': 'getMintAuthority',
@@ -1605,8 +1668,8 @@ export const ToonJettonMaster_getterMapping: { [key: string]: string } = {
 }
 
 const ToonJettonMaster_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"typed","type":"TokenMint"}},
     {"receiver":"internal","message":{"kind":"typed","type":"TokenBurnNotification"}},
-    {"receiver":"internal","message":{"kind":"text","text":"mint"}},
     {"receiver":"internal","message":{"kind":"typed","type":"UpdateMintAuthority"}},
     {"receiver":"internal","message":{"kind":"typed","type":"UpdateMetadata"}},
     {"receiver":"internal","message":{"kind":"typed","type":"Deploy"}},
@@ -1647,14 +1710,14 @@ export class ToonJettonMaster implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: TokenBurnNotification | "mint" | UpdateMintAuthority | UpdateMetadata | Deploy) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: TokenMint | TokenBurnNotification | UpdateMintAuthority | UpdateMetadata | Deploy) {
         
         let body: Cell | null = null;
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TokenMint') {
+            body = beginCell().store(storeTokenMint(message)).endCell();
+        }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TokenBurnNotification') {
             body = beginCell().store(storeTokenBurnNotification(message)).endCell();
-        }
-        if (message === "mint") {
-            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'UpdateMintAuthority') {
             body = beginCell().store(storeUpdateMintAuthority(message)).endCell();
@@ -1675,6 +1738,14 @@ export class ToonJettonMaster implements Contract {
         const builder = new TupleBuilder();
         const source = (await provider.get('get_jetton_data', builder.build())).stack;
         const result = loadGetterTupleJettonData(source);
+        return result;
+    }
+    
+    async getGetWalletAddress(provider: ContractProvider, owner: Address) {
+        const builder = new TupleBuilder();
+        builder.writeAddress(owner);
+        const source = (await provider.get('get_wallet_address', builder.build())).stack;
+        const result = source.readAddress();
         return result;
     }
     

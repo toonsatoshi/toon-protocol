@@ -908,6 +908,65 @@ export function dictValueParserTokenTransfer(): DictionaryValue<TokenTransfer> {
     }
 }
 
+export type TokenMint = {
+    $$type: 'TokenMint';
+    queryId: bigint;
+    amount: bigint;
+    receiver: Address;
+}
+
+export function storeTokenMint(src: TokenMint) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(376746144, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.receiver);
+    };
+}
+
+export function loadTokenMint(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 376746144) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _receiver = sc_0.loadAddress();
+    return { $$type: 'TokenMint' as const, queryId: _queryId, amount: _amount, receiver: _receiver };
+}
+
+export function loadTupleTokenMint(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _receiver = source.readAddress();
+    return { $$type: 'TokenMint' as const, queryId: _queryId, amount: _amount, receiver: _receiver };
+}
+
+export function loadGetterTupleTokenMint(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _receiver = source.readAddress();
+    return { $$type: 'TokenMint' as const, queryId: _queryId, amount: _amount, receiver: _receiver };
+}
+
+export function storeTupleTokenMint(source: TokenMint) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.receiver);
+    return builder.build();
+}
+
+export function dictValueParserTokenMint(): DictionaryValue<TokenMint> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenMint(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenMint(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type TokenTransferInternal = {
     $$type: 'TokenTransferInternal';
     queryId: bigint;
@@ -1498,7 +1557,7 @@ export const ToonJettonWallet_errors = {
     138: { message: "Not a basechain address" },
     14534: { message: "Not owner" },
     25644: { message: "Only ToonVault can mint" },
-    42435: { message: "Not authorized" },
+    34393: { message: "Unauthorized burn notification" },
     54615: { message: "Insufficient balance" },
 } as const
 
@@ -1541,7 +1600,7 @@ export const ToonJettonWallet_errors_backward = {
     "Not a basechain address": 138,
     "Not owner": 14534,
     "Only ToonVault can mint": 25644,
-    "Not authorized": 42435,
+    "Unauthorized burn notification": 34393,
     "Insufficient balance": 54615,
 } as const
 
@@ -1561,6 +1620,7 @@ const ToonJettonWallet_types: ABIType[] = [
     {"name":"FactoryDeploy","header":1829761339,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"cashback","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"JettonData","header":null,"fields":[{"name":"totalSupply","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mintable","type":{"kind":"simple","type":"bool","optional":false}},{"name":"adminAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"content","type":{"kind":"simple","type":"cell","optional":false}},{"name":"walletCode","type":{"kind":"simple","type":"cell","optional":false}}]},
     {"name":"TokenTransfer","header":260734629,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"destination","type":{"kind":"simple","type":"address","optional":false}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}},{"name":"customPayload","type":{"kind":"simple","type":"cell","optional":true}},{"name":"forward_ton_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
+    {"name":"TokenMint","header":376746144,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"receiver","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"TokenTransferInternal","header":395134233,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"from","type":{"kind":"simple","type":"address","optional":false}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}},{"name":"forward_ton_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
     {"name":"TokenNotification","header":1935855772,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"from","type":{"kind":"simple","type":"address","optional":false}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
     {"name":"TokenBurn","header":1499400124,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}}]},
@@ -1577,6 +1637,7 @@ const ToonJettonWallet_opcodes = {
     "DeployOk": 2952335191,
     "FactoryDeploy": 1829761339,
     "TokenTransfer": 260734629,
+    "TokenMint": 376746144,
     "TokenTransferInternal": 395134233,
     "TokenNotification": 1935855772,
     "TokenBurn": 1499400124,

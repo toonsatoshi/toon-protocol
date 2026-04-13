@@ -3,7 +3,7 @@ Contract: ToonJettonWallet
 BoC Size: 529 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 24
+Total structures: 25
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -64,6 +64,10 @@ Signature: `JettonData{totalSupply:int257,mintable:bool,adminAddress:address,con
 ### TokenTransfer
 TL-B: `token_transfer#0f8a7ea5 queryId:uint64 amount:coins destination:address response_destination:address customPayload:Maybe ^cell forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransfer`
 Signature: `TokenTransfer{queryId:uint64,amount:coins,destination:address,response_destination:address,customPayload:Maybe ^cell,forward_ton_amount:coins,forward_payload:remainder<slice>}`
+
+### TokenMint
+TL-B: `token_mint#1674b0a0 queryId:uint64 amount:coins receiver:address = TokenMint`
+Signature: `TokenMint{queryId:uint64,amount:coins,receiver:address}`
 
 ### TokenTransferInternal
 TL-B: `token_transfer_internal#178d4519 queryId:uint64 amount:coins from:address response_destination:address forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransferInternal`
@@ -149,7 +153,7 @@ No arguments
 * 138: Not a basechain address
 * 14534: Not owner
 * 25644: Only ToonVault can mint
-* 42435: Not authorized
+* 34393: Unauthorized burn notification
 * 54615: Insufficient balance
 
 ## Trait inheritance diagram

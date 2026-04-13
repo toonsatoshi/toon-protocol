@@ -22,6 +22,12 @@ message(0xf8a7ea5) TokenTransfer {
     forward_payload: Slice as remaining;
 }
 
+message(0x1674b0a0) TokenMint {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    receiver: Address;
+}
+
 message(0x178d4519) TokenTransferInternal {
     queryId: Int as uint64;
     amount: Int as coins;
@@ -64,25 +70,43 @@ message UpdateMetadata {
 }
 
 // ── ToonJettonMaster ──────────────────────────────────────────────────────────
-//
-//  TEP-74 compliant Jetton master for $TOON.
-//  get_jetton_data() is the key getter — Tonkeeper reads this to display
-//  the token name, symbol, decimals, and logo.
-//
-//  Metadata is stored as an off-chain URI (TEP-64 prefix 0x01).
-//  Update metadataUri once GitHub/IPFS hosting is set up.
-//
-//  mintAuthority should be rotated to ToonVault after initial deploy
-//  using the UpdateMintAuthority message.
-//
+
 contract ToonJettonMaster(
     owner:         Address,
     mintAuthority: Address,
     totalSupply:   Int as coins,
     metadataUri:   String,
 ) with Deployable {
+
+    receive(msg: TokenMint) {
+        require(sender() == self.mintAuthority, "Only ToonVault can mint");
+        self.totalSupply = self.totalSupply + msg.amount;
+        
+        // Proper Jetton minting: deploy/notify the recipient's wallet
+        let init: StateInit = initOf ToonJettonWallet(0, msg.receiver, myAddress());
+        send(SendParameters{
+            to: contractAddress(init),
+            value: 0,
+            mode: SendRemainingValue,
+            bounce: false,
+            body: TokenTransferInternal{
+                queryId: msg.queryId,
+                amount: msg.amount,
+                from: myAddress(),
+                response_destination: msg.receiver,
+                forward_ton_amount: 0,
+                forward_payload: emptySlice()
+            }.toCell(),
+            code: init.code,
+            data: init.data
+        });
+    }
+
     receive(msg: TokenBurnNotification) {
-        require(sender() == self.mintAuthority, "Not authorized");
+        // Only the master's own wallets can send this
+        let expectedWallet: Address = contractAddress(initOf ToonJettonWallet(0, msg.owner, myAddress()));
+        require(sender() == expectedWallet, "Unauthorized burn notification");
+        
         self.totalSupply = self.totalSupply - msg.amount;
         if (msg.response_destination != null) {
             send(SendParameters{
@@ -92,18 +116,6 @@ contract ToonJettonMaster(
                 body:  TokenExcesses{ queryId: msg.queryId }.toCell()
             });
         }
-    }
-
-    receive("mint") {
-        require(sender() == self.mintAuthority, "Only ToonVault can mint");
-        let amount: Int = ton("1000");
-        self.totalSupply = self.totalSupply + amount;
-        send(SendParameters{
-            to:    sender(),
-            value: 0,
-            mode:  SendRemainingValue,
-            body:  "minted".asComment()
-        });
     }
 
     // Rotate mint authority to ToonVault after deploy
@@ -133,6 +145,11 @@ contract ToonJettonMaster(
             content:      content,
             walletCode:   initOf ToonJettonWallet(0, myAddress(), myAddress()).code
         };
+    }
+
+    get fun get_wallet_address(owner: Address): Address {
+        let init: StateInit = initOf ToonJettonWallet(0, owner, myAddress());
+        return contractAddress(init);
     }
 
     get fun totalSupply(): Int       { return self.totalSupply; }

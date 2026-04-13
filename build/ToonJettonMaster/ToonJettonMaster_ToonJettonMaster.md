@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonJettonMaster
-BoC Size: 1300 bytes
+BoC Size: 1493 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 24
+Total structures: 25
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -65,6 +65,10 @@ Signature: `JettonData{totalSupply:int257,mintable:bool,adminAddress:address,con
 TL-B: `token_transfer#0f8a7ea5 queryId:uint64 amount:coins destination:address response_destination:address customPayload:Maybe ^cell forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransfer`
 Signature: `TokenTransfer{queryId:uint64,amount:coins,destination:address,response_destination:address,customPayload:Maybe ^cell,forward_ton_amount:coins,forward_payload:remainder<slice>}`
 
+### TokenMint
+TL-B: `token_mint#1674b0a0 queryId:uint64 amount:coins receiver:address = TokenMint`
+Signature: `TokenMint{queryId:uint64,amount:coins,receiver:address}`
+
 ### TokenTransferInternal
 TL-B: `token_transfer_internal#178d4519 queryId:uint64 amount:coins from:address response_destination:address forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransferInternal`
 Signature: `TokenTransferInternal{queryId:uint64,amount:coins,from:address,response_destination:address,forward_ton_amount:coins,forward_payload:remainder<slice>}`
@@ -102,10 +106,13 @@ TL-B: `_ balance:coins owner:address master:address = ToonJettonWallet`
 Signature: `ToonJettonWallet{balance:coins,owner:address,master:address}`
 
 ## Get methods
-Total get methods: 5
+Total get methods: 6
 
 ## get_jetton_data
 No arguments
+
+## get_wallet_address
+Argument: owner
 
 ## totalSupply
 No arguments
@@ -158,7 +165,7 @@ No arguments
 * 138: Not a basechain address
 * 14534: Not owner
 * 25644: Only ToonVault can mint
-* 42435: Not authorized
+* 34393: Unauthorized burn notification
 * 54615: Insufficient balance
 
 ## Trait inheritance diagram

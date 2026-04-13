@@ -17,7 +17,8 @@ import { NetworkProvider } from '@ton/blueprint';
 //
 export async function run(provider: NetworkProvider) {
     const deployer        = provider.sender();
-    const deployerAddress = deployer.address!;
+    const deployerAddress = deployer.address;
+    if (!deployerAddress) throw new Error("Deployer address unavailable — use Mnemonic wallet, not deep link.");
 
     console.log('━━━ TOON PROTOCOL DEPLOYMENT ━━━');
     console.log('Deploying from:', deployerAddress.toString());
@@ -34,13 +35,6 @@ export async function run(provider: NetworkProvider) {
 
     // ── 2. Vault (registry address now known) ─────────────────────────────────
     console.log('2/5  Deploying ToonVault...');
-    // ── Oracle key setup ─────────────────────────────────────────────────────
-    //  Generate oracle keypair once and store in .env:
-    //    ORACLE_SEED_HEX  = <64-char hex>
-    //  Get public key:
-    //    node -e "const {keyPairFromSeed}=require('@ton/crypto');
-    //             const kp=keyPairFromSeed(Buffer.from(process.env.ORACLE_SEED_HEX,'hex'));
-    //             console.log('0x'+Buffer.from(kp.publicKey).toString('hex'))"
     const oracleSeedHex = process.env.ORACLE_SEED_HEX;
     if (!oracleSeedHex || oracleSeedHex.length !== 64) {
         throw new Error('ORACLE_SEED_HEX not set in .env — cannot deploy vault');
@@ -54,15 +48,7 @@ export async function run(provider: NetworkProvider) {
             deployerAddress,        // owner
             registry.address,       // registry
             deployerAddress,        // governance (will be wired via SetGovernance)
-            oraclePubKey,           // oraclePublicKey — Ed25519 oracle signing key
-            toNano('1000000'),      // totalReserve: 1M $TOON initial reserve
-            0n,                     // dailyEmitted
-            0n,                     // lastResetDay
-            false,                  // halved
-            toNano('50000'),        // emissionCap (default daily cap)
-            7n,                     // minWalletAgeDays
-            0n,                     // targetDailyActivity (0 = static cap for now)
-            0n,                     // dailyClaimCount
+            oraclePubKey            // oraclePublicKey — Ed25519 oracle signing key
         )
     );
     await vault.send(deployer, { value: toNano('0.1') }, { $$type: 'Deploy', queryId: 0n });
@@ -74,7 +60,7 @@ export async function run(provider: NetworkProvider) {
     await registry.send(
         deployer,
         { value: toNano('0.05') },
-        { $$type: 'UpdateVaultAddress', newVault: vault.address }
+        { $$type: 'SetVault', newVault: vault.address }
     );
     console.log('     ✅ Registry now points to real ToonVault');
 
@@ -106,9 +92,9 @@ export async function run(provider: NetworkProvider) {
     await registry.send(
         deployer,
         { value: toNano('0.05') },
-        { $$type: 'UpdateMintAuthority', newAuthority: governance.address }
+        { $$type: 'SetGovernance', newGovernance: governance.address }
     );
-    console.log('     ✅ mintAuthority → ToonGovernance');
+    console.log('     ✅ Registry.governance → ToonGovernance');
 
     console.log('');
     console.log('━━━ DEPLOYMENT COMPLETE ━━━');

@@ -48,7 +48,7 @@ describe('ToonArtist', () => {
         await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "ConfirmRegistration");
 
         expect(await registry.getIsRegisteredArtist(artist.address)).toBe(true);
-        expect(await registry.getGetArtistContract(artist.address)).toEqualAddress(artistContract.address);
+        expect(await registry.getArtistContract(artist.address)).toEqualAddress(artistContract.address);
     });
 
     it('should add track through artist contract using 2PC', async () => {
@@ -77,7 +77,7 @@ describe('ToonArtist', () => {
         });
 
         expect(await registry.getIsRegisteredTrack(trackId)).toBe(true);
-        expect(await artistContract.getGetTrack(trackId)).toEqualAddress(trackAddr);
+        expect(await artistContract.getTrack(trackId)).toEqualAddress(trackAddr);
         expect(await artistContract.getReputation()).toBe(10n); // reputation bonus
     });
 });

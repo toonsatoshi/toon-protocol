@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ override: true });
 const { mnemonicToPrivateKey } = require('@ton/crypto');
 const { TonClient, WalletContractV4, fromNano } = require('@ton/ton');
 

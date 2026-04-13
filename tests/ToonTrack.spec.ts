@@ -51,6 +51,7 @@ describe('ToonTrack', () => {
             trackId,
             "ipfs://track-metadata",
             fingerprint,
+            trackId,
             100000000n // 0.1 TON
         ));
 

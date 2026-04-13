@@ -15,6 +15,7 @@ const { MusicNft } = require('./build/MusicNft/MusicNft_MusicNft');
 const { TonClient, WalletContractV4, internal } = require('@ton/ton');
 const { mnemonicToPrivateKey } = require('@ton/crypto');
 const TonConnect = require('@tonconnect/sdk');
+const { authorizeMint } = require('./ton_utils');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const STORAGE_CHANNEL_ID = process.env.STORAGE_CHANNEL_ID;
@@ -46,25 +47,26 @@ class TonConnectStorage {
         this.telegramId = Number(telegramId);
     }
     async removeItem(key) {
-        const user = await store.getUser(this.telegramId);
-        if (user && user.connectorData) {
-            delete user.connectorData[key];
-            await store.updateUser(this.telegramId, { connectorData: user.connectorData });
+        const res = await store.getUser(this.telegramId);
+        if (res.success && res.data.connectorData) {
+            delete res.data.connectorData[key];
+            await store.updateUser(this.telegramId, { connectorData: res.data.connectorData });
         }
     }
     async setItem(key, value) {
-        const user = await store.getUser(this.telegramId);
-        const data = user?.connectorData || {};
+        const res = await store.getUser(this.telegramId);
+        const data = res.success ? (res.data.connectorData || {}) : {};
         data[key] = value;
         await store.updateUser(this.telegramId, { connectorData: data });
     }
     async getItem(key) {
-        const user = await store.getUser(this.telegramId);
-        return user?.connectorData?.[key] || null;
+        const res = await store.getUser(this.telegramId);
+        return res.success ? (res.data.connectorData?.[key] || null) : null;
     }
 }
 
 const connectors = new Map();
+const unsubscribers = new Map();
 
 /**
  * @param {number|string} telegramId
@@ -283,8 +285,9 @@ async function claimOnChainReward(telegramId, walletAddress, rewardId, opts = {}
     let walletAgeDays = 0n;
     let hasVibeStreak = false;
     try {
-        const user = await store.getUser(tid);
-        if (user) {
+        const res = await store.getUser(tid);
+        if (res.success) {
+            const user = res.data;
             if (user.createdAt) {
                 walletAgeDays = BigInt(Math.floor((Date.now() - new Date(user.createdAt).getTime()) / 86400000));
             }
@@ -423,13 +426,22 @@ bot.start(async (ctx) => {
         
         if (trackRes.success) {
             const track = trackRes.data;
-            await store.incrementPlayCount(trackId);
+            await store.incrementPlayCount(trackId, telegramId);
             
             const milestoneRes = await store.checkPlayMilestone(trackId);
             if (milestoneRes.success && milestoneRes.data) {
                 const milestone = milestoneRes.data;
                 bot.telegram.sendMessage(milestone.referrerId, 
-                    `🎉 ${milestone.artistName}'s track hit 5 unique listeners! +50 $TOON earned!`).catch(() => {});
+                    `🎉 ${milestone.artistName}'s track reached 5 unique listeners! +50 $TOON earned!`).catch(() => {});
+
+                // Background claim
+                const userRes = await store.getUser(milestone.referrerId);
+                if (userRes.success && userRes.data.walletAddress) {
+                    claimOnChainReward(milestone.referrerId, userRes.data.walletAddress, 2, {
+                        eventId: `milestone_${trackId}_${milestone.referrerId}`,
+                        referrerId: track.artistId
+                    }).catch(e => logger.error('Milestone on-chain reward failed', { telegramId: milestone.referrerId, error: e.message }));
+                }
             }
 
             const isOwner = track.artistId == telegramId;
@@ -521,7 +533,41 @@ bot.hears('💎 Link Wallet', async (ctx) => {
         return ctx.reply(`✅ Wallet already linked: \`${addr}\`\n\nTo change it, /disconnect first.`, { parse_mode: 'Markdown' });
     }
 
-    // ... rest of link wallet ...
+    const universalLink = connector.connect({
+        bridgeUrl: 'https://bridge.tonapi.io/bridge',
+        universalLink: 'https://app.tonkeeper.com/ton-connect'
+    });
+
+    await ctx.reply(
+`🔗 Link Your Wallet (TESTNET)
+
+1. Tap the button below to open Tonkeeper (TESTNET)
+2. Connect your wallet
+3. Return here to Toon
+
+━━━━━━━━━━━━━━━
+⚠️ Make sure your wallet is in **Testnet** mode!`,
+        Markup.inlineKeyboard([
+            [Markup.button.url('💎 Connect Wallet', universalLink)]
+        ])
+    );
+
+    // Watch for connection
+    let unsubscribe;
+    unsubscribe = connector.onStatusChange(async (wallet) => {
+        if (wallet && connector.connected) {
+            const addr = Address.parse(wallet.account.address).toString();
+            await store.setWalletAddress(telegramId, addr);
+            logger.info('Wallet linked via callback', { telegramId, address: addr });
+            
+            await bot.telegram.sendMessage(telegramId, `✅ Wallet linked: \`${addr}\``, { parse_mode: 'Markdown' });
+            
+            if (unsubscribe) unsubscribe();
+            unsubscribers.delete(telegramId);
+        }
+    });
+
+    unsubscribers.set(telegramId, unsubscribe);
 });
 
 bot.command('disconnect', async (ctx) => {
@@ -615,8 +661,9 @@ Type your reason below or tap the button to skip and delete immediately.`,
 });
 
 const executeDeletion = async (ctx, telegramId, reason = 'No reason provided') => {
-    const user = await store.getUser(telegramId);
-    if (!user) return;
+    const res = await store.getUser(telegramId);
+    if (!res.success) return;
+    const user = res.data;
 
     const adminId = process.env.ADMIN_CHAT_ID;
     const notification = `🗑 **Account Deleted**\n\nFrom: ${user.artistName} (@${ctx.from.username || 'N/A'})\nID: ${telegramId}\n\nReason:\n${reason}`;
@@ -639,7 +686,7 @@ bot.action('final_delete_skip', async (ctx) => {
 
 bot.hears('🪲 Report Bug', async (ctx) => {
     const telegramId = ctx.from.id;
-    const user = await store.getUser(telegramId);
+    const user = await ensureUser(ctx);
     if (!user) return ctx.reply('Send /start first!');
 
     await store.updateUser(telegramId, { step: 'bug_report' });
@@ -663,7 +710,7 @@ bot.action('show_profile', showProfile);
 
 // ── Manage Tracks ─────────────────────────────────────
 bot.action('manage_tracks', async (ctx) => {
-    const user = await store.getUser(ctx.from.id);
+    const user = await ensureUser(ctx);
     if (!user || user.uploadedTracks.length === 0) return ctx.answerCbQuery('No tracks to manage');
     
     await ctx.answerCbQuery();
@@ -678,8 +725,9 @@ bot.action('manage_tracks', async (ctx) => {
 
 bot.action(/del_confirm_(.+)/, async (ctx) => {
     const trackId = ctx.match[1];
-    const track = await store.getTrack(trackId);
-    if (!track) return ctx.answerCbQuery('Track not found');
+    const trackRes = await store.getTrack(trackId);
+    if (!trackRes.success) return ctx.answerCbQuery('Track not found');
+    const track = trackRes.data;
     
     await ctx.answerCbQuery();
     await ctx.reply(`⚠️ Are you sure you want to delete "${track.title}"?\n\nThis cannot be undone.`,
@@ -692,9 +740,9 @@ bot.action(/del_confirm_(.+)/, async (ctx) => {
 
 bot.action(/del_exec_(.+)/, async (ctx) => {
     const trackId = ctx.match[1];
-    const success = await store.deleteTrack(ctx.from.id, trackId);
+    const delRes = await store.deleteTrack(ctx.from.id, trackId);
     
-    if (success) {
+    if (delRes.success) {
         logger.info('Track deleted', { telegramId: ctx.from.id, trackId });
         await ctx.answerCbQuery('Track deleted');
         await ctx.reply('✅ Track has been removed from Toon.');
@@ -708,11 +756,12 @@ bot.action(/del_exec_(.+)/, async (ctx) => {
 // ── Refer ─────────────────────────────────────────────
 const showReferral = async (ctx) => {
     const telegramId = ctx.from.id;
-    const user = await store.getUser(telegramId);
+    const user = await ensureUser(ctx);
     logger.info('Showing referral info', { telegramId });
-    if (!user) return ctx.reply('Send /start first!');
+    if (!user) return;
 
-    const refs = await store.getReferrals(telegramId);
+    const refsRes = await store.getReferrals(telegramId);
+    const refs = refsRes.success ? refsRes.data : [];
     const uploaded = refs.filter(r => r.uploadedAt).length;
 
     await ctx.reply(
@@ -744,7 +793,9 @@ bot.hears('🔗 Refer', showReferral);
 // ── Listen ────────────────────────────────────────────
 const startListen = async (ctx) => {
     const telegramId = ctx.from.id;
-    const artists = await store.getAllArtists();
+    const res = await store.getAllArtists();
+    const artists = res.success ? res.data : [];
+    
     logger.info('Listen flow started', { telegramId });
     if (artists.length === 0) {
         return ctx.reply(
@@ -772,12 +823,13 @@ bot.hears('🎧 Listen', startListen);
 bot.action(/artist_(.+)/, async (ctx) => {
     const artistId = ctx.match[1];
     logger.info('Artist callback received', { telegramId: ctx.from.id, artistId });
-    const artist = await store.getUser(artistId);
+    const res = await store.getUser(artistId);
     
-    if (!artist) {
+    if (!res.success) {
         logger.warn('Artist not found in store', { artistId });
         return ctx.answerCbQuery('Artist not found');
     }
+    const artist = res.data;
     
     if (!artist.uploadedTracks || artist.uploadedTracks.length === 0) {
         logger.warn('Artist has no tracks', { artistId, artistName: artist.artistName });
@@ -879,9 +931,9 @@ bot.action(/play_(.+)/, async (ctx) => {
 // ── Upload ────────────────────────────────────────────
 const startUpload = async (ctx) => {
     const telegramId = ctx.from.id;
-    const user = await store.getUser(telegramId);
+    const user = await ensureUser(ctx);
     logger.info('Upload flow started', { telegramId });
-    if (!user) return ctx.reply('Send /start first!');
+    if (!user) return;
     if (!user.walletAddress) {
         return ctx.reply('❌ You must link your wallet before uploading! Click 💎 Link Wallet.');
     }
@@ -909,10 +961,11 @@ You can tip 1, 5, or 10 TON directly to the artist's on-chain contract!`,
 // ── Tip ───────────────────────────────────────────────
 bot.action(/^tip_(\d+_\d+)$/, async (ctx) => {
     const trackId = ctx.match[1];
-    const track = await store.getTrack(trackId);
+    const trackRes = await store.getTrack(trackId);
     const telegramId = ctx.from.id;
     logger.info('Tip choice initiated', { telegramId, trackId });
-    if (!track) return ctx.answerCbQuery('Track not found');
+    if (!trackRes.success) return ctx.answerCbQuery('Track not found');
+    const track = trackRes.data;
     
     await ctx.answerCbQuery();
     await ctx.reply(
@@ -928,8 +981,9 @@ Choose how to tip:`,
 
 bot.action(/^tip_stars_(\d+_\d+)$/, async (ctx) => {
     const trackId = ctx.match[1];
-    const track = await store.getTrack(trackId);
-    if (!track) return ctx.answerCbQuery('Track not found');
+    const trackRes = await store.getTrack(trackId);
+    if (!trackRes.success) return ctx.answerCbQuery('Track not found');
+    const track = trackRes.data;
 
     await ctx.answerCbQuery();
     await ctx.replyWithInvoice({
@@ -944,8 +998,9 @@ bot.action(/^tip_stars_(\d+_\d+)$/, async (ctx) => {
 
 bot.action(/^tip_ton_(\d+_\d+)$/, async (ctx) => {
     const trackId = ctx.match[1];
-    const track = await store.getTrack(trackId);
-    if (!track) return ctx.answerCbQuery('Track not found');
+    const trackRes = await store.getTrack(trackId);
+    if (!trackRes.success) return ctx.answerCbQuery('Track not found');
+    const track = trackRes.data;
 
     await ctx.answerCbQuery();
     await ctx.reply(
@@ -963,10 +1018,15 @@ Select an amount to tip in TON:`,
 bot.action(/^dotip_(\d+_\d+)_(\d+)$/, async (ctx) => {
     const trackId = ctx.match[1];
     const amountStr = ctx.match[2];
-    const track = await store.getTrack(trackId);
+    const trackRes = await store.getTrack(trackId);
     const telegramId = ctx.from.id;
 
-    const connector = await getConnector(telegramId);
+    if (!trackRes.success) return ctx.answerCbQuery('Track not found');
+    const track = trackRes.data;
+
+    const connRes = await getConnector(telegramId);
+    if (!connRes.success) return ctx.reply(`❌ ${connRes.error}`);
+    const connector = connRes.data;
 
     if (!connector.connected) {
         return ctx.reply('❌ Wallet not connected. Please /link first.');
@@ -985,8 +1045,10 @@ bot.action(/^dotip_(\d+_\d+)_(\d+)$/, async (ctx) => {
         await ctx.answerCbQuery('Sending request to Wallet...');
         await connector.sendTransaction(transaction);
         await ctx.reply(`✅ Transaction sent for ${amountStr} TON tip to ${track.artistName}!`);
-        const currentUser = await store.getUser(telegramId);
-        await store.updateUser(telegramId, { tipsSent: (currentUser.tipsSent || 0) + 1 });
+        const userRes = await store.getUser(telegramId);
+        if (userRes.success) {
+            await store.updateUser(telegramId, { tipsSent: (userRes.data.tipsSent || 0) + 1 });
+        }
     } catch (e) {
         logger.error('Tip transaction failed', e);
         await ctx.reply('❌ Transaction cancelled or failed.');
@@ -1041,19 +1103,10 @@ bot.action('deploy_identity', async (ctx) => {
     }
 });
 
-// ── Buy $TOON ─────────────────────────────────────────
-bot.hears('💳 Buy $TOON', async (ctx) => {
-    await ctx.reply(
-`💳 Buy $TOON
+const { setupPaymentHandlers } = require('./payment_handlers');
 
-Choose how you'd like to purchase:`,
-        Markup.inlineKeyboard([
-            [Markup.button.callback('⭐ Pay with Telegram Stars', 'buy_stars')],
-            [Markup.button.callback('💎 Pay with TON', 'buy_ton')],
-            [Markup.button.callback('💳 Pay with Card (Fiat)', 'buy_fiat')]
-        ])
-    );
-});
+// ── Handlers ──────────────────────────────────────────────
+setupPaymentHandlers(bot);
 
 bot.action('buy_stars', async (ctx) => {
     await ctx.replyWithInvoice({
@@ -1068,13 +1121,15 @@ bot.action('buy_stars', async (ctx) => {
 
 bot.action('buy_ton', async (ctx) => {
     const telegramId = ctx.from.id;
-    const user = await store.getUser(telegramId);
+    const user = await ensureUser(ctx);
     
     if (!user || !user.walletAddress) {
         return ctx.reply("❌ Please link your wallet first using 💎 Link Wallet");
     }
 
-    const connector = await getConnector(telegramId);
+    const connRes = await getConnector(telegramId);
+    if (!connRes.success) return ctx.reply(`❌ ${connRes.error}`);
+    const connector = connRes.data;
 
     if (!connector.connected) {
         return ctx.reply("❌ Please link your wallet first using 💎 Link Wallet");
@@ -1135,18 +1190,33 @@ bot.on('successful_payment', async (ctx) => {
     
     if (payload === 'buy_toon_stars' || payload === 'buy_toon_fiat') {
         const telegramId = ctx.from.id;
-        const user = await store.getUser(telegramId);
-        if (user) {
-            const newBalance = (user.toonBalance || 0) + 100;
-            await store.updateUser(telegramId, { toonBalance: newBalance });
-            await ctx.reply("✅ 100 $TOON added to your balance! Check /profile.");
+        const res = await store.getUser(telegramId);
+        if (res.success) {
+            const user = res.data;
+            if (user.walletAddress) {
+                await ctx.reply("⏳ Payment received! Dispatching your $TOON on-chain...");
+                const successMint = await authorizeMint(user.walletAddress, toNano('100'));
+                if (successMint) {
+                    const newBalance = (user.toonBalance || 0) + 100;
+                    await store.updateUser(telegramId, { toonBalance: newBalance });
+                    await ctx.reply("✅ 100 $TOON added and authorized on-chain! Check /profile.");
+                } else {
+                    await ctx.reply("⚠️ Payment received but on-chain mint failed. We'll retry automatically, or contact support.");
+                }
+            } else {
+                const newBalance = (user.toonBalance || 0) + 100;
+                await store.updateUser(telegramId, { toonBalance: newBalance });
+                await ctx.reply("✅ 100 $TOON added to your balance! Link your wallet to withdraw to on-chain.");
+            }
         }
     } else if (payload.startsWith('tip_stars_')) {
         const trackId = payload.replace('tip_stars_', '');
-        const track = await store.getTrack(trackId);
-        if (track) {
-            const artist = await store.getUser(track.artistId);
-            if (artist) {
+        const trackRes = await store.getTrack(trackId);
+        if (trackRes.success) {
+            const track = trackRes.data;
+            const artistRes = await store.getUser(track.artistId);
+            if (artistRes.success) {
+                const artist = artistRes.data;
                 const newBalance = (artist.toonBalance || 0) + 50;
                 await store.updateUser(track.artistId, { toonBalance: newBalance });
                 logger.info('Star tip processed', { trackId, artistId: track.artistId, tipperId: ctx.from.id });
@@ -1160,7 +1230,10 @@ bot.on('successful_payment', async (ctx) => {
 
 // ── Testnet Snapshot Command ──────────────────────────
 bot.command('snapshot', adminOnly, async (ctx) => {
-    const users = await store.getAllUsers();
+    const res = await store.getAllUsers();
+    if (!res.success) return ctx.reply(`❌ Failed to get users: ${res.error}`);
+    const users = res.data;
+
     const snapshot = {};
     users.forEach(user => {
         snapshot[user.telegramId] = {

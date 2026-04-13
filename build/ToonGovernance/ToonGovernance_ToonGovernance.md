@@ -123,7 +123,7 @@ Total get methods: 7
 ## totalStaked
 No arguments
 
-## getStake
+## stake
 Argument: voter
 
 ## getProposal
