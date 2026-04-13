@@ -535,13 +535,13 @@ bot.hears('💎 Link Wallet', async (ctx) => {
 
     const universalLink = connector.connect({
         bridgeUrl: 'https://bridge.tonapi.io/bridge',
-        universalLink: 'https://app.tonkeeper.com/ton-connect'
+        universalLink: 'https://t.me/wallet/start?startapp=tonconnect'
     });
 
     await ctx.reply(
 `🔗 Link Your Wallet (TESTNET)
 
-1. Tap the button below to open Tonkeeper (TESTNET)
+1. Tap the button below to open Telegram Wallet (TESTNET)
 2. Connect your wallet
 3. Return here to Toon
 
