@@ -1197,29 +1197,55 @@ bot.action('deploy_identity', async (ctx) => {
             }).catch(() => {});
         }
 
-        const artistAddress = user.pendingIdentityTx.messages[0].address;
-        const stateRes = await client.getContractState(Address.parse(artistAddress));
+        // Regenerate fresh transaction to avoid validUntil expiration
+        const REGISTRY_ADDRESS = Address.parse(REGISTRY_ADDRESS_ENV);
+        const artistInit = await ToonArtist.fromInit(
+            Address.parse(user.walletAddress.trim()), 
+            REGISTRY_ADDRESS, 
+            BigInt(telegramId), 
+            `https://toon.music/artist/${telegramId}`
+        );
+        
+        const freshDeployTx = {
+            validUntil: Math.floor(Date.now() / 1000) + 600,
+            messages: [{
+                address: artistInit.address.toString(),
+                amount: toNano('0.05').toString(),
+                stateInit: beginCell()
+                    .storeUint(0, 2)
+                    .storeMaybeRef(artistInit.init.code)
+                    .storeMaybeRef(artistInit.init.data)
+                    .storeUint(0, 1)
+                    .endCell()
+                    .toBoc()
+                    .toString('base64'),
+                payload: beginCell().storeUint(0, 32).storeUint(0, 64).endCell().toBoc().toString('base64')
+            }]
+        };
+
+        const artistAddress = artistInit.address;
+        const stateRes = await client.getContractState(artistAddress);
         const lastLt = stateRes.lastTransaction ? stateRes.lastTransaction.lt : "0";
 
         // 1. Answer immediately to open the wallet
         await ctx.answerCbQuery(undefined, { url: 'https://t.me/wallet/start' });
 
         // 2. Initiate transaction and await its result
-        await connector.sendTransaction(user.pendingIdentityTx);
+        await connector.sendTransaction(freshDeployTx);
         
         await ctx.reply('⏳ Deployment sent! Waiting for on-chain confirmation...');
         
-        const conf = await waitForTransaction(Address.parse(artistAddress), lastLt);
+        const conf = await waitForTransaction(artistAddress, lastLt);
         if (conf.success) {
-            await store.markOnChain(telegramId, artistAddress);
+            await store.markOnChain(telegramId, artistAddress.toString());
             await store.updateUser(telegramId, { pendingIdentityTx: null });
             await ctx.reply('✅ Artist Identity confirmed on-chain! You are now a verified artist.');
         } else {
             await ctx.reply('⚠️ Transaction sent but confirmation timed out. Check your profile in a few minutes.');
         }
     } catch (e) {
-        logger.error('Identity deployment failed', { telegramId, error: e.message });
-        await ctx.reply(`❌ Deployment failed: ${e.message}`);
+        logger.error('Identity deployment failed', { telegramId, error: e.message, stack: e.stack });
+        await ctx.reply(`❌ Deployment failed: ${e.message}`).catch(() => {});
     }
 });
 
