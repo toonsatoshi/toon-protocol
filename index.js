@@ -566,11 +566,11 @@ bot.hears('💎 Link Wallet', async (ctx) => {
     });
 
     await ctx.reply(
-`🔗 Link Your Wallet (TESTNET)
+`🔗 Link Your Wallet
 
-1. Tap the button below to open Telegram Wallet (TESTNET)
-2. Connect your wallet
-3. Return here to Toon
+1. Tap the button below to open Telegram Wallet
+2. Approve the connection request in the wallet
+3. You'll get a confirmation here automatically
 
 ━━━━━━━━━━━━━━━
 ⚠️ Make sure your wallet is in **Testnet** mode!`,
@@ -1483,8 +1483,9 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     logger.info(`Health check server listening on port ${PORT}`);
     
-    // Start the bot ONLY after successfully binding the port
-    bot.launch()
+    // Clear any conflicting webhooks before launching
+    bot.telegram.deleteWebhook({ drop_pending_updates: true })
+        .then(() => bot.launch())
         .then(() => logger.info('🎵 Toon bot running...'))
         .catch(err => {
             logger.error('Failed to launch bot', err);
