@@ -125,9 +125,6 @@ describe('ToonVault', () => {
                 0n,                   // dailyEmitted
                 0n,                   // lastResetDay
                 false,                // halved
-                toNano('50000'),      // emissionCap (default)
-                7n,                   // minWalletAgeDays
-                0n,                   // targetDailyActivity (0 = static)
                 0n,                   // dailyClaimCount
             )
         );
@@ -136,6 +133,9 @@ describe('ToonVault', () => {
         // Top up the vault balance so it can fulfill reward sends
         await owner.send({ to: vault.address, value: toNano('100') });
         await vault.send(owner.getSender(), { value: toNano('0.05') }, { $$type: 'SetGovernance', newGovernance: governance.address });
+
+        // Since vault uses defaults in init, we don't necessarily need to set config from registry in every test,
+        // but let's make sure it matches what we expect if we were to use registry.
     });
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -153,7 +153,7 @@ describe('ToonVault', () => {
                 referrerId: 0n,
             });
 
-            const result = await vault.send(anyUser.getSender(), { value: toNano('0.2') }, msg);
+            const result = await vault.send(anyUser.getSender(), { value: toNano('0.5') }, msg);
             expect(result.transactions).toHaveTransaction({
                 from: vault.address, to: recipient.address, value: toNano('10'), success: true,
             });
@@ -224,12 +224,12 @@ describe('ToonVault', () => {
             };
 
             // 1st: 100% (10)
-            await vault.send(owner.getSender(), { value: toNano('0.2') }, buildSignedClaim({ ...base, claimId: freshClaimId() }));
+            await vault.send(owner.getSender(), { value: toNano('0.5') }, buildSignedClaim({ ...base, claimId: freshClaimId() }));
             
             await advanceDays(1);
             base.expiry = freshExpiry(blockchain); // Refresh expiry for next claim
             // 2nd: 75% (7.5)
-            const res2 = await vault.send(owner.getSender(), { value: toNano('0.2') }, buildSignedClaim({ ...base, claimId: freshClaimId() }));
+            const res2 = await vault.send(owner.getSender(), { value: toNano('0.5') }, buildSignedClaim({ ...base, claimId: freshClaimId() }));
             expect(res2.transactions).toHaveTransaction({
                 from: vault.address, to: recipient.address, value: toNano('7.5'), success: true,
             });
@@ -250,7 +250,7 @@ describe('ToonVault', () => {
             };
 
             // 1st interaction: 100% of BASE_GROWTH_AGENT (5)
-            await vault.send(owner.getSender(), { value: toNano('0.2') }, buildSignedClaim({ ...base, claimId: freshClaimId() }));
+            await vault.send(owner.getSender(), { value: toNano('0.5') }, buildSignedClaim({ ...base, claimId: freshClaimId() }));
             
             // Advance day to bypass daily cooldowns
             blockchain.now = (blockchain.now || Math.floor(Date.now() / 1000)) + 86400 + 60;
@@ -259,7 +259,7 @@ describe('ToonVault', () => {
             // 2nd interaction with SAME referrerId:
             // decayedReward(10) = 7.5
             // pairingDecay(7.5) = floor(7.5 * 40 / 100) = 3
-            const res2 = await vault.send(owner.getSender(), { value: toNano('0.2') }, buildSignedClaim({ ...base, claimId: freshClaimId() }));
+            const res2 = await vault.send(owner.getSender(), { value: toNano('0.5') }, buildSignedClaim({ ...base, claimId: freshClaimId() }));
             expect(res2.transactions).toHaveTransaction({
                 from: vault.address, to: recipient.address, value: toNano('3'), success: true,
             });
@@ -272,8 +272,15 @@ describe('ToonVault', () => {
 
     describe('Dynamic feedback', () => {
         it('scales individual rewards down when activity spikes', async () => {
-            await vault.send(governance.getSender(), { value: toNano('0.05') },
-                { $$type: 'UpdateTargetActivity', newTarget: 2n }); // Very low target
+            // Use SetConfig to update target activity since UpdateTargetActivity is gone
+            const currentConfig = await vault.getGetConfig();
+            await vault.send(registry.getSender(), { value: toNano('0.05') }, {
+                $$type: 'SetConfig',
+                config: {
+                    ...currentConfig,
+                    targetDailyActivity: 2n
+                }
+            });
 
             const base = {
                 telegramId: 100n, walletAddress: recipient.address,
@@ -283,20 +290,21 @@ describe('ToonVault', () => {
             };
 
             // 1st claim (actual=0 <= target=2): 100% (10)
-            await vault.send(owner.getSender(), { value: toNano('0.2') }, buildSignedClaim({ ...base, claimId: freshClaimId() }));
+            await vault.send(owner.getSender(), { value: toNano('0.5') }, buildSignedClaim({ ...base, claimId: freshClaimId() }));
             
             // 2nd claim (actual=1 <= target=2): 100% (10)
-            await vault.send(owner.getSender(), { value: toNano('0.2') }, buildSignedClaim({ ...base, claimId: freshClaimId(), telegramId: 101n, walletAddress: (await blockchain.treasury('w2')).address }));
+            await vault.send(owner.getSender(), { value: toNano('0.5') }, buildSignedClaim({ ...base, claimId: freshClaimId(), telegramId: 101n, walletAddress: (await blockchain.treasury('w2')).address }));
 
             // 3rd claim (actual=2 <= target=2): 100% (10)
-            await vault.send(owner.getSender(), { value: toNano('0.2') }, buildSignedClaim({ ...base, claimId: freshClaimId(), telegramId: 102n, walletAddress: (await blockchain.treasury('w3')).address }));
+            await vault.send(owner.getSender(), { value: toNano('0.5') }, buildSignedClaim({ ...base, claimId: freshClaimId(), telegramId: 102n, walletAddress: (await blockchain.treasury('w3')).address }));
 
             // 4th claim (actual=3 > target=2): bps = 20000/3 = 6666 -> reward = 10 * 6666 / 10000 = 6.666
+            // AND temporal penalty (delta < 10) -> reward = 6.666 * 0.5 = 3.333
             const w4 = await blockchain.treasury('w4');
-            const res4 = await vault.send(owner.getSender(), { value: toNano('0.2') }, buildSignedClaim({ ...base, claimId: freshClaimId(), telegramId: 103n, walletAddress: w4.address }));
+            const res4 = await vault.send(owner.getSender(), { value: toNano('0.5') }, buildSignedClaim({ ...base, claimId: freshClaimId(), telegramId: 103n, walletAddress: w4.address }));
             
             expect(res4.transactions).toHaveTransaction({
-                from: vault.address, to: w4.address, value: toNano('6.666'), success: true,
+                from: vault.address, to: w4.address, value: toNano('3.333'), success: true,
             });
         });
     });

@@ -756,6 +756,167 @@ export function dictValueParserFactoryDeploy(): DictionaryValue<FactoryDeploy> {
     }
 }
 
+export type Configuration = {
+    $$type: 'Configuration';
+    emissionCap: bigint;
+    minWalletAgeDays: bigint;
+    targetDailyActivity: bigint;
+    rewardBaseActiveListener: bigint;
+    rewardBaseGrowthAgent: bigint;
+    rewardBaseArtistLaunch: bigint;
+    rewardBaseTrendsetter: bigint;
+    rewardBaseEarlyBeliever: bigint;
+    rewardBaseDropInvestor: bigint;
+    decayFactor: bigint;
+    minThreshold: bigint;
+    antiFarmingCoeff: bigint;
+}
+
+export function storeConfiguration(src: Configuration) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeCoins(src.emissionCap);
+        b_0.storeUint(src.minWalletAgeDays, 32);
+        b_0.storeUint(src.targetDailyActivity, 32);
+        b_0.storeCoins(src.rewardBaseActiveListener);
+        b_0.storeCoins(src.rewardBaseGrowthAgent);
+        b_0.storeCoins(src.rewardBaseArtistLaunch);
+        b_0.storeCoins(src.rewardBaseTrendsetter);
+        b_0.storeCoins(src.rewardBaseEarlyBeliever);
+        b_0.storeCoins(src.rewardBaseDropInvestor);
+        b_0.storeUint(src.decayFactor, 16);
+        const b_1 = new Builder();
+        b_1.storeCoins(src.minThreshold);
+        b_1.storeUint(src.antiFarmingCoeff, 16);
+        b_0.storeRef(b_1.endCell());
+    };
+}
+
+export function loadConfiguration(slice: Slice) {
+    const sc_0 = slice;
+    const _emissionCap = sc_0.loadCoins();
+    const _minWalletAgeDays = sc_0.loadUintBig(32);
+    const _targetDailyActivity = sc_0.loadUintBig(32);
+    const _rewardBaseActiveListener = sc_0.loadCoins();
+    const _rewardBaseGrowthAgent = sc_0.loadCoins();
+    const _rewardBaseArtistLaunch = sc_0.loadCoins();
+    const _rewardBaseTrendsetter = sc_0.loadCoins();
+    const _rewardBaseEarlyBeliever = sc_0.loadCoins();
+    const _rewardBaseDropInvestor = sc_0.loadCoins();
+    const _decayFactor = sc_0.loadUintBig(16);
+    const sc_1 = sc_0.loadRef().beginParse();
+    const _minThreshold = sc_1.loadCoins();
+    const _antiFarmingCoeff = sc_1.loadUintBig(16);
+    return { $$type: 'Configuration' as const, emissionCap: _emissionCap, minWalletAgeDays: _minWalletAgeDays, targetDailyActivity: _targetDailyActivity, rewardBaseActiveListener: _rewardBaseActiveListener, rewardBaseGrowthAgent: _rewardBaseGrowthAgent, rewardBaseArtistLaunch: _rewardBaseArtistLaunch, rewardBaseTrendsetter: _rewardBaseTrendsetter, rewardBaseEarlyBeliever: _rewardBaseEarlyBeliever, rewardBaseDropInvestor: _rewardBaseDropInvestor, decayFactor: _decayFactor, minThreshold: _minThreshold, antiFarmingCoeff: _antiFarmingCoeff };
+}
+
+export function loadTupleConfiguration(source: TupleReader) {
+    const _emissionCap = source.readBigNumber();
+    const _minWalletAgeDays = source.readBigNumber();
+    const _targetDailyActivity = source.readBigNumber();
+    const _rewardBaseActiveListener = source.readBigNumber();
+    const _rewardBaseGrowthAgent = source.readBigNumber();
+    const _rewardBaseArtistLaunch = source.readBigNumber();
+    const _rewardBaseTrendsetter = source.readBigNumber();
+    const _rewardBaseEarlyBeliever = source.readBigNumber();
+    const _rewardBaseDropInvestor = source.readBigNumber();
+    const _decayFactor = source.readBigNumber();
+    const _minThreshold = source.readBigNumber();
+    const _antiFarmingCoeff = source.readBigNumber();
+    return { $$type: 'Configuration' as const, emissionCap: _emissionCap, minWalletAgeDays: _minWalletAgeDays, targetDailyActivity: _targetDailyActivity, rewardBaseActiveListener: _rewardBaseActiveListener, rewardBaseGrowthAgent: _rewardBaseGrowthAgent, rewardBaseArtistLaunch: _rewardBaseArtistLaunch, rewardBaseTrendsetter: _rewardBaseTrendsetter, rewardBaseEarlyBeliever: _rewardBaseEarlyBeliever, rewardBaseDropInvestor: _rewardBaseDropInvestor, decayFactor: _decayFactor, minThreshold: _minThreshold, antiFarmingCoeff: _antiFarmingCoeff };
+}
+
+export function loadGetterTupleConfiguration(source: TupleReader) {
+    const _emissionCap = source.readBigNumber();
+    const _minWalletAgeDays = source.readBigNumber();
+    const _targetDailyActivity = source.readBigNumber();
+    const _rewardBaseActiveListener = source.readBigNumber();
+    const _rewardBaseGrowthAgent = source.readBigNumber();
+    const _rewardBaseArtistLaunch = source.readBigNumber();
+    const _rewardBaseTrendsetter = source.readBigNumber();
+    const _rewardBaseEarlyBeliever = source.readBigNumber();
+    const _rewardBaseDropInvestor = source.readBigNumber();
+    const _decayFactor = source.readBigNumber();
+    const _minThreshold = source.readBigNumber();
+    const _antiFarmingCoeff = source.readBigNumber();
+    return { $$type: 'Configuration' as const, emissionCap: _emissionCap, minWalletAgeDays: _minWalletAgeDays, targetDailyActivity: _targetDailyActivity, rewardBaseActiveListener: _rewardBaseActiveListener, rewardBaseGrowthAgent: _rewardBaseGrowthAgent, rewardBaseArtistLaunch: _rewardBaseArtistLaunch, rewardBaseTrendsetter: _rewardBaseTrendsetter, rewardBaseEarlyBeliever: _rewardBaseEarlyBeliever, rewardBaseDropInvestor: _rewardBaseDropInvestor, decayFactor: _decayFactor, minThreshold: _minThreshold, antiFarmingCoeff: _antiFarmingCoeff };
+}
+
+export function storeTupleConfiguration(source: Configuration) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.emissionCap);
+    builder.writeNumber(source.minWalletAgeDays);
+    builder.writeNumber(source.targetDailyActivity);
+    builder.writeNumber(source.rewardBaseActiveListener);
+    builder.writeNumber(source.rewardBaseGrowthAgent);
+    builder.writeNumber(source.rewardBaseArtistLaunch);
+    builder.writeNumber(source.rewardBaseTrendsetter);
+    builder.writeNumber(source.rewardBaseEarlyBeliever);
+    builder.writeNumber(source.rewardBaseDropInvestor);
+    builder.writeNumber(source.decayFactor);
+    builder.writeNumber(source.minThreshold);
+    builder.writeNumber(source.antiFarmingCoeff);
+    return builder.build();
+}
+
+export function dictValueParserConfiguration(): DictionaryValue<Configuration> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeConfiguration(src)).endCell());
+        },
+        parse: (src) => {
+            return loadConfiguration(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type SetConfig = {
+    $$type: 'SetConfig';
+    config: Configuration;
+}
+
+export function storeSetConfig(src: SetConfig) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(735098709, 32);
+        b_0.store(storeConfiguration(src.config));
+    };
+}
+
+export function loadSetConfig(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 735098709) { throw Error('Invalid prefix'); }
+    const _config = loadConfiguration(sc_0);
+    return { $$type: 'SetConfig' as const, config: _config };
+}
+
+export function loadTupleSetConfig(source: TupleReader) {
+    const _config = loadTupleConfiguration(source);
+    return { $$type: 'SetConfig' as const, config: _config };
+}
+
+export function loadGetterTupleSetConfig(source: TupleReader) {
+    const _config = loadGetterTupleConfiguration(source);
+    return { $$type: 'SetConfig' as const, config: _config };
+}
+
+export function storeTupleSetConfig(source: SetConfig) {
+    const builder = new TupleBuilder();
+    builder.writeTuple(storeTupleConfiguration(source.config));
+    return builder.build();
+}
+
+export function dictValueParserSetConfig(): DictionaryValue<SetConfig> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeSetConfig(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetConfig(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type ClaimReward = {
     $$type: 'ClaimReward';
     walletAddress: Address;
@@ -980,147 +1141,6 @@ export function dictValueParserRewardClaimed(): DictionaryValue<RewardClaimed> {
         },
         parse: (src) => {
             return loadRewardClaimed(src.loadRef().beginParse());
-        }
-    }
-}
-
-export type UpdateEmissionCap = {
-    $$type: 'UpdateEmissionCap';
-    newCap: bigint;
-}
-
-export function storeUpdateEmissionCap(src: UpdateEmissionCap) {
-    return (builder: Builder) => {
-        const b_0 = builder;
-        b_0.storeUint(1272424197, 32);
-        b_0.storeCoins(src.newCap);
-    };
-}
-
-export function loadUpdateEmissionCap(slice: Slice) {
-    const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1272424197) { throw Error('Invalid prefix'); }
-    const _newCap = sc_0.loadCoins();
-    return { $$type: 'UpdateEmissionCap' as const, newCap: _newCap };
-}
-
-export function loadTupleUpdateEmissionCap(source: TupleReader) {
-    const _newCap = source.readBigNumber();
-    return { $$type: 'UpdateEmissionCap' as const, newCap: _newCap };
-}
-
-export function loadGetterTupleUpdateEmissionCap(source: TupleReader) {
-    const _newCap = source.readBigNumber();
-    return { $$type: 'UpdateEmissionCap' as const, newCap: _newCap };
-}
-
-export function storeTupleUpdateEmissionCap(source: UpdateEmissionCap) {
-    const builder = new TupleBuilder();
-    builder.writeNumber(source.newCap);
-    return builder.build();
-}
-
-export function dictValueParserUpdateEmissionCap(): DictionaryValue<UpdateEmissionCap> {
-    return {
-        serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeUpdateEmissionCap(src)).endCell());
-        },
-        parse: (src) => {
-            return loadUpdateEmissionCap(src.loadRef().beginParse());
-        }
-    }
-}
-
-export type UpdateMinWalletAge = {
-    $$type: 'UpdateMinWalletAge';
-    newAgeDays: bigint;
-}
-
-export function storeUpdateMinWalletAge(src: UpdateMinWalletAge) {
-    return (builder: Builder) => {
-        const b_0 = builder;
-        b_0.storeUint(3252420305, 32);
-        b_0.storeUint(src.newAgeDays, 32);
-    };
-}
-
-export function loadUpdateMinWalletAge(slice: Slice) {
-    const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3252420305) { throw Error('Invalid prefix'); }
-    const _newAgeDays = sc_0.loadUintBig(32);
-    return { $$type: 'UpdateMinWalletAge' as const, newAgeDays: _newAgeDays };
-}
-
-export function loadTupleUpdateMinWalletAge(source: TupleReader) {
-    const _newAgeDays = source.readBigNumber();
-    return { $$type: 'UpdateMinWalletAge' as const, newAgeDays: _newAgeDays };
-}
-
-export function loadGetterTupleUpdateMinWalletAge(source: TupleReader) {
-    const _newAgeDays = source.readBigNumber();
-    return { $$type: 'UpdateMinWalletAge' as const, newAgeDays: _newAgeDays };
-}
-
-export function storeTupleUpdateMinWalletAge(source: UpdateMinWalletAge) {
-    const builder = new TupleBuilder();
-    builder.writeNumber(source.newAgeDays);
-    return builder.build();
-}
-
-export function dictValueParserUpdateMinWalletAge(): DictionaryValue<UpdateMinWalletAge> {
-    return {
-        serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeUpdateMinWalletAge(src)).endCell());
-        },
-        parse: (src) => {
-            return loadUpdateMinWalletAge(src.loadRef().beginParse());
-        }
-    }
-}
-
-export type UpdateTargetActivity = {
-    $$type: 'UpdateTargetActivity';
-    newTarget: bigint;
-}
-
-export function storeUpdateTargetActivity(src: UpdateTargetActivity) {
-    return (builder: Builder) => {
-        const b_0 = builder;
-        b_0.storeUint(1210882180, 32);
-        b_0.storeUint(src.newTarget, 32);
-    };
-}
-
-export function loadUpdateTargetActivity(slice: Slice) {
-    const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1210882180) { throw Error('Invalid prefix'); }
-    const _newTarget = sc_0.loadUintBig(32);
-    return { $$type: 'UpdateTargetActivity' as const, newTarget: _newTarget };
-}
-
-export function loadTupleUpdateTargetActivity(source: TupleReader) {
-    const _newTarget = source.readBigNumber();
-    return { $$type: 'UpdateTargetActivity' as const, newTarget: _newTarget };
-}
-
-export function loadGetterTupleUpdateTargetActivity(source: TupleReader) {
-    const _newTarget = source.readBigNumber();
-    return { $$type: 'UpdateTargetActivity' as const, newTarget: _newTarget };
-}
-
-export function storeTupleUpdateTargetActivity(source: UpdateTargetActivity) {
-    const builder = new TupleBuilder();
-    builder.writeNumber(source.newTarget);
-    return builder.build();
-}
-
-export function dictValueParserUpdateTargetActivity(): DictionaryValue<UpdateTargetActivity> {
-    return {
-        serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeUpdateTargetActivity(src)).endCell());
-        },
-        parse: (src) => {
-            return loadUpdateTargetActivity(src.loadRef().beginParse());
         }
     }
 }
@@ -1376,14 +1396,16 @@ export type ToonVault$Data = {
     dailyEmitted: bigint;
     lastResetDay: bigint;
     halved: boolean;
-    emissionCap: bigint;
-    minWalletAgeDays: bigint;
-    targetDailyActivity: bigint;
+    config: Configuration;
     dailyClaimCount: bigint;
     usedClaimIds: Dictionary<bigint, boolean>;
     lastClaimTimestamp: Dictionary<bigint, bigint>;
     claimCounts: Dictionary<bigint, bigint>;
     pairingCounts: Dictionary<bigint, bigint>;
+    participantEntropy: Dictionary<bigint, bigint>;
+    lastRewardTimestamp: Dictionary<bigint, bigint>;
+    dailyIdentityRewards: Dictionary<bigint, bigint>;
+    dailyClusterRewards: Dictionary<bigint, bigint>;
     lifetimeClaimed: Dictionary<bigint, boolean>;
 }
 
@@ -1399,16 +1421,22 @@ export function storeToonVault$Data(src: ToonVault$Data) {
         b_1.storeCoins(src.dailyEmitted);
         b_1.storeUint(src.lastResetDay, 32);
         b_1.storeBit(src.halved);
-        b_1.storeCoins(src.emissionCap);
-        b_1.storeUint(src.minWalletAgeDays, 32);
-        b_1.storeUint(src.targetDailyActivity, 32);
-        b_1.storeUint(src.dailyClaimCount, 32);
-        b_1.storeDict(src.usedClaimIds, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
-        b_1.storeDict(src.lastClaimTimestamp, Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257));
-        b_1.storeDict(src.claimCounts, Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257));
         const b_2 = new Builder();
-        b_2.storeDict(src.pairingCounts, Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257));
-        b_2.storeDict(src.lifetimeClaimed, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
+        b_2.store(storeConfiguration(src.config));
+        b_2.storeUint(src.dailyClaimCount, 32);
+        b_2.storeDict(src.usedClaimIds, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
+        b_2.storeDict(src.lastClaimTimestamp, Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257));
+        const b_3 = new Builder();
+        b_3.storeDict(src.claimCounts, Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257));
+        b_3.storeDict(src.pairingCounts, Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257));
+        b_3.storeDict(src.participantEntropy, Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257));
+        const b_4 = new Builder();
+        b_4.storeDict(src.lastRewardTimestamp, Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257));
+        b_4.storeDict(src.dailyIdentityRewards, Dictionary.Keys.BigInt(257), Dictionary.Values.BigVarUint(4));
+        b_4.storeDict(src.dailyClusterRewards, Dictionary.Keys.BigInt(257), Dictionary.Values.BigVarUint(4));
+        b_4.storeDict(src.lifetimeClaimed, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
+        b_3.storeRef(b_4.endCell());
+        b_2.storeRef(b_3.endCell());
         b_1.storeRef(b_2.endCell());
         b_0.storeRef(b_1.endCell());
     };
@@ -1425,17 +1453,21 @@ export function loadToonVault$Data(slice: Slice) {
     const _dailyEmitted = sc_1.loadCoins();
     const _lastResetDay = sc_1.loadUintBig(32);
     const _halved = sc_1.loadBit();
-    const _emissionCap = sc_1.loadCoins();
-    const _minWalletAgeDays = sc_1.loadUintBig(32);
-    const _targetDailyActivity = sc_1.loadUintBig(32);
-    const _dailyClaimCount = sc_1.loadUintBig(32);
-    const _usedClaimIds = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_1);
-    const _lastClaimTimestamp = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), sc_1);
-    const _claimCounts = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), sc_1);
     const sc_2 = sc_1.loadRef().beginParse();
-    const _pairingCounts = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), sc_2);
-    const _lifetimeClaimed = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_2);
-    return { $$type: 'ToonVault$Data' as const, owner: _owner, registry: _registry, governance: _governance, oraclePublicKey: _oraclePublicKey, totalReserve: _totalReserve, dailyEmitted: _dailyEmitted, lastResetDay: _lastResetDay, halved: _halved, emissionCap: _emissionCap, minWalletAgeDays: _minWalletAgeDays, targetDailyActivity: _targetDailyActivity, dailyClaimCount: _dailyClaimCount, usedClaimIds: _usedClaimIds, lastClaimTimestamp: _lastClaimTimestamp, claimCounts: _claimCounts, pairingCounts: _pairingCounts, lifetimeClaimed: _lifetimeClaimed };
+    const _config = loadConfiguration(sc_2);
+    const _dailyClaimCount = sc_2.loadUintBig(32);
+    const _usedClaimIds = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_2);
+    const _lastClaimTimestamp = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), sc_2);
+    const sc_3 = sc_2.loadRef().beginParse();
+    const _claimCounts = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), sc_3);
+    const _pairingCounts = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), sc_3);
+    const _participantEntropy = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), sc_3);
+    const sc_4 = sc_3.loadRef().beginParse();
+    const _lastRewardTimestamp = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), sc_4);
+    const _dailyIdentityRewards = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.BigVarUint(4), sc_4);
+    const _dailyClusterRewards = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.BigVarUint(4), sc_4);
+    const _lifetimeClaimed = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_4);
+    return { $$type: 'ToonVault$Data' as const, owner: _owner, registry: _registry, governance: _governance, oraclePublicKey: _oraclePublicKey, totalReserve: _totalReserve, dailyEmitted: _dailyEmitted, lastResetDay: _lastResetDay, halved: _halved, config: _config, dailyClaimCount: _dailyClaimCount, usedClaimIds: _usedClaimIds, lastClaimTimestamp: _lastClaimTimestamp, claimCounts: _claimCounts, pairingCounts: _pairingCounts, participantEntropy: _participantEntropy, lastRewardTimestamp: _lastRewardTimestamp, dailyIdentityRewards: _dailyIdentityRewards, dailyClusterRewards: _dailyClusterRewards, lifetimeClaimed: _lifetimeClaimed };
 }
 
 export function loadTupleToonVault$Data(source: TupleReader) {
@@ -1447,17 +1479,19 @@ export function loadTupleToonVault$Data(source: TupleReader) {
     const _dailyEmitted = source.readBigNumber();
     const _lastResetDay = source.readBigNumber();
     const _halved = source.readBoolean();
-    const _emissionCap = source.readBigNumber();
-    const _minWalletAgeDays = source.readBigNumber();
-    const _targetDailyActivity = source.readBigNumber();
+    const _config = loadTupleConfiguration(source);
     const _dailyClaimCount = source.readBigNumber();
     const _usedClaimIds = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
     const _lastClaimTimestamp = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), source.readCellOpt());
-    source = source.readTuple();
     const _claimCounts = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), source.readCellOpt());
     const _pairingCounts = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), source.readCellOpt());
+    source = source.readTuple();
+    const _participantEntropy = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), source.readCellOpt());
+    const _lastRewardTimestamp = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), source.readCellOpt());
+    const _dailyIdentityRewards = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigVarUint(4), source.readCellOpt());
+    const _dailyClusterRewards = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigVarUint(4), source.readCellOpt());
     const _lifetimeClaimed = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
-    return { $$type: 'ToonVault$Data' as const, owner: _owner, registry: _registry, governance: _governance, oraclePublicKey: _oraclePublicKey, totalReserve: _totalReserve, dailyEmitted: _dailyEmitted, lastResetDay: _lastResetDay, halved: _halved, emissionCap: _emissionCap, minWalletAgeDays: _minWalletAgeDays, targetDailyActivity: _targetDailyActivity, dailyClaimCount: _dailyClaimCount, usedClaimIds: _usedClaimIds, lastClaimTimestamp: _lastClaimTimestamp, claimCounts: _claimCounts, pairingCounts: _pairingCounts, lifetimeClaimed: _lifetimeClaimed };
+    return { $$type: 'ToonVault$Data' as const, owner: _owner, registry: _registry, governance: _governance, oraclePublicKey: _oraclePublicKey, totalReserve: _totalReserve, dailyEmitted: _dailyEmitted, lastResetDay: _lastResetDay, halved: _halved, config: _config, dailyClaimCount: _dailyClaimCount, usedClaimIds: _usedClaimIds, lastClaimTimestamp: _lastClaimTimestamp, claimCounts: _claimCounts, pairingCounts: _pairingCounts, participantEntropy: _participantEntropy, lastRewardTimestamp: _lastRewardTimestamp, dailyIdentityRewards: _dailyIdentityRewards, dailyClusterRewards: _dailyClusterRewards, lifetimeClaimed: _lifetimeClaimed };
 }
 
 export function loadGetterTupleToonVault$Data(source: TupleReader) {
@@ -1469,16 +1503,18 @@ export function loadGetterTupleToonVault$Data(source: TupleReader) {
     const _dailyEmitted = source.readBigNumber();
     const _lastResetDay = source.readBigNumber();
     const _halved = source.readBoolean();
-    const _emissionCap = source.readBigNumber();
-    const _minWalletAgeDays = source.readBigNumber();
-    const _targetDailyActivity = source.readBigNumber();
+    const _config = loadGetterTupleConfiguration(source);
     const _dailyClaimCount = source.readBigNumber();
     const _usedClaimIds = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
     const _lastClaimTimestamp = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), source.readCellOpt());
     const _claimCounts = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), source.readCellOpt());
     const _pairingCounts = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), source.readCellOpt());
+    const _participantEntropy = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), source.readCellOpt());
+    const _lastRewardTimestamp = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), source.readCellOpt());
+    const _dailyIdentityRewards = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigVarUint(4), source.readCellOpt());
+    const _dailyClusterRewards = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigVarUint(4), source.readCellOpt());
     const _lifetimeClaimed = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
-    return { $$type: 'ToonVault$Data' as const, owner: _owner, registry: _registry, governance: _governance, oraclePublicKey: _oraclePublicKey, totalReserve: _totalReserve, dailyEmitted: _dailyEmitted, lastResetDay: _lastResetDay, halved: _halved, emissionCap: _emissionCap, minWalletAgeDays: _minWalletAgeDays, targetDailyActivity: _targetDailyActivity, dailyClaimCount: _dailyClaimCount, usedClaimIds: _usedClaimIds, lastClaimTimestamp: _lastClaimTimestamp, claimCounts: _claimCounts, pairingCounts: _pairingCounts, lifetimeClaimed: _lifetimeClaimed };
+    return { $$type: 'ToonVault$Data' as const, owner: _owner, registry: _registry, governance: _governance, oraclePublicKey: _oraclePublicKey, totalReserve: _totalReserve, dailyEmitted: _dailyEmitted, lastResetDay: _lastResetDay, halved: _halved, config: _config, dailyClaimCount: _dailyClaimCount, usedClaimIds: _usedClaimIds, lastClaimTimestamp: _lastClaimTimestamp, claimCounts: _claimCounts, pairingCounts: _pairingCounts, participantEntropy: _participantEntropy, lastRewardTimestamp: _lastRewardTimestamp, dailyIdentityRewards: _dailyIdentityRewards, dailyClusterRewards: _dailyClusterRewards, lifetimeClaimed: _lifetimeClaimed };
 }
 
 export function storeTupleToonVault$Data(source: ToonVault$Data) {
@@ -1491,14 +1527,16 @@ export function storeTupleToonVault$Data(source: ToonVault$Data) {
     builder.writeNumber(source.dailyEmitted);
     builder.writeNumber(source.lastResetDay);
     builder.writeBoolean(source.halved);
-    builder.writeNumber(source.emissionCap);
-    builder.writeNumber(source.minWalletAgeDays);
-    builder.writeNumber(source.targetDailyActivity);
+    builder.writeTuple(storeTupleConfiguration(source.config));
     builder.writeNumber(source.dailyClaimCount);
     builder.writeCell(source.usedClaimIds.size > 0 ? beginCell().storeDictDirect(source.usedClaimIds, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool()).endCell() : null);
     builder.writeCell(source.lastClaimTimestamp.size > 0 ? beginCell().storeDictDirect(source.lastClaimTimestamp, Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257)).endCell() : null);
     builder.writeCell(source.claimCounts.size > 0 ? beginCell().storeDictDirect(source.claimCounts, Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257)).endCell() : null);
     builder.writeCell(source.pairingCounts.size > 0 ? beginCell().storeDictDirect(source.pairingCounts, Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257)).endCell() : null);
+    builder.writeCell(source.participantEntropy.size > 0 ? beginCell().storeDictDirect(source.participantEntropy, Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257)).endCell() : null);
+    builder.writeCell(source.lastRewardTimestamp.size > 0 ? beginCell().storeDictDirect(source.lastRewardTimestamp, Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257)).endCell() : null);
+    builder.writeCell(source.dailyIdentityRewards.size > 0 ? beginCell().storeDictDirect(source.dailyIdentityRewards, Dictionary.Keys.BigInt(257), Dictionary.Values.BigVarUint(4)).endCell() : null);
+    builder.writeCell(source.dailyClusterRewards.size > 0 ? beginCell().storeDictDirect(source.dailyClusterRewards, Dictionary.Keys.BigInt(257), Dictionary.Values.BigVarUint(4)).endCell() : null);
     builder.writeCell(source.lifetimeClaimed.size > 0 ? beginCell().storeDictDirect(source.lifetimeClaimed, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool()).endCell() : null);
     return builder.build();
 }
@@ -1524,9 +1562,6 @@ export function dictValueParserToonVault$Data(): DictionaryValue<ToonVault$Data>
     dailyEmitted: bigint;
     lastResetDay: bigint;
     halved: boolean;
-    emissionCap: bigint;
-    minWalletAgeDays: bigint;
-    targetDailyActivity: bigint;
     dailyClaimCount: bigint;
 }
 
@@ -1543,22 +1578,17 @@ function initToonVault_init_args(src: ToonVault_init_args) {
         const b_2 = new Builder();
         b_2.storeInt(src.lastResetDay, 257);
         b_2.storeBit(src.halved);
-        b_2.storeInt(src.emissionCap, 257);
-        b_2.storeInt(src.minWalletAgeDays, 257);
-        const b_3 = new Builder();
-        b_3.storeInt(src.targetDailyActivity, 257);
-        b_3.storeInt(src.dailyClaimCount, 257);
-        b_2.storeRef(b_3.endCell());
+        b_2.storeInt(src.dailyClaimCount, 257);
         b_1.storeRef(b_2.endCell());
         b_0.storeRef(b_1.endCell());
     };
 }
 
-async function ToonVault_init(owner: Address, registry: Address, governance: Address, oraclePublicKey: bigint, totalReserve: bigint, dailyEmitted: bigint, lastResetDay: bigint, halved: boolean, emissionCap: bigint, minWalletAgeDays: bigint, targetDailyActivity: bigint, dailyClaimCount: bigint) {
-    const __code = Cell.fromHex('b5ee9c72410259010015f9000228ff008e88f4a413f4bcf2c80bed5320e303ed43d901220202710210020148030e020120040602b5b395fb5134348000638efe903e903e9035007434fffe803e8034c7f4803e8034c7f4c7f4c7fd013d013d01350c343d013d010c0384444383844403843bd5c443c44403d543a3a2f6cf033455429b5b5b5b5b78b6cf15c417c3cc6023050104db3c2f020120070c020148080a02b3a56bda89a1a400031c77f481f481f481a803a1a7fff401f401a63fa401f401a63fa63fa63fe809e809e809a861a1e809e808601c22221c1c22201c21deae221e22201eaa1d1d17b67819a2aa14dadadadadbc5b678ae20be1e63230900022702b3a5f5da89a1a400031c77f481f481f481a803a1a7fff401f401a63fa401f401a63fa63fa63fe809e809e809a861a1e809e808601c22221c1c22201c21deae221e22201eaa1d1d17b67819a2aa14dadadadadbc5b678ae20be1e63230b00022b02b5ac1c76a268690000c71dfd207d207d206a00e869fffd007d00698fe9007d00698fe98fe98ffa027a027a026a18687a027a021807088887070888070877ab8887888807aa874745ed9e0668aa8536b6b6b6b6f16d9e2b882f8798c0230d00022e02b5b4d71da89a1a400031c77f481f481f481a803a1a7fff401f401a63fa401f401a63fa63fa63fe809e809e809a861a1e809e808601c22221c1c22201c21deae221e22201eaa1d1d17b67819a2aa14dadadadadbc5b678ae20be1e630230f000225020120111d020120121b020120131502d9b318fb5134348000638efe903e903e9035007434fffe803e8034c7f4803e8034c7f4c7f4c7fd013d013d01350c343d013d010c0384444383844403843bd5c443c44403d543a3a2f6cf033455429b5b5b5b5b7884440444844403c44443c38444038437d54736cf15c417c3cc602314014adb3c810101530450334133f40c6fa19401d70030925b6de2206eb395206ef2d080923070e233020148161902d8abe9ed44d0d200018e3bfa40fa40fa40d401d0d3fffa00fa00d31fd200fa00d31fd31fd31ff404f404f404d430d0f404f404300e11110e0e11100e10ef57110f11100f550e8e8bdb3c0cd1550a6d6d6d6d6de21110111211100f11110f0e11100e10df551cdb3c57105f0f31231702f4221111111311115e3f0e11120e0d11130d0c11120c0b11130b0a11120a09111309081112080711130706111206051113050411120403111303021112020111130111128101011114db3c0211120201111301714133f40c6fa19401d70030925b6de26eb30f11110f0e11100e10df10ce10bd10ac109b108a10792d1800141068105710461035443002cca8bced44d0d200018e3bfa40fa40fa40d401d0d3fffa00fa00d31fd200fa00d31fd31fd31ff404f404f404d430d0f404f404300e11110e0e11100e10ef57110f11100f550e8e8bdb3c0cd1550a6d6d6d6d6de21110111111100f11100f550edb3c57105f0f31231a002e8101012602714133f40c6fa19401d70030925b6de26eb302b5b72ffda89a1a400031c77f481f481f481a803a1a7fff401f401a63fa401f401a63fa63fa63fe809e809e809a861a1e809e808601c22221c1c22201c21deae221e22201eaa1d1d17b67819a2aa14dadadadadbc5b678ae20be1e630231c00022c0201201e2002b5b654bda89a1a400031c77f481f481f481a803a1a7fff401f401a63fa401f401a63fa63fa63fe809e809e809a861a1e809e808601c22221c1c22201c21deae221e22201eaa1d1d17b67819a2aa14dadadadadbc5b678ae20be1e630231f00022802b5b7071da89a1a400031c77f481f481f481a803a1a7fff401f401a63fa401f401a63fa63fa63fe809e809e809a861a1e809e808601c22221c1c22201c21deae221e22201eaa1d1d17b67819a2aa14dadadadadbc5b678ae20be1e630232100022903f83001d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e3bfa40fa40fa40d401d0d3fffa00fa00d31fd200fa00d31fd31fd31ff404f404f404d430d0f404f404300e11110e0e11100e10ef57110f11100f550e8e8bdb3c0cd1550a6d6d6d6d6de21112945f0f5f03e0705611d74920c21fe300212324250080fa40fa40fa40d401d0810101d700810101d700810101d700d430d0810101d700d200810101d700810101d700d430d0810101d700810101d70030109c109b109a000e311111d31f111204f68210f9d49f8bbae302218210fa1d125cba8f5f5b1110fa40fa0030811216f8425611c705f2f482008db853d1bef2f451cca17288102e5a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb000e11100e551de02182104bd7a705ba2648574901fe5b1110fa40d307d33fd31fd200fa00d33fd31fd3ffd430d0d3ffd33f3082009f552ac200932ac1089170e2f2f48200aa5f8d086000000000000000000000000000000000000000000000000000000000000000000452c0c705b3f2f48200ad522b544b302b544b302b544b302b544b3a541b0b111b1123111b111a1122111a2702e41119112111191118112011181117111f11171116111e11161115111d11151114111c11141113112311131112112211121111112111111110112011100f111f0f0e111e0e0d111d0d0c11240c0b11250bdb3c01111b01f2f481108af82301111301be01111201f2f4812bdd2381010156147128290052c819cb3f500acf1618cb0715cb1f13ca0001fa02cb3fcb1fcb3fc9f900c812cbff12cbffc9d02ff91003fc4133f40c6fa19401d70030925b6de26ef2f4128101010111127f71216e955b59f45a3098c801cf004133f442e28109e0111425be01111401f2f48165f35614c200f2f4f82382015180a9040d11110d0c11100c10bf10ae109d108c107b106a10591048103710260511130514433001111701db3c5616db3c8101015455002a2b2c001e530bbc98363a3a70520550ba9130e2036ac86f00016f8c6d6f8c8b363643a8db3c01db3cdb3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da113d353d02fe52304133f40c6fa19401d70030925b6de2206eb38e138140cbf82302206ef2d08081012ca012bef2f49130e21110111111100f11110f0e11110e0d11110d0c11110c0b11110b0a11110a091111091111080706554056155618db3c1110111111100f11110f0e11110e0d11110d0c11110c0b11110b0a11110a0911110911112d2e0488c86f00016f8c6d6f8c8b56f6e63653a8db3c028e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d012db3c8b13a8db3c013d3d3d3404f008070655405616db3c8e1d8200d391218101015614714133f40c6fa19401d70030925b6de26ef2f4dedb3c8200dec953d1b9f2f4705618c001993057158212540be400e30e20c200f2e7321110111111100f11110f0e11110e0d11110d0c11110c0b11110b0a11110a09111109111108070655405617561a452f30320040538ca76482238d7ea4c68000a90420c10b927f3cdec21392703bde2a92ab00de01f45618c0028e725618c0039a3057158218746a5288008e605618c0049b3057158220048c273950008e4d5618c0069a30571582182e90edd0008e3b5618c0079a30571582180ba43b74008e295618c0058e1d30812fae56168218174876e800bef2f41115810320a8812710a9041115925716e21115e2e2e2e2e30d31001230571582112a05f20003fcdb3c81010154540052304133f40c6fa19401d70030925b6de26eb38e1c81010154540052304133f40c6fa19401d70030925b6de2206ef2d0809170e21110111211105e3e0d11110d0c11120c0b11110b0a11120a09111109081112080711110706111206051111050411120403111103021112020111110111125619db3c3345390486c86f00016f8c6d6f8c8b4636e743a8db3c028e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d012db3c8b13a8db3c013d3d3d340248db3cdb3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da11353d0242fa44c88b111801ce028307a0a9380758cb07cbffc9d020db3c01c8cecec9d0db3c36370094c8ce8b20000801cec9d0709421c701b38e2a01d30783069320c2008e1b03aa005323b091a4de03ab0023840fbc9903840fb0811021b203dee8303101e8318307a90c01c8cb07cb07c9d001a08d10105090d1115191d2125292d3135393d4145494d5155595d61656985898d9195999da1a5a9adb1b5b9bdc1c5c9cdd1d5d9dde1e5e8c0c4c8ccd0d4d8dce0e4b57e0c89522d749c2178ae86c21c9d038009a02d307d307d30703aa0f02aa0712b101b120ab11803fb0aa02523078d7245004ce23ab0b803fb0aa02523078d72401ce23ab05803fb0aa02523078d72401ce03803fb0aa02522078d7245003ce04c68e9a1110111111100f11100f550e11135612db3c11131111111055e0df1110111211100f11110f0e11100e551d01111801111adb3c209130e30d1110111211100f11110f0e11100e10df10ce10bd10ac109b108a1079106810571046103540141114133a3b3e410058209130e120c0019730a74b8064a904e020c0029730a7328064a904e0c10a96a7198064a904e0a70a8064a90404e220925b70e1c86f00016f8c6d6f8c8b5706169723a8db3c028e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d012db3c8b13a8db3c018e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d03d3d3d3c0144db3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da113d00b620d74a21d7499720c20022c200b18e48036f22807f22cf31ab02a105ab025155b60820c2009a20aa0215d71803ce4014de596f025341a1c20099c8016f025044a1aa028e123133c20099d430d020d74a21d749927020e2e2e85f0301fc81010154530052304133f40c6fa19401d70030925b6de26eb38e1c81010154530052304133f40c6fa19401d70030925b6de2206ef2d0809170e21111111211111110111211100f11120f0e11120e0d11120d0c11120c0b11120b0a11120a09111209081112080711120706111206051112050411120403111203021112023f01700111120111135613db3c8101011114a456140311150302111402216e955b59f45a3098c801cf004133f442e21110111111100f11100f550e400040209130e120c0019730a7508064a904e0c00296a73c8064a904e0a7288064a90402fedb3c11142ca1561421bc9257149130e25613820186a0b9945613c2009170e296820186a05714de82008db82d5615bef2f40c5613a10b5613a005a4810101f823211046102302111402216e955b59f45a3098c801cf004133f442e28101011116a4561610340311170302111502216e955b59f45a3098c801cf004133f442e2424401c698810096a88064a904de1110111111100f11110f0e11110e0d11110d0c11110c0b11110b0a11110a0911110911110807065540db3c01111201a8812710a9041110111111100f11100f10ef10de10cd10bc10ab109a10891078106710561045103441304300462693812710e1547556bb9430812710e027812710a801a904208103e8b994308103e8de02fe0d11100d10cf10be10ad108c102b107a1069105810471036454003111103020111130111115612db3c8e1c8101015811127f71216e955b59f45a3098c801cf004133f442e21110925711e2111156135613c85520821081a355435004cb1f12cb07ce01fa02c9c88258c000000000000000000000000101cb67ccc970fb00714546002220c003917f9320c004e292307f92c006e202968803111403021113025a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb000c11100c10bf10ae109d55384757001e00000000746f6f6e5f7265776172640026000000006d696e745f617574686f72697a656404e48f5d5b370ffa00308200d243f8422ec705f2f48200b9f121c2009a218221c6bf52634000bb9170e2f2f488c88258c000000000000000000000000101cb67ccc970fb000e11100e10df10ce10bd10ac109b108a107908105710461035443012e0218210c1dbfed1bae302218210482c9884ba4a574b4d002c00000000456d697373696f6e43617055706461746564029a5b360fd31f308200e503f8422ec705f2f48137462181016dbbf2f488c88258c000000000000000000000000101cb67ccc970fb000e11100e10df10ce10bd10ac109b108a1079106807104655134c57002e000000004d696e57616c6c65744167655570646174656404b68f465b350fd31f308200c565f8422ec705f2f488c88258c000000000000000000000000101cb67ccc970fb000e11100e10df10ce10bd10ac109b108a107910681057061035443012e0218210dded29fcbae30221821010401f27ba4e574f5000320000000054617267657441637469766974795570646174656400e85b1110fa00308200cba1f8425611c705f2f41ba00e11100e10df10ce10bd0c109b108a107910681057104610354430c87f01ca001111111055e0011110011111ce1ece1cce0ac8cbff5009fa025007fa0215cb1f13ca0001fa02cb1fcb1fcb1ff40012f40012f40002c8f40013f400cdcdc9ed5403fe8e605b3e0ffa40308200cba1f8425610c705f2f40e11100e0f10ce551bc87f01ca001111111055e0011110011111ce1ece1cce0ac8cbff5009fa025007fa0215cb1f13ca0001fa02cb1fcb1fcb1ff40012f40012f40002c8f40013f400cdcdc9ed54e0218210b788aa64bae30221821059ac8ed6bae30221821079d47611ba51525400e65b3d0ffa40308200cba1f8425610c705f2f40e11100e10df0e10bd10ac109b108a10791068105710461035443012c87f01ca001111111055e0011110011111ce1ece1cce0ac8cbff5009fa025007fa0215cb1f13ca0001fa02cb1fcb1fcb1ff40012f40012f40002c8f40013f400cdcdc9ed5402805b3c0fd3ff308200cba1f8425610c705f2f48120d621c300f2f488c88258c000000000000000000000000101cb67ccc970fb000e11100e10df10ce0d10ac551953570028000000004f7261636c654b6579526f746174656404f88f625b1110fa00fa40308200cba1f8425612c705f2f482008db853d2bef2f451c1a17288103e102e5a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb000e11100e551de0218210946a98b6bae3025712c0001111c12101111101b055575658001c000000007769746864726177616c01ae5b1110d33f30c8018210aff90f5758cb1fcb3fc90f11110f0e11100e10df10ce10bd10ac109b108a107910681057104610354430f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb0057008ac87f01ca001111111055e0011110011111ce1ece1cce0ac8cbff5009fa025007fa0215cb1f13ca0001fa02cb1fcb1fcb1ff40012f40012f40002c8f40013f400cdcdc9ed5400a88e4b0e11100e551dc87f01ca001111111055e0011110011111ce1ece1cce0ac8cbff5009fa025007fa0215cb1f13ca0001fa02cb1fcb1fcb1ff40012f40012f40002c8f40013f400cdcdc9ed54e05f0f5bf2c082fbf4343f');
+async function ToonVault_init(owner: Address, registry: Address, governance: Address, oraclePublicKey: bigint, totalReserve: bigint, dailyEmitted: bigint, lastResetDay: bigint, halved: boolean, dailyClaimCount: bigint) {
+    const __code = Cell.fromHex('b5ee9c7241027b0100229200022cff008e88f4a413f4bcf2c80bed53208e8130e1ed43d9012902027102130201200311020120040f0201200507038db395fb513434800063acbe903e903e9035007420404075c020404075c020404075c0350c3420404075c0348020404075c00c041a441a0419c2745541f8c376cf15c417c3db38602a2b060104db3c37020120080d020148090b038ba56bda89a1a400031d65f481f481f481a803a1020203ae01020203ae01020203ae01a861a1020203ae01a401020203ae006020d220d020ce13a2aa0fc61bb678ae20be1ed9c32a2b0a00045614038ba5f5da89a1a400031d65f481f481f481a803a1020203ae01020203ae01020203ae01a861a1020203ae01a401020203ae006020d220d020ce13a2aa0fc61bb678ae20be1ed9c32a2b0c00045618038dac1c76a268690000c7597d207d207d206a00e8408080eb80408080eb80408080eb806a1868408080eb806900408080eb801808348834083384e8aa83f186ed9e2b882f87b670c02a2b0e0004561b038db4d71da89a1a400031d65f481f481f481a803a1020203ae01020203ae01020203ae01a861a1020203ae01a401020203ae006020d220d020ce13a2aa0fc61bb678ae20be1ed9c302a2b10000229038dbae4aed44d0d200018eb2fa40fa40fa40d401d0810101d700810101d700810101d700d430d0810101d700d200810101d7003010691068106709d15507e30ddb3c6ccc6ccc6c6c82a2b12003056155615561556155615561556155615561556155615561502012014240201201522020120161903f5b318fb513434800063acbe903e903e9035007420404075c020404075c020404075c0350c3420404075c0348020404075c00c041a441a0419c2745541f8c344474447c4474447044784470446c4474446c4468447044684464446c4464446044684460445c4464445c4458446044584454445c445444504458445202a2b1701541113111511131112111411121111111311111110111211100f11110f0e11100e551ddb3c57105f0f6ce118014adb3c810101530850334133f40c6fa19401d70030925b6de2206eb395206ef2d080923070e24f0201481a1f03f4abe9ed44d0d200018eb2fa40fa40fa40d401d0810101d700810101d700810101d700d430d0810101d700d200810101d7003010691068106709d15507e30d111d111f111d111c111e111c111b111d111b111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611142a2b1b01541113111511131112111411121111111311111110111211100f11110f0e11100e551ddb3c57105f0f6ce11c01f622111e1120111e111d111f111d111c1120111c111b111f111b111a1120111a1119111f11191118112011181117111f11171116112011161115111f11151114112011141113111f11131112112011121111111f11111110112011100f111f0f0e11200e0d111f0d0c11200c0b111f0b0a11200a09111f09081120081d02f607111f070611200605111f050411200403111f030211200201111f0111208101011120db3c0211200201111f01714133f40c6fa19401d70030925b6de26eb3111c111e111c111b111d111b111a111c111a1119111b11191118111a1118111711191117111611181116111511171115111411161114111311151113351e00641112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a10791068105710461035443003f4a8bced44d0d200018eb2fa40fa40fa40d401d0810101d700810101d700810101d700d430d0810101d700d200810101d7003010691068106709d15507e30d111d111e111d111c111d111c111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511142a2b20014c1113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6ce121002e8101012a02714133f40c6fa19401d70030925b6de26eb3038db72ffda89a1a400031d65f481f481f481a803a1020203ae01020203ae01020203ae01a861a1020203ae01a401020203ae006020d220d020ce13a2aa0fc61bb678ae20be1ed9c302a2b23000456190201202527038db654bda89a1a400031d65f481f481f481a803a1020203ae01020203ae01020203ae01a861a1020203ae01a401020203ae006020d220d020ce13a2aa0fc61bb678ae20be1ed9c302a2b2600045615038db7071da89a1a400031d65f481f481f481a803a1020203ae01020203ae01020203ae01a861a1020203ae01a401020203ae006020d220d020ce13a2aa0fc61bb678ae20be1ed9c302a2b280004561604f001d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018eb2fa40fa40fa40d401d0810101d700810101d700810101d700d430d0810101d700d200810101d7003010691068106709d15507e30d111f955f0f5f0f30e070561ed74920c21f9731111ed31f111fde218210f9d49f8bbae302212a2b2d6500de6d6d6d6d6d6d6d6d6d82202d79883d2000778103e88212540be40082112a05f2008218746a5288008220048c2739500082182e90edd00082180ba43b74002682089896808101f40b11150b0a11140a09111309081112080711110706111006105f104e103d4c1a080644b41917151302f4fa40fa40fa40d401d0d3fffa00fa00d31fd200d430d0db3c0cd31ff404f404d430d0f404f404f404d430d0f404f404f404f40430111b111e111b111b111d111b111b111c111b1114111511141113111411131112111311121111111211111110111111100f11100f10ef10de10cd10bc10ab571e111c111d111c6a2c009c111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550e01fa5b111dfa40d307d33fd31fd200fa00d33fd31fd3ffd430d0d3ffd33f3082009f552ac200932ac1089170e2f2f48200aa5f8d086000000000000000000000000000000000000000000000000000000000000000000452c0c705b3f2f48200ad52547ba9547ba9547ba953ba1128113211281127113111271126113011262e01fc1125112f11251124112e11241123112d11231122112c11221121112b11211120112a1120111f1129111f111e1132111e111d1131111d111c1130111c111b112f111b111a112e111a1119112d11191118112c11181117112b11171116112a11161115112911151114113211141113113111131112113011121111112f11112f02fc1110112e11100f112d0f0e112c0e0d112b0d0c11330c0b11340bdb3c01112a01f2f481108af823562301bef2f4812bdd288101015625714133f40c6fa19401d70030925b6de26ef2f40781010156237f71216e955b59f45a3098c801cf004133f442e28109e056265615bef2f48165f35627c200f2f4f82382015180a90430310054c819cb3f500acf1618cb0715cb1f13ca0001fa02cb3fcb1fcb3fc9f900c812cbff12cbffc9d0561cf91003fe1129185629db3c561fdb3c81010154590052304133f40c6fa19401d70030925b6de2206eb38e138140cbf82302206ef2d08081012ca012bef2f49130e2111d111e111d111c111e111c111b111e111b111a111e111a1119111e11191118111e11181117111e11171116111e11161115111e11151114111e11141113111e1113323334002c205619bc9e3a571757177020011118010911179130e2036ac86f00016f8c6d6f8c8b363643a8db3c01db3cdb3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da115b545b02fa1112111e11121111111e11111110111e11100f111e0f0e111e0e0d111e0d0c111e0c0b111e0b0a111e0a09111e09111e0807065540561f5621db3c111d111e111d111c111e111c111b111e111b111a111e111a1119111e11191118111e11181117111e11171116111e11161115111e11151114111e11141113111e111335360488c86f00016f8c6d6f8c8b56f6e63653a8db3c028e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d012db3c8b13a8db3c015b5b5b5004f81112111e11121111111e11111110111e11100f111e0f0e111e0e0d111e0d0c111e0c0b111e0b0a111e0a09111e09111e08070655405620db3c8e1d8200d391218101015621714133f40c6fa19401d70030925b6de26ef2f4dedb3c8200dec9561a22b9f2f4705622c00193305613e30e20c200f2e732111d111f111d60373839004a5615561aa76482238d7ea4c68000a90420c10b937f5719dec21393705718de561792ab00de00ae5622c002933056128e4c5622c003933056118e415622c004933056108e365622c00692302f8e2c5622c00792302e8e225622c0058e1b30812fae56288218174876e800bef2f45627810320a8812710a904dee2e2e2e2e201fc111c111e111c111b111f111b111a111e111a1119111f11191118111e11181117111f11171116111e11161115111f11151114111e11141113111f11131112111e11121111111f11111110111e11100f111f0f0e111e0e0d111f0d0c111e0c0b111f0b0a111e0a09111f0908111e0807111f0706111e0605111f0504111e043a02fc03111f0302111e0201111f01111e56225624db3c81010154580052304133f40c6fa19401d70030925b6de26eb38e1c81010154580052304133f40c6fa19401d70030925b6de2206ef2d0809170e2111d111f111d111c111e111c111b111f111b111a111e111a1119111f11191118111e11181117111f11171116111e11164f3b04de1115111f11151114111e11141113111f11131112111e11121111111f11111110111e11100f111f0f0e111e0e0d111f0d0c111e0c0b111f0b0a111e0a09111f0908111e0807111f0706111e0605111f0504111e0403111f0302111e0201111f01111e5624db3ce301562d562fdb3c20603c3f4102fc111d111e111d111c111d111c111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550e11205620db3c1120111e111d111c111b111a1119111811171116111511141113111211113d3e0058209130e120c0019730a74b8064a904e020c0029730a7328064a904e0c10a96a7198064a904e0a70a8064a9040008111055e004e220925b70e1c86f00016f8c6d6f8c8b5706169723a8db3c028e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d012db3c8b13a8db3c018e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d05b5b5b400144db3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da115b03f89130e30d111d111e111d111c111d111c111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550e1120562bdb3c111e1125111e111d1124111d111c1123111c111b1122111b42464a01f881010154570052304133f40c6fa19401d70030925b6de26eb38e1c81010154570052304133f40c6fa19401d70030925b6de2206ef2d0809170e2111e111f111e111d111f111d111c111f111c111b111f111b111a111f111a1119111f11191118111f11181117111f11171116111f11161115111f11151114111f11144302fc1113111f11131112111f11121111111f11111110111f11100f111f0f0e111f0e0d111f0d0c111f0c0b111f0b0a111f0a09111f0908111f0807111f0706111f0605111f0504111f0403111f0302111f0201111f0111225622db3c8101011123a4562310480311240302112102216e955b59f45a3098c801cf004133f442e244450040209130e120c0019730a7508064a904e0c00296a73c8064a904e0a7288064a90400e0111d1120111d111c111d111c111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f10ef10de10cd10bc10ab109a10891078106705061034413001f498810096a88064a904de111d111e111d111c111e111c111b111e111b111a111e111a1119111e11191118111e11181117111e11171116111e11161115111e11151114111e11141113111e11131112111e11121111111e11111110111e11100f111e0f0e111e0e0d111e0d0c111e0c0b111e0b0a111e0a09111e094702fe111e0807065540db3c01111f01a8812710a904111d111e111d111c111d111c111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f10ef10de10cd10bc10ab109a10891078106710564849004c561393812710e153995615bb9430812710e05614812710a801a904208103e8b994308103e8de000c10451034413001fe111a1121111a1119112011191118111f11181117111e11171116111d11161115111c11151114111b11141113111a11131112111911121111111811111110111711100f11160f0e11150e0d11140d0c11130c0b11120b0a11110a09111009108f107e556622517207562f0706112f0605112e0504112d0403112c0302112b024b02fe01112a0111295631db3c111d111e111d111c111e111c111b111e111b111a111e111a1119111e11191118111e11181117111e11171116111e11161115111e11151114111e11141113111e11131112111e11121111111e11111110111e11100f111e0f0e111e0e0d111e0d0c111e0c0b111e0b0a111e0a09111e09111e0807064c5201f25f0981010154580052304133f40c6fa19401d70030925b6de2206eb395206ef2d080923070e220c2649803a76e8064a90403de81010154580052404133f40c6fa19401d70030925b6de2206eb38e15f82301206ef2d080a1c10a9803a7328064a90403de9130e2111e1121111e111d1120111d111c111f111c4d01f8111b1121111b111a1120111a1119111f11191118112111181117112011171116111f11161115112111151114112011141113111f11131112112111121111112011111110111f11100f11210f0e11200e0d111f0d0c11210c0b11200b0a111f0a091121090811200807111f07061121060511200504111f04031121034e02f80211200201111f01561f011121db3c810101530850334133f40c6fa19401d70030925b6de26e8e248101011120a45620103602112102562059216e955b59f45a3098c801cf004133f442e20392571fe2810101f823211045102302112002216e955b59f45a3098c801cf004133f442e2111b111e111b111a111d111a4f510486c86f00016f8c6d6f8c8b4636e743a8db3c028e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d012db3c8b13a8db3c015b5b5b500248db3cdb3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da11545b00c01119111c11191118111b11181117111a11171116111911161115111811151114111711141113111611131112111511121111111411111110111311100f11120f0e11110e0d11100d10cf10be10ad109c108b107a10691058104710364514400304fc554056245629db3c238101012259f40c6fa193fa003092306de26eb38e17238101012259f40c6fa193fa003092306de2206ef2d0809170e28218e8d4a51000215622a021bc99572111205620a111209130e25620c10093705721de01112801562901112bdb3c5628c200e300561fc10093705720de11215619a1561f21bc53595c5d0434c86f00016f8c6d6f8c8b46469643a8db3c02db3c12db3c8b13a85b545b580242fa44c88b111801ce028307a0a9380758cb07cbffc9d020db3c01c8cecec9d0db3c55560094c8ce8b20000801cec9d0709421c701b38e2a01d30783069320c2008e1b03aa005323b091a4de03ab0023840fbc9903840fb0811021b203dee8303101e8318307a90c01c8cb07cb07c9d001a08d10105090d1115191d2125292d3135393d4145494d5155595d61656985898d9195999da1a5a9adb1b5b9bdc1c5c9cdd1d5d9dde1e5e8c0c4c8ccd0d4d8dce0e4b57e0c89522d749c2178ae86c21c9d057009a02d307d307d30703aa0f02aa0712b101b120ab11803fb0aa02523078d7245004ce23ab0b803fb0aa02523078d72401ce23ab05803fb0aa02523078d72401ce03803fb0aa02522078d7245003ce029adb3c018e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d0db3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da115b5b04d6c86f00016f8c6d6f8c8b464636c3a8db3c038e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d013db3c8b13a8db3c018e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d05b5b5b5a03a4db3c8b13a8db3c018e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d0db3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da115b5b5b00b620d74a21d7499720c20022c200b18e48036f22807f22cf31ab02a105ab025155b60820c2009a20aa0215d71803ce4014de596f025341a1c20099c8016f025044a1aa028e123133c20099d430d020d74a21d749927020e2e2e85f030094228101012259f40c6fa193fa003092306de26eb38e17228101012259f40c6fa193fa003092306de2206ef2d0809170e28219d1a94a2000215622a021bc99572101112001a1111f915be201fe92571f9130e2561e820186a0b994561ec2009170e296820186a0571fde82008db8561a5620bef2f41119561ea11118561ea009a4810101f82321104a102302112502216e955b59f45a3098c801cf004133f442e2810101111fa4561f10470311200302112602216e955b59f45a3098c801cf004133f442e28101011126561c5e01fea003111d030211260201112401206e953059f45a3098c801fa024133f442e21122c2008e5021810101561c59f40c6fa193fa003092306de26eb38e1821810101561c59f40c6fa193fa003092306de2206ef2d0809170e281010101561aa01201111c01206e953059f45a3098c801fa024133f442e292571ae21116111d11165f03e41115111c11151114111b11141113111a1113111111191111021118021110111711100f11160f0e11150e0d11140d0c11130c0b11120b0a11110a09111009108f107e106d105c104b103a10691807111e0706111f0610250411210402112002011121561edb3c925720e30d111d5620561fc8606162002220c003917f9320c004e292307f92c006e200388101015811217f71216e955b59f45a3098c801cf004133f442e2111f02fc5520821081a355435004cb1f12cb07ce01fa02c9c88258c000000000000000000000000101cb67ccc970fb0071880311210302111f025a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb001119111d11191118111c11181117111b11176364001e00000000746f6f6e5f72657761726401801116111a11161115111911151114111811141113111711131112111611121111111511111110111411100f11130f0e11120e0d11110d0c11100c553b4330db3c77044a8210fa1d125cbae3022182102bd0b755bae302218210dded29fcbae30221821010401f27ba66696b6c02f85b111dfa40fa0030811216f842561ec705f2f482008db8561a22bef2f411195619a1728802111b025a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00111b111d111b111a111c111a1119111b11191118111a111811171119111767680026000000006d696e745f617574686f72697a656401701116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df551cdb3c7702e85b6c993939391111db3c3c8200d906f842561cc705f2f4111b111d111b111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611140a11150a0911140908111308071112070611110605111005104f103e4d1b50ca1059104810374650144330db3c6a770060fa00d31fd31ffa00fa00fa00fa00fa00fa00d30fd401d0fa00d30f30102c102b102a102910281027102610251024102301fc5b111dfa00308200cba1f842561ec705f2f401111801a0111b111d111b111a111c111a1119111b11191118111a111811191116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a10791068105710461035443012db3c7704fc8ee65b571b111cfa40308200cba1f842561dc705f2f4111b111d111b111c1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df551cdb3ce0218210b788aa64bae30221821059ac8ed6bae30221776d6e7101f45b571a111cfa40308200cba1f842561dc705f2f4111b111d111b111a111c111a111b1118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a107910681057104610354430db3c7702fa5b5719111cd3ff308200cba1f842561dc705f2f48120d621c300f2f488c88258c000000000000000000000000101cb67ccc970fb00111b111d111b111a111c111a1119111b1119111a1117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f6f700028000000004f7261636c654b6579526f746174656401140e11100e10df551cdb3c7704fa821079d47611bae302218210946a98b6bae302571fc000111ec12101111e01b08ed6111b111d111b111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df551cdb3ce05f0f5f0f7275777a02f45b111dfa00fa40308200cba1f842561fc705f2f482008db8561a23bef2f4111921a1728803111b0302111b025a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00111b111d111b111a111c111a1119111b11191118111a11187374001c000000007769746864726177616c017c1117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df551cdb3c7701fc5b111dd33f30c8018210aff90f5758cb1fcb3fc9111c111e111c111b111d111b111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a10791068105710467601541035443012f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00db3c7702f6c87f01ca00111e111d111c111b111a111911181117111611151114111311121111111055e001111d01111ece01111b01ce01111901ce1117c8cbff011116fa02011114fa0201111201cb1f01111001ca00c855b3db3c13cb1ff40012f40002c8f40013f40013f40004c8f40015f40015f40015f400cd12cdcdcdc97879005050cbfa0219cb1f17cb1f5005fa025003fa0201fa0201fa0201fa0201fa02cb0fc85003fa02cb0fcd0004ed540006f2c082edb680e9');
     const builder = beginCell();
     builder.storeUint(0, 1);
-    initToonVault_init_args({ $$type: 'ToonVault_init_args', owner, registry, governance, oraclePublicKey, totalReserve, dailyEmitted, lastResetDay, halved, emissionCap, minWalletAgeDays, targetDailyActivity, dailyClaimCount })(builder);
+    initToonVault_init_args({ $$type: 'ToonVault_init_args', owner, registry, governance, oraclePublicKey, totalReserve, dailyEmitted, lastResetDay, halved, dailyClaimCount })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };
 }
@@ -1607,20 +1637,16 @@ export const ToonVault_errors = {
     8406: { message: "ToonVault: zero oracle key" },
     11229: { message: "ToonVault: claimId already used" },
     12206: { message: "ToonVault: tip too small" },
-    14150: { message: "ToonVault: age > 1-year ceiling" },
     16587: { message: "ToonVault: claim cooldown active" },
     26099: { message: "ToonVault: no Telegram identity" },
     36280: { message: "ToonVault: insufficient reserve" },
     40789: { message: "ToonVault: invalid rewardId" },
     43615: { message: "ToonVault: invalid wallet address" },
     44370: { message: "ToonVault: invalid oracle signature" },
-    47601: { message: "ToonVault: cap out of valid range" },
-    50533: { message: "ToonVault: only governance can set target activity" },
     52129: { message: "ToonVault: not owner" },
-    53827: { message: "ToonVault: only governance can update emission cap" },
     54161: { message: "ToonVault: one-time reward already claimed" },
+    55558: { message: "ToonVault: only registry can update config" },
     57033: { message: "ToonVault: daily emission cap reached" },
-    58627: { message: "ToonVault: only governance can update min wallet age" },
 } as const
 
 export const ToonVault_errors_backward = {
@@ -1667,20 +1693,16 @@ export const ToonVault_errors_backward = {
     "ToonVault: zero oracle key": 8406,
     "ToonVault: claimId already used": 11229,
     "ToonVault: tip too small": 12206,
-    "ToonVault: age > 1-year ceiling": 14150,
     "ToonVault: claim cooldown active": 16587,
     "ToonVault: no Telegram identity": 26099,
     "ToonVault: insufficient reserve": 36280,
     "ToonVault: invalid rewardId": 40789,
     "ToonVault: invalid wallet address": 43615,
     "ToonVault: invalid oracle signature": 44370,
-    "ToonVault: cap out of valid range": 47601,
-    "ToonVault: only governance can set target activity": 50533,
     "ToonVault: not owner": 52129,
-    "ToonVault: only governance can update emission cap": 53827,
     "ToonVault: one-time reward already claimed": 54161,
+    "ToonVault: only registry can update config": 55558,
     "ToonVault: daily emission cap reached": 57033,
-    "ToonVault: only governance can update min wallet age": 58627,
 } as const
 
 const ToonVault_types: ABIType[] = [
@@ -1697,30 +1719,27 @@ const ToonVault_types: ABIType[] = [
     {"name":"Deploy","header":2490013878,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"DeployOk","header":2952335191,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"FactoryDeploy","header":1829761339,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"cashback","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"Configuration","header":null,"fields":[{"name":"emissionCap","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"minWalletAgeDays","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"targetDailyActivity","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"rewardBaseActiveListener","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseGrowthAgent","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseArtistLaunch","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseTrendsetter","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseEarlyBeliever","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseDropInvestor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"decayFactor","type":{"kind":"simple","type":"uint","optional":false,"format":16}},{"name":"minThreshold","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"antiFarmingCoeff","type":{"kind":"simple","type":"uint","optional":false,"format":16}}]},
+    {"name":"SetConfig","header":735098709,"fields":[{"name":"config","type":{"kind":"simple","type":"Configuration","optional":false}}]},
     {"name":"ClaimReward","header":4191461259,"fields":[{"name":"walletAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"rewardId","type":{"kind":"simple","type":"uint","optional":false,"format":8}},{"name":"telegramId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"walletAgeDays","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"hasVibeStreak","type":{"kind":"simple","type":"bool","optional":false}},{"name":"tipAmount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"claimId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"expiry","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"sigHigh","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"sigLow","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"referrerId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"MintAuthorized","header":4196209244,"fields":[{"name":"recipient","type":{"kind":"simple","type":"address","optional":false}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"authorizedAt","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
     {"name":"RewardClaimed","header":2174965059,"fields":[{"name":"rewardId","type":{"kind":"simple","type":"uint","optional":false,"format":8}},{"name":"recipient","type":{"kind":"simple","type":"address","optional":false}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
-    {"name":"UpdateEmissionCap","header":1272424197,"fields":[{"name":"newCap","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
-    {"name":"UpdateMinWalletAge","header":3252420305,"fields":[{"name":"newAgeDays","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
-    {"name":"UpdateTargetActivity","header":1210882180,"fields":[{"name":"newTarget","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
     {"name":"UpdateReserve","header":3723307516,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
     {"name":"UpdateRegistry","header":272637735,"fields":[{"name":"newRegistry","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"SetGovernance","header":3079187044,"fields":[{"name":"newGovernance","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"SetOracleKey","header":1504480982,"fields":[{"name":"newPublicKey","type":{"kind":"simple","type":"uint","optional":false,"format":256}}]},
     {"name":"TreasuryWithdraw","header":2043966993,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"recipient","type":{"kind":"simple","type":"address","optional":false}}]},
-    {"name":"ToonVault$Data","header":null,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"governance","type":{"kind":"simple","type":"address","optional":false}},{"name":"oraclePublicKey","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"totalReserve","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"dailyEmitted","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"lastResetDay","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"halved","type":{"kind":"simple","type":"bool","optional":false}},{"name":"emissionCap","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"minWalletAgeDays","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"targetDailyActivity","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"dailyClaimCount","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"usedClaimIds","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"lastClaimTimestamp","type":{"kind":"dict","key":"int","value":"int"}},{"name":"claimCounts","type":{"kind":"dict","key":"int","value":"int"}},{"name":"pairingCounts","type":{"kind":"dict","key":"int","value":"int"}},{"name":"lifetimeClaimed","type":{"kind":"dict","key":"int","value":"bool"}}]},
+    {"name":"ToonVault$Data","header":null,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"governance","type":{"kind":"simple","type":"address","optional":false}},{"name":"oraclePublicKey","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"totalReserve","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"dailyEmitted","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"lastResetDay","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"halved","type":{"kind":"simple","type":"bool","optional":false}},{"name":"config","type":{"kind":"simple","type":"Configuration","optional":false}},{"name":"dailyClaimCount","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"usedClaimIds","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"lastClaimTimestamp","type":{"kind":"dict","key":"int","value":"int"}},{"name":"claimCounts","type":{"kind":"dict","key":"int","value":"int"}},{"name":"pairingCounts","type":{"kind":"dict","key":"int","value":"int"}},{"name":"participantEntropy","type":{"kind":"dict","key":"int","value":"int"}},{"name":"lastRewardTimestamp","type":{"kind":"dict","key":"int","value":"int"}},{"name":"dailyIdentityRewards","type":{"kind":"dict","key":"int","value":"uint","valueFormat":"coins"}},{"name":"dailyClusterRewards","type":{"kind":"dict","key":"int","value":"uint","valueFormat":"coins"}},{"name":"lifetimeClaimed","type":{"kind":"dict","key":"int","value":"bool"}}]},
 ]
 
 const ToonVault_opcodes = {
     "Deploy": 2490013878,
     "DeployOk": 2952335191,
     "FactoryDeploy": 1829761339,
+    "SetConfig": 735098709,
     "ClaimReward": 4191461259,
     "MintAuthorized": 4196209244,
     "RewardClaimed": 2174965059,
-    "UpdateEmissionCap": 1272424197,
-    "UpdateMinWalletAge": 3252420305,
-    "UpdateTargetActivity": 1210882180,
     "UpdateReserve": 3723307516,
     "UpdateRegistry": 272637735,
     "SetGovernance": 3079187044,
@@ -1733,6 +1752,7 @@ const ToonVault_getters: ABIGetter[] = [
     {"name":"dailyEmitted","methodId":70394,"arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"dailyClaimCount","methodId":75448,"arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"isHalved","methodId":129080,"arguments":[],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"getConfig","methodId":93770,"arguments":[],"returnType":{"kind":"simple","type":"Configuration","optional":false}},
     {"name":"currentEmissionCap","methodId":119461,"arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"minWalletAgeDays","methodId":69813,"arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"effectiveDailyCap","methodId":69207,"arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
@@ -1747,6 +1767,7 @@ export const ToonVault_getterMapping: { [key: string]: string } = {
     'dailyEmitted': 'getDailyEmitted',
     'dailyClaimCount': 'getDailyClaimCount',
     'isHalved': 'getIsHalved',
+    'getConfig': 'getGetConfig',
     'currentEmissionCap': 'getCurrentEmissionCap',
     'minWalletAgeDays': 'getMinWalletAgeDays',
     'effectiveDailyCap': 'getEffectiveDailyCap',
@@ -1760,9 +1781,7 @@ const ToonVault_receivers: ABIReceiver[] = [
     {"receiver":"internal","message":{"kind":"empty"}},
     {"receiver":"internal","message":{"kind":"typed","type":"ClaimReward"}},
     {"receiver":"internal","message":{"kind":"typed","type":"MintAuthorized"}},
-    {"receiver":"internal","message":{"kind":"typed","type":"UpdateEmissionCap"}},
-    {"receiver":"internal","message":{"kind":"typed","type":"UpdateMinWalletAge"}},
-    {"receiver":"internal","message":{"kind":"typed","type":"UpdateTargetActivity"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"SetConfig"}},
     {"receiver":"internal","message":{"kind":"typed","type":"UpdateReserve"}},
     {"receiver":"internal","message":{"kind":"typed","type":"UpdateRegistry"}},
     {"receiver":"internal","message":{"kind":"typed","type":"SetGovernance"}},
@@ -1800,12 +1819,12 @@ export class ToonVault implements Contract {
     public static readonly errors = ToonVault_errors_backward;
     public static readonly opcodes = ToonVault_opcodes;
     
-    static async init(owner: Address, registry: Address, governance: Address, oraclePublicKey: bigint, totalReserve: bigint, dailyEmitted: bigint, lastResetDay: bigint, halved: boolean, emissionCap: bigint, minWalletAgeDays: bigint, targetDailyActivity: bigint, dailyClaimCount: bigint) {
-        return await ToonVault_init(owner, registry, governance, oraclePublicKey, totalReserve, dailyEmitted, lastResetDay, halved, emissionCap, minWalletAgeDays, targetDailyActivity, dailyClaimCount);
+    static async init(owner: Address, registry: Address, governance: Address, oraclePublicKey: bigint, totalReserve: bigint, dailyEmitted: bigint, lastResetDay: bigint, halved: boolean, dailyClaimCount: bigint) {
+        return await ToonVault_init(owner, registry, governance, oraclePublicKey, totalReserve, dailyEmitted, lastResetDay, halved, dailyClaimCount);
     }
     
-    static async fromInit(owner: Address, registry: Address, governance: Address, oraclePublicKey: bigint, totalReserve: bigint, dailyEmitted: bigint, lastResetDay: bigint, halved: boolean, emissionCap: bigint, minWalletAgeDays: bigint, targetDailyActivity: bigint, dailyClaimCount: bigint) {
-        const __gen_init = await ToonVault_init(owner, registry, governance, oraclePublicKey, totalReserve, dailyEmitted, lastResetDay, halved, emissionCap, minWalletAgeDays, targetDailyActivity, dailyClaimCount);
+    static async fromInit(owner: Address, registry: Address, governance: Address, oraclePublicKey: bigint, totalReserve: bigint, dailyEmitted: bigint, lastResetDay: bigint, halved: boolean, dailyClaimCount: bigint) {
+        const __gen_init = await ToonVault_init(owner, registry, governance, oraclePublicKey, totalReserve, dailyEmitted, lastResetDay, halved, dailyClaimCount);
         const address = contractAddress(0, __gen_init);
         return new ToonVault(address, __gen_init);
     }
@@ -1828,7 +1847,7 @@ export class ToonVault implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: null | ClaimReward | MintAuthorized | UpdateEmissionCap | UpdateMinWalletAge | UpdateTargetActivity | UpdateReserve | UpdateRegistry | SetGovernance | SetOracleKey | TreasuryWithdraw | Deploy) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: null | ClaimReward | MintAuthorized | SetConfig | UpdateReserve | UpdateRegistry | SetGovernance | SetOracleKey | TreasuryWithdraw | Deploy) {
         
         let body: Cell | null = null;
         if (message === null) {
@@ -1840,14 +1859,8 @@ export class ToonVault implements Contract {
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'MintAuthorized') {
             body = beginCell().store(storeMintAuthorized(message)).endCell();
         }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'UpdateEmissionCap') {
-            body = beginCell().store(storeUpdateEmissionCap(message)).endCell();
-        }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'UpdateMinWalletAge') {
-            body = beginCell().store(storeUpdateMinWalletAge(message)).endCell();
-        }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'UpdateTargetActivity') {
-            body = beginCell().store(storeUpdateTargetActivity(message)).endCell();
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetConfig') {
+            body = beginCell().store(storeSetConfig(message)).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'UpdateReserve') {
             body = beginCell().store(storeUpdateReserve(message)).endCell();
@@ -1901,6 +1914,13 @@ export class ToonVault implements Contract {
         return result;
     }
     
+    async getGetConfig(provider: ContractProvider) {
+        const builder = new TupleBuilder();
+        const source = (await provider.get('getConfig', builder.build())).stack;
+        const result = loadGetterTupleConfiguration(source);
+        return result;
+    }
+
     async getCurrentEmissionCap(provider: ContractProvider) {
         const builder = new TupleBuilder();
         const source = (await provider.get('currentEmissionCap', builder.build())).stack;

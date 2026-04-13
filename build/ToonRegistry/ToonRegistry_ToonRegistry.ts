@@ -915,6 +915,306 @@ export function dictValueParserAuthorizeMint(): DictionaryValue<AuthorizeMint> {
     }
 }
 
+export type StageArtistRegistration = {
+    $$type: 'StageArtistRegistration';
+    artistContract: Address;
+    wallet: Address;
+}
+
+export function storeStageArtistRegistration(src: StageArtistRegistration) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(3427790327, 32);
+        b_0.storeAddress(src.artistContract);
+        b_0.storeAddress(src.wallet);
+    };
+}
+
+export function loadStageArtistRegistration(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 3427790327) { throw Error('Invalid prefix'); }
+    const _artistContract = sc_0.loadAddress();
+    const _wallet = sc_0.loadAddress();
+    return { $$type: 'StageArtistRegistration' as const, artistContract: _artistContract, wallet: _wallet };
+}
+
+export function loadTupleStageArtistRegistration(source: TupleReader) {
+    const _artistContract = source.readAddress();
+    const _wallet = source.readAddress();
+    return { $$type: 'StageArtistRegistration' as const, artistContract: _artistContract, wallet: _wallet };
+}
+
+export function loadGetterTupleStageArtistRegistration(source: TupleReader) {
+    const _artistContract = source.readAddress();
+    const _wallet = source.readAddress();
+    return { $$type: 'StageArtistRegistration' as const, artistContract: _artistContract, wallet: _wallet };
+}
+
+export function storeTupleStageArtistRegistration(source: StageArtistRegistration) {
+    const builder = new TupleBuilder();
+    builder.writeAddress(source.artistContract);
+    builder.writeAddress(source.wallet);
+    return builder.build();
+}
+
+export function dictValueParserStageArtistRegistration(): DictionaryValue<StageArtistRegistration> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeStageArtistRegistration(src)).endCell());
+        },
+        parse: (src) => {
+            return loadStageArtistRegistration(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type ConfirmArtistRegistration = {
+    $$type: 'ConfirmArtistRegistration';
+    wallet: Address;
+}
+
+export function storeConfirmArtistRegistration(src: ConfirmArtistRegistration) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(3360845383, 32);
+        b_0.storeAddress(src.wallet);
+    };
+}
+
+export function loadConfirmArtistRegistration(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 3360845383) { throw Error('Invalid prefix'); }
+    const _wallet = sc_0.loadAddress();
+    return { $$type: 'ConfirmArtistRegistration' as const, wallet: _wallet };
+}
+
+export function loadTupleConfirmArtistRegistration(source: TupleReader) {
+    const _wallet = source.readAddress();
+    return { $$type: 'ConfirmArtistRegistration' as const, wallet: _wallet };
+}
+
+export function loadGetterTupleConfirmArtistRegistration(source: TupleReader) {
+    const _wallet = source.readAddress();
+    return { $$type: 'ConfirmArtistRegistration' as const, wallet: _wallet };
+}
+
+export function storeTupleConfirmArtistRegistration(source: ConfirmArtistRegistration) {
+    const builder = new TupleBuilder();
+    builder.writeAddress(source.wallet);
+    return builder.build();
+}
+
+export function dictValueParserConfirmArtistRegistration(): DictionaryValue<ConfirmArtistRegistration> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeConfirmArtistRegistration(src)).endCell());
+        },
+        parse: (src) => {
+            return loadConfirmArtistRegistration(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type RollbackArtistRegistration = {
+    $$type: 'RollbackArtistRegistration';
+    wallet: Address;
+}
+
+export function storeRollbackArtistRegistration(src: RollbackArtistRegistration) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(3852039363, 32);
+        b_0.storeAddress(src.wallet);
+    };
+}
+
+export function loadRollbackArtistRegistration(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 3852039363) { throw Error('Invalid prefix'); }
+    const _wallet = sc_0.loadAddress();
+    return { $$type: 'RollbackArtistRegistration' as const, wallet: _wallet };
+}
+
+export function loadTupleRollbackArtistRegistration(source: TupleReader) {
+    const _wallet = source.readAddress();
+    return { $$type: 'RollbackArtistRegistration' as const, wallet: _wallet };
+}
+
+export function loadGetterTupleRollbackArtistRegistration(source: TupleReader) {
+    const _wallet = source.readAddress();
+    return { $$type: 'RollbackArtistRegistration' as const, wallet: _wallet };
+}
+
+export function storeTupleRollbackArtistRegistration(source: RollbackArtistRegistration) {
+    const builder = new TupleBuilder();
+    builder.writeAddress(source.wallet);
+    return builder.build();
+}
+
+export function dictValueParserRollbackArtistRegistration(): DictionaryValue<RollbackArtistRegistration> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeRollbackArtistRegistration(src)).endCell());
+        },
+        parse: (src) => {
+            return loadRollbackArtistRegistration(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type StageTrackRegistration = {
+    $$type: 'StageTrackRegistration';
+    trackId: bigint;
+    fingerprint: bigint;
+    trackContract: Address;
+}
+
+export function storeStageTrackRegistration(src: StageTrackRegistration) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(3230863597, 32);
+        b_0.storeUint(src.trackId, 256);
+        b_0.storeUint(src.fingerprint, 256);
+        b_0.storeAddress(src.trackContract);
+    };
+}
+
+export function loadStageTrackRegistration(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 3230863597) { throw Error('Invalid prefix'); }
+    const _trackId = sc_0.loadUintBig(256);
+    const _fingerprint = sc_0.loadUintBig(256);
+    const _trackContract = sc_0.loadAddress();
+    return { $$type: 'StageTrackRegistration' as const, trackId: _trackId, fingerprint: _fingerprint, trackContract: _trackContract };
+}
+
+export function loadTupleStageTrackRegistration(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    const _fingerprint = source.readBigNumber();
+    const _trackContract = source.readAddress();
+    return { $$type: 'StageTrackRegistration' as const, trackId: _trackId, fingerprint: _fingerprint, trackContract: _trackContract };
+}
+
+export function loadGetterTupleStageTrackRegistration(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    const _fingerprint = source.readBigNumber();
+    const _trackContract = source.readAddress();
+    return { $$type: 'StageTrackRegistration' as const, trackId: _trackId, fingerprint: _fingerprint, trackContract: _trackContract };
+}
+
+export function storeTupleStageTrackRegistration(source: StageTrackRegistration) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.trackId);
+    builder.writeNumber(source.fingerprint);
+    builder.writeAddress(source.trackContract);
+    return builder.build();
+}
+
+export function dictValueParserStageTrackRegistration(): DictionaryValue<StageTrackRegistration> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeStageTrackRegistration(src)).endCell());
+        },
+        parse: (src) => {
+            return loadStageTrackRegistration(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type ConfirmTrackRegistration = {
+    $$type: 'ConfirmTrackRegistration';
+    trackId: bigint;
+}
+
+export function storeConfirmTrackRegistration(src: ConfirmTrackRegistration) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(2759486958, 32);
+        b_0.storeUint(src.trackId, 256);
+    };
+}
+
+export function loadConfirmTrackRegistration(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2759486958) { throw Error('Invalid prefix'); }
+    const _trackId = sc_0.loadUintBig(256);
+    return { $$type: 'ConfirmTrackRegistration' as const, trackId: _trackId };
+}
+
+export function loadTupleConfirmTrackRegistration(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    return { $$type: 'ConfirmTrackRegistration' as const, trackId: _trackId };
+}
+
+export function loadGetterTupleConfirmTrackRegistration(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    return { $$type: 'ConfirmTrackRegistration' as const, trackId: _trackId };
+}
+
+export function storeTupleConfirmTrackRegistration(source: ConfirmTrackRegistration) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.trackId);
+    return builder.build();
+}
+
+export function dictValueParserConfirmTrackRegistration(): DictionaryValue<ConfirmTrackRegistration> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeConfirmTrackRegistration(src)).endCell());
+        },
+        parse: (src) => {
+            return loadConfirmTrackRegistration(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type RollbackTrackRegistration = {
+    $$type: 'RollbackTrackRegistration';
+    trackId: bigint;
+}
+
+export function storeRollbackTrackRegistration(src: RollbackTrackRegistration) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(1932918785, 32);
+        b_0.storeUint(src.trackId, 256);
+    };
+}
+
+export function loadRollbackTrackRegistration(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1932918785) { throw Error('Invalid prefix'); }
+    const _trackId = sc_0.loadUintBig(256);
+    return { $$type: 'RollbackTrackRegistration' as const, trackId: _trackId };
+}
+
+export function loadTupleRollbackTrackRegistration(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    return { $$type: 'RollbackTrackRegistration' as const, trackId: _trackId };
+}
+
+export function loadGetterTupleRollbackTrackRegistration(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    return { $$type: 'RollbackTrackRegistration' as const, trackId: _trackId };
+}
+
+export function storeTupleRollbackTrackRegistration(source: RollbackTrackRegistration) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.trackId);
+    return builder.build();
+}
+
+export function dictValueParserRollbackTrackRegistration(): DictionaryValue<RollbackTrackRegistration> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeRollbackTrackRegistration(src)).endCell());
+        },
+        parse: (src) => {
+            return loadRollbackTrackRegistration(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type UpdateMintAuthority = {
     $$type: 'UpdateMintAuthority';
     newAuthority: Address;
@@ -1058,6 +1358,493 @@ export function dictValueParserRequestMint(): DictionaryValue<RequestMint> {
         },
         parse: (src) => {
             return loadRequestMint(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type SetConfig = {
+    $$type: 'SetConfig';
+    config: Configuration;
+}
+
+export function storeSetConfig(src: SetConfig) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(735098709, 32);
+        b_0.store(storeConfiguration(src.config));
+    };
+}
+
+export function loadSetConfig(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 735098709) { throw Error('Invalid prefix'); }
+    const _config = loadConfiguration(sc_0);
+    return { $$type: 'SetConfig' as const, config: _config };
+}
+
+export function loadTupleSetConfig(source: TupleReader) {
+    const _config = loadTupleConfiguration(source);
+    return { $$type: 'SetConfig' as const, config: _config };
+}
+
+export function loadGetterTupleSetConfig(source: TupleReader) {
+    const _config = loadGetterTupleConfiguration(source);
+    return { $$type: 'SetConfig' as const, config: _config };
+}
+
+export function storeTupleSetConfig(source: SetConfig) {
+    const builder = new TupleBuilder();
+    builder.writeTuple(storeTupleConfiguration(source.config));
+    return builder.build();
+}
+
+export function dictValueParserSetConfig(): DictionaryValue<SetConfig> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeSetConfig(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetConfig(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type SetVersion = {
+    $$type: 'SetVersion';
+    newVersion: bigint;
+}
+
+export function storeSetVersion(src: SetVersion) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(60132687, 32);
+        b_0.storeUint(src.newVersion, 32);
+    };
+}
+
+export function loadSetVersion(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 60132687) { throw Error('Invalid prefix'); }
+    const _newVersion = sc_0.loadUintBig(32);
+    return { $$type: 'SetVersion' as const, newVersion: _newVersion };
+}
+
+export function loadTupleSetVersion(source: TupleReader) {
+    const _newVersion = source.readBigNumber();
+    return { $$type: 'SetVersion' as const, newVersion: _newVersion };
+}
+
+export function loadGetterTupleSetVersion(source: TupleReader) {
+    const _newVersion = source.readBigNumber();
+    return { $$type: 'SetVersion' as const, newVersion: _newVersion };
+}
+
+export function storeTupleSetVersion(source: SetVersion) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.newVersion);
+    return builder.build();
+}
+
+export function dictValueParserSetVersion(): DictionaryValue<SetVersion> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeSetVersion(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetVersion(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type SetTrackRewardEligibility = {
+    $$type: 'SetTrackRewardEligibility';
+    trackId: bigint;
+    eligible: boolean;
+}
+
+export function storeSetTrackRewardEligibility(src: SetTrackRewardEligibility) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(153587645, 32);
+        b_0.storeUint(src.trackId, 256);
+        b_0.storeBit(src.eligible);
+    };
+}
+
+export function loadSetTrackRewardEligibility(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 153587645) { throw Error('Invalid prefix'); }
+    const _trackId = sc_0.loadUintBig(256);
+    const _eligible = sc_0.loadBit();
+    return { $$type: 'SetTrackRewardEligibility' as const, trackId: _trackId, eligible: _eligible };
+}
+
+export function loadTupleSetTrackRewardEligibility(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    const _eligible = source.readBoolean();
+    return { $$type: 'SetTrackRewardEligibility' as const, trackId: _trackId, eligible: _eligible };
+}
+
+export function loadGetterTupleSetTrackRewardEligibility(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    const _eligible = source.readBoolean();
+    return { $$type: 'SetTrackRewardEligibility' as const, trackId: _trackId, eligible: _eligible };
+}
+
+export function storeTupleSetTrackRewardEligibility(source: SetTrackRewardEligibility) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.trackId);
+    builder.writeBoolean(source.eligible);
+    return builder.build();
+}
+
+export function dictValueParserSetTrackRewardEligibility(): DictionaryValue<SetTrackRewardEligibility> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeSetTrackRewardEligibility(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetTrackRewardEligibility(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type SetArtistRewardEligibility = {
+    $$type: 'SetArtistRewardEligibility';
+    artist: Address;
+    eligible: boolean;
+}
+
+export function storeSetArtistRewardEligibility(src: SetArtistRewardEligibility) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(2631390764, 32);
+        b_0.storeAddress(src.artist);
+        b_0.storeBit(src.eligible);
+    };
+}
+
+export function loadSetArtistRewardEligibility(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2631390764) { throw Error('Invalid prefix'); }
+    const _artist = sc_0.loadAddress();
+    const _eligible = sc_0.loadBit();
+    return { $$type: 'SetArtistRewardEligibility' as const, artist: _artist, eligible: _eligible };
+}
+
+export function loadTupleSetArtistRewardEligibility(source: TupleReader) {
+    const _artist = source.readAddress();
+    const _eligible = source.readBoolean();
+    return { $$type: 'SetArtistRewardEligibility' as const, artist: _artist, eligible: _eligible };
+}
+
+export function loadGetterTupleSetArtistRewardEligibility(source: TupleReader) {
+    const _artist = source.readAddress();
+    const _eligible = source.readBoolean();
+    return { $$type: 'SetArtistRewardEligibility' as const, artist: _artist, eligible: _eligible };
+}
+
+export function storeTupleSetArtistRewardEligibility(source: SetArtistRewardEligibility) {
+    const builder = new TupleBuilder();
+    builder.writeAddress(source.artist);
+    builder.writeBoolean(source.eligible);
+    return builder.build();
+}
+
+export function dictValueParserSetArtistRewardEligibility(): DictionaryValue<SetArtistRewardEligibility> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeSetArtistRewardEligibility(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetArtistRewardEligibility(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type UpdateConfigParam = {
+    $$type: 'UpdateConfigParam';
+    parameter: string;
+    newValue: bigint;
+}
+
+export function storeUpdateConfigParam(src: UpdateConfigParam) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(243571285, 32);
+        b_0.storeStringRefTail(src.parameter);
+        b_0.storeUint(src.newValue, 64);
+    };
+}
+
+export function loadUpdateConfigParam(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 243571285) { throw Error('Invalid prefix'); }
+    const _parameter = sc_0.loadStringRefTail();
+    const _newValue = sc_0.loadUintBig(64);
+    return { $$type: 'UpdateConfigParam' as const, parameter: _parameter, newValue: _newValue };
+}
+
+export function loadTupleUpdateConfigParam(source: TupleReader) {
+    const _parameter = source.readString();
+    const _newValue = source.readBigNumber();
+    return { $$type: 'UpdateConfigParam' as const, parameter: _parameter, newValue: _newValue };
+}
+
+export function loadGetterTupleUpdateConfigParam(source: TupleReader) {
+    const _parameter = source.readString();
+    const _newValue = source.readBigNumber();
+    return { $$type: 'UpdateConfigParam' as const, parameter: _parameter, newValue: _newValue };
+}
+
+export function storeTupleUpdateConfigParam(source: UpdateConfigParam) {
+    const builder = new TupleBuilder();
+    builder.writeString(source.parameter);
+    builder.writeNumber(source.newValue);
+    return builder.build();
+}
+
+export function dictValueParserUpdateConfigParam(): DictionaryValue<UpdateConfigParam> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeUpdateConfigParam(src)).endCell());
+        },
+        parse: (src) => {
+            return loadUpdateConfigParam(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type PendingArtist = {
+    $$type: 'PendingArtist';
+    wallet: Address;
+    artistContract: Address;
+    timestamp: bigint;
+}
+
+export function storePendingArtist(src: PendingArtist) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeAddress(src.wallet);
+        b_0.storeAddress(src.artistContract);
+        b_0.storeUint(src.timestamp, 32);
+    };
+}
+
+export function loadPendingArtist(slice: Slice) {
+    const sc_0 = slice;
+    const _wallet = sc_0.loadAddress();
+    const _artistContract = sc_0.loadAddress();
+    const _timestamp = sc_0.loadUintBig(32);
+    return { $$type: 'PendingArtist' as const, wallet: _wallet, artistContract: _artistContract, timestamp: _timestamp };
+}
+
+export function loadTuplePendingArtist(source: TupleReader) {
+    const _wallet = source.readAddress();
+    const _artistContract = source.readAddress();
+    const _timestamp = source.readBigNumber();
+    return { $$type: 'PendingArtist' as const, wallet: _wallet, artistContract: _artistContract, timestamp: _timestamp };
+}
+
+export function loadGetterTuplePendingArtist(source: TupleReader) {
+    const _wallet = source.readAddress();
+    const _artistContract = source.readAddress();
+    const _timestamp = source.readBigNumber();
+    return { $$type: 'PendingArtist' as const, wallet: _wallet, artistContract: _artistContract, timestamp: _timestamp };
+}
+
+export function storeTuplePendingArtist(source: PendingArtist) {
+    const builder = new TupleBuilder();
+    builder.writeAddress(source.wallet);
+    builder.writeAddress(source.artistContract);
+    builder.writeNumber(source.timestamp);
+    return builder.build();
+}
+
+export function dictValueParserPendingArtist(): DictionaryValue<PendingArtist> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storePendingArtist(src)).endCell());
+        },
+        parse: (src) => {
+            return loadPendingArtist(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type PendingTrack = {
+    $$type: 'PendingTrack';
+    trackId: bigint;
+    fingerprint: bigint;
+    trackContract: Address;
+    timestamp: bigint;
+}
+
+export function storePendingTrack(src: PendingTrack) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(src.trackId, 256);
+        b_0.storeUint(src.fingerprint, 256);
+        b_0.storeAddress(src.trackContract);
+        b_0.storeUint(src.timestamp, 32);
+    };
+}
+
+export function loadPendingTrack(slice: Slice) {
+    const sc_0 = slice;
+    const _trackId = sc_0.loadUintBig(256);
+    const _fingerprint = sc_0.loadUintBig(256);
+    const _trackContract = sc_0.loadAddress();
+    const _timestamp = sc_0.loadUintBig(32);
+    return { $$type: 'PendingTrack' as const, trackId: _trackId, fingerprint: _fingerprint, trackContract: _trackContract, timestamp: _timestamp };
+}
+
+export function loadTuplePendingTrack(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    const _fingerprint = source.readBigNumber();
+    const _trackContract = source.readAddress();
+    const _timestamp = source.readBigNumber();
+    return { $$type: 'PendingTrack' as const, trackId: _trackId, fingerprint: _fingerprint, trackContract: _trackContract, timestamp: _timestamp };
+}
+
+export function loadGetterTuplePendingTrack(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    const _fingerprint = source.readBigNumber();
+    const _trackContract = source.readAddress();
+    const _timestamp = source.readBigNumber();
+    return { $$type: 'PendingTrack' as const, trackId: _trackId, fingerprint: _fingerprint, trackContract: _trackContract, timestamp: _timestamp };
+}
+
+export function storeTuplePendingTrack(source: PendingTrack) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.trackId);
+    builder.writeNumber(source.fingerprint);
+    builder.writeAddress(source.trackContract);
+    builder.writeNumber(source.timestamp);
+    return builder.build();
+}
+
+export function dictValueParserPendingTrack(): DictionaryValue<PendingTrack> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storePendingTrack(src)).endCell());
+        },
+        parse: (src) => {
+            return loadPendingTrack(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type Configuration = {
+    $$type: 'Configuration';
+    emissionCap: bigint;
+    minWalletAgeDays: bigint;
+    targetDailyActivity: bigint;
+    rewardBaseActiveListener: bigint;
+    rewardBaseGrowthAgent: bigint;
+    rewardBaseArtistLaunch: bigint;
+    rewardBaseTrendsetter: bigint;
+    rewardBaseEarlyBeliever: bigint;
+    rewardBaseDropInvestor: bigint;
+    decayFactor: bigint;
+    minThreshold: bigint;
+    antiFarmingCoeff: bigint;
+}
+
+export function storeConfiguration(src: Configuration) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeCoins(src.emissionCap);
+        b_0.storeUint(src.minWalletAgeDays, 32);
+        b_0.storeUint(src.targetDailyActivity, 32);
+        b_0.storeCoins(src.rewardBaseActiveListener);
+        b_0.storeCoins(src.rewardBaseGrowthAgent);
+        b_0.storeCoins(src.rewardBaseArtistLaunch);
+        b_0.storeCoins(src.rewardBaseTrendsetter);
+        b_0.storeCoins(src.rewardBaseEarlyBeliever);
+        b_0.storeCoins(src.rewardBaseDropInvestor);
+        b_0.storeUint(src.decayFactor, 16);
+        const b_1 = new Builder();
+        b_1.storeCoins(src.minThreshold);
+        b_1.storeUint(src.antiFarmingCoeff, 16);
+        b_0.storeRef(b_1.endCell());
+    };
+}
+
+export function loadConfiguration(slice: Slice) {
+    const sc_0 = slice;
+    const _emissionCap = sc_0.loadCoins();
+    const _minWalletAgeDays = sc_0.loadUintBig(32);
+    const _targetDailyActivity = sc_0.loadUintBig(32);
+    const _rewardBaseActiveListener = sc_0.loadCoins();
+    const _rewardBaseGrowthAgent = sc_0.loadCoins();
+    const _rewardBaseArtistLaunch = sc_0.loadCoins();
+    const _rewardBaseTrendsetter = sc_0.loadCoins();
+    const _rewardBaseEarlyBeliever = sc_0.loadCoins();
+    const _rewardBaseDropInvestor = sc_0.loadCoins();
+    const _decayFactor = sc_0.loadUintBig(16);
+    const sc_1 = sc_0.loadRef().beginParse();
+    const _minThreshold = sc_1.loadCoins();
+    const _antiFarmingCoeff = sc_1.loadUintBig(16);
+    return { $$type: 'Configuration' as const, emissionCap: _emissionCap, minWalletAgeDays: _minWalletAgeDays, targetDailyActivity: _targetDailyActivity, rewardBaseActiveListener: _rewardBaseActiveListener, rewardBaseGrowthAgent: _rewardBaseGrowthAgent, rewardBaseArtistLaunch: _rewardBaseArtistLaunch, rewardBaseTrendsetter: _rewardBaseTrendsetter, rewardBaseEarlyBeliever: _rewardBaseEarlyBeliever, rewardBaseDropInvestor: _rewardBaseDropInvestor, decayFactor: _decayFactor, minThreshold: _minThreshold, antiFarmingCoeff: _antiFarmingCoeff };
+}
+
+export function loadTupleConfiguration(source: TupleReader) {
+    const _emissionCap = source.readBigNumber();
+    const _minWalletAgeDays = source.readBigNumber();
+    const _targetDailyActivity = source.readBigNumber();
+    const _rewardBaseActiveListener = source.readBigNumber();
+    const _rewardBaseGrowthAgent = source.readBigNumber();
+    const _rewardBaseArtistLaunch = source.readBigNumber();
+    const _rewardBaseTrendsetter = source.readBigNumber();
+    const _rewardBaseEarlyBeliever = source.readBigNumber();
+    const _rewardBaseDropInvestor = source.readBigNumber();
+    const _decayFactor = source.readBigNumber();
+    const _minThreshold = source.readBigNumber();
+    const _antiFarmingCoeff = source.readBigNumber();
+    return { $$type: 'Configuration' as const, emissionCap: _emissionCap, minWalletAgeDays: _minWalletAgeDays, targetDailyActivity: _targetDailyActivity, rewardBaseActiveListener: _rewardBaseActiveListener, rewardBaseGrowthAgent: _rewardBaseGrowthAgent, rewardBaseArtistLaunch: _rewardBaseArtistLaunch, rewardBaseTrendsetter: _rewardBaseTrendsetter, rewardBaseEarlyBeliever: _rewardBaseEarlyBeliever, rewardBaseDropInvestor: _rewardBaseDropInvestor, decayFactor: _decayFactor, minThreshold: _minThreshold, antiFarmingCoeff: _antiFarmingCoeff };
+}
+
+export function loadGetterTupleConfiguration(source: TupleReader) {
+    const _emissionCap = source.readBigNumber();
+    const _minWalletAgeDays = source.readBigNumber();
+    const _targetDailyActivity = source.readBigNumber();
+    const _rewardBaseActiveListener = source.readBigNumber();
+    const _rewardBaseGrowthAgent = source.readBigNumber();
+    const _rewardBaseArtistLaunch = source.readBigNumber();
+    const _rewardBaseTrendsetter = source.readBigNumber();
+    const _rewardBaseEarlyBeliever = source.readBigNumber();
+    const _rewardBaseDropInvestor = source.readBigNumber();
+    const _decayFactor = source.readBigNumber();
+    const _minThreshold = source.readBigNumber();
+    const _antiFarmingCoeff = source.readBigNumber();
+    return { $$type: 'Configuration' as const, emissionCap: _emissionCap, minWalletAgeDays: _minWalletAgeDays, targetDailyActivity: _targetDailyActivity, rewardBaseActiveListener: _rewardBaseActiveListener, rewardBaseGrowthAgent: _rewardBaseGrowthAgent, rewardBaseArtistLaunch: _rewardBaseArtistLaunch, rewardBaseTrendsetter: _rewardBaseTrendsetter, rewardBaseEarlyBeliever: _rewardBaseEarlyBeliever, rewardBaseDropInvestor: _rewardBaseDropInvestor, decayFactor: _decayFactor, minThreshold: _minThreshold, antiFarmingCoeff: _antiFarmingCoeff };
+}
+
+export function storeTupleConfiguration(source: Configuration) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.emissionCap);
+    builder.writeNumber(source.minWalletAgeDays);
+    builder.writeNumber(source.targetDailyActivity);
+    builder.writeNumber(source.rewardBaseActiveListener);
+    builder.writeNumber(source.rewardBaseGrowthAgent);
+    builder.writeNumber(source.rewardBaseArtistLaunch);
+    builder.writeNumber(source.rewardBaseTrendsetter);
+    builder.writeNumber(source.rewardBaseEarlyBeliever);
+    builder.writeNumber(source.rewardBaseDropInvestor);
+    builder.writeNumber(source.decayFactor);
+    builder.writeNumber(source.minThreshold);
+    builder.writeNumber(source.antiFarmingCoeff);
+    return builder.build();
+}
+
+export function dictValueParserConfiguration(): DictionaryValue<Configuration> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeConfiguration(src)).endCell());
+        },
+        parse: (src) => {
+            return loadConfiguration(src.loadRef().beginParse());
         }
     }
 }
@@ -1367,6 +2154,12 @@ export type ToonRegistry$Data = {
     fingerprints: Dictionary<bigint, boolean>;
     mintAuthority: Address;
     vault: Address;
+    config: Configuration;
+    version: bigint;
+    trackRewardEligible: Dictionary<bigint, boolean>;
+    artistRewardEligible: Dictionary<Address, boolean>;
+    pendingArtists: Dictionary<Address, PendingArtist>;
+    pendingTracks: Dictionary<bigint, PendingTrack>;
     totalArtists: bigint;
     totalTracks: bigint;
 }
@@ -1380,11 +2173,23 @@ export function storeToonRegistry$Data(src: ToonRegistry$Data) {
         b_1.storeDict(src.tracks, Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
         b_1.storeDict(src.trackContracts, Dictionary.Keys.Address(), Dictionary.Values.BigInt(257));
         b_1.storeDict(src.drops, Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
-        b_1.storeDict(src.fingerprints, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
-        b_1.storeAddress(src.mintAuthority);
-        b_1.storeAddress(src.vault);
-        b_1.storeUint(src.totalArtists, 32);
-        b_1.storeUint(src.totalTracks, 32);
+        const b_2 = new Builder();
+        b_2.storeDict(src.fingerprints, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
+        b_2.storeAddress(src.mintAuthority);
+        b_2.storeAddress(src.vault);
+        const b_3 = new Builder();
+        b_3.store(storeConfiguration(src.config));
+        b_3.storeUint(src.version, 32);
+        b_3.storeDict(src.trackRewardEligible, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
+        b_3.storeDict(src.artistRewardEligible, Dictionary.Keys.Address(), Dictionary.Values.Bool());
+        const b_4 = new Builder();
+        b_4.storeDict(src.pendingArtists, Dictionary.Keys.Address(), dictValueParserPendingArtist());
+        b_4.storeDict(src.pendingTracks, Dictionary.Keys.BigInt(257), dictValueParserPendingTrack());
+        b_4.storeUint(src.totalArtists, 32);
+        b_4.storeUint(src.totalTracks, 32);
+        b_3.storeRef(b_4.endCell());
+        b_2.storeRef(b_3.endCell());
+        b_1.storeRef(b_2.endCell());
         b_0.storeRef(b_1.endCell());
     };
 }
@@ -1397,12 +2202,21 @@ export function loadToonRegistry$Data(slice: Slice) {
     const _tracks = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), sc_1);
     const _trackContracts = Dictionary.load(Dictionary.Keys.Address(), Dictionary.Values.BigInt(257), sc_1);
     const _drops = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), sc_1);
-    const _fingerprints = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_1);
-    const _mintAuthority = sc_1.loadAddress();
-    const _vault = sc_1.loadAddress();
-    const _totalArtists = sc_1.loadUintBig(32);
-    const _totalTracks = sc_1.loadUintBig(32);
-    return { $$type: 'ToonRegistry$Data' as const, artists: _artists, artistContracts: _artistContracts, tracks: _tracks, trackContracts: _trackContracts, drops: _drops, fingerprints: _fingerprints, mintAuthority: _mintAuthority, vault: _vault, totalArtists: _totalArtists, totalTracks: _totalTracks };
+    const sc_2 = sc_1.loadRef().beginParse();
+    const _fingerprints = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_2);
+    const _mintAuthority = sc_2.loadAddress();
+    const _vault = sc_2.loadAddress();
+    const sc_3 = sc_2.loadRef().beginParse();
+    const _config = loadConfiguration(sc_3);
+    const _version = sc_3.loadUintBig(32);
+    const _trackRewardEligible = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_3);
+    const _artistRewardEligible = Dictionary.load(Dictionary.Keys.Address(), Dictionary.Values.Bool(), sc_3);
+    const sc_4 = sc_3.loadRef().beginParse();
+    const _pendingArtists = Dictionary.load(Dictionary.Keys.Address(), dictValueParserPendingArtist(), sc_4);
+    const _pendingTracks = Dictionary.load(Dictionary.Keys.BigInt(257), dictValueParserPendingTrack(), sc_4);
+    const _totalArtists = sc_4.loadUintBig(32);
+    const _totalTracks = sc_4.loadUintBig(32);
+    return { $$type: 'ToonRegistry$Data' as const, artists: _artists, artistContracts: _artistContracts, tracks: _tracks, trackContracts: _trackContracts, drops: _drops, fingerprints: _fingerprints, mintAuthority: _mintAuthority, vault: _vault, config: _config, version: _version, trackRewardEligible: _trackRewardEligible, artistRewardEligible: _artistRewardEligible, pendingArtists: _pendingArtists, pendingTracks: _pendingTracks, totalArtists: _totalArtists, totalTracks: _totalTracks };
 }
 
 export function loadTupleToonRegistry$Data(source: TupleReader) {
@@ -1414,9 +2228,16 @@ export function loadTupleToonRegistry$Data(source: TupleReader) {
     const _fingerprints = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
     const _mintAuthority = source.readAddress();
     const _vault = source.readAddress();
+    const _config = loadTupleConfiguration(source);
+    const _version = source.readBigNumber();
+    const _trackRewardEligible = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
+    const _artistRewardEligible = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.Bool(), source.readCellOpt());
+    const _pendingArtists = Dictionary.loadDirect(Dictionary.Keys.Address(), dictValueParserPendingArtist(), source.readCellOpt());
+    const _pendingTracks = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), dictValueParserPendingTrack(), source.readCellOpt());
+    source = source.readTuple();
     const _totalArtists = source.readBigNumber();
     const _totalTracks = source.readBigNumber();
-    return { $$type: 'ToonRegistry$Data' as const, artists: _artists, artistContracts: _artistContracts, tracks: _tracks, trackContracts: _trackContracts, drops: _drops, fingerprints: _fingerprints, mintAuthority: _mintAuthority, vault: _vault, totalArtists: _totalArtists, totalTracks: _totalTracks };
+    return { $$type: 'ToonRegistry$Data' as const, artists: _artists, artistContracts: _artistContracts, tracks: _tracks, trackContracts: _trackContracts, drops: _drops, fingerprints: _fingerprints, mintAuthority: _mintAuthority, vault: _vault, config: _config, version: _version, trackRewardEligible: _trackRewardEligible, artistRewardEligible: _artistRewardEligible, pendingArtists: _pendingArtists, pendingTracks: _pendingTracks, totalArtists: _totalArtists, totalTracks: _totalTracks };
 }
 
 export function loadGetterTupleToonRegistry$Data(source: TupleReader) {
@@ -1428,9 +2249,15 @@ export function loadGetterTupleToonRegistry$Data(source: TupleReader) {
     const _fingerprints = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
     const _mintAuthority = source.readAddress();
     const _vault = source.readAddress();
+    const _config = loadGetterTupleConfiguration(source);
+    const _version = source.readBigNumber();
+    const _trackRewardEligible = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
+    const _artistRewardEligible = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.Bool(), source.readCellOpt());
+    const _pendingArtists = Dictionary.loadDirect(Dictionary.Keys.Address(), dictValueParserPendingArtist(), source.readCellOpt());
+    const _pendingTracks = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), dictValueParserPendingTrack(), source.readCellOpt());
     const _totalArtists = source.readBigNumber();
     const _totalTracks = source.readBigNumber();
-    return { $$type: 'ToonRegistry$Data' as const, artists: _artists, artistContracts: _artistContracts, tracks: _tracks, trackContracts: _trackContracts, drops: _drops, fingerprints: _fingerprints, mintAuthority: _mintAuthority, vault: _vault, totalArtists: _totalArtists, totalTracks: _totalTracks };
+    return { $$type: 'ToonRegistry$Data' as const, artists: _artists, artistContracts: _artistContracts, tracks: _tracks, trackContracts: _trackContracts, drops: _drops, fingerprints: _fingerprints, mintAuthority: _mintAuthority, vault: _vault, config: _config, version: _version, trackRewardEligible: _trackRewardEligible, artistRewardEligible: _artistRewardEligible, pendingArtists: _pendingArtists, pendingTracks: _pendingTracks, totalArtists: _totalArtists, totalTracks: _totalTracks };
 }
 
 export function storeTupleToonRegistry$Data(source: ToonRegistry$Data) {
@@ -1443,6 +2270,12 @@ export function storeTupleToonRegistry$Data(source: ToonRegistry$Data) {
     builder.writeCell(source.fingerprints.size > 0 ? beginCell().storeDictDirect(source.fingerprints, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool()).endCell() : null);
     builder.writeAddress(source.mintAuthority);
     builder.writeAddress(source.vault);
+    builder.writeTuple(storeTupleConfiguration(source.config));
+    builder.writeNumber(source.version);
+    builder.writeCell(source.trackRewardEligible.size > 0 ? beginCell().storeDictDirect(source.trackRewardEligible, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool()).endCell() : null);
+    builder.writeCell(source.artistRewardEligible.size > 0 ? beginCell().storeDictDirect(source.artistRewardEligible, Dictionary.Keys.Address(), Dictionary.Values.Bool()).endCell() : null);
+    builder.writeCell(source.pendingArtists.size > 0 ? beginCell().storeDictDirect(source.pendingArtists, Dictionary.Keys.Address(), dictValueParserPendingArtist()).endCell() : null);
+    builder.writeCell(source.pendingTracks.size > 0 ? beginCell().storeDictDirect(source.pendingTracks, Dictionary.Keys.BigInt(257), dictValueParserPendingTrack()).endCell() : null);
     builder.writeNumber(source.totalArtists);
     builder.writeNumber(source.totalTracks);
     return builder.build();
@@ -1474,7 +2307,7 @@ function initToonRegistry_init_args(src: ToonRegistry_init_args) {
 }
 
 async function ToonRegistry_init(mintAuthority: Address, vault: Address) {
-    const __code = Cell.fromHex('b5ee9c72410226010009bb000228ff008e88f4a413f4bcf2c80bed5320e303ed43d9011502027102130201200305019dba1feed44d0d200018e1ff404d401d0f404f404f404d430d0f404f404fa40fa40d31fd31f30109a6c1a8e1cfa40fa405902d1016d6d6d6d6d6d7020107910681057104610351024e25509db3c6ca1804002e8101012602714133f40c6fa19401d70030925b6de26eb3020120060b02016a0709019cabb1ed44d0d200018e1ff404d401d0f404f404f404d430d0f404f404fa40fa40d31fd31f30109a6c1a8e1cfa40fa405902d1016d6d6d6d6d6d7020107910681057104610351024e25509db3c6ca1080020810101290259f40c6fa192306ddf6eb3019caaf9ed44d0d200018e1ff404d401d0f404f404f404d430d0f404f404fa40fa40d31fd31f30109a6c1a8e1cfa40fa405902d1016d6d6d6d6d6d7020107910681057104610351024e25509db3c6ca10a002081010b2b0259f40a6fa192306ddf6eb30201200c0e019db1993b51343480006387fd013500743d013d013d01350c343d013d013e903e9034c7f4c7cc04269b06a3873e903e901640b4405b5b5b5b5b5b5c08041e441a0415c411840d440938954276cf1b28600d001c81010b2b0259f40a6fa192306ddf0201580f11019ca9a0ed44d0d200018e1ff404d401d0f404f404f404d430d0f404f404fa40fa40d31fd31f30109a6c1a8e1cfa40fa405902d1016d6d6d6d6d6d7020107910681057104610351024e25509db3c6ca110001c810101290259f40c6fa192306ddf0198aa9eed44d0d200018e1ff404d401d0f404f404f404d430d0f404f404fa40fa40d31fd31f30109a6c1a8e1cfa40fa405902d1016d6d6d6d6d6d7020107910681057104610351024e2db3c6ca112000223019dbe48b76a268690000c70ffa026a00e87a027a027a026a18687a027a027d207d20698fe98f98084d360d470e7d207d202c816880b6b6b6b6b6b6b810083c8834082b8823081a8812712a84ed9e3650c14001c810101270259f40c6fa192306ddf02f83001d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e1ff404d401d0f404f404f404d430d0f404f404fa40fa40d31fd31f30109a6c1a8e1cfa40fa405902d1016d6d6d6d6d6d7020107910681057104610351024e20b925f0be009d70d1ff2e082218210dfc5fbf5bae3022182108cb4c243ba161801f831fa4030f8428200d9458d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f48124532a81010b2359f40a6fa192306ddf6ef2f40981010b53a2206e953059f4593096c8ce4133f441e20881010b532a206e953059f4593096c8ce4133f441e20aa4f8234aa0c81700b055208210e2af76f95004cb1f12cececb1fc9c88258c000000000000000000000000101cb67ccc970fb0010695515c87f01ca005590509af40007c8f40016f40014f40002c8f400f40012ce12ce13cb1f13cb1fcdcdc9ed5403fe8f7c31d3ffd3fffa4030f8428129778d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f481486f24c300f2f481675e23c300f2f4109b5e37106a105b104a103b4acd8166710edb3c1ef2f4813f25278101012d59f40c6fa192306ddf6ef2f4813aa8248101012c71e023191b01f04133f40c6fa19401d70030925b6de26ef2f40681010153bc206e953059f45a30944133f414e20581010b53cb810101216e955b59f4593098c801cf004133f441e2038101012a7f71216e955b59f45a3098c801cf004133f442e20ca4f823103b4ac0c85530821074e4a7365005cb1f13cbffcbffcecb1fc91a0098c88258c000000000000000000000000101cb67ccc970fb0010591048471640330504c87f01ca005590509af40007c8f40016f40014f40002c8f400f40012ce12ce13cb1f13cb1fcdcdc9ed54044c218210de13870dbae30221821010859351bae302218210787cca54bae302218210db77da3fba1c1e202101fe31fa40fa00308200984f8d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f4816cf2f84225c705f2f481256c21c200f2f4708040f8234430c855208210fa1d125c5004cb1f12ce01fa02cb1fc92355205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c1d00966e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0010795516c87f01ca005590509af40007c8f40016f40014f40002c8f400f40012ce12ce13cb1f13cb1fcdcdc9ed5401fe31fa40fa00308200984f8d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f48200c59681010bf84229598101014133f40a6fa19401d70030925b6de26eb3f2f4708040f8234430c855208210fa1d125c5004cb1f12ce01fa02cb1fc92355205a6d6d40037fc8cf85801f00b4ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0010795516c87f01ca005590509af40007c8f40016f40014f40002c8f400f40012ce12ce13cb1f13cb1fcdcdc9ed5400d831fa4030817c1e8d08600000000000000000000000000000000000000000000000000000000000000000045220c705b3f2f4816cf2f8425004c70513f2f410795516c87f01ca005590509af40007c8f40016f40014f40002c8f400f40012ce12ce13cb1f13cb1fcdcdc9ed5402f48e6c6c21fa40308200e26a8d08600000000000000000000000000000000000000000000000000000000000000000045220c705b3f2f4816cf2f84223c705f2f410795516c87f01ca005590509af40007c8f40016f40014f40002c8f400f40012ce12ce13cb1f13cb1fcdcdc9ed54e0218210a99ec9f7bae30201222502fc31d3fffa4030f8428200b9488d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f4109a108a107a106a105a104a103a4abc8166710ddb3c1df2f48200ad1e258101012c59f40c6fa192306ddf6ef2f40481010153ab206e953059f45a30944133f414e2f8234ab0c82324002081010b2a0259f40a6fa192306ddf6eb300bc552082105206fbd15004cb1f12cbffcecb1fc9c88258c000000000000000000000000101cb67ccc970fb00106910581047034446c87f01ca005590509af40007c8f40016f40014f40002c8f400f40012ce12ce13cb1f13cb1fcdcdc9ed5400f88210946a98b6ba8e6dd33f30c8018210aff90f5758cb1fcb3fc9108a10791068105710461035443012f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00c87f01ca005590509af40007c8f40016f40014f40002c8f400f40012ce12ce13cb1f13cb1fcdcdc9ed54e05f0bf2c08240f8d8f4');
+    const __code = Cell.fromHex('b5ee9c7241025b010019ba00022cff008e88f4a413f4bcf2c80bed53208e8130e1ed43d90121020271021c020120030b020120040603cdb540bda89a1a400031d15f481f480b205a203b679c61a223422362234223222342232223022322230222e2230222e222c222e222c222a222c222a2228222a22282226222822262224222622242222222422222220222222201e22201eaa1db678ae20be1ed963022240500448101012702714133f40c6fa19401d70030925b6de2206eb395206ef2d08092307fe20201c7070903cba7fdda89a1a400031d15f481f480b205a203b679c61a223422362234223222342232223022322230222e2230222e222c222e222c222a222c222a2228222a22282226222822262224222622242222222422222220222222201e22201eaa1db678ae20be1ed9632224080030810101561702714133f40c6fa19401d70030925b6de26eb3033ba7c9da89a1a400031d15f481f480b205a203b679c61bb678ae20be1ed96322240a0002260201200c1102016a0d0f03ccabb1ed44d0d200018e8afa40fa405902d101db3ce30d111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cb122240e0022810101561a0259f40c6fa192306ddf6eb303ccaaf9ed44d0d200018e8afa40fa405902d101db3ce30d111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cb1222410002281010b561c0259f40a6fa192306ddf6eb30201201217020120131503cdaf3276a268690000c7457d207d202c816880ed9e7186888d088d888d088c888d088c888c088c888c088b888c088b888b088b888b088a888b088a888a088a888a0889888a088988890889888908888889088888880888888807888807aa876d9e2b882f87b658c0222414001e81010b561c0259f40a6fa192306ddf033daf2576a268690000c7457d207d202c816880ed9e7186ed9e36663666361e402224160030561256125612561256125612561256125612561256125612020158181a03cca9a0ed44d0d200018e8afa40fa405902d101db3ce30d111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cb1222419001e810101561a0259f40c6fa192306ddf033caa9eed44d0d200018e8afa40fa405902d101db3ce30ddb3c57105f0f6cb122241b000456140201201d1f03cdb9b70ed44d0d200018e8afa40fa405902d101db3ce30d111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cb1822241e004481010b2602714133f40a6fa19401d70030925b6de2206eb395206ef2d08092307fe203cdb8916ed44d0d200018e8afa40fa405902d101db3ce30d111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cb18222420001e81010156180259f40c6fa192306ddf049a01d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e8afa40fa405902d101db3ce30d111c945f0f5f0de0111ad70d1ff2e082218210cc4fedf7bae302218210c8526e47ba2224262801f66d6d6d6d6d6d6d6d6d6d70207182202d79883d2000778103e88212540be40082112a05f2008218746a5288008220048c2739500082182e90edd00082180ba43b74002682089896808101f41118111a11181117111911171116111811161115111711151114111611141113111511130b11120b0a11110a09111009230010108f107e5566550502f4f404d401d0f404f404f404d430d0f404f404fa40fa40d430d0db3c0cd31ff404f404d430d0f404f404d31fd31f30111a111b111a1111111211111110111111100f11100f10ef10de10cd10bc10ab109a10891078571b1119111a11191118111911181117111811171116111711161115111611151114111511144825003c1113111411131112111311121111111211111110111111100f11100f550e01f831fa40fa40308200d9458d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f4812453561b81010b2359f40a6fa192306ddf6ef2f48200deda2481010b2359f40b6fa192306ddf206e92306d9dd0fa40fa40d31f55206c136f03e26ef2f481010bf823544244c82701e055205023cececb1fc91034206e953059f45930944133f413e21118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a107910681057104610354433025802fe8efc31fa40302281010b2259f40b6fa192306ddf206e92306d9dd0fa40fa40d31f55206c136f03e28200de5b216eb3f2f48139d3f84222206ef2d0806f233031c705f2f481010b21206ef2d0806f235b22206ef2d0806f23303103111d03206e953059f4593096c8ce4133f441e281010b561b206ef2d0806f233031561ce0292b01fe206ef2d0806f235b03111c03206e953059f4593096c8ce4133f441e2111ba481010b6dc8216e925b6d8e1301206ef2d0806f23550255205023cececb1fc9e210354150206e953059f45930944133f413e25619206ef2d0806f235b111a206ef2d0806f233031f82302111b02c855208210e2af76f95004cb1f12cececb1fc92a01d2c88258c000000000000000000000000101cb67ccc970fb001117111a11171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a1079106810571046103540140358044c218210e59974c3bae302218210c09310edbae302218210a47a6deebae30221821073360001ba2c2e323601f631fa40302281010b2259f40b6fa192306ddf206e92306d9dd0fa40fa40d31f55206c136f03e28200de5b216eb3f2f4f82321206ef2d0806f236c21810e10a0bc8112d5f84203206ef2d0806f23303113c70592307fdef2f481010b6dc8216e925b6d8e1301206ef2d0806f23550255205023cececb1fc9e21034122d01ca206e953059f45930944133f413e21118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a107910681057104610354433025801f831d3ffd3fffa4030f842111a111c111a1119111b11191118111c11181117111b11171116111c11161115111b11151114111c11141113111b11131112111c11121111111b11111110111c11100f111b0f0e111c0e0d111b0d0c111c0c0b111b0b0a111c0a09111b0908111c0807111b0706111c0605111b0504111c042f02d403111b0302111c0201111d01111e816671111fdb3c01111f01f2f481486f561bc300f2f4813f255618810101561d59f40c6fa192306ddf6ef2f4813aa85615810101561e714133f40c6fa19401d70030925b6de26ef2f48200e4d722810101561d59f40d6fa192306ddf453001fc206e92306d9fd0d3ffd3fffa40d31f55306c146f04e26ef2f4810101f823561c0302111e02111f01c855305034cbffcbffcecb1fc91302111b0201111a01206e953059f45a30944133f415e21116111a11161115111911151114111811141113111711131112111611121111111511111110111411100f11130f0e11120e31013e0d11110d0c11100c10bf10ae109d108c107b106a10591048103746501034025801fe31d3ff30218101012259f40d6fa192306ddf206e92306d9fd0d3ffd3fffa40d31f55306c146f04e281427d216eb3f2f48139d3f84222206ef2d0806f24135f03c705f2f481010121206ef2d0806f245f0322206ef2d0806f24135f0303111b03206e953059f45a30944133f414e281010b5619206ef2d0806f24135f03561a3301e8206ef2d0806f245f0303111a03810101216e955b59f4593098c801cf004133f441e28101015619206ef2d0806f2410235f03021117027f71216e955b59f45a3098c801cf004133f442e2111ca48101016dc8216e925b6d8e1601206ef2d0806f24550355305034cbffcbffcecb1fc9e2103441403401f4206e953059f45a30944133f415e25617206ef2d0806f245f035618206ef2d0806f2410235f031119206ef2d0806f24135f03f823102302111a02c85530821074e4a7365005cb1f13cbffcbffcecb1fc9c88258c000000000000000000000000101cb67ccc970fb001118111a111811171119111711151118111535017c1113111711131114111611141112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a10791068105710461035443058043ce302218210de13870dbae30221821010859351bae302218210787cca54ba37393b3e01fc31d3ff30218101012259f40d6fa192306ddf206e92306d9fd0d3ffd3fffa40d31f55306c146f04e281427d216eb3f2f4f82321206ef2d0806f246c31810e10a0bc8112d5f84203206ef2d0806f24135f0313c70592307fdef2f48101016dc8216e925b6d8e1601206ef2d0806f24550355305034cbffcbffcecb1fc9e21238019c206e953059f45a30944133f415e21118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e551d5801fe31fa40fa00308200984f8d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f4816cf2f8425616c705f2f481256c21c200f2f4708040f8234430c855208210fa1d125c5004cb1f12ce01fa02cb1fc9561455205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf403a01be025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb001118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e551d5802fe31fa40fa00308200984f8d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f48200c59681010bf842561a598101014133f40a6fa19401d70030925b6de26eb3f2f4708040f8234430c855208210fa1d125c5004cb1f12ce01fa02cb1fc9561455205a6d6d40037fc8893c3d00016001dccf16ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb001118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e551d5802fe8efc31fa4030817c1e8d08600000000000000000000000000000000000000000000000000000000000000000045220c705b3f2f4816cf2f842011115c70501111401f2f41118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110fe03f4001e80e11100e551dc87f01ca00111b111a111911181117111611151114111311121111111055e001111a01111bf4001118c8f40001111701f40001111501f4001113c8f40001111201f40001111001ce1ecec855b1db3c12cb1f12f40012f40003c8f40014f40015cb1f15cb1f14cd13cdcdcdc9ed5459044a218210db77da3fbae302218210a99ec9f7bae3022182102bd0b755bae30221820b958d4fba4143474a01fc3157121111fa40308200e26a8d08600000000000000000000000000000000000000000000000000000000000000000045220c705b3f2f4816cf2f8425614c705f2f41118111a111811171119111711161118111611151117111511141116111411131115111311121114111211131110111211100f11110f0e11100e10df42012e10ce10bd10ac109b108a107910681057104610354403025801fa31d3fffa4030f8428200b9488d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f4111a111b111a1119111b11191118111b11181117111b11171116111b11161115111b11151114111b11141113111b11131112111b11121111111b11111110111b11100f111b0f4402fe0e111b0e0d111b0d0c111b0c0b111b0b0a111b0a09111b0908111b0807111b0706111b0605111b0504111b0403111b0302111b0201111c01111d816671111edb3c01111e01f2f48200ad1e5616810101561d59f40c6fa192306ddf6ef2f41115810101561b561d206e953059f45a30944133f414e2f82302111b0201111c014546002281010b561b0259f40a6fa192306ddf6eb301f4c8552082105206fbd15004cb1f12cbffcecb1fc9c88258c000000000000000000000000101cb67ccc970fb001117111a11171116111911161115111811151114111711141112111511121111111411111110111311100f11120f0e11110e0d11100d10cf10be10ad109c108b107a1069105810471036451350425803e0316cc6db3c3c820095eff8425614c705f2f488c88258c000000000000000000000000101cb67ccc970fb001118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311110a11120a09111109081110085577103706103544144849580060fa00d31fd31ffa00fa00fa00fa00fa00fa00d30fd401d0fa00d30f30102c102b102a1029102810271026102510241023003000000000436f6e66696775726174696f6e55706461746564043ce30221821009278fbdbae3022182109cd7d62cbae3022182100e849a55ba4b4e505202fc313504d31f308200bc6cf8425614c705f2f488c88258c000000000000000000000000101cb67ccc970fb001118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a1079106810570610354c4d00240000000056657273696f6e5570646174656401e04430c87f01ca00111b111a111911181117111611151114111311121111111055e001111a01111bf4001118c8f40001111701f40001111501f4001113c8f40001111201f40001111001ce1ecec855b1db3c12cb1f12f40012f40003c8f40014f40015cb1f15cb1f14cd13cdcdcdc9ed545901fc31d3ffd20030816e87f8425616c705f2f410258101015971216e955b59f45a3098c801cf004133f442e21118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a107910681057104644554f01e04313c87f01ca00111b111a111911181117111611151114111311121111111055e001111a01111bf4001118c8f40001111701f40001111501f4001113c8f40001111201f40001111001ce1ecec855b1db3c12cb1f12f40012f40003c8f40014f40015cb1f15cb1f14cd13cdcdcdc9ed545901fc31fa40d20030816e87f8425616c705f2f4102481010b5971216e955b59f4593098c801cf004133f441e21118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a107910681057104610355101e05034c87f01ca00111b111a111911181117111611151114111311121111111055e001111a01111bf4001118c8f40001111701f40001111501f4001113c8f40001111201f40001111001ce1ecec855b1db3c12cb1f12f40012f40003c8f40014f40015cb1f15cb1f14cd13cdcdcdc9ed545903fce302018210946a98b6ba8eedd33f30c8018210aff90f5758cb1fcb3fc91119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a107910681057104610354430e05f0f5f0d53575a01fc31d401d001d33f308bb656d697373696f6e4361708522001f90101f901ba933157118e468d041b5a5b95d85b1b195d1059d951185e5ce0522001f90101f901ba933157108e238d04dd185c99d95d11185a5b1e5058dd1a5d9a5d1e601201f90101f901ba913f9130e2e2e2708040561256125612561256125612561256125403fc5612561256125612c855b082102bd0b755500dcb1f0cdb3cc9561455205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0088c88258c000000000000000000000000101cb67ccc970fb001118111a1118111711191117111611181116595556003a00000000436f6e66696775726174696f6e506172616d55706461746564015c1115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e551d580146f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb005801dcc87f01ca00111b111a111911181117111611151114111311121111111055e001111a01111bf4001118c8f40001111701f40001111501f4001113c8f40001111201f40001111001ce1ecec855b1db3c12cb1f12f40012f40003c8f40014f40015cb1f15cb1f14cd13cdcdcdc9ed5459005050cbfa0219cb1f17cb1f5005fa025003fa0201fa0201fa0201fa0201fa02cb0fc85003fa02cb0fcd0006f2c082753b3184');
     const builder = beginCell();
     builder.storeUint(0, 1);
     initToonRegistry_init_args({ $$type: 'ToonRegistry_init_args', mintAuthority, vault })(builder);
@@ -1519,22 +2352,29 @@ export const ToonRegistry_errors = {
     135: { message: "Code of a contract was not found" },
     136: { message: "Invalid standard address" },
     138: { message: "Not a basechain address" },
+    4821: { message: "ToonRegistry: rollback not allowed yet" },
     9299: { message: "ToonRegistry: wallet already has an artist identity" },
     9580: { message: "ToonRegistry: mint amount must be positive" },
-    10615: { message: "ToonRegistry: invalid track contract address" },
+    14803: { message: "ToonRegistry: unauthorized confirmation" },
     15016: { message: "ToonRegistry: duplicate content fingerprint detected" },
     16165: { message: "ToonRegistry: trackId already exists" },
+    17021: { message: "ToonRegistry: no pending track found" },
     18543: { message: "ToonRegistry: trackId cannot be zero" },
     26225: { message: "ToonRegistry: caller is not a registered ToonArtist contract" },
-    26462: { message: "ToonRegistry: fingerprint cannot be zero" },
     27890: { message: "ToonRegistry: caller is not the mint authority" },
+    28295: { message: "ToonRegistry: only mint authority can update eligibility" },
     31774: { message: "ToonRegistry: invalid new authority address" },
+    38383: { message: "ToonRegistry: only mint authority can update config" },
     38991: { message: "ToonRegistry: invalid recipient address" },
     44318: { message: "ToonRegistry: drop already exists for this track" },
     47432: { message: "ToonRegistry: invalid drop contract address" },
+    48236: { message: "ToonRegistry: only mint authority can update version" },
     50582: { message: "ToonRegistry: caller is not a registered ToonTrack contract" },
     55621: { message: "ToonRegistry: invalid artist contract address" },
+    56923: { message: "ToonRegistry: no pending registration found" },
+    57050: { message: "ToonRegistry: registration already pending" },
     57962: { message: "ToonRegistry: invalid vault address" },
+    58583: { message: "ToonRegistry: track registration already pending" },
 } as const
 
 export const ToonRegistry_errors_backward = {
@@ -1574,22 +2414,29 @@ export const ToonRegistry_errors_backward = {
     "Code of a contract was not found": 135,
     "Invalid standard address": 136,
     "Not a basechain address": 138,
+    "ToonRegistry: rollback not allowed yet": 4821,
     "ToonRegistry: wallet already has an artist identity": 9299,
     "ToonRegistry: mint amount must be positive": 9580,
-    "ToonRegistry: invalid track contract address": 10615,
+    "ToonRegistry: unauthorized confirmation": 14803,
     "ToonRegistry: duplicate content fingerprint detected": 15016,
     "ToonRegistry: trackId already exists": 16165,
+    "ToonRegistry: no pending track found": 17021,
     "ToonRegistry: trackId cannot be zero": 18543,
     "ToonRegistry: caller is not a registered ToonArtist contract": 26225,
-    "ToonRegistry: fingerprint cannot be zero": 26462,
     "ToonRegistry: caller is not the mint authority": 27890,
+    "ToonRegistry: only mint authority can update eligibility": 28295,
     "ToonRegistry: invalid new authority address": 31774,
+    "ToonRegistry: only mint authority can update config": 38383,
     "ToonRegistry: invalid recipient address": 38991,
     "ToonRegistry: drop already exists for this track": 44318,
     "ToonRegistry: invalid drop contract address": 47432,
+    "ToonRegistry: only mint authority can update version": 48236,
     "ToonRegistry: caller is not a registered ToonTrack contract": 50582,
     "ToonRegistry: invalid artist contract address": 55621,
+    "ToonRegistry: no pending registration found": 56923,
+    "ToonRegistry: registration already pending": 57050,
     "ToonRegistry: invalid vault address": 57962,
+    "ToonRegistry: track registration already pending": 58583,
 } as const
 
 const ToonRegistry_types: ABIType[] = [
@@ -1609,15 +2456,29 @@ const ToonRegistry_types: ABIType[] = [
     {"name":"RegisterArtist","header":3754294261,"fields":[{"name":"artistContract","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"RegisterTrack","header":2360656451,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"fingerprint","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"trackContract","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"AuthorizeMint","header":3725821709,"fields":[{"name":"recipient","type":{"kind":"simple","type":"address","optional":false}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"StageArtistRegistration","header":3427790327,"fields":[{"name":"artistContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"wallet","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"ConfirmArtistRegistration","header":3360845383,"fields":[{"name":"wallet","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"RollbackArtistRegistration","header":3852039363,"fields":[{"name":"wallet","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"StageTrackRegistration","header":3230863597,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"fingerprint","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"trackContract","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"ConfirmTrackRegistration","header":2759486958,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}}]},
+    {"name":"RollbackTrackRegistration","header":1932918785,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}}]},
     {"name":"UpdateMintAuthority","header":2021444180,"fields":[{"name":"newAuthority","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"UpdateVaultAddress","header":3682064959,"fields":[{"name":"newVault","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"RequestMint","header":277189457,"fields":[{"name":"recipient","type":{"kind":"simple","type":"address","optional":false}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"SetConfig","header":735098709,"fields":[{"name":"config","type":{"kind":"simple","type":"Configuration","optional":false}}]},
+    {"name":"SetVersion","header":60132687,"fields":[{"name":"newVersion","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
+    {"name":"SetTrackRewardEligibility","header":153587645,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"eligible","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"SetArtistRewardEligibility","header":2631390764,"fields":[{"name":"artist","type":{"kind":"simple","type":"address","optional":false}},{"name":"eligible","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"UpdateConfigParam","header":243571285,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
+    {"name":"PendingArtist","header":null,"fields":[{"name":"wallet","type":{"kind":"simple","type":"address","optional":false}},{"name":"artistContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"timestamp","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
+    {"name":"PendingTrack","header":null,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"fingerprint","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"trackContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"timestamp","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
+    {"name":"Configuration","header":null,"fields":[{"name":"emissionCap","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"minWalletAgeDays","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"targetDailyActivity","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"rewardBaseActiveListener","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseGrowthAgent","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseArtistLaunch","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseTrendsetter","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseEarlyBeliever","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseDropInvestor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"decayFactor","type":{"kind":"simple","type":"uint","optional":false,"format":16}},{"name":"minThreshold","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"antiFarmingCoeff","type":{"kind":"simple","type":"uint","optional":false,"format":16}}]},
     {"name":"ArtistRegistered","header":3803150073,"fields":[{"name":"wallet","type":{"kind":"simple","type":"address","optional":false}},{"name":"artistContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"registeredAt","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
     {"name":"TrackRegistered","header":1961142070,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"fingerprint","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"trackContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"registeredAt","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
     {"name":"MintAuthorized","header":4196209244,"fields":[{"name":"recipient","type":{"kind":"simple","type":"address","optional":false}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"authorizedAt","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
     {"name":"RegisterDrop","header":2845755895,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"dropContract","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"DropRegistered","header":1376189393,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"dropContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"registeredAt","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
-    {"name":"ToonRegistry$Data","header":null,"fields":[{"name":"artists","type":{"kind":"dict","key":"address","value":"address"}},{"name":"artistContracts","type":{"kind":"dict","key":"address","value":"address"}},{"name":"tracks","type":{"kind":"dict","key":"int","value":"address"}},{"name":"trackContracts","type":{"kind":"dict","key":"address","value":"int"}},{"name":"drops","type":{"kind":"dict","key":"int","value":"address"}},{"name":"fingerprints","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"mintAuthority","type":{"kind":"simple","type":"address","optional":false}},{"name":"vault","type":{"kind":"simple","type":"address","optional":false}},{"name":"totalArtists","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"totalTracks","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
+    {"name":"ToonRegistry$Data","header":null,"fields":[{"name":"artists","type":{"kind":"dict","key":"address","value":"address"}},{"name":"artistContracts","type":{"kind":"dict","key":"address","value":"address"}},{"name":"tracks","type":{"kind":"dict","key":"int","value":"address"}},{"name":"trackContracts","type":{"kind":"dict","key":"address","value":"int"}},{"name":"drops","type":{"kind":"dict","key":"int","value":"address"}},{"name":"fingerprints","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"mintAuthority","type":{"kind":"simple","type":"address","optional":false}},{"name":"vault","type":{"kind":"simple","type":"address","optional":false}},{"name":"config","type":{"kind":"simple","type":"Configuration","optional":false}},{"name":"version","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"trackRewardEligible","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"artistRewardEligible","type":{"kind":"dict","key":"address","value":"bool"}},{"name":"pendingArtists","type":{"kind":"dict","key":"address","value":"PendingArtist","valueFormat":"ref"}},{"name":"pendingTracks","type":{"kind":"dict","key":"int","value":"PendingTrack","valueFormat":"ref"}},{"name":"totalArtists","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"totalTracks","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
 ]
 
 const ToonRegistry_opcodes = {
@@ -1627,9 +2488,20 @@ const ToonRegistry_opcodes = {
     "RegisterArtist": 3754294261,
     "RegisterTrack": 2360656451,
     "AuthorizeMint": 3725821709,
+    "StageArtistRegistration": 3427790327,
+    "ConfirmArtistRegistration": 3360845383,
+    "RollbackArtistRegistration": 3852039363,
+    "StageTrackRegistration": 3230863597,
+    "ConfirmTrackRegistration": 2759486958,
+    "RollbackTrackRegistration": 1932918785,
     "UpdateMintAuthority": 2021444180,
     "UpdateVaultAddress": 3682064959,
     "RequestMint": 277189457,
+    "SetConfig": 735098709,
+    "SetVersion": 60132687,
+    "SetTrackRewardEligibility": 153587645,
+    "SetArtistRewardEligibility": 2631390764,
+    "UpdateConfigParam": 243571285,
     "ArtistRegistered": 3803150073,
     "TrackRegistered": 1961142070,
     "MintAuthorized": 4196209244,
@@ -1645,6 +2517,10 @@ const ToonRegistry_getters: ABIGetter[] = [
     {"name":"isRegisteredTrack","methodId":86961,"arguments":[{"name":"trackId","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
     {"name":"fingerprintExists","methodId":74238,"arguments":[{"name":"fingerprint","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
     {"name":"getMintAuthority","methodId":97950,"arguments":[],"returnType":{"kind":"simple","type":"address","optional":false}},
+    {"name":"getConfig","methodId":93770,"arguments":[],"returnType":{"kind":"simple","type":"Configuration","optional":false}},
+    {"name":"getVersion","methodId":74724,"arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"isTrackRewardEligible","methodId":68101,"arguments":[{"name":"trackId","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"isArtistRewardEligible","methodId":105328,"arguments":[{"name":"artist","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
 ]
 
 export const ToonRegistry_getterMapping: { [key: string]: string } = {
@@ -1655,16 +2531,29 @@ export const ToonRegistry_getterMapping: { [key: string]: string } = {
     'isRegisteredTrack': 'getIsRegisteredTrack',
     'fingerprintExists': 'getFingerprintExists',
     'getMintAuthority': 'getGetMintAuthority',
+    'getConfig': 'getGetConfig',
+    'getVersion': 'getGetVersion',
+    'isTrackRewardEligible': 'getIsTrackRewardEligible',
+    'isArtistRewardEligible': 'getIsArtistRewardEligible',
 }
 
 const ToonRegistry_receivers: ABIReceiver[] = [
-    {"receiver":"internal","message":{"kind":"typed","type":"RegisterArtist"}},
-    {"receiver":"internal","message":{"kind":"typed","type":"RegisterTrack"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"StageArtistRegistration"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"ConfirmArtistRegistration"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"RollbackArtistRegistration"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"StageTrackRegistration"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"ConfirmTrackRegistration"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"RollbackTrackRegistration"}},
     {"receiver":"internal","message":{"kind":"typed","type":"AuthorizeMint"}},
     {"receiver":"internal","message":{"kind":"typed","type":"RequestMint"}},
     {"receiver":"internal","message":{"kind":"typed","type":"UpdateMintAuthority"}},
     {"receiver":"internal","message":{"kind":"typed","type":"UpdateVaultAddress"}},
     {"receiver":"internal","message":{"kind":"typed","type":"RegisterDrop"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"SetConfig"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"SetVersion"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"SetTrackRewardEligibility"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"SetArtistRewardEligibility"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"UpdateConfigParam"}},
     {"receiver":"internal","message":{"kind":"typed","type":"Deploy"}},
 ]
 
@@ -1703,14 +2592,26 @@ export class ToonRegistry implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: RegisterArtist | RegisterTrack | AuthorizeMint | RequestMint | UpdateMintAuthority | UpdateVaultAddress | RegisterDrop | Deploy) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: StageArtistRegistration | ConfirmArtistRegistration | RollbackArtistRegistration | StageTrackRegistration | ConfirmTrackRegistration | RollbackTrackRegistration | AuthorizeMint | RequestMint | UpdateMintAuthority | UpdateVaultAddress | RegisterDrop | SetConfig | SetVersion | SetTrackRewardEligibility | SetArtistRewardEligibility | UpdateConfigParam | Deploy) {
         
         let body: Cell | null = null;
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'RegisterArtist') {
-            body = beginCell().store(storeRegisterArtist(message)).endCell();
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'StageArtistRegistration') {
+            body = beginCell().store(storeStageArtistRegistration(message)).endCell();
         }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'RegisterTrack') {
-            body = beginCell().store(storeRegisterTrack(message)).endCell();
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'ConfirmArtistRegistration') {
+            body = beginCell().store(storeConfirmArtistRegistration(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'RollbackArtistRegistration') {
+            body = beginCell().store(storeRollbackArtistRegistration(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'StageTrackRegistration') {
+            body = beginCell().store(storeStageTrackRegistration(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'ConfirmTrackRegistration') {
+            body = beginCell().store(storeConfirmTrackRegistration(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'RollbackTrackRegistration') {
+            body = beginCell().store(storeRollbackTrackRegistration(message)).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'AuthorizeMint') {
             body = beginCell().store(storeAuthorizeMint(message)).endCell();
@@ -1726,6 +2627,21 @@ export class ToonRegistry implements Contract {
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'RegisterDrop') {
             body = beginCell().store(storeRegisterDrop(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetConfig') {
+            body = beginCell().store(storeSetConfig(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetVersion') {
+            body = beginCell().store(storeSetVersion(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetTrackRewardEligibility') {
+            body = beginCell().store(storeSetTrackRewardEligibility(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetArtistRewardEligibility') {
+            body = beginCell().store(storeSetArtistRewardEligibility(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'UpdateConfigParam') {
+            body = beginCell().store(storeUpdateConfigParam(message)).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Deploy') {
             body = beginCell().store(storeDeploy(message)).endCell();
@@ -1791,4 +2707,34 @@ export class ToonRegistry implements Contract {
         return result;
     }
     
+    async getGetConfig(provider: ContractProvider) {
+        const builder = new TupleBuilder();
+        const source = (await provider.get('getConfig', builder.build())).stack;
+        const result = loadGetterTupleConfiguration(source);
+        return result;
+    }
+
+    async getGetVersion(provider: ContractProvider) {
+        const builder = new TupleBuilder();
+        const source = (await provider.get('getVersion', builder.build())).stack;
+        const result = source.readBigNumber();
+        return result;
+    }
+
+    async getIsTrackRewardEligible(provider: ContractProvider, trackId: bigint) {
+        const builder = new TupleBuilder();
+        builder.writeNumber(trackId);
+        const source = (await provider.get('isTrackRewardEligible', builder.build())).stack;
+        const result = source.readBoolean();
+        return result;
+    }
+
+    async getIsArtistRewardEligible(provider: ContractProvider, artist: Address) {
+        const builder = new TupleBuilder();
+        builder.writeAddress(artist);
+        const source = (await provider.get('isArtistRewardEligible', builder.build())).stack;
+        const result = source.readBoolean();
+        return result;
+    }
+
 }

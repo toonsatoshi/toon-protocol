@@ -61,7 +61,8 @@ contract ToonTip with Deployable {
     /// Allows a user to tip multiple tracks at once.
     /// The message value is split according to ratios.
     receive(msg: SplitTip) {
-        let totalValue: Int = context().value;
+        let totalValue: Int = context().value - 100000000; // 0.1 TON gas buffer
+        if (totalValue <= 0) { return; }
         let i: Int = 0;
         
         while (i < msg.count) {
@@ -71,23 +72,12 @@ contract ToonTip with Deployable {
             if (target != null && ratio != null) {
                 let share: Int = (totalValue * ratio!!) / 10000;
                 if (share > 0) {
-                    if (i == msg.count - 1) {
-                        // Final share takes all remaining value
-                        send(SendParameters{
-                            to: target!!,
-                            value: 0,
-                            mode: SendRemainingValue,
-                            body: "tip".asComment()
-                        });
-                    } else {
-                        // Other shares pay gas separately
-                        send(SendParameters{
-                            to: target!!,
-                            value: share,
-                            mode: SendPayGasSeparately,
-                            body: "tip".asComment()
-                        });
-                    }
+                    send(SendParameters{
+                        to: target!!,
+                        value: share,
+                        mode: SendPayGasSeparately,
+                        body: "tip".asComment()
+                    });
                 }
             }
             i = i + 1;
@@ -139,10 +129,11 @@ contract ToonTip with Deployable {
             // Fire the collective tip to the track
             send(SendParameters{
                 to: p.trackAddress,
-                value: 0,
-                mode: SendRemainingValue,
+                value: p.currentAmount,
+                mode: SendPayGasSeparately,
                 body: "tip".asComment()
             });
+            p.currentAmount = 0;
         }
 
         self.pools.set(msg.poolId, p);

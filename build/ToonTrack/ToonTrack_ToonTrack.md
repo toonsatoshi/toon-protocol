@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonTrack
-BoC Size: 1056 bytes
+BoC Size: 1362 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 16
+Total structures: 17
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -65,9 +65,13 @@ Signature: `AuthorizeMint{recipient:address,amount:coins}`
 TL-B: `request_mint#10859351 recipient:address amount:coins = RequestMint`
 Signature: `RequestMint{recipient:address,amount:coins}`
 
+### ConfirmTrackRegistration
+TL-B: `confirm_track_registration#a47a6dee trackId:uint256 = ConfirmTrackRegistration`
+Signature: `ConfirmTrackRegistration{trackId:uint256}`
+
 ### ToonTrack$Data
-TL-B: `_ artist:address registry:address metadataUri:^string fingerprint:uint256 mintFee:coins reputation:uint32 = ToonTrack`
-Signature: `ToonTrack{artist:address,registry:address,metadataUri:^string,fingerprint:uint256,mintFee:coins,reputation:uint32}`
+TL-B: `_ artist:address registry:address trackId:uint256 metadataUri:^string fingerprint:uint256 mintFee:coins reputation:uint32 = ToonTrack`
+Signature: `ToonTrack{artist:address,registry:address,trackId:uint256,metadataUri:^string,fingerprint:uint256,mintFee:coins,reputation:uint32}`
 
 ## Get methods
 Total get methods: 5
@@ -125,6 +129,7 @@ No arguments
 * 136: Invalid standard address
 * 138: Not a basechain address
 * 43013: ToonTrack: tip below minimum floor (including gas)
+* 57664: ToonTrack: only artist can confirm registration
 
 ## Trait inheritance diagram
 

@@ -29,11 +29,23 @@ builder $DeployOk$_store(builder build_0, (int) v) inline;
 ;; $DeployOk$_store_cell
 cell $DeployOk$_store_cell((int) v, builder b) inline;
 
-;; $RegisterTrack$_store
-builder $RegisterTrack$_store(builder build_0, (int, int, slice) v) inline;
+;; $StageArtistRegistration$_store
+builder $StageArtistRegistration$_store(builder build_0, (slice, slice) v) inline;
 
-;; $RegisterTrack$_store_cell
-cell $RegisterTrack$_store_cell((int, int, slice) v, builder b) inline;
+;; $StageArtistRegistration$_store_cell
+cell $StageArtistRegistration$_store_cell((slice, slice) v, builder b) inline;
+
+;; $ConfirmArtistRegistration$_store
+builder $ConfirmArtistRegistration$_store(builder build_0, (slice) v) inline;
+
+;; $ConfirmArtistRegistration$_store_cell
+cell $ConfirmArtistRegistration$_store_cell((slice) v, builder b) inline;
+
+;; $StageTrackRegistration$_store
+builder $StageTrackRegistration$_store(builder build_0, (int, int, slice) v) inline;
+
+;; $StageTrackRegistration$_store_cell
+cell $StageTrackRegistration$_store_cell((int, int, slice) v, builder b) inline;
 
 ;; $ToonArtist$_store
 builder $ToonArtist$_store(builder build_0, (slice, slice, int, slice, int, int, int, cell, int) v) inline;
@@ -95,11 +107,17 @@ _ $Context$_get_value((int, slice, int, slice) v) inline;
 ;; $SendParameters$_constructor_to_value_mode_body
 ((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline;
 
-;; $RegisterTrack$_constructor_trackId_fingerprint_trackContract
-((int, int, slice)) $RegisterTrack$_constructor_trackId_fingerprint_trackContract(int $trackId, int $fingerprint, slice $trackContract) inline;
+;; $StageTrackRegistration$_constructor_trackId_fingerprint_trackContract
+((int, int, slice)) $StageTrackRegistration$_constructor_trackId_fingerprint_trackContract(int $trackId, int $fingerprint, slice $trackContract) inline;
 
 ;; $DeployOk$_constructor_queryId
 ((int)) $DeployOk$_constructor_queryId(int $queryId) inline;
+
+;; $StageArtistRegistration$_constructor_artistContract_wallet
+((slice, slice)) $StageArtistRegistration$_constructor_artistContract_wallet(slice $artistContract, slice $wallet) inline;
+
+;; $ConfirmArtistRegistration$_constructor_wallet
+((slice)) $ConfirmArtistRegistration$_constructor_wallet(slice $wallet) inline;
 
 
 ;; ToonArtist_ToonArtist.stdlib.fc
@@ -137,6 +155,10 @@ slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
         return (idict_set(d, kl, k, v), ());
     }
 }
+
+slice $global_myAddress() impure asm """
+    MYADDR
+""";
 
 int $global_myBalance() impure asm """
     BALANCE FIRST
@@ -274,6 +296,11 @@ slice __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e
     B{b5ee9c72410101010024000043800000000000000000000000000000000000000000000000000000000000000000104aec829d} B>boc <s PUSHSLICE
 """;
 
+;; Cell BJW2FiFzHzi/IXdK3/v+m7vMnMVFcIHz/FTm4/+5uAQ=
+cell __gen_cell_cell_0495b61621731f38bf21774adffbfe9bbbcc9cc5457081f3fc54e6e3ffb9b804() asm """
+    B{b5ee9c7241010101001900002e00000000436f6e6669726d526567697374726174696f6eaed473b3} B>boc PUSHREF
+""";
+
 ;; ToonArtist_ToonArtist.storage.fc
 ;;
 ;; Type: Context
@@ -325,25 +352,68 @@ cell $DeployOk$_store_cell((int) v, builder b) inline {
 }
 
 ;;
-;; Type: RegisterTrack
-;; Header: 0x8cb4c243
-;; TLB: register_track#8cb4c243 trackId:uint256 fingerprint:uint256 trackContract:address = RegisterTrack
+;; Type: StageArtistRegistration
+;; Header: 0xcc4fedf7
+;; TLB: stage_artist_registration#cc4fedf7 artistContract:address wallet:address = StageArtistRegistration
 ;;
 
-builder $RegisterTrack$_store(builder build_0, (int, int, slice) v) inline {
+builder $StageArtistRegistration$_store(builder build_0, (slice, slice) v) inline {
+    var (v'artistContract, v'wallet) = v;
+    build_0 = store_uint(build_0, 3427790327, 32);
+    build_0 = build_0.store_slice(v'artistContract);
+    build_0 = build_0.store_slice(v'wallet);
+    return build_0;
+}
+
+cell $StageArtistRegistration$_store_cell((slice, slice) v, builder b) inline {
+    return $StageArtistRegistration$_store(b, v).end_cell();
+}
+
+((slice, slice)) $StageArtistRegistration$_constructor_artistContract_wallet(slice $artistContract, slice $wallet) inline {
+    return ($artistContract, $wallet);
+}
+
+;;
+;; Type: ConfirmArtistRegistration
+;; Header: 0xc8526e47
+;; TLB: confirm_artist_registration#c8526e47 wallet:address = ConfirmArtistRegistration
+;;
+
+builder $ConfirmArtistRegistration$_store(builder build_0, (slice) v) inline {
+    var (v'wallet) = v;
+    build_0 = store_uint(build_0, 3360845383, 32);
+    build_0 = build_0.store_slice(v'wallet);
+    return build_0;
+}
+
+cell $ConfirmArtistRegistration$_store_cell((slice) v, builder b) inline {
+    return $ConfirmArtistRegistration$_store(b, v).end_cell();
+}
+
+((slice)) $ConfirmArtistRegistration$_constructor_wallet(slice $wallet) inline {
+    return ($wallet);
+}
+
+;;
+;; Type: StageTrackRegistration
+;; Header: 0xc09310ed
+;; TLB: stage_track_registration#c09310ed trackId:uint256 fingerprint:uint256 trackContract:address = StageTrackRegistration
+;;
+
+builder $StageTrackRegistration$_store(builder build_0, (int, int, slice) v) inline {
     var (v'trackId, v'fingerprint, v'trackContract) = v;
-    build_0 = store_uint(build_0, 2360656451, 32);
+    build_0 = store_uint(build_0, 3230863597, 32);
     build_0 = build_0.store_uint(v'trackId, 256);
     build_0 = build_0.store_uint(v'fingerprint, 256);
     build_0 = build_0.store_slice(v'trackContract);
     return build_0;
 }
 
-cell $RegisterTrack$_store_cell((int, int, slice) v, builder b) inline {
-    return $RegisterTrack$_store(b, v).end_cell();
+cell $StageTrackRegistration$_store_cell((int, int, slice) v, builder b) inline {
+    return $StageTrackRegistration$_store(b, v).end_cell();
 }
 
-((int, int, slice)) $RegisterTrack$_constructor_trackId_fingerprint_trackContract(int $trackId, int $fingerprint, slice $trackContract) inline {
+((int, int, slice)) $StageTrackRegistration$_constructor_trackId_fingerprint_trackContract(int $trackId, int $fingerprint, slice $trackContract) inline {
     return ($trackId, $fingerprint, $trackContract);
 }
 
@@ -443,50 +513,50 @@ builder $ToonArtist$_store(builder build_0, (slice, slice, int, slice, int, int,
 
 ((slice, slice, int, slice, int, int, int, cell, int), int) $ToonArtist$_fun_isActive((slice, slice, int, slice, int, int, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks)) = $self;
-    var $fresh$ret_57 = ($self'stakedToon >= 100000000000);
-    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_57);
+    var $fresh$ret_62 = ($self'stakedToon >= 100000000000);
+    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_62);
 }
 
 ((slice, slice, int, slice, int, int, int, cell, int), int) $ToonArtist$_fun_canLaunchToonDrop((slice, slice, int, slice, int, int, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks)) = $self;
-    var $fresh$ret_58 = ($self'reputation >= 1000);
-    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_58);
+    var $fresh$ret_63 = ($self'reputation >= 1000);
+    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_63);
 }
 
 ((slice, slice, int, slice, int, int, int, cell, int), (int, int, int, int, int)) $ToonArtist$_fun_getDetails((slice, slice, int, slice, int, int, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks)) = $self;
-    var $fresh$ret_59 = $ArtistDetails$_constructor_reputation_totalTipVolume_stakedToon_isActive_totalTracks($self'reputation, $self'totalTipVolume, $self'stakedToon, ($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks)~$ToonArtist$_fun_isActive(), $self'totalTracks);
-    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_59);
+    var $fresh$ret_64 = $ArtistDetails$_constructor_reputation_totalTipVolume_stakedToon_isActive_totalTracks($self'reputation, $self'totalTipVolume, $self'stakedToon, ($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks)~$ToonArtist$_fun_isActive(), $self'totalTracks);
+    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_64);
 }
 
 ((slice, slice, int, slice, int, int, int, cell, int), slice) $ToonArtist$_fun_getTrack((slice, slice, int, slice, int, int, int, cell, int) $self, int $trackId) impure inline_ref {
     var (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks)) = $self;
-    var $fresh$ret_60 = __tact_dict_get_int_slice($self'tracks, 257, $trackId);
-    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_60);
+    var $fresh$ret_65 = __tact_dict_get_int_slice($self'tracks, 257, $trackId);
+    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_65);
 }
 
 ((slice, slice, int, slice, int, int, int, cell, int), int) $ToonArtist$_fun_reputation((slice, slice, int, slice, int, int, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks)) = $self;
-    var $fresh$ret_61 = $self'reputation;
-    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_61);
+    var $fresh$ret_66 = $self'reputation;
+    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_66);
 }
 
 ((slice, slice, int, slice, int, int, int, cell, int), slice) $ToonArtist$_fun_owner((slice, slice, int, slice, int, int, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks)) = $self;
-    var $fresh$ret_62 = $self'owner;
-    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_62);
+    var $fresh$ret_67 = $self'owner;
+    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_67);
 }
 
 ((slice, slice, int, slice, int, int, int, cell, int), int) $ToonArtist$_fun_totalTracks((slice, slice, int, slice, int, int, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks)) = $self;
-    var $fresh$ret_63 = $self'totalTracks;
-    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_63);
+    var $fresh$ret_68 = $self'totalTracks;
+    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_68);
 }
 
 ((slice, slice, int, slice, int, int, int, cell, int), int) $ToonArtist$_fun_stakedToon((slice, slice, int, slice, int, int, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks)) = $self;
-    var $fresh$ret_64 = $self'stakedToon;
-    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_64);
+    var $fresh$ret_69 = $self'stakedToon;
+    return (($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks), $fresh$ret_69);
 }
 
 ;;
@@ -611,10 +681,11 @@ _ %stakedToon() method_id(96523) {
             if (($self'totalTracks > 0)) {
                 throw_unless(6995, ($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks)~$ToonArtist$_fun_isActive());
             }
-            $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 0, 64, $RegisterTrack$_store_cell($RegisterTrack$_constructor_trackId_fingerprint_trackContract($msg'trackId, $msg'fingerprint, $msg'trackContract), begin_cell())));
+            $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 50000000, 1, $StageTrackRegistration$_store_cell($StageTrackRegistration$_constructor_trackId_fingerprint_trackContract($msg'trackId, $msg'fingerprint, $msg'trackContract), begin_cell())));
             $self'tracks~__tact_dict_set_int_slice(257, $msg'trackId, $msg'trackContract);
             $self'totalTracks = ($self'totalTracks + 1);
             $self'reputation = ($self'reputation + 10);
+            $global_send($SendParameters$_constructor_to_value_mode_body($msg'trackContract, 50000000, 1, __gen_cell_cell_0495b61621731f38bf21774adffbfe9bbbcc9cc5457081f3fc54e6e3ffb9b804()));
             $ToonArtist$_contract_store(($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks));
             return ();
         }
@@ -639,6 +710,20 @@ _ %stakedToon() method_id(96523) {
     ;; Receive "Tip received" message
     if (text_op == 0x1bb9cd5336387bc2aaa2f0088c6feb124b79ae38f229da1812e8471232681fed) {
         $self'totalTipVolume = ($self'totalTipVolume + $Context$_get_value(__tact_context_get()));
+        $ToonArtist$_contract_store(($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks));
+        return ();
+    }
+    ;; Receive "RegisterSelf" message
+    if (text_op == 0x67e1a8da995a857806a50314469a5a8ae5a88c019f923ae780311567f3df06aa) {
+        throw_unless(27429, ( equal_slices_bits(__tact_context_get_sender(), $self'owner) ));
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 0, 64, $StageArtistRegistration$_store_cell($StageArtistRegistration$_constructor_artistContract_wallet($global_myAddress(), $self'owner), begin_cell())));
+        $ToonArtist$_contract_store(($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks));
+        return ();
+    }
+    ;; Receive "ConfirmRegistration" message
+    if (text_op == 0x28208bdda6b6da97d2a1534c928b42e898752fbd839be4045590daafcb220543) {
+        throw_unless(62589, ( equal_slices_bits(__tact_context_get_sender(), $self'owner) ));
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 0, 64, $ConfirmArtistRegistration$_store_cell($ConfirmArtistRegistration$_constructor_wallet($self'owner), begin_cell())));
         $ToonArtist$_contract_store(($self'owner, $self'registry, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks));
         return ();
     }

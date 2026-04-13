@@ -40,6 +40,25 @@ const CLAIM_COOLDOWN_SECONDS:   Int = 300;
 // claimId: unique uint64 — replay protection (stored in usedClaimIds)
 // expiry:  unix timestamp — payload must arrive before this
 // sigHigh/sigLow: Ed25519 signature split into two uint256 halves
+struct Configuration {
+    emissionCap: Int as coins;
+    minWalletAgeDays: Int as uint32;
+    targetDailyActivity: Int as uint32;
+    rewardBaseActiveListener: Int as coins;
+    rewardBaseGrowthAgent: Int as coins;
+    rewardBaseArtistLaunch: Int as coins;
+    rewardBaseTrendsetter: Int as coins;
+    rewardBaseEarlyBeliever: Int as coins;
+    rewardBaseDropInvestor: Int as coins;
+    decayFactor: Int as uint16; // e.g., in basis points
+    minThreshold: Int as coins;
+    antiFarmingCoeff: Int as uint16;
+}
+
+message SetConfig {
+    config: Configuration;
+}
+
 message ClaimReward {
     walletAddress:  Address;
     rewardId:       Int as uint8;
@@ -67,10 +86,6 @@ message RewardClaimed {
     amount: Int as coins;
 }
 
-// Governance-dispatched: vault commits these as real state mutations.
-message UpdateEmissionCap    { newCap: Int as coins;        }
-message UpdateMinWalletAge   { newAgeDays: Int as uint32;   }
-message UpdateTargetActivity { newTarget: Int as uint32;    }
 
 // Owner-only admin messages.
 message UpdateReserve    { amount: Int as coins;        }
@@ -78,6 +93,7 @@ message UpdateRegistry   { newRegistry: Address;        }
 message SetGovernance    { newGovernance: Address;      }
 message SetOracleKey     { newPublicKey: Int as uint256;}
 message TreasuryWithdraw { amount: Int as coins; recipient: Address; }
+message UpdateIdentityWeight { wallet: Address; weight: Int; }
 
 // ── ToonVault ────────────────────────────────────────────────────────────────
 //
@@ -105,9 +121,7 @@ contract ToonVault with Deployable {
     dailyEmitted:        Int as coins;
     lastResetDay:        Int as uint32;
     halved:              Bool;
-    emissionCap:         Int as coins;
-    minWalletAgeDays:    Int as uint32;
-    targetDailyActivity: Int as uint32;
+    config:              Configuration;
     dailyClaimCount:     Int as uint32;
 
     // ── Replay protection ────────────────────────────────────────────────────
@@ -125,6 +139,19 @@ contract ToonVault with Deployable {
     // Key: sha256(telegramId + ":" + referrerId)
     pairingCounts: map<Int, Int>;
 
+    // Multi-factor scoring State
+    // unique participant count per reward type (rough approximation)
+    participantEntropy: map<Int, Int>;
+    // temporal distribution: track last claim per rewardId to see bursts
+    lastRewardTimestamp: map<Int, Int>;
+
+    // Sybil resistance: Identity weights (reputation/stake based)
+    identityWeights: map<Address, Int>;
+
+    // Per-epoch (day) limits
+    dailyIdentityRewards: map<Int, Int as coins>;
+    dailyClusterRewards:  map<Int, Int as coins>;
+
     // One-time reward guard.
     lifetimeClaimed: map<Int, Bool>;
 
@@ -137,9 +164,6 @@ contract ToonVault with Deployable {
         dailyEmitted:        Int,
         lastResetDay:        Int,
         halved:              Bool,
-        emissionCap:         Int,
-        minWalletAgeDays:    Int,
-        targetDailyActivity: Int,
         dailyClaimCount:     Int,
     ) {
         self.owner               = owner;
@@ -150,10 +174,22 @@ contract ToonVault with Deployable {
         self.dailyEmitted        = dailyEmitted;
         self.lastResetDay        = lastResetDay;
         self.halved              = halved;
-        self.emissionCap         = emissionCap;
-        self.minWalletAgeDays    = minWalletAgeDays;
-        self.targetDailyActivity = targetDailyActivity;
         self.dailyClaimCount     = dailyClaimCount;
+
+        self.config = Configuration{
+            emissionCap: ton("50000"),
+            minWalletAgeDays: 7,
+            targetDailyActivity: 1000,
+            rewardBaseActiveListener: ton("10"),
+            rewardBaseGrowthAgent: ton("5"),
+            rewardBaseArtistLaunch: ton("500"),
+            rewardBaseTrendsetter: ton("5000"),
+            rewardBaseEarlyBeliever: ton("200"),
+            rewardBaseDropInvestor: ton("50"),
+            decayFactor: 1000,
+            minThreshold: ton("0.01"),
+            antiFarmingCoeff: 500
+        };
     }
 
     // Allow the contract to receive TON for funding rewards
@@ -183,6 +219,19 @@ contract ToonVault with Deployable {
         let sb: StringBuilder = beginString();
         sb.append("pair:"); sb.append(userA.toString()); sb.append(":");
         sb.append(userB.toString());
+        return sha256(sb.toString());
+    }
+
+    fun clusterKey(clusterA: Int, clusterB: Int): Int {
+        let sb: StringBuilder = beginString();
+        sb.append("cl:"); sb.append(clusterA.toString()); sb.append(":");
+        sb.append(clusterB.toString());
+        return sha256(sb.toString());
+    }
+
+    fun identityKey(wallet: Address): Int {
+        let sb: StringBuilder = beginString();
+        sb.append("id:"); sb.append(wallet.toString());
         return sha256(sb.toString());
     }
 
@@ -230,11 +279,28 @@ contract ToonVault with Deployable {
             self.dailyEmitted    = 0;
             self.dailyClaimCount = 0;
             self.lastResetDay    = today;
+            // Clear daily maps by not clearing but we could use a prefix in keys.
+            // For simplicity in Tact/TON, we usually just accept they might grow
+            // or use a new map. But map clearing is not efficient.
+            // A better way is to include today in the key.
         }
     }
 
+    fun dailyIdKey(wallet: Address, day: Int): Int {
+        let sb: StringBuilder = beginString();
+        sb.append("did:"); sb.append(wallet.toString()); sb.append(":"); sb.append(day.toString());
+        return sha256(sb.toString());
+    }
+
+    fun dailyClusterKey(userA: Int, userB: Int, day: Int): Int {
+        let sb: StringBuilder = beginString();
+        sb.append("dcl:"); sb.append(userA.toString()); sb.append(":");
+        sb.append(userB.toString()); sb.append(":"); sb.append(day.toString());
+        return sha256(sb.toString());
+    }
+
     fun halvedBaseCap(): Int {
-        let cap: Int = self.emissionCap;
+        let cap: Int = self.config.emissionCap;
         let reservePct: Int = (self.totalReserve * 100) / ton("1000000");
         if (reservePct <= RESERVE_HALVE_THRESHOLD)   { self.halved = true;  }
         if (reservePct >= RESERVE_RECOVER_THRESHOLD) { self.halved = false; }
@@ -245,11 +311,11 @@ contract ToonVault with Deployable {
     // Feedback multiplier: rewards shrink if activity exceeds target.
     //   mult = min(10000, (target * 10000) / max(1, actual))
     fun activityMultiplier(): Int {
-        if (self.targetDailyActivity == 0) { return 10000; }
+        if (self.config.targetDailyActivity == 0) { return 10000; }
         let actual: Int = self.dailyClaimCount;
-        if (actual <= self.targetDailyActivity) { return 10000; }
+        if (actual <= self.config.targetDailyActivity) { return 10000; }
         
-        let ratio: Int = (self.targetDailyActivity * 10000) / actual;
+        let ratio: Int = (self.config.targetDailyActivity * 10000) / actual;
         if (ratio < 1000) { ratio = 1000; } // Floor at 10%
         return ratio;
     }
@@ -281,6 +347,40 @@ contract ToonVault with Deployable {
         return (amount * 40) / 100; // Floor at 40% for pairings
     }
 
+    fun multiFactorScore(amount: Int, msg: ClaimReward): Int {
+        let res: Int = amount;
+        let rId: Int = msg.rewardId;
+
+        // 1. Interaction Entropy (variance of participants)
+        let entropy: Int? = self.participantEntropy.get(rId);
+        let eVal: Int = entropy != null ? entropy!! : 0;
+        if (eVal > 100) { res = (res * 110) / 100; }
+
+        // 2. Temporal Distribution (spread over time vs bursts)
+        let lastT: Int? = self.lastRewardTimestamp.get(rId);
+        if (lastT != null) {
+            let delta: Int = now() - lastT!!;
+            if (delta < 10) {
+                res = (res * 50) / 100;
+            }
+        }
+
+        // 3. Identity Weighting (Sybil resistance)
+        let weight: Int? = self.identityWeights.get(msg.walletAddress);
+        let wVal: Int = weight != null ? weight!! : 100; // Default weight 100%
+        res = (res * wVal) / 100;
+
+        // Update entropy if it's a first-time claimer for this reward (simplified check)
+        let ckKey: Int = self.countKey(rId, msg.walletAddress);
+        if (self.claimCounts.get(ckKey) == null) {
+            self.participantEntropy.set(rId, eVal + 1);
+        }
+
+        self.lastRewardTimestamp.set(rId, now());
+
+        return res;
+    }
+
     fun isOneTimeReward(rewardId: Int): Bool {
         return rewardId == REWARD_ARTIST_LAUNCH ||
                rewardId == REWARD_TRENDSETTER   ||
@@ -307,7 +407,7 @@ contract ToonVault with Deployable {
         self.usedClaimIds.set(msg.claimId, true);
 
         // ── 4. Wallet eligibility ─────────────────────────────────────────
-        require(msg.walletAgeDays >= self.minWalletAgeDays, "ToonVault: wallet too new");
+        require(msg.walletAgeDays >= self.config.minWalletAgeDays, "ToonVault: wallet too new");
         require(msg.telegramId > 0, "ToonVault: no Telegram identity");
 
         // ── 5. Daily reset ────────────────────────────────────────────────
@@ -333,12 +433,12 @@ contract ToonVault with Deployable {
 
         // ── 9. Reward computation ────────────────────────────────────────
         let baseReward: Int = 0;
-        if      (msg.rewardId == REWARD_ACTIVE_LISTENER) { baseReward = BASE_ACTIVE_LISTENER; }
-        else if (msg.rewardId == REWARD_GROWTH_AGENT)    { baseReward = BASE_GROWTH_AGENT;    }
-        else if (msg.rewardId == REWARD_ARTIST_LAUNCH)   { baseReward = BASE_ARTIST_LAUNCH;   }
-        else if (msg.rewardId == REWARD_TRENDSETTER)     { baseReward = BASE_TRENDSETTER;     }
-        else if (msg.rewardId == REWARD_EARLY_BELIEVER)  { baseReward = BASE_EARLY_BELIEVER;  }
-        else if (msg.rewardId == REWARD_DROP_INVESTOR)   { baseReward = BASE_DROP_INVESTOR;   }
+        if      (msg.rewardId == REWARD_ACTIVE_LISTENER) { baseReward = self.config.rewardBaseActiveListener; }
+        else if (msg.rewardId == REWARD_GROWTH_AGENT)    { baseReward = self.config.rewardBaseGrowthAgent;    }
+        else if (msg.rewardId == REWARD_ARTIST_LAUNCH)   { baseReward = self.config.rewardBaseArtistLaunch;   }
+        else if (msg.rewardId == REWARD_TRENDSETTER)     { baseReward = self.config.rewardBaseTrendsetter;     }
+        else if (msg.rewardId == REWARD_EARLY_BELIEVER)  { baseReward = self.config.rewardBaseEarlyBeliever;  }
+        else if (msg.rewardId == REWARD_DROP_INVESTOR)   { baseReward = self.config.rewardBaseDropInvestor;   }
         else if (msg.rewardId == REWARD_SUPERFAN) {
             require(msg.tipAmount >= ton("100"), "ToonVault: tip too small");
             baseReward = (msg.tipAmount * SUPERFAN_REBATE_BPS) / 10000;
@@ -368,6 +468,28 @@ contract ToonVault with Deployable {
         // ── 12. Vibe streak & Activity feedback ───────────────────────────
         reward = self.applyMultiplier(reward, msg.hasVibeStreak);
 
+        // ── 12b. Multi-factor scoring ─────────────────────────────────────
+        reward = self.multiFactorScore(reward, msg);
+
+        // ── 12c. Per-epoch caps ───────────────────────────────────────────
+        let idKey: Int = self.dailyIdKey(msg.walletAddress, today);
+        let idEarned: Int = self.dailyIdentityRewards.get(idKey) != null ? self.dailyIdentityRewards.get(idKey)!! : 0;
+        let idCap: Int = ton("1000"); // 1000 $TOON per identity per day
+        if (idEarned + reward > idCap) {
+            reward = idCap - idEarned;
+        }
+        if (reward < 0) { reward = 0; }
+
+        let clKey: Int = self.dailyClusterKey(msg.telegramId, msg.referrerId, today);
+        if (msg.referrerId > 0) {
+            let clEarned: Int = self.dailyClusterRewards.get(clKey) != null ? self.dailyClusterRewards.get(clKey)!! : 0;
+            let clCap: Int = ton("2000"); // 2000 $TOON per cluster per day
+            if (clEarned + reward > clCap) {
+                reward = clCap - clEarned;
+            }
+        }
+        if (reward < 0) { reward = 0; }
+
         // ── 13. Clamp to remaining daily budget ───────────────────────────
         let remaining: Int = cap - self.dailyEmitted;
         if (reward > remaining) { reward = remaining; }
@@ -383,6 +505,11 @@ contract ToonVault with Deployable {
         self.dailyClaimCount = self.dailyClaimCount + 1;
         self.lastClaimTimestamp.set(cKey, now());
         self.claimCounts.set(ckKey, claimCount + 1);
+        self.dailyIdentityRewards.set(idKey, idEarned + reward);
+        if (msg.referrerId > 0) {
+            let clEarned: Int = self.dailyClusterRewards.get(clKey) != null ? self.dailyClusterRewards.get(clKey)!! : 0;
+            self.dailyClusterRewards.set(clKey, clEarned + reward);
+        }
 
         if (self.isOneTimeReward(msg.rewardId)) {
             self.lifetimeClaimed.set(oKey, true);
@@ -414,34 +541,10 @@ contract ToonVault with Deployable {
         });
     }
 
-    // ── Governance-gated parameter updates ───────────────────────────────────
-    //  These are the real execution endpoints — governance votes dispatch one
-    //  of these messages, and the vault commits the new value to state.
-
-    receive(msg: UpdateEmissionCap) {
-        require(sender() == self.governance,
-            "ToonVault: only governance can update emission cap");
-        require(msg.newCap > 0 && msg.newCap <= EMISSION_CAP_CEILING,
-            "ToonVault: cap out of valid range");
-        self.emissionCap = msg.newCap;
-        emit("EmissionCapUpdated".asComment());
-    }
-
-    receive(msg: UpdateMinWalletAge) {
-        require(sender() == self.governance,
-            "ToonVault: only governance can update min wallet age");
-        require(msg.newAgeDays <= 365, "ToonVault: age > 1-year ceiling");
-        self.minWalletAgeDays = msg.newAgeDays;
-        emit("MinWalletAgeUpdated".asComment());
-    }
-
-    // Governance sets the expected daily claim count for dynamic emission.
-    // Setting to 0 disables dynamic scaling and reverts to static cap.
-    receive(msg: UpdateTargetActivity) {
-        require(sender() == self.governance,
-            "ToonVault: only governance can set target activity");
-        self.targetDailyActivity = msg.newTarget;
-        emit("TargetActivityUpdated".asComment());
+    // ── Registry-gated configuration update ──────────────────────────────────
+    receive(msg: SetConfig) {
+        require(sender() == self.registry, "ToonVault: only registry can update config");
+        self.config = msg.config;
     }
 
     // ── Owner-only admin ─────────────────────────────────────────────────────
@@ -480,14 +583,20 @@ contract ToonVault with Deployable {
         });
     }
 
+    receive(msg: UpdateIdentityWeight) {
+        require(sender() == self.registry || sender() == self.owner, "ToonVault: unauthorized identity weight update");
+        self.identityWeights.set(msg.wallet, msg.weight);
+    }
+
     // ── Getters ──────────────────────────────────────────────────────────────
 
     get fun totalReserve(): Int       { return self.totalReserve;       }
     get fun dailyEmitted(): Int       { return self.dailyEmitted;       }
     get fun dailyClaimCount(): Int    { return self.dailyClaimCount;    }
     get fun isHalved(): Bool          { return self.halved;             }
-    get fun currentEmissionCap(): Int { return self.emissionCap;        }
-    get fun minWalletAgeDays(): Int   { return self.minWalletAgeDays;   }
+    get fun getConfig(): Configuration { return self.config; }
+    get fun currentEmissionCap(): Int { return self.config.emissionCap;        }
+    get fun minWalletAgeDays(): Int   { return self.config.minWalletAgeDays;   }
     get fun effectiveDailyCap(): Int  { return self.halvedBaseCap();     }
     get fun governance(): Address     { return self.governance;         }
 

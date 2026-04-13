@@ -1168,96 +1168,163 @@ export function dictValueParserExecuteAddressProposal(): DictionaryValue<Execute
     }
 }
 
-export type UpdateEmissionCap = {
-    $$type: 'UpdateEmissionCap';
-    newCap: bigint;
+export type Configuration = {
+    $$type: 'Configuration';
+    emissionCap: bigint;
+    minWalletAgeDays: bigint;
+    targetDailyActivity: bigint;
+    rewardBaseActiveListener: bigint;
+    rewardBaseGrowthAgent: bigint;
+    rewardBaseArtistLaunch: bigint;
+    rewardBaseTrendsetter: bigint;
+    rewardBaseEarlyBeliever: bigint;
+    rewardBaseDropInvestor: bigint;
+    decayFactor: bigint;
+    minThreshold: bigint;
+    antiFarmingCoeff: bigint;
 }
 
-export function storeUpdateEmissionCap(src: UpdateEmissionCap) {
+export function storeConfiguration(src: Configuration) {
     return (builder: Builder) => {
         const b_0 = builder;
-        b_0.storeUint(1272424197, 32);
-        b_0.storeCoins(src.newCap);
+        b_0.storeCoins(src.emissionCap);
+        b_0.storeUint(src.minWalletAgeDays, 32);
+        b_0.storeUint(src.targetDailyActivity, 32);
+        b_0.storeCoins(src.rewardBaseActiveListener);
+        b_0.storeCoins(src.rewardBaseGrowthAgent);
+        b_0.storeCoins(src.rewardBaseArtistLaunch);
+        b_0.storeCoins(src.rewardBaseTrendsetter);
+        b_0.storeCoins(src.rewardBaseEarlyBeliever);
+        b_0.storeCoins(src.rewardBaseDropInvestor);
+        b_0.storeUint(src.decayFactor, 16);
+        const b_1 = new Builder();
+        b_1.storeCoins(src.minThreshold);
+        b_1.storeUint(src.antiFarmingCoeff, 16);
+        b_0.storeRef(b_1.endCell());
     };
 }
 
-export function loadUpdateEmissionCap(slice: Slice) {
+export function loadConfiguration(slice: Slice) {
     const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1272424197) { throw Error('Invalid prefix'); }
-    const _newCap = sc_0.loadCoins();
-    return { $$type: 'UpdateEmissionCap' as const, newCap: _newCap };
+    const _emissionCap = sc_0.loadCoins();
+    const _minWalletAgeDays = sc_0.loadUintBig(32);
+    const _targetDailyActivity = sc_0.loadUintBig(32);
+    const _rewardBaseActiveListener = sc_0.loadCoins();
+    const _rewardBaseGrowthAgent = sc_0.loadCoins();
+    const _rewardBaseArtistLaunch = sc_0.loadCoins();
+    const _rewardBaseTrendsetter = sc_0.loadCoins();
+    const _rewardBaseEarlyBeliever = sc_0.loadCoins();
+    const _rewardBaseDropInvestor = sc_0.loadCoins();
+    const _decayFactor = sc_0.loadUintBig(16);
+    const sc_1 = sc_0.loadRef().beginParse();
+    const _minThreshold = sc_1.loadCoins();
+    const _antiFarmingCoeff = sc_1.loadUintBig(16);
+    return { $$type: 'Configuration' as const, emissionCap: _emissionCap, minWalletAgeDays: _minWalletAgeDays, targetDailyActivity: _targetDailyActivity, rewardBaseActiveListener: _rewardBaseActiveListener, rewardBaseGrowthAgent: _rewardBaseGrowthAgent, rewardBaseArtistLaunch: _rewardBaseArtistLaunch, rewardBaseTrendsetter: _rewardBaseTrendsetter, rewardBaseEarlyBeliever: _rewardBaseEarlyBeliever, rewardBaseDropInvestor: _rewardBaseDropInvestor, decayFactor: _decayFactor, minThreshold: _minThreshold, antiFarmingCoeff: _antiFarmingCoeff };
 }
 
-export function loadTupleUpdateEmissionCap(source: TupleReader) {
-    const _newCap = source.readBigNumber();
-    return { $$type: 'UpdateEmissionCap' as const, newCap: _newCap };
+export function loadTupleConfiguration(source: TupleReader) {
+    const _emissionCap = source.readBigNumber();
+    const _minWalletAgeDays = source.readBigNumber();
+    const _targetDailyActivity = source.readBigNumber();
+    const _rewardBaseActiveListener = source.readBigNumber();
+    const _rewardBaseGrowthAgent = source.readBigNumber();
+    const _rewardBaseArtistLaunch = source.readBigNumber();
+    const _rewardBaseTrendsetter = source.readBigNumber();
+    const _rewardBaseEarlyBeliever = source.readBigNumber();
+    const _rewardBaseDropInvestor = source.readBigNumber();
+    const _decayFactor = source.readBigNumber();
+    const _minThreshold = source.readBigNumber();
+    const _antiFarmingCoeff = source.readBigNumber();
+    return { $$type: 'Configuration' as const, emissionCap: _emissionCap, minWalletAgeDays: _minWalletAgeDays, targetDailyActivity: _targetDailyActivity, rewardBaseActiveListener: _rewardBaseActiveListener, rewardBaseGrowthAgent: _rewardBaseGrowthAgent, rewardBaseArtistLaunch: _rewardBaseArtistLaunch, rewardBaseTrendsetter: _rewardBaseTrendsetter, rewardBaseEarlyBeliever: _rewardBaseEarlyBeliever, rewardBaseDropInvestor: _rewardBaseDropInvestor, decayFactor: _decayFactor, minThreshold: _minThreshold, antiFarmingCoeff: _antiFarmingCoeff };
 }
 
-export function loadGetterTupleUpdateEmissionCap(source: TupleReader) {
-    const _newCap = source.readBigNumber();
-    return { $$type: 'UpdateEmissionCap' as const, newCap: _newCap };
+export function loadGetterTupleConfiguration(source: TupleReader) {
+    const _emissionCap = source.readBigNumber();
+    const _minWalletAgeDays = source.readBigNumber();
+    const _targetDailyActivity = source.readBigNumber();
+    const _rewardBaseActiveListener = source.readBigNumber();
+    const _rewardBaseGrowthAgent = source.readBigNumber();
+    const _rewardBaseArtistLaunch = source.readBigNumber();
+    const _rewardBaseTrendsetter = source.readBigNumber();
+    const _rewardBaseEarlyBeliever = source.readBigNumber();
+    const _rewardBaseDropInvestor = source.readBigNumber();
+    const _decayFactor = source.readBigNumber();
+    const _minThreshold = source.readBigNumber();
+    const _antiFarmingCoeff = source.readBigNumber();
+    return { $$type: 'Configuration' as const, emissionCap: _emissionCap, minWalletAgeDays: _minWalletAgeDays, targetDailyActivity: _targetDailyActivity, rewardBaseActiveListener: _rewardBaseActiveListener, rewardBaseGrowthAgent: _rewardBaseGrowthAgent, rewardBaseArtistLaunch: _rewardBaseArtistLaunch, rewardBaseTrendsetter: _rewardBaseTrendsetter, rewardBaseEarlyBeliever: _rewardBaseEarlyBeliever, rewardBaseDropInvestor: _rewardBaseDropInvestor, decayFactor: _decayFactor, minThreshold: _minThreshold, antiFarmingCoeff: _antiFarmingCoeff };
 }
 
-export function storeTupleUpdateEmissionCap(source: UpdateEmissionCap) {
+export function storeTupleConfiguration(source: Configuration) {
     const builder = new TupleBuilder();
-    builder.writeNumber(source.newCap);
+    builder.writeNumber(source.emissionCap);
+    builder.writeNumber(source.minWalletAgeDays);
+    builder.writeNumber(source.targetDailyActivity);
+    builder.writeNumber(source.rewardBaseActiveListener);
+    builder.writeNumber(source.rewardBaseGrowthAgent);
+    builder.writeNumber(source.rewardBaseArtistLaunch);
+    builder.writeNumber(source.rewardBaseTrendsetter);
+    builder.writeNumber(source.rewardBaseEarlyBeliever);
+    builder.writeNumber(source.rewardBaseDropInvestor);
+    builder.writeNumber(source.decayFactor);
+    builder.writeNumber(source.minThreshold);
+    builder.writeNumber(source.antiFarmingCoeff);
     return builder.build();
 }
 
-export function dictValueParserUpdateEmissionCap(): DictionaryValue<UpdateEmissionCap> {
+export function dictValueParserConfiguration(): DictionaryValue<Configuration> {
     return {
         serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeUpdateEmissionCap(src)).endCell());
+            builder.storeRef(beginCell().store(storeConfiguration(src)).endCell());
         },
         parse: (src) => {
-            return loadUpdateEmissionCap(src.loadRef().beginParse());
+            return loadConfiguration(src.loadRef().beginParse());
         }
     }
 }
 
-export type UpdateMinWalletAge = {
-    $$type: 'UpdateMinWalletAge';
-    newAgeDays: bigint;
+export type SetConfig = {
+    $$type: 'SetConfig';
+    config: Configuration;
 }
 
-export function storeUpdateMinWalletAge(src: UpdateMinWalletAge) {
+export function storeSetConfig(src: SetConfig) {
     return (builder: Builder) => {
         const b_0 = builder;
-        b_0.storeUint(3252420305, 32);
-        b_0.storeUint(src.newAgeDays, 32);
+        b_0.storeUint(735098709, 32);
+        b_0.store(storeConfiguration(src.config));
     };
 }
 
-export function loadUpdateMinWalletAge(slice: Slice) {
+export function loadSetConfig(slice: Slice) {
     const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3252420305) { throw Error('Invalid prefix'); }
-    const _newAgeDays = sc_0.loadUintBig(32);
-    return { $$type: 'UpdateMinWalletAge' as const, newAgeDays: _newAgeDays };
+    if (sc_0.loadUint(32) !== 735098709) { throw Error('Invalid prefix'); }
+    const _config = loadConfiguration(sc_0);
+    return { $$type: 'SetConfig' as const, config: _config };
 }
 
-export function loadTupleUpdateMinWalletAge(source: TupleReader) {
-    const _newAgeDays = source.readBigNumber();
-    return { $$type: 'UpdateMinWalletAge' as const, newAgeDays: _newAgeDays };
+export function loadTupleSetConfig(source: TupleReader) {
+    const _config = loadTupleConfiguration(source);
+    return { $$type: 'SetConfig' as const, config: _config };
 }
 
-export function loadGetterTupleUpdateMinWalletAge(source: TupleReader) {
-    const _newAgeDays = source.readBigNumber();
-    return { $$type: 'UpdateMinWalletAge' as const, newAgeDays: _newAgeDays };
+export function loadGetterTupleSetConfig(source: TupleReader) {
+    const _config = loadGetterTupleConfiguration(source);
+    return { $$type: 'SetConfig' as const, config: _config };
 }
 
-export function storeTupleUpdateMinWalletAge(source: UpdateMinWalletAge) {
+export function storeTupleSetConfig(source: SetConfig) {
     const builder = new TupleBuilder();
-    builder.writeNumber(source.newAgeDays);
+    builder.writeTuple(storeTupleConfiguration(source.config));
     return builder.build();
 }
 
-export function dictValueParserUpdateMinWalletAge(): DictionaryValue<UpdateMinWalletAge> {
+export function dictValueParserSetConfig(): DictionaryValue<SetConfig> {
     return {
         serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeUpdateMinWalletAge(src)).endCell());
+            builder.storeRef(beginCell().store(storeSetConfig(src)).endCell());
         },
         parse: (src) => {
-            return loadUpdateMinWalletAge(src.loadRef().beginParse());
+            return loadSetConfig(src.loadRef().beginParse());
         }
     }
 }
@@ -1305,6 +1372,59 @@ export function dictValueParserUpdateMintAuthority(): DictionaryValue<UpdateMint
         },
         parse: (src) => {
             return loadUpdateMintAuthority(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type UpdateConfigParam = {
+    $$type: 'UpdateConfigParam';
+    parameter: string;
+    newValue: bigint;
+}
+
+export function storeUpdateConfigParam(src: UpdateConfigParam) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(243571285, 32);
+        b_0.storeStringRefTail(src.parameter);
+        b_0.storeUint(src.newValue, 64);
+    };
+}
+
+export function loadUpdateConfigParam(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 243571285) { throw Error('Invalid prefix'); }
+    const _parameter = sc_0.loadStringRefTail();
+    const _newValue = sc_0.loadUintBig(64);
+    return { $$type: 'UpdateConfigParam' as const, parameter: _parameter, newValue: _newValue };
+}
+
+export function loadTupleUpdateConfigParam(source: TupleReader) {
+    const _parameter = source.readString();
+    const _newValue = source.readBigNumber();
+    return { $$type: 'UpdateConfigParam' as const, parameter: _parameter, newValue: _newValue };
+}
+
+export function loadGetterTupleUpdateConfigParam(source: TupleReader) {
+    const _parameter = source.readString();
+    const _newValue = source.readBigNumber();
+    return { $$type: 'UpdateConfigParam' as const, parameter: _parameter, newValue: _newValue };
+}
+
+export function storeTupleUpdateConfigParam(source: UpdateConfigParam) {
+    const builder = new TupleBuilder();
+    builder.writeString(source.parameter);
+    builder.writeNumber(source.newValue);
+    return builder.build();
+}
+
+export function dictValueParserUpdateConfigParam(): DictionaryValue<UpdateConfigParam> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeUpdateConfigParam(src)).endCell());
+        },
+        parse: (src) => {
+            return loadUpdateConfigParam(src.loadRef().beginParse());
         }
     }
 }
@@ -1600,7 +1720,7 @@ function initToonGovernance_init_args(src: ToonGovernance_init_args) {
 }
 
 async function ToonGovernance_init(registry: Address, vault: Address) {
-    const __code = Cell.fromHex('b5ee9c7241023c01001033000228ff008e88f4a413f4bcf2c80bed5320e303ed43d90115020271020d020120030501bfb812ced44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1206e92306d99206ef2d0806f286f08e2206e92306dde8040062810101250259f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e2020148060b020158070901bea86fed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1206e92306d99206ef2d0806f286f08e2206e92306dde080062810101270259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e20192aae6ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25519db3c6ca10a0132db3c8101012202714133f40c6fa19401d70030925b6de26eb32d018fb36a3b51343480006388be903e903d013e803500743d0134fffd0134fffd013d010c041a841a441a0419db06a3853e903e901640b4405b5b5b5b5b5c151801815410f8b6cf1b28600c0002260201200e130201c70f110192aa84ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25519db3c6ca1100132db3c8101012302714133f40c6fa19401d70030925b6de26eb32d0192a8d0ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1120180810101270259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e2206e923070e0206ef2d0806f28db3c380193bb7cced44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1814004881010b29028101014133f40a6fa19401d70030925b6de2206eb395206ef2d080923070e203f23001d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e20b925f0be009d70d1ff2e0822182104435ea95bae30221820b686687bae3022116181d01b031fa003081010bf84228598101014133f40a6fa19401d70030925b6de2206eb395206ef2d080923070e281010bf8425123a0103912810101216e955b59f4593098c801cf004133f441e25056a01079106810570610354403170054c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5404fe31fa003081010bf84228598101014133f40a6fa19401d70030925b6de28200f72a216eb39821206ef2d08023be9170e2f2f4206ef2d08021a181010bf842103958810101216e955b59f4593098c801cf004133f441e25056a1f842708040885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb08a8ae2191a1b1c002400000000556e7374616b65642024544f4f4e00065bcf81001a58cf8680cf8480f400f400cf810076f400c901fb001079106810570610354403c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed54044a8210bba923e1bae302218210c4dbca40bae302218210e47ed13bbae30221821059d0887cba1e20232801f831d401d001d33fd430d081010bf8422a598101014133f40a6fa19401d70030925b6de28200f8f3216eb39801206ef2d080c200923170e2f2f482008f7e8bb656d697373696f6e4361708524001f90101f901ba917f8e178bc6d696e57616c6c65744167658524001f90101f901bae2f2f425a4810101f8427020f8231f00dc8208127500a010685e3470c8557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c9103615206e953059f45a30944133f415e21079106810571046443512c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5402fc31d3ffd20030258101012359f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e282009ad7216eb3f2f4206ef2d0806f288168e1f82323bbf2f481259621b3f2f481010bf8425611598101014133f40a6fa19401d70030925b6de28200f22c216eb39170e30df2f42b2102faf8420a11130a091112090811110807111007106f105e104d103c021114020111150152b0db3c8157be2381010123714133f40c6fa19401d70030925b6de26ef2f412810101017f71216e955b59f45a3098c801cf004133f442e21112991113206ef2d0801ca09b1113206ef2d0801ba00a0be2106f105e104d103c50a22d2200d681010111121ac8557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c910364bb0206e953059f45a30944133f415e2108910681057104650550304c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5401fa31d3ff30248101012259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e282009ad7216eb3f2f4206ef2d0806f288200919cf82323bcf2f481259621b3f2f454776554776527810bb7081111111811111110111711100f11160f0e11150e0d11140d0c11130c2404fc0b11120b0a11180a0911190908111a08db3c01111301f2f47f810101c856100756100706111006105f104e03111403111550e2557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c94c301b206e953059f45a30944133f415e28bb656d697373696f6e4361708528001f90101f901bae30f09104810671438252627009a3770804007c80182104bd7a70558cb1f01fa02c92250885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0000cc8bc6d696e57616c6c657441676581801f90101f901ba8e4b70804007c8018210c1dbfed158cb1fcb1fc92250885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb009135e200584330c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5403f88eee31d401d001fa40d430d081010bf8422a598101014133f40a6fa19401d70030925b6de28200f8f3216eb39801206ef2d080c200923170e2f2f48200d28f8bd6d696e74417574686f726974798524001f90101f901baf2f423a4810101f8427020f8238208127500a010685e3470c8e02182107c14af8ebae30221292a3500c2557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c91413206e953059f45a30944133f415e2107910681057104610354143c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5402fc31d3ffd20030238101012359f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e282008275216eb3f2f4206ef2d0806f288168e1f82323bbf2f481259621b3f2f481010bf8425611598101014133f40a6fa19401d70030925b6de28200f22c216eb39170e30df2f42b2c001021206ef2d080c20002fef8420a11130a091112090811110807111007106f105e104d103c021114020111150152b0db3c8157be2281010123714133f40c6fa19401d70030925b6de26ef2f4810101017f71216e955b59f45a3098c801cf004133f442e21112991113206ef2d0801ca09b1113206ef2d0801ba00a0be2106f105e104d103c50a28101012d34047ac86f00016f8c6d6f8c028e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d012db3c8b13a8db3c01db3c33332e320242fa44c88b111801ce028307a0a9380758cb07cbffc9d020db3c01c8cecec9d0db3c2f300094c8ce8b20000801cec9d0709421c701b38e2a01d30783069320c2008e1b03aa005323b091a4de03ab0023840fbc9903840fb0811021b203dee8303101e8318307a90c01c8cb07cb07c9d001a08d10105090d1115191d2125292d3135393d4145494d5155595d61656985898d9195999da1a5a9adb1b5b9bdc1c5c9cdd1d5d9dde1e5e8c0c4c8ccd0d4d8dce0e4b57e0c89522d749c2178ae86c21c9d031009a02d307d307d30703aa0f02aa0712b101b120ab11803fb0aa02523078d7245004ce23ab0b803fb0aa02523078d72401ce23ab05803fb0aa02523078d72401ce03803fb0aa02522078d7245003ce0144db3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da113300b620d74a21d7499720c20022c200b18e48036f22807f22cf31ab02a105ab025155b60820c2009a20aa0215d71803ce4014de596f025341a1c20099c8016f025044a1aa028e123133c20099d430d020d74a21d749927020e2e2e85f0300cc11121ac8557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c910344bb0206e953059f45a30944133f415e21089106810571046035045c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed540230821081a594dcbae302018210946a98b6bae3025f0bf2c082363b01fa31d3ff30228101012259f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e282008275216eb3f2f4206ef2d0806f288200919cf82323bcf2f481259621b3f2f454776554776527810bb7081111111811111110111711100f11160f0e11150e0d11140d0c11130c3703fe0b11120b0a11180a0911190908111a08db3c01111301f2f47f810101c856100756100706111006105f104e03111403111550e2557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c9103d4cb0206e953059f45a30944133f415e28bd6d696e74417574686f7269747981801f90101f901ba9135e30d5049181738393a001e5b6c425210bc9427ab01bc923070e2009670804007c8018210787cca5458cb1fcec9230350885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00005c16154330c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5400dad33f30c8018210aff90f5758cb1fcb3fc9108a10791068105710461035443012f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed54b53ddab9');
+    const __code = Cell.fromHex('b5ee9c7241023a01000fb5000228ff008e88f4a413f4bcf2c80bed5320e303ed43d90115020271020d020120030501bfb812ced44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1206e92306d99206ef2d0806f286f08e2206e92306dde8040062810101250259f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e2020148060b020158070901bea86fed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1206e92306d99206ef2d0806f286f08e2206e92306dde080062810101270259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e20192aae6ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25519db3c6ca10a0132db3c8101012202714133f40c6fa19401d70030925b6de26eb32b018fb36a3b51343480006388be903e903d013e803500743d0134fffd0134fffd013d010c041a841a441a0419db06a3853e903e901640b4405b5b5b5b5b5c151801815410f8b6cf1b28600c0002260201200e130201c70f110192aa84ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25519db3c6ca1100132db3c8101012302714133f40c6fa19401d70030925b6de26eb32b0192a8d0ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1120180810101270259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e2206e923070e0206ef2d0806f28db3c360193bb7cced44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1814004881010b29028101014133f40a6fa19401d70030925b6de2206eb395206ef2d080923070e203f23001d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e20b925f0be009d70d1ff2e0822182104435ea95bae30221820b686687bae3022116181d01b031fa003081010bf84228598101014133f40a6fa19401d70030925b6de2206eb395206ef2d080923070e281010bf8425123a0103912810101216e955b59f4593098c801cf004133f441e25056a01079106810570610354403170054c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5404fe31fa003081010bf84228598101014133f40a6fa19401d70030925b6de28200f72a216eb39821206ef2d08023be9170e2f2f4206ef2d08021a181010bf842103958810101216e955b59f4593098c801cf004133f441e25056a1f842708040885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb08a8ae2191a1b1c002400000000556e7374616b65642024544f4f4e00065bcf81001a58cf8680cf8480f400f400cf810076f400c901fb001079106810570610354403c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed54044a8210bba923e1bae302218210c4dbca40bae302218210e47ed13bbae30221821059d0887cba1e20232601f831d401d001d33fd430d081010bf8422a598101014133f40a6fa19401d70030925b6de28200f8f3216eb39801206ef2d080c200923170e2f2f482008f7e8bb656d697373696f6e4361708524001f90101f901ba917f8e178bc6d696e57616c6c65744167658524001f90101f901bae2f2f425a4810101f8427020f8231f00dc8208127500a010685e3470c8557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c9103615206e953059f45a30944133f415e21079106810571046443512c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5402fc31d3ffd20030258101012359f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e282009ad7216eb3f2f4206ef2d0806f288168e1f82323bbf2f481259621b3f2f481010bf8425611598101014133f40a6fa19401d70030925b6de28200f22c216eb39170e30df2f4292102faf8420a11130a091112090811110807111007106f105e104d103c021114020111150152b0db3c8157be2381010123714133f40c6fa19401d70030925b6de26ef2f412810101017f71216e955b59f45a3098c801cf004133f442e21112991113206ef2d0801ca09b1113206ef2d0801ba00a0be2106f105e104d103c50a22b2200d681010111121ac8557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c910364bb0206e953059f45a30944133f415e2108910681057104650550304c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5401fa31d3ff30248101012259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e282009ad7216eb3f2f4206ef2d0806f288200919cf82323bcf2f481259621b3f2f454776554776527810bb7081111111811111110111711100f11160f0e11150e0d11140d0c11130c2402fa0b11120b0a11180a0911190908111a08db3c01111301f2f47f810101c856100756100706111006105f104e03111403111550e2557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c94c301b206e953059f45a30944133f415e27008804008c85982100e849a555003cb1f01c8cecdcb3fc92349135088362500d05a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb000910481067144330c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5403f88eee31d401d001fa40d430d081010bf8422a598101014133f40a6fa19401d70030925b6de28200f8f3216eb39801206ef2d080c200923170e2f2f48200d28f8bd6d696e74417574686f726974798524001f90101f901baf2f423a4810101f8427020f8238208127500a010685e3470c8e02182107c14af8ebae3022127283300c2557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c91413206e953059f45a30944133f415e2107910681057104610354143c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5402fc31d3ffd20030238101012359f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e282008275216eb3f2f4206ef2d0806f288168e1f82323bbf2f481259621b3f2f481010bf8425611598101014133f40a6fa19401d70030925b6de28200f22c216eb39170e30df2f4292a001021206ef2d080c20002fef8420a11130a091112090811110807111007106f105e104d103c021114020111150152b0db3c8157be2281010123714133f40c6fa19401d70030925b6de26ef2f4810101017f71216e955b59f45a3098c801cf004133f442e21112991113206ef2d0801ca09b1113206ef2d0801ba00a0be2106f105e104d103c50a28101012b32047ac86f00016f8c6d6f8c028e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d012db3c8b13a8db3c01db3c31312c300242fa44c88b111801ce028307a0a9380758cb07cbffc9d020db3c01c8cecec9d0db3c2d2e0094c8ce8b20000801cec9d0709421c701b38e2a01d30783069320c2008e1b03aa005323b091a4de03ab0023840fbc9903840fb0811021b203dee8303101e8318307a90c01c8cb07cb07c9d001a08d10105090d1115191d2125292d3135393d4145494d5155595d61656985898d9195999da1a5a9adb1b5b9bdc1c5c9cdd1d5d9dde1e5e8c0c4c8ccd0d4d8dce0e4b57e0c89522d749c2178ae86c21c9d02f009a02d307d307d30703aa0f02aa0712b101b120ab11803fb0aa02523078d7245004ce23ab0b803fb0aa02523078d72401ce23ab05803fb0aa02523078d72401ce03803fb0aa02522078d7245003ce0144db3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da113100b620d74a21d7499720c20022c200b18e48036f22807f22cf31ab02a105ab025155b60820c2009a20aa0215d71803ce4014de596f025341a1c20099c8016f025044a1aa028e123133c20099d430d020d74a21d749927020e2e2e85f0300cc11121ac8557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c910344bb0206e953059f45a30944133f415e21089106810571046035045c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed540230821081a594dcbae302018210946a98b6bae3025f0bf2c082343901fa31d3ff30228101012259f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e282008275216eb3f2f4206ef2d0806f288200919cf82323bcf2f481259621b3f2f454776554776527810bb7081111111811111110111711100f11160f0e11150e0d11140d0c11130c3503fe0b11120b0a11180a0911190908111a08db3c01111301f2f47f810101c856100756100706111006105f104e03111403111550e2557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c9103d4cb0206e953059f45a30944133f415e28bd6d696e74417574686f7269747981801f90101f901ba9135e30d50491817363738001e5b6c425210bc9427ab01bc923070e2009670804007c8018210787cca5458cb1fcec9230350885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00005c16154330c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5400dad33f30c8018210aff90f5758cb1fcb3fc9108a10791068105710461035443012f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed54bdff0aa6');
     const builder = beginCell();
     builder.storeUint(0, 1);
     initToonGovernance_init_args({ $$type: 'ToonGovernance_init_args', registry, vault })(builder);
@@ -1732,9 +1852,10 @@ const ToonGovernance_types: ABIType[] = [
     {"name":"VoteOnAddressProposal","header":2081730446,"fields":[{"name":"proposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"support","type":{"kind":"simple","type":"bool","optional":false}}]},
     {"name":"ExecuteProposal","header":3833516347,"fields":[{"name":"proposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}}]},
     {"name":"ExecuteAddressProposal","header":2175112412,"fields":[{"name":"proposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}}]},
-    {"name":"UpdateEmissionCap","header":1272424197,"fields":[{"name":"newCap","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
-    {"name":"UpdateMinWalletAge","header":3252420305,"fields":[{"name":"newAgeDays","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
+    {"name":"Configuration","header":null,"fields":[{"name":"emissionCap","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"minWalletAgeDays","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"targetDailyActivity","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"rewardBaseActiveListener","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseGrowthAgent","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseArtistLaunch","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseTrendsetter","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseEarlyBeliever","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseDropInvestor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"decayFactor","type":{"kind":"simple","type":"uint","optional":false,"format":16}},{"name":"minThreshold","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"antiFarmingCoeff","type":{"kind":"simple","type":"uint","optional":false,"format":16}}]},
+    {"name":"SetConfig","header":735098709,"fields":[{"name":"config","type":{"kind":"simple","type":"Configuration","optional":false}}]},
     {"name":"UpdateMintAuthority","header":2021444180,"fields":[{"name":"newAuthority","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"UpdateConfigParam","header":243571285,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"GlobalProposal","header":null,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}},{"name":"proposer","type":{"kind":"simple","type":"address","optional":false}},{"name":"votesFor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"votesAgainst","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"deadline","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"executed","type":{"kind":"simple","type":"bool","optional":false}}]},
     {"name":"AddressProposal","header":null,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}},{"name":"proposer","type":{"kind":"simple","type":"address","optional":false}},{"name":"votesFor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"votesAgainst","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"deadline","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"executed","type":{"kind":"simple","type":"bool","optional":false}}]},
     {"name":"ToonGovernance$Data","header":null,"fields":[{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"vault","type":{"kind":"simple","type":"address","optional":false}},{"name":"stakes","type":{"kind":"dict","key":"address","value":"int"}},{"name":"totalStaked","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"proposals","type":{"kind":"dict","key":"int","value":"GlobalProposal","valueFormat":"ref"}},{"name":"nextProposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"addressProposals","type":{"kind":"dict","key":"int","value":"AddressProposal","valueFormat":"ref"}},{"name":"nextAddressProposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"hasVoted","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"hasVotedAddress","type":{"kind":"dict","key":"int","value":"bool"}}]},
@@ -1752,9 +1873,9 @@ const ToonGovernance_opcodes = {
     "VoteOnAddressProposal": 2081730446,
     "ExecuteProposal": 3833516347,
     "ExecuteAddressProposal": 2175112412,
-    "UpdateEmissionCap": 1272424197,
-    "UpdateMinWalletAge": 3252420305,
+    "SetConfig": 735098709,
     "UpdateMintAuthority": 2021444180,
+    "UpdateConfigParam": 243571285,
 }
 
 const ToonGovernance_getters: ABIGetter[] = [
