@@ -94,6 +94,7 @@ class TonConnectStorage {
 
 const connectors = new Map();
 const unsubscribers = new Map();
+const pollIntervals = new Map();
 
 /**
  * @param {number|string} telegramId
@@ -560,9 +561,14 @@ bot.hears('💎 Link Wallet', async (ctx) => {
         return ctx.reply(`✅ Wallet already linked: \`${addr}\`\n\nTo change it, /disconnect first.`, { parse_mode: 'Markdown' });
     }
 
+    const wallets = await connector.getWallets();
+    const tonWallet = wallets.find(w => w.appName === 'telegram-wallet') || wallets.find(w => w.name.toLowerCase().includes('wallet')) || wallets[0];
+    
+    if (!tonWallet) return ctx.reply('❌ No compatible wallets found.');
+
     const universalLink = connector.connect({
-        bridgeUrl: 'https://bridge.tonapi.io/bridge',
-        universalLink: 'https://t.me/wallet'
+        bridgeUrl: tonWallet.bridgeUrl,
+        universalLink: tonWallet.universalLink
     });
 
     await ctx.reply(
@@ -591,10 +597,43 @@ bot.hears('💎 Link Wallet', async (ctx) => {
             
             if (unsubscribe) unsubscribe();
             unsubscribers.delete(telegramId);
+
+            if (pollIntervals.has(telegramId)) {
+                clearInterval(pollIntervals.get(telegramId));
+                pollIntervals.delete(telegramId);
+            }
         }
     });
 
     unsubscribers.set(telegramId, unsubscribe);
+
+    // Fallback: poll connector status every 5s for 3 minutes (SSE bridge drop protection)
+    if (pollIntervals.has(telegramId)) clearInterval(pollIntervals.get(telegramId));
+
+    let pollCount = 0;
+    const pollInterval = setInterval(async () => {
+        pollCount++;
+        if (pollCount > 36) { // 3 minutes
+            clearInterval(pollInterval);
+            pollIntervals.delete(telegramId);
+            return;
+        }
+
+        if (connector.connected) {
+            const addr = Address.parse(connector.account.address).toString();
+            await store.setWalletAddress(telegramId, addr);
+            logger.info('Wallet linked via polling fallback', { telegramId, address: addr });
+            
+            await bot.telegram.sendMessage(telegramId, `✅ Wallet linked: \`${addr}\``, { parse_mode: 'Markdown' });
+            
+            if (unsubscribe) unsubscribe();
+            unsubscribers.delete(telegramId);
+            clearInterval(pollInterval);
+            pollIntervals.delete(telegramId);
+        }
+    }, 5000);
+
+    pollIntervals.set(telegramId, pollInterval);
 });
 
 bot.command('disconnect', async (ctx) => {
@@ -605,6 +644,11 @@ bot.command('disconnect', async (ctx) => {
     if (unsubscribers.has(telegramId)) {
         unsubscribers.get(telegramId)();
         unsubscribers.delete(telegramId);
+    }
+
+    if (pollIntervals.has(telegramId)) {
+        clearInterval(pollIntervals.get(telegramId));
+        pollIntervals.delete(telegramId);
     }
     
     await store.updateUser(telegramId, { walletAddress: null, connectorData: null });
