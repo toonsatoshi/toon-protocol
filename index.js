@@ -1185,6 +1185,18 @@ bot.action('deploy_identity', async (ctx) => {
     }
 
     try {
+        const walletAddr = Address.parse(connector.account.address);
+        const balance = await client.getBalance(walletAddr);
+        
+        if (balance < toNano('0.1')) {
+            return ctx.reply(`⚠️ Insufficient balance for gas fees. You need at least 0.1 TON to deploy your identity. Current balance: ${Number(balance) / 1e9} TON.\n\nYou can get Testnet TON from the @testgiver_ton_bot`, {
+                reply_markup: Markup.inlineKeyboard([
+                    [Markup.button.url('💎 Get Testnet TON', 'https://t.me/testgiver_ton_bot')],
+                    [Markup.button.callback('🔄 Check Again', 'deploy_identity')]
+                ]).reply_markup
+            }).catch(() => {});
+        }
+
         const artistAddress = user.pendingIdentityTx.messages[0].address;
         const stateRes = await client.getContractState(Address.parse(artistAddress));
         const lastLt = stateRes.lastTransaction ? stateRes.lastTransaction.lt : "0";
