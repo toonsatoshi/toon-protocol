@@ -419,7 +419,7 @@ bot.use(async (ctx, next) => {
         });
     } catch (err) {
         logger.error('Update processing failed', err);
-        ctx.reply('❌ An internal error occurred. Please try again later.');
+        ctx.reply('❌ An internal error occurred. Please try again later.').catch(() => {});
     }
 });
 
@@ -929,21 +929,30 @@ bot.action(/artist_(.+)/, async (ctx) => {
     );
 });
 
+const activeTimeouts = new Map();
+
 bot.action(/play_(.+)/, async (ctx) => {
     const trackId = ctx.match[1];
+    const telegramId = ctx.from.id;
     const trackRes = await store.getTrack(trackId);
-    logger.info('Play track action', { telegramId: ctx.from.id, trackId });
+    logger.info('Play track action', { telegramId, trackId });
     
     if (!trackRes.success) return ctx.answerCbQuery('Track not found');
     await ctx.answerCbQuery();
     const track = trackRes.data;
 
-    await store.incrementPlayCount(trackId, ctx.from.id);
+    // Cancel existing timeout for this user if they start playing something else
+    if (activeTimeouts.has(telegramId)) {
+        clearTimeout(activeTimeouts.get(telegramId));
+        activeTimeouts.delete(telegramId);
+    }
+
+    await store.incrementPlayCount(trackId, telegramId);
 
     const milestoneRes = await store.checkPlayMilestone(trackId);
     if (milestoneRes.success && milestoneRes.data) {
         const milestone = milestoneRes.data;
-        await bot.telegram.sendMessage(milestone.referrerId,
+        bot.telegram.sendMessage(milestone.referrerId,
             `🎉 ${milestone.artistName}'s track reached 5 unique listeners! +50 $TOON earned!`
         ).catch(() => {});
         
@@ -957,7 +966,7 @@ bot.action(/play_(.+)/, async (ctx) => {
         }
     }
 
-    const isOwner = track.artistId == ctx.from.id;
+    const isOwner = track.artistId == telegramId;
 
     await ctx.reply(
 `🎧 Now Playing
@@ -970,15 +979,15 @@ bot.action(/play_(.+)/, async (ctx) => {
             [Markup.button.callback('💸 Tip Artist', `tip_${trackId}`)],
             ...(isOwner ? [[Markup.button.callback('🗑 Delete Track', `del_confirm_${trackId}`)]] : [])
         ])
-    );
+    ).catch(() => {});
 
     await ctx.replyWithAudio(track.fileId, {
         title: track.title,
         performer: track.artistName
-    });
+    }).catch(() => {});
 
     // 45s verify
-    setTimeout(async () => {
+    const timeout = setTimeout(async () => {
         try {
             const user = await ensureUser(ctx);
             if (!user) return;
@@ -986,13 +995,13 @@ bot.action(/play_(.+)/, async (ctx) => {
             const today = new Date().toDateString();
             const alreadyEarned = user.lastListenDay === today;
 
-            await store.updateUser(ctx.from.id, {
+            await store.updateUser(telegramId, {
                 reputation: user.reputation + 1,
                 listeningStreak: alreadyEarned ? user.listeningStreak : user.listeningStreak + 1,
                 lastListenDay: today
             });
 
-            logger.info('Listen counted', { telegramId: ctx.from.id, trackId });
+            logger.info('Listen counted', { telegramId, trackId });
 
             await ctx.reply(
 `✅ Listen counted!
@@ -1004,11 +1013,15 @@ bot.action(/play_(.+)/, async (ctx) => {
                     [Markup.button.callback('💸 Tip This Artist', `tip_${trackId}`)],
                     ...(isOwner ? [[Markup.button.callback('🗑 Delete Track', `del_confirm_${trackId}`)]] : [])
                 ])
-            );
+            ).catch(() => {});
         } catch (e) {
             logger.error('Verification timeout error', { trackId, error: e.message });
+        } finally {
+            activeTimeouts.delete(telegramId);
         }
     }, 45000);
+
+    activeTimeouts.set(telegramId, timeout);
 });
 
 // ── Upload ────────────────────────────────────────────
