@@ -671,7 +671,7 @@ const showProfile = async (ctx) => {
 
     await ctx.reply(
 `👤 ${user.artistName} (TESTNET)
-${user.onChain ? '✅ On-chain identity' : '⏳ Pending on-chain (upload a track)'}
+${user.onChain ? '✅ On-chain identity' : (user.uploadedTracks.length > 0 ? '⏳ Pending on-chain (identity ready)' : '⏳ Pending on-chain (upload a track)')}
 
 ⭐ Reputation: ${user.reputation}
 💎 Wallet: ${user.walletAddress ? `Connected ✅ (${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)})` : 'Not connected ❌'}
@@ -687,6 +687,7 @@ ${user.onChain ? '✅ On-chain identity' : '⏳ Pending on-chain (upload a track
 🎵 My Tracks:
 ${trackList}`,
         Markup.inlineKeyboard([
+            ...(!user.onChain && user.uploadedTracks.length > 0 ? [[Markup.button.callback('🚀 Deploy Identity', 'deploy_identity')]] : []),
             ...(user.uploadedTracks.length > 0 ? [[Markup.button.callback('🗑 Manage Tracks', 'manage_tracks')]] : []),
             [Markup.button.callback('🔄 Refresh', 'show_profile'), Markup.button.callback('⚠️ Delete Account', 'delete_account_warn')],
             [Markup.button.url('🪲 Report Bug', 'https://github.com/toonsatoshi/toon-protocol/issues')]
@@ -1113,8 +1114,8 @@ bot.action(/^dotip_(\d+_\d+)_(\d+)$/, async (ctx) => {
     };
 
     try {
-        await ctx.answerCbQuery('Sending request to Wallet...');
         await connector.sendTransaction(transaction);
+        await ctx.answerCbQuery(undefined, { url: 'https://t.me/wallet/start' });
         await ctx.reply(`✅ Transaction sent for ${amountStr} TON tip to ${track.artistName}!`);
         const userRes = await store.getUser(telegramId);
         if (userRes.success) {
@@ -1144,21 +1145,33 @@ bot.action('deploy_identity', async (ctx) => {
     const connector = connRes.data;
 
     if (!connector.connected) {
+        // Trigger automatic wallet open for connection if possible
+        const wallets = await connector.getWallets();
+        const tonWallet = wallets.find(w => w.appName === 'telegram-wallet') || wallets.find(w => w.name.toLowerCase().includes('wallet')) || wallets[0];
+        
+        if (tonWallet) {
+            const universalLink = connector.connect({
+                bridgeUrl: tonWallet.bridgeUrl,
+                universalLink: tonWallet.universalLink
+            });
+            // This will automatically open the wallet in Telegram!
+            return ctx.answerCbQuery(undefined, { url: universalLink });
+        }
         return ctx.answerCbQuery('❌ Wallet not connected. Please /link first.', { show_alert: true });
     }
 
     try {
-        await ctx.answerCbQuery('Sending request to Wallet...');
-        
-        // intent -> execute -> verify -> update state
         const artistAddress = user.pendingIdentityTx.messages[0].address;
-        
-        // Wait for current state to poll for changes
         const stateRes = await client.getContractState(Address.parse(artistAddress));
         const lastLt = stateRes.lastTransaction ? stateRes.lastTransaction.lt : "0";
 
+        // Initiate transaction
         await connector.sendTransaction(user.pendingIdentityTx);
-        await ctx.reply('⏳ Deployment sent! Waiting for on-chain confirmation...');
+        
+        // Open wallet automatically for the user to sign
+        await ctx.answerCbQuery(undefined, { url: 'https://t.me/wallet/start' });
+        
+        await ctx.reply('⏳ Deployment sent! If your wallet did not open automatically, check it now. Waiting for on-chain confirmation...');
         
         const conf = await waitForTransaction(Address.parse(artistAddress), lastLt);
         if (conf.success) {
@@ -1215,8 +1228,8 @@ bot.action('buy_ton', async (ctx) => {
     };
 
     try {
-        await ctx.answerCbQuery('Opening wallet...');
         await connector.sendTransaction(transaction);
+        await ctx.answerCbQuery(undefined, { url: 'https://t.me/wallet/start' });
         await ctx.reply("✅ 1 TON sent to the vault! Your $TOON balance will update shortly.");
     } catch (e) {
         logger.error('Buy $TOON transaction failed', e);
