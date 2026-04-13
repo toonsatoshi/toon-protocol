@@ -68,6 +68,11 @@ function log(level, message, data, traceId) {
         if (data instanceof Error) {
             entry.err   = data.message;
             entry.stack = data.stack;
+        } else if (data && (data.description || data.code)) {
+            // Telegraf/Telegram API errors
+            entry.err  = data.description || data.message;
+            entry.code = data.code;
+            if (data.stack) entry.stack = data.stack;
         } else if (typeof data === 'object') {
             // Merge flat — avoids nested "data" key, keeps log lines queryable.
             Object.assign(entry, data);

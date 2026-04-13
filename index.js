@@ -1483,14 +1483,28 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     logger.info(`Health check server listening on port ${PORT}`);
     
-    // Clear any conflicting webhooks before launching
-    bot.telegram.deleteWebhook({ drop_pending_updates: true })
-        .then(() => bot.launch())
-        .then(() => logger.info('🎵 Toon bot running...'))
-        .catch(err => {
-            logger.error('Failed to launch bot', err);
-            process.exit(1);
-        });
+    const launchWithRetry = async (attempt = 1) => {
+        try {
+            // Clear webhooks and wait for old long-polling connections to expire
+            await bot.telegram.deleteWebhook({ drop_pending_updates: true });
+            await new Promise(r => setTimeout(r, 1500)); 
+            
+            await bot.launch();
+            logger.info('🎵 Toon bot running...');
+        } catch (err) {
+            logger.error('Failed to launch bot', err, { attempt });
+
+            if (attempt >= 5) {
+                logger.error('Max retries reached, exiting.');
+                process.exit(1);
+            }
+            const delay = Math.min(5000 * attempt, 30000);
+            logger.info(`Retrying in ${delay}ms... (Attempt ${attempt}/5)`);
+            setTimeout(() => launchWithRetry(attempt + 1), delay);
+        }
+    };
+
+    launchWithRetry();
 });
 
 process.once('SIGINT', () => bot.stop('SIGINT'));
