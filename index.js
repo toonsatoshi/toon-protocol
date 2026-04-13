@@ -1114,8 +1114,8 @@ bot.action(/^dotip_(\d+_\d+)_(\d+)$/, async (ctx) => {
     };
 
     try {
-        await connector.sendTransaction(transaction);
         await ctx.answerCbQuery(undefined, { url: 'https://t.me/wallet/start' });
+        await connector.sendTransaction(transaction);
         await ctx.reply(`✅ Transaction sent for ${amountStr} TON tip to ${track.artistName}!`);
         const userRes = await store.getUser(telegramId);
         if (userRes.success) {
@@ -1165,13 +1165,13 @@ bot.action('deploy_identity', async (ctx) => {
         const stateRes = await client.getContractState(Address.parse(artistAddress));
         const lastLt = stateRes.lastTransaction ? stateRes.lastTransaction.lt : "0";
 
-        // Initiate transaction
+        // 1. Answer immediately to open the wallet
+        await ctx.answerCbQuery(undefined, { url: 'https://t.me/wallet/start' });
+
+        // 2. Initiate transaction and await its result
         await connector.sendTransaction(user.pendingIdentityTx);
         
-        // Open wallet automatically for the user to sign
-        await ctx.answerCbQuery(undefined, { url: 'https://t.me/wallet/start' });
-        
-        await ctx.reply('⏳ Deployment sent! If your wallet did not open automatically, check it now. Waiting for on-chain confirmation...');
+        await ctx.reply('⏳ Deployment sent! Waiting for on-chain confirmation...');
         
         const conf = await waitForTransaction(Address.parse(artistAddress), lastLt);
         if (conf.success) {
@@ -1228,8 +1228,8 @@ bot.action('buy_ton', async (ctx) => {
     };
 
     try {
-        await connector.sendTransaction(transaction);
         await ctx.answerCbQuery(undefined, { url: 'https://t.me/wallet/start' });
+        await connector.sendTransaction(transaction);
         await ctx.reply("✅ 1 TON sent to the vault! Your $TOON balance will update shortly.");
     } catch (e) {
         logger.error('Buy $TOON transaction failed', e);
