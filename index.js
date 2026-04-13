@@ -12,12 +12,19 @@ const fs = require('fs');
 const { ToonArtist } = require('./build/ToonArtist/ToonArtist_ToonArtist');
 const { ToonVault } = require('./build/ToonVault/ToonVault_ToonVault');
 const { MusicNft } = require('./build/MusicNft/MusicNft_MusicNft');
-const { TonClient, WalletContractV4, internal } = require('@ton/ton');
+const { TonClient, WalletContractV4 } = require('@ton/ton');
 const { mnemonicToPrivateKey } = require('@ton/crypto');
 const TonConnect = require('@tonconnect/sdk');
 const { authorizeMint } = require('./ton_utils');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
+
+// ── Global Error Handler ──────────────────────────────
+bot.catch((err, ctx) => {
+    logger.error(`Telegraf error for update ${ctx.update.update_id}`, err);
+    ctx.reply('❌ An unexpected error occurred. We have been notified.').catch(() => {});
+});
+
 const STORAGE_CHANNEL_ID = process.env.STORAGE_CHANNEL_ID;
 
 // ── Payment Provider ──────────────────────────────────
@@ -972,31 +979,35 @@ bot.action(/play_(.+)/, async (ctx) => {
 
     // 45s verify
     setTimeout(async () => {
-        const user = await ensureUser(ctx);
-        if (!user) return;
+        try {
+            const user = await ensureUser(ctx);
+            if (!user) return;
 
-        const today = new Date().toDateString();
-        const alreadyEarned = user.lastListenDay === today;
+            const today = new Date().toDateString();
+            const alreadyEarned = user.lastListenDay === today;
 
-        await store.updateUser(ctx.from.id, {
-            reputation: user.reputation + 1,
-            listeningStreak: alreadyEarned ? user.listeningStreak : user.listeningStreak + 1,
-            lastListenDay: today
-        });
+            await store.updateUser(ctx.from.id, {
+                reputation: user.reputation + 1,
+                listeningStreak: alreadyEarned ? user.listeningStreak : user.listeningStreak + 1,
+                lastListenDay: today
+            });
 
-        logger.info('Listen counted', { telegramId: ctx.from.id, trackId });
+            logger.info('Listen counted', { telegramId: ctx.from.id, trackId });
 
-        await ctx.reply(
+            await ctx.reply(
 `✅ Listen counted!
 
 ⭐ Reputation +1
 🔥 Streak: ${alreadyEarned ? user.listeningStreak : user.listeningStreak + 1} days`,
-            Markup.inlineKeyboard([
-                [Markup.button.callback('▶️ Play Another', `artist_${track.artistId}`)],
-                [Markup.button.callback('💸 Tip This Artist', `tip_${trackId}`)],
-                ...(isOwner ? [[Markup.button.callback('🗑 Delete Track', `del_confirm_${trackId}`)]] : [])
-            ])
-        );
+                Markup.inlineKeyboard([
+                    [Markup.button.callback('▶️ Play Another', `artist_${track.artistId}`)],
+                    [Markup.button.callback('💸 Tip This Artist', `tip_${trackId}`)],
+                    ...(isOwner ? [[Markup.button.callback('🗑 Delete Track', `del_confirm_${trackId}`)]] : [])
+                ])
+            );
+        } catch (e) {
+            logger.error('Verification timeout error', { trackId, error: e.message });
+        }
     }, 45000);
 });
 
