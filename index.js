@@ -84,13 +84,8 @@ async function getConnector(telegramId) {
         const connector = new TonConnect.TonConnect({
             manifestUrl: 'https://raw.githubusercontent.com/toonsatoshi/toon-protocol/main/tonconnect-manifest.json',
             storage: new TonConnectStorage(tid),
-            disableAnalytics: true
+            analytics: { mode: 'off' }
         });
-        
-        // Explicitly pause if available (SDK internals vary)
-        if (connector.pauseAnalytics) {
-            connector.pauseAnalytics();
-        }
         
         connectors.set(tid, connector);
         await connector.restoreConnection();
