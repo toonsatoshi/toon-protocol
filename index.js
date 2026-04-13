@@ -42,23 +42,50 @@ function fail(error, code) {
 }
 
 // ── TON Connect Setup ────────────────────────────────
+const _storageMutex = new Map();
+
 class TonConnectStorage {
     constructor(telegramId) {
         this.telegramId = Number(telegramId);
     }
+
+    async _lock() {
+        while (_storageMutex.get(this.telegramId)) {
+            await _storageMutex.get(this.telegramId);
+        }
+        let resolve;
+        const promise = new Promise(r => resolve = r);
+        _storageMutex.set(this.telegramId, promise);
+        return resolve;
+    }
+
     async removeItem(key) {
-        const res = await store.getUser(this.telegramId);
-        if (res.success && res.data.connectorData) {
-            delete res.data.connectorData[key];
-            await store.updateUser(this.telegramId, { connectorData: res.data.connectorData });
+        const unlock = await this._lock();
+        try {
+            const res = await store.getUser(this.telegramId);
+            if (res.success && res.data.connectorData) {
+                delete res.data.connectorData[key];
+                await store.updateUser(this.telegramId, { connectorData: res.data.connectorData });
+            }
+        } finally {
+            unlock();
+            _storageMutex.delete(this.telegramId);
         }
     }
+
     async setItem(key, value) {
-        const res = await store.getUser(this.telegramId);
-        const data = res.success ? (res.data.connectorData || {}) : {};
-        data[key] = value;
-        await store.updateUser(this.telegramId, { connectorData: data });
+        const unlock = await this._lock();
+        try {
+            const res = await store.getUser(this.telegramId);
+            const data = res.success ? (res.data.connectorData || {}) : {};
+            data[key] = value;
+            await store.updateUser(this.telegramId, { connectorData: data });
+        } finally {
+            unlock();
+            _storageMutex.delete(this.telegramId);
+        }
     }
+
     async getItem(key) {
         const res = await store.getUser(this.telegramId);
         return res.success ? (res.data.connectorData?.[key] || null) : null;
@@ -535,7 +562,7 @@ bot.hears('💎 Link Wallet', async (ctx) => {
 
     const universalLink = connector.connect({
         bridgeUrl: 'https://bridge.tonapi.io/bridge',
-        universalLink: 'https://t.me/wallet/start?startapp=tonconnect'
+        universalLink: 'https://t.me/wallet'
     });
 
     await ctx.reply(
