@@ -2260,6 +2260,7 @@ export type ToonGovernance$Data = {
     nextAddressProposalId: bigint;
     hasVoted: Dictionary<bigint, boolean>;
     hasVotedAddress: Dictionary<bigint, boolean>;
+    lockUntil: Dictionary<Address, number>;
 }
 
 export function storeToonGovernance$Data(src: ToonGovernance$Data) {
@@ -2277,6 +2278,7 @@ export function storeToonGovernance$Data(src: ToonGovernance$Data) {
         b_1.storeUint(src.nextAddressProposalId, 256);
         b_1.storeDict(src.hasVoted, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
         b_1.storeDict(src.hasVotedAddress, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
+        b_1.storeDict(src.lockUntil, Dictionary.Keys.Address(), Dictionary.Values.Uint(32));
         b_0.storeRef(b_1.endCell());
     };
 }
@@ -2295,7 +2297,8 @@ export function loadToonGovernance$Data(slice: Slice) {
     const _nextAddressProposalId = sc_1.loadUintBig(256);
     const _hasVoted = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_1);
     const _hasVotedAddress = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_1);
-    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, jettonMaster: _jettonMaster, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress };
+    const _lockUntil = Dictionary.load(Dictionary.Keys.Address(), Dictionary.Values.Uint(32), sc_1);
+    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, jettonMaster: _jettonMaster, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress, lockUntil: _lockUntil };
 }
 
 export function loadTupleToonGovernance$Data(source: TupleReader) {
@@ -2310,7 +2313,8 @@ export function loadTupleToonGovernance$Data(source: TupleReader) {
     const _nextAddressProposalId = source.readBigNumber();
     const _hasVoted = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
     const _hasVotedAddress = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
-    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, jettonMaster: _jettonMaster, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress };
+    const _lockUntil = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.Uint(32), source.readCellOpt());
+    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, jettonMaster: _jettonMaster, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress, lockUntil: _lockUntil };
 }
 
 export function loadGetterTupleToonGovernance$Data(source: TupleReader) {
@@ -2325,7 +2329,8 @@ export function loadGetterTupleToonGovernance$Data(source: TupleReader) {
     const _nextAddressProposalId = source.readBigNumber();
     const _hasVoted = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
     const _hasVotedAddress = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
-    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, jettonMaster: _jettonMaster, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress };
+    const _lockUntil = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.Uint(32), source.readCellOpt());
+    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, jettonMaster: _jettonMaster, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress, lockUntil: _lockUntil };
 }
 
 export function storeTupleToonGovernance$Data(source: ToonGovernance$Data) {
@@ -2341,6 +2346,7 @@ export function storeTupleToonGovernance$Data(source: ToonGovernance$Data) {
     builder.writeNumber(source.nextAddressProposalId);
     builder.writeCell(source.hasVoted.size > 0 ? beginCell().storeDictDirect(source.hasVoted, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool()).endCell() : null);
     builder.writeCell(source.hasVotedAddress.size > 0 ? beginCell().storeDictDirect(source.hasVotedAddress, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool()).endCell() : null);
+    builder.writeCell(source.lockUntil.size > 0 ? beginCell().storeDictDirect(source.lockUntil, Dictionary.Keys.Address(), Dictionary.Values.Uint(32)).endCell() : null);
     return builder.build();
 }
 
@@ -2420,6 +2426,7 @@ export const ToonJettonWallet_errors = {
     2999: { message: "ToonGovernance: quorum not met" },
     4429: { message: "Invalid sender" },
     9622: { message: "ToonGovernance: already executed" },
+    12390: { message: "ToonGovernance: stake is locked due to active votes" },
     14534: { message: "Not owner" },
     22462: { message: "ToonGovernance: already voted on this proposal" },
     25644: { message: "Only ToonVault can mint" },
@@ -2477,6 +2484,7 @@ export const ToonJettonWallet_errors_backward = {
     "ToonGovernance: quorum not met": 2999,
     "Invalid sender": 4429,
     "ToonGovernance: already executed": 9622,
+    "ToonGovernance: stake is locked due to active votes": 12390,
     "Not owner": 14534,
     "ToonGovernance: already voted on this proposal": 22462,
     "Only ToonVault can mint": 25644,
@@ -2531,7 +2539,7 @@ const ToonJettonWallet_types: ABIType[] = [
     {"name":"UpdateConfigParam","header":243571285,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"GlobalProposal","header":null,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}},{"name":"proposer","type":{"kind":"simple","type":"address","optional":false}},{"name":"votesFor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"votesAgainst","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"deadline","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"executed","type":{"kind":"simple","type":"bool","optional":false}}]},
     {"name":"AddressProposal","header":null,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}},{"name":"proposer","type":{"kind":"simple","type":"address","optional":false}},{"name":"votesFor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"votesAgainst","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"deadline","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"executed","type":{"kind":"simple","type":"bool","optional":false}}]},
-    {"name":"ToonGovernance$Data","header":null,"fields":[{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"vault","type":{"kind":"simple","type":"address","optional":false}},{"name":"jettonMaster","type":{"kind":"simple","type":"address","optional":false}},{"name":"stakes","type":{"kind":"dict","key":"address","value":"int"}},{"name":"totalStaked","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"proposals","type":{"kind":"dict","key":"int","value":"GlobalProposal","valueFormat":"ref"}},{"name":"nextProposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"addressProposals","type":{"kind":"dict","key":"int","value":"AddressProposal","valueFormat":"ref"}},{"name":"nextAddressProposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"hasVoted","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"hasVotedAddress","type":{"kind":"dict","key":"int","value":"bool"}}]},
+    {"name":"ToonGovernance$Data","header":null,"fields":[{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"vault","type":{"kind":"simple","type":"address","optional":false}},{"name":"jettonMaster","type":{"kind":"simple","type":"address","optional":false}},{"name":"stakes","type":{"kind":"dict","key":"address","value":"int"}},{"name":"totalStaked","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"proposals","type":{"kind":"dict","key":"int","value":"GlobalProposal","valueFormat":"ref"}},{"name":"nextProposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"addressProposals","type":{"kind":"dict","key":"int","value":"AddressProposal","valueFormat":"ref"}},{"name":"nextAddressProposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"hasVoted","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"hasVotedAddress","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"lockUntil","type":{"kind":"dict","key":"address","value":"uint","valueFormat":32}}]},
 ]
 
 const ToonJettonWallet_opcodes = {

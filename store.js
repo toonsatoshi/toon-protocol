@@ -380,7 +380,7 @@ module.exports = {
                 .eq('id', trackId)
                 .single();
 
-            if (!track || track.unique_listeners !== MILESTONE_UNIQUE_LISTENERS) return success(null);
+            if (!track || track.unique_listeners < MILESTONE_UNIQUE_LISTENERS) return success(null);
 
             const artistId = track.artist_id;
             const { data: artist } = await supabase

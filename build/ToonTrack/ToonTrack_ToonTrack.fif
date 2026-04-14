@@ -17,6 +17,7 @@ PROGRAM{
   DECLPROC $ToonTrack$_contract_init
   DECLPROC $ToonTrack$_contract_load
   DECLPROC $ToonTrack$_contract_store
+  DECLPROC $ToonTrack$_fun_isRegistered
   DECLPROC $ToonTrack$_fun_reputation
   DECLPROC $ToonTrack$_fun_artist
   DECLPROC $ToonTrack$_fun_metadataUri
@@ -29,6 +30,7 @@ PROGRAM{
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $RequestMint$_constructor_recipient_amount
   DECLPROC $ConfirmTrackRegistration$_constructor_trackId
+  104754 DECLMETHOD %isRegistered
   75930 DECLMETHOD %reputation
   110042 DECLMETHOD %artist
   82975 DECLMETHOD %metadataUri
@@ -193,6 +195,9 @@ PROGRAM{
     ENDC
     c4 POP
   }>
+  $ToonTrack$_fun_isRegistered PROCREF:<{
+    DUP
+  }>
   $ToonTrack$_fun_reputation PROCREF:<{
     OVER
   }>
@@ -252,6 +257,11 @@ PROGRAM{
   $RequestMint$_constructor_recipient_amount PROCINLINE:<{
   }>
   $ConfirmTrackRegistration$_constructor_trackId PROCINLINE:<{
+  }>
+  %isRegistered PROC:<{
+    $ToonTrack$_contract_load INLINECALLDICT
+    $ToonTrack$_fun_isRegistered INLINECALLDICT
+    8 1 BLKDROP2
   }>
   %reputation PROC:<{
     $ToonTrack$_contract_load INLINECALLDICT
@@ -413,6 +423,26 @@ PROGRAM{
         RETALT
       }>
       OVER
+      469362853 PUSHINT
+      EQUAL
+      IFJMP:<{
+        2DROP
+        s7 POP
+        26832 PUSHINT
+        __tact_context_get_sender INLINECALLDICT
+        s6 PUSH
+        SDEQ
+        THROWANYIFNOT
+        s0 s6 XCHG
+        INC
+        s5 s7 XCHG
+        s4 s6 XCHG
+        s3 s5 XCHG
+        s4 s0 s3 XCHG3
+        $ToonTrack$_contract_store INLINECALLDICT
+        RETALT
+      }>
+      OVER
       2490013878 PUSHINT
       EQUAL
       IFJMP:<{
@@ -450,15 +480,13 @@ PROGRAM{
       DROP
       s2 POP
       s2 PUSH
-      80000000 PUSHINT
+      150000000 PUSHINT
       ADD
       s2 PUSH
       43013 PUSHINT
       s0 s2 XCHG
       GEQ
       THROWANYIFNOT
-      s0 s8 XCHG
-      INC
       SWAP
       50000000 PUSHINT
       SUB
@@ -533,16 +561,15 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
-      20000000 PUSHINT
+      50000000 PUSHINT
       0 PUSHINT
-      s0 s9 XCHG
+      s0 s2 XCHG
       1000000000 PUSHINT
       $RequestMint$_constructor_recipient_amount INLINECALLDICT
       NEWC
       $RequestMint$_store_cell INLINECALLDICT
       s7 PUSH
-      s0 s3 XCHG
-      s10 s10 XCHG2
+      s3 s3 XCHG2
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
           b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
@@ -715,15 +742,13 @@ PROGRAM{
       DROP
       s2 POP
       s2 PUSH
-      80000000 PUSHINT
+      150000000 PUSHINT
       ADD
       s2 PUSH
       43013 PUSHINT
       s0 s2 XCHG
       GEQ
       THROWANYIFNOT
-      s0 s8 XCHG
-      INC
       SWAP
       50000000 PUSHINT
       SUB
@@ -798,16 +823,15 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
-      20000000 PUSHINT
+      50000000 PUSHINT
       0 PUSHINT
-      s0 s9 XCHG
+      s0 s2 XCHG
       1000000000 PUSHINT
       $RequestMint$_constructor_recipient_amount INLINECALLDICT
       NEWC
       $RequestMint$_store_cell INLINECALLDICT
       s7 PUSH
-      s0 s3 XCHG
-      s10 s10 XCHG2
+      s3 s3 XCHG2
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
           b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true

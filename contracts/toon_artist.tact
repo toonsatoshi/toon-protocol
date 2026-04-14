@@ -165,6 +165,12 @@ contract ToonArtist with Deployable {
 
     receive("StagingAccepted") {
         require(sender() == self.registry, "ToonArtist: unauthorized staging callback");
+        send(SendParameters{
+            to: self.registry,
+            value: 0,
+            mode: SendRemainingValue,
+            body: ConfirmArtistRegistration{ wallet: self.owner }.toCell()
+        });
     }
 
     receive(msg: TrackStagingAccepted) {
@@ -229,13 +235,19 @@ contract ToonArtist with Deployable {
 
     receive(msg: TrackRegistrationFinalized) {
         // This comes from the ToonTrack contract after 2PC completes in Registry
-        // We could verify sender() is a contract, but trackId check is the primary key.
+        
+        // Verification: ensure the sender is the same contract we pended
+        let pending: Address? = self.pendingTracks.get(msg.trackId);
+        require(pending != null, "ToonArtist: track not pending");
+        require(sender() == pending!!, "ToonArtist: invalid track sender");
         
         // Ensure this track wasn't already added
         if (self.tracks.get(msg.trackId) == null) {
             self.tracks.set(msg.trackId, msg.trackContract);
             self.totalTracks   = self.totalTracks + 1;
             self.reputation    = self.reputation + 10;
+            // Clear pending
+            self.pendingTracks.set(msg.trackId, null);
         }
     }
 
@@ -257,6 +269,7 @@ contract ToonArtist with Deployable {
         };
     }
 
+    get fun isRegistered(): Bool { return self.isRegistered; }
     get fun getTrack(trackId: Int): Address? { return self.tracks.get(trackId); }
     get fun reputation(): Int                { return self.reputation; }
     get fun owner(): Address                 { return self.owner; }

@@ -1,6 +1,6 @@
 # Tact compilation report
 Contract: ToonGovernance
-BoC Size: 5082 bytes
+BoC Size: 5389 bytes
 
 ## Structures (Structs and Messages)
 Total structures: 38
@@ -154,8 +154,8 @@ TL-B: `_ parameter:^string newAddress:address description:^string proposer:addre
 Signature: `AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}`
 
 ### ToonGovernance$Data
-TL-B: `_ registry:address vault:address jettonMaster:address stakes:dict<address, int> totalStaked:coins proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint64,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextProposalId:uint256 addressProposals:dict<int, ^AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextAddressProposalId:uint256 hasVoted:dict<int, bool> hasVotedAddress:dict<int, bool> = ToonGovernance`
-Signature: `ToonGovernance{registry:address,vault:address,jettonMaster:address,stakes:dict<address, int>,totalStaked:coins,proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint64,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}>,nextProposalId:uint256,addressProposals:dict<int, ^AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}>,nextAddressProposalId:uint256,hasVoted:dict<int, bool>,hasVotedAddress:dict<int, bool>}`
+TL-B: `_ registry:address vault:address jettonMaster:address stakes:dict<address, int> totalStaked:coins proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint64,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextProposalId:uint256 addressProposals:dict<int, ^AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextAddressProposalId:uint256 hasVoted:dict<int, bool> hasVotedAddress:dict<int, bool> lockUntil:dict<address, uint32> = ToonGovernance`
+Signature: `ToonGovernance{registry:address,vault:address,jettonMaster:address,stakes:dict<address, int>,totalStaked:coins,proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint64,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}>,nextProposalId:uint256,addressProposals:dict<int, ^AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}>,nextAddressProposalId:uint256,hasVoted:dict<int, bool>,hasVotedAddress:dict<int, bool>,lockUntil:dict<address, uint32>}`
 
 ## Get methods
 Total get methods: 7
@@ -224,6 +224,7 @@ Argument: proposalId
 * 2999: ToonGovernance: quorum not met
 * 4429: Invalid sender
 * 9622: ToonGovernance: already executed
+* 12390: ToonGovernance: stake is locked due to active votes
 * 14534: Not owner
 * 22462: ToonGovernance: already voted on this proposal
 * 25644: Only ToonVault can mint

@@ -1009,6 +1009,65 @@ export function dictValueParserTrackRegistrationFinalized(): DictionaryValue<Tra
     }
 }
 
+export type MintConfirmed = {
+    $$type: 'MintConfirmed';
+    recipient: Address;
+    amount: bigint;
+    origin: Address;
+}
+
+export function storeMintConfirmed(src: MintConfirmed) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(469362853, 32);
+        b_0.storeAddress(src.recipient);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.origin);
+    };
+}
+
+export function loadMintConfirmed(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 469362853) { throw Error('Invalid prefix'); }
+    const _recipient = sc_0.loadAddress();
+    const _amount = sc_0.loadCoins();
+    const _origin = sc_0.loadAddress();
+    return { $$type: 'MintConfirmed' as const, recipient: _recipient, amount: _amount, origin: _origin };
+}
+
+export function loadTupleMintConfirmed(source: TupleReader) {
+    const _recipient = source.readAddress();
+    const _amount = source.readBigNumber();
+    const _origin = source.readAddress();
+    return { $$type: 'MintConfirmed' as const, recipient: _recipient, amount: _amount, origin: _origin };
+}
+
+export function loadGetterTupleMintConfirmed(source: TupleReader) {
+    const _recipient = source.readAddress();
+    const _amount = source.readBigNumber();
+    const _origin = source.readAddress();
+    return { $$type: 'MintConfirmed' as const, recipient: _recipient, amount: _amount, origin: _origin };
+}
+
+export function storeTupleMintConfirmed(source: MintConfirmed) {
+    const builder = new TupleBuilder();
+    builder.writeAddress(source.recipient);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.origin);
+    return builder.build();
+}
+
+export function dictValueParserMintConfirmed(): DictionaryValue<MintConfirmed> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeMintConfirmed(src)).endCell());
+        },
+        parse: (src) => {
+            return loadMintConfirmed(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type ToonTrack$Data = {
     $$type: 'ToonTrack$Data';
     artist: Address;
@@ -1124,7 +1183,7 @@ function initToonTrack_init_args(src: ToonTrack_init_args) {
 }
 
 async function ToonTrack_init(artist: Address, registry: Address, trackId: bigint, metadataUri: string, fingerprint: bigint, mintFee: bigint) {
-    const __code = Cell.fromHex('b5ee9c7241021a01000609000228ff008e88f4a413f4bcf2c80bed5320e303ed43d9010f020271020d0201200308020120040601b5b6b0dda89a1a400031c41f481f481a7ffa803a003a803a1a7fff401a63fa400602090208e208c208ad8311c53f481f481020203ae01a803a003a803a1020203ae01020203ae0060204c204a204820460da2aa08e0e1c5b678d90300500022301b5b5135da89a1a400031c41f481f481a7ffa803a003a803a1a7fff401a63fa400602090208e208c208ad8311c53f481f481020203ae01a803a003a803a1020203ae01020203ae0060204c204a204820460da2aa08e0e1c5b678d903007000221020120090b01b5b483fda89a1a400031c41f481f481a7ffa803a003a803a1a7fff401a63fa400602090208e208c208ad8311c53f481f481020203ae01a803a003a803a1020203ae01020203ae0060204c204a204820460da2aa08e0e1c5b678d90300a00022401b5b6f97da89a1a400031c41f481f481a7ffa803a003a803a1a7fff401a63fa400602090208e208c208ad8311c53f481f481020203ae01a803a003a803a1020203ae01020203ae0060204c204a204820460da2aa08e0e1c5b678d90300c00022201b5bd6ed76a268690000c7107d207d2069ffea00e800ea00e869fffd00698fe900180824082388230822b60c4714fd207d20408080eb806a00e800ea00e8408080eb80408080eb801808130812881208118368aa823838716d9e3640c0e00022701f830eda2edfb01d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e20fa40fa40d3ffd401d001d401d0d3fffa00d31fd2003010481047104610456c188e29fa40fa40810101d700d401d001d401d0810101d700810101d70030102610251024102306d155047070e209925f09e07028d74920c21f1004988f193108d31f2182106a21f0dfbae302218210946a98b6bae30209de01c00001c121b0e30207f9012082f028208bdda6b6da97d2a1534c928b42e898752fbd839be4045590daafcb220543ba1113141501e431383806d3ff30812bb8f84226c705f2f481771a5114baf2f47f708040f8285260c8598210b2c8fdba5003cb1fcbffcec92855205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00105710461035443012004cc87f01ca0055705078ce15ce13cbff01c8cecd01c8cbff58fa0212cb1f12ca00cdc9ed54db3100d0313807d33f30c8018210aff90f5758cb1fcb3fc91068105710461035443012f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00c87f01ca0055705078ce15ce13cbff01c8cecd01c8cbff58fa0212cb1f12ca00cdc9ed54db3102e2378200944928f2f4f8416f24303222821004c4b400a0228200a80502bef2f408a401820afaf080a170882955205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb008209312d00700982103b9aca00c818190258e30282f0775fac1ca69e924416b5b310799513dc523abbb3839c6cb016e4d19ec1bd34d4bae3025f08f2c082161700fe308200e140f84227c705f2f470804025c8018210a47a6dee58cb1fcbffc92755205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0010575514c87f01ca0055705078ce15ce13cbff01c8cecd01c8cbff58fa0212cb1f12ca00cdc9ed5402e08200944928f2f4f8416f24303222821004c4b400a0228200a80502bef2f408a401820afaf080a170882955205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb008209312d00700982103b9aca00c8181900200000000054697020726563656976656400e4598210108593515003cb1fce01fa02c9270350aa5a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0010575514c87f01ca0055705078ce15ce13cbff01c8cecd01c8cbff58fa0212cb1f12ca00cdc9ed54c9e2c476');
+    const __code = Cell.fromHex('b5ee9c7241021e01000724000228ff008e88f4a413f4bcf2c80bed5320e303ed43d90112020271020d0201200308020120040601b5b6b0dda89a1a400031c41f481f481a7ffa803a003a803a1a7fff401a63fa400602090208e208c208ad8311c53f481f481020203ae01a803a003a803a1020203ae01020203ae0060204c204a204820460da2aa08e0e1c5b678d90300500022301b5b5135da89a1a400031c41f481f481a7ffa803a003a803a1a7fff401a63fa400602090208e208c208ad8311c53f481f481020203ae01a803a003a803a1020203ae01020203ae0060204c204a204820460da2aa08e0e1c5b678d903007000221020120090b01b5b483fda89a1a400031c41f481f481a7ffa803a003a803a1a7fff401a63fa400602090208e208c208ad8311c53f481f481020203ae01a803a003a803a1020203ae01020203ae0060204c204a204820460da2aa08e0e1c5b678d90300a00022401b5b6f97da89a1a400031c41f481f481a7ffa803a003a803a1a7fff401a63fa400602090208e208c208ad8311c53f481f481020203ae01a803a003a803a1020203ae01020203ae0060204c204a204820460da2aa08e0e1c5b678d90300c0002220201480e1001b5b7265da89a1a400031c41f481f481a7ffa803a003a803a1a7fff401a63fa400602090208e208c208ad8311c53f481f481020203ae01a803a003a803a1020203ae01020203ae0060204c204a204820460da2aa08e0e1c5b678d90300f00022001b5b5bb5da89a1a400031c41f481f481a7ffa803a003a803a1a7fff401a63fa400602090208e208c208ad8311c53f481f481020203ae01a803a003a803a1020203ae01020203ae0060204c204a204820460da2aa08e0e1c5b678d90301100022701f830eda2edfb01d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e20fa40fa40d3ffd401d001d401d0d3fffa00d31fd2003010481047104610456c188e29fa40fa40810101d700d401d001d401d0810101d700810101d70030102610251024102306d155047070e209925f09e07028d74920c21f1304e08f603108d31f2182106a21f0dfbae3022182101bf9e8a5ba8e3c5b378168d0f84226c705f2f406a41057104610354403c87f01ca0055705078ce15ce13cbff01c8cecd01c8cbff58fa0212cb1f12ca00cdc9ed54db31e0218210946a98b6bae30209de01c00001c121b0e30207f901201416171901e431383806d3ff30812bb8f84226c705f2f481771a5114baf2f47f708040f8285260c8598210b2c8fdba5003cb1fcbffcec92855205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00105710461035443015004cc87f01ca0055705078ce15ce13cbff01c8cecd01c8cbff58fa0212cb1f12ca00cdc9ed54db3100d0313807d33f30c8018210aff90f5758cb1fcb3fc91068105710461035443012f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00c87f01ca0055705078ce15ce13cbff01c8cecd01c8cbff58fa0212cb1f12ca00cdc9ed54db3102fe378200944928f2f4f8416f24303222821008f0d180a0228200a80502bef2f401820afaf080a170882955205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00820afaf080700282103b9aca00c8598210108593515003cb1fce01fa02c91c1800c22750335a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0010575514c87f01ca0055705078ce15ce13cbff01c8cecd01c8cbff58fa0212cb1f12ca00cdc9ed54029e82f028208bdda6b6da97d2a1534c928b42e898752fbd839be4045590daafcb220543bae30282f0775fac1ca69e924416b5b310799513dc523abbb3839c6cb016e4d19ec1bd34d4bae3025f08f2c0821a1b00fe308200e140f84227c705f2f470804025c8018210a47a6dee58cb1fcbffc92755205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0010575514c87f01ca0055705078ce15ce13cbff01c8cecd01c8cbff58fa0212cb1f12ca00cdc9ed5402fe8200944928f2f4f8416f24303222821008f0d180a0228200a80502bef2f401820afaf080a170882955205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00820afaf080700282103b9aca00c8598210108593515003cb1fce01fa02c9271c1d00200000000054697020726563656976656400c050335a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0010575514c87f01ca0055705078ce15ce13cbff01c8cecd01c8cbff58fa0212cb1f12ca00cdc9ed54afe4b194');
     const builder = beginCell();
     builder.storeUint(0, 1);
     initToonTrack_init_args({ $$type: 'ToonTrack_init_args', artist, registry, trackId, metadataUri, fingerprint, mintFee })(builder);
@@ -1170,6 +1229,7 @@ export const ToonTrack_errors = {
     136: { message: "Invalid standard address" },
     138: { message: "Not a basechain address" },
     11192: { message: "ToonTrack: only registry can confirm registration" },
+    26832: { message: "ToonTrack: only registry can confirm minting" },
     30490: { message: "ToonTrack: invalid trackId" },
     37961: { message: "ToonTrack: track not yet registered" },
     43013: { message: "ToonTrack: tip below minimum floor (including gas)" },
@@ -1214,6 +1274,7 @@ export const ToonTrack_errors_backward = {
     "Invalid standard address": 136,
     "Not a basechain address": 138,
     "ToonTrack: only registry can confirm registration": 11192,
+    "ToonTrack: only registry can confirm minting": 26832,
     "ToonTrack: invalid trackId": 30490,
     "ToonTrack: track not yet registered": 37961,
     "ToonTrack: tip below minimum floor (including gas)": 43013,
@@ -1239,6 +1300,7 @@ const ToonTrack_types: ABIType[] = [
     {"name":"ConfirmTrackRegistration","header":2759486958,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}}]},
     {"name":"TrackRegistrationConfirmed","header":1780609247,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}}]},
     {"name":"TrackRegistrationFinalized","header":2999516602,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"trackContract","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"MintConfirmed","header":469362853,"fields":[{"name":"recipient","type":{"kind":"simple","type":"address","optional":false}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"origin","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"ToonTrack$Data","header":null,"fields":[{"name":"artist","type":{"kind":"simple","type":"address","optional":false}},{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"metadataUri","type":{"kind":"simple","type":"string","optional":false}},{"name":"fingerprint","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"mintFee","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"reputation","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"isRegistered","type":{"kind":"simple","type":"bool","optional":false}}]},
 ]
 
@@ -1251,9 +1313,11 @@ const ToonTrack_opcodes = {
     "ConfirmTrackRegistration": 2759486958,
     "TrackRegistrationConfirmed": 1780609247,
     "TrackRegistrationFinalized": 2999516602,
+    "MintConfirmed": 469362853,
 }
 
 const ToonTrack_getters: ABIGetter[] = [
+    {"name":"isRegistered","methodId":104754,"arguments":[],"returnType":{"kind":"simple","type":"bool","optional":false}},
     {"name":"reputation","methodId":75930,"arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"artist","methodId":110042,"arguments":[],"returnType":{"kind":"simple","type":"address","optional":false}},
     {"name":"metadataUri","methodId":82975,"arguments":[],"returnType":{"kind":"simple","type":"string","optional":false}},
@@ -1262,6 +1326,7 @@ const ToonTrack_getters: ABIGetter[] = [
 ]
 
 export const ToonTrack_getterMapping: { [key: string]: string } = {
+    'isRegistered': 'getIsRegistered',
     'reputation': 'getReputation',
     'artist': 'getArtist',
     'metadataUri': 'getMetadataUri',
@@ -1274,6 +1339,7 @@ const ToonTrack_receivers: ABIReceiver[] = [
     {"receiver":"internal","message":{"kind":"typed","type":"TrackRegistrationConfirmed"}},
     {"receiver":"internal","message":{"kind":"empty"}},
     {"receiver":"internal","message":{"kind":"text","text":"tip"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"MintConfirmed"}},
     {"receiver":"internal","message":{"kind":"typed","type":"Deploy"}},
 ]
 
@@ -1282,8 +1348,8 @@ export class ToonTrack implements Contract {
     
     public static readonly MINT_REWARD = 1000000000n;
     public static readonly GAS_FORWARD_ARTIST = 50000000n;
-    public static readonly GAS_REGISTRY_FEE = 20000000n;
-    public static readonly MIN_TIP_OVERHEAD = 80000000n;
+    public static readonly GAS_REGISTRY_FEE = 50000000n;
+    public static readonly MIN_TIP_OVERHEAD = 150000000n;
     public static readonly storageReserve = 0n;
     public static readonly errors = ToonTrack_errors_backward;
     public static readonly opcodes = ToonTrack_opcodes;
@@ -1316,7 +1382,7 @@ export class ToonTrack implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: "ConfirmRegistration" | TrackRegistrationConfirmed | null | "tip" | Deploy) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: "ConfirmRegistration" | TrackRegistrationConfirmed | null | "tip" | MintConfirmed | Deploy) {
         
         let body: Cell | null = null;
         if (message === "ConfirmRegistration") {
@@ -1331,6 +1397,9 @@ export class ToonTrack implements Contract {
         if (message === "tip") {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'MintConfirmed') {
+            body = beginCell().store(storeMintConfirmed(message)).endCell();
+        }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Deploy') {
             body = beginCell().store(storeDeploy(message)).endCell();
         }
@@ -1338,6 +1407,13 @@ export class ToonTrack implements Contract {
         
         await provider.internal(via, { ...args, body: body });
         
+    }
+    
+    async getIsRegistered(provider: ContractProvider) {
+        const builder = new TupleBuilder();
+        const source = (await provider.get('isRegistered', builder.build())).stack;
+        const result = source.readBoolean();
+        return result;
     }
     
     async getReputation(provider: ContractProvider) {

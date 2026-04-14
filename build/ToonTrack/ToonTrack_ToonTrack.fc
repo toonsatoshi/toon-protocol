@@ -59,6 +59,9 @@ _ $Context$_get_value((int, slice, int, slice) v) inline;
 ;; $ToonTrack$_contract_store
 () $ToonTrack$_contract_store((slice, slice, int, slice, int, int, int, int) v) impure inline;
 
+;; $ToonTrack$_fun_isRegistered
+((slice, slice, int, slice, int, int, int, int), int) $ToonTrack$_fun_isRegistered((slice, slice, int, slice, int, int, int, int) $self) impure inline_ref;
+
 ;; $ToonTrack$_fun_reputation
 ((slice, slice, int, slice, int, int, int, int), int) $ToonTrack$_fun_reputation((slice, slice, int, slice, int, int, int, int) $self) impure inline_ref;
 
@@ -436,39 +439,51 @@ builder $ToonTrack$_store(builder build_0, (slice, slice, int, slice, int, int, 
     return ($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered);
 }
 
+((slice, slice, int, slice, int, int, int, int), int) $ToonTrack$_fun_isRegistered((slice, slice, int, slice, int, int, int, int) $self) impure inline_ref {
+    var (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered)) = $self;
+    var $fresh$ret_120 = $self'isRegistered;
+    return (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered), $fresh$ret_120);
+}
+
 ((slice, slice, int, slice, int, int, int, int), int) $ToonTrack$_fun_reputation((slice, slice, int, slice, int, int, int, int) $self) impure inline_ref {
     var (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered)) = $self;
-    var $fresh$ret_117 = $self'reputation;
-    return (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered), $fresh$ret_117);
+    var $fresh$ret_121 = $self'reputation;
+    return (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered), $fresh$ret_121);
 }
 
 ((slice, slice, int, slice, int, int, int, int), slice) $ToonTrack$_fun_artist((slice, slice, int, slice, int, int, int, int) $self) impure inline_ref {
     var (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered)) = $self;
-    var $fresh$ret_118 = $self'artist;
-    return (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered), $fresh$ret_118);
+    var $fresh$ret_122 = $self'artist;
+    return (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered), $fresh$ret_122);
 }
 
 ((slice, slice, int, slice, int, int, int, int), slice) $ToonTrack$_fun_metadataUri((slice, slice, int, slice, int, int, int, int) $self) impure inline_ref {
     var (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered)) = $self;
-    var $fresh$ret_119 = $self'metadataUri;
-    return (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered), $fresh$ret_119);
+    var $fresh$ret_123 = $self'metadataUri;
+    return (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered), $fresh$ret_123);
 }
 
 ((slice, slice, int, slice, int, int, int, int), int) $ToonTrack$_fun_fingerprint((slice, slice, int, slice, int, int, int, int) $self) impure inline_ref {
     var (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered)) = $self;
-    var $fresh$ret_120 = $self'fingerprint;
-    return (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered), $fresh$ret_120);
+    var $fresh$ret_124 = $self'fingerprint;
+    return (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered), $fresh$ret_124);
 }
 
 ((slice, slice, int, slice, int, int, int, int), int) $ToonTrack$_fun_mintFee((slice, slice, int, slice, int, int, int, int) $self) impure inline_ref {
     var (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered)) = $self;
-    var $fresh$ret_121 = $self'mintFee;
-    return (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered), $fresh$ret_121);
+    var $fresh$ret_125 = $self'mintFee;
+    return (($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered), $fresh$ret_125);
 }
 
 ;;
 ;; Get methods of a Contract ToonTrack
 ;;
+
+_ %isRegistered() method_id(104754) {
+    var self = $ToonTrack$_contract_load();
+    var res = self~$ToonTrack$_fun_isRegistered();
+    return res;
+}
 
 _ %reputation() method_id(75930) {
     var self = $ToonTrack$_contract_load();
@@ -539,6 +554,17 @@ _ %mintFee() method_id(96203) {
             return ();
         }
         
+        ;; Receive MintConfirmed message
+        if (op == 469362853) {
+            var $msg'recipient = in_msg~load_msg_addr();
+            var $msg'amount = in_msg~load_varuint16();
+            var $msg'origin = in_msg~load_msg_addr();
+            throw_unless(26832, ( equal_slices_bits(__tact_context_get_sender(), $self'registry) ));
+            $self'reputation = ($self'reputation + 1);
+            $ToonTrack$_contract_store(($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered));
+            return ();
+        }
+        
         ;; Receive Deploy message
         if (op == 0x946a98b6) {
             var $deploy'queryId = in_msg~load_uint(64);
@@ -552,11 +578,10 @@ _ %mintFee() method_id(96203) {
     if ((op == 0) & (in_msg_length <= 32)) {
         throw_unless(37961, $self'isRegistered);
         var ($ctx'bounceable, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-        int $minRequired = ($self'mintFee + 80000000);
+        int $minRequired = ($self'mintFee + 150000000);
         throw_unless(43013, ($ctx'value >= $minRequired));
-        $self'reputation = ($self'reputation + 1);
         $global_send($SendParameters$_constructor_to_value_mode_body($self'artist, ($ctx'value - 50000000), 0, __gen_cell_cell_2e8d65a4c0ec8773eccc5afdb1a22a7271034aa4143d377a2d12e03197dd9151()));
-        $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 20000000, 0, $RequestMint$_store_cell($RequestMint$_constructor_recipient_amount($ctx'sender, 1000000000), begin_cell())));
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 50000000, 0, $RequestMint$_store_cell($RequestMint$_constructor_recipient_amount($ctx'sender, 1000000000), begin_cell())));
         $ToonTrack$_contract_store(($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered));
         return ();
     }
@@ -573,11 +598,10 @@ _ %mintFee() method_id(96203) {
     if (text_op == 0x775fac1ca69e924416b5b310799513dc523abbb3839c6cb016e4d19ec1bd34d4) {
         throw_unless(37961, $self'isRegistered);
         var ($ctx'bounceable, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-        int $minRequired = ($self'mintFee + 80000000);
+        int $minRequired = ($self'mintFee + 150000000);
         throw_unless(43013, ($ctx'value >= $minRequired));
-        $self'reputation = ($self'reputation + 1);
         $global_send($SendParameters$_constructor_to_value_mode_body($self'artist, ($ctx'value - 50000000), 0, __gen_cell_cell_2e8d65a4c0ec8773eccc5afdb1a22a7271034aa4143d377a2d12e03197dd9151()));
-        $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 20000000, 0, $RequestMint$_store_cell($RequestMint$_constructor_recipient_amount($ctx'sender, 1000000000), begin_cell())));
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 50000000, 0, $RequestMint$_store_cell($RequestMint$_constructor_recipient_amount($ctx'sender, 1000000000), begin_cell())));
         $ToonTrack$_contract_store(($self'artist, $self'registry, $self'trackId, $self'metadataUri, $self'fingerprint, $self'mintFee, $self'reputation, $self'isRegistered));
         return ();
     }

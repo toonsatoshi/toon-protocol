@@ -27,6 +27,12 @@ message TrackRegistrationFinalized {
     trackContract: Address;
 }
 
+message MintConfirmed {
+    recipient: Address;
+    amount:    Int as coins;
+    origin:    Address;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  ToonTrack
 // ─────────────────────────────────────────────────────────────────────────────
@@ -52,8 +58,8 @@ contract ToonTrack with Deployable {
 
     const MINT_REWARD: Int = 1000000000; // 1 $TOON reward for tipping (mock)
     const GAS_FORWARD_ARTIST: Int = 50000000; // 0.05 TON
-    const GAS_REGISTRY_FEE:   Int = 20000000; // 0.02 TON
-    const MIN_TIP_OVERHEAD:   Int = 80000000; // 0.08 TON safety buffer
+    const GAS_REGISTRY_FEE:   Int = 50000000; // 0.05 TON (enough for Registry -> Vault -> Registry -> Track)
+    const MIN_TIP_OVERHEAD:   Int = 150000000; // 0.15 TON safety buffer
 
     // ── Constructor ──────────────────────────────────────────────────────────
 
@@ -100,19 +106,16 @@ contract ToonTrack with Deployable {
 
     /// Accepts TON tips. 
     /// If value >= mintFee:
-    ///   1. Increment reputation.
-    ///   2. Forward full value to artist.
-    ///   3. Request $TOON mint for the tipper via Registry.
+    ///   1. Forward value to artist.
+    ///   2. Request $TOON mint for the tipper via Registry.
+    ///   3. Reputation is incremented ONLY upon MintConfirmed callback.
     receive() {
         require(self.isRegistered, "ToonTrack: track not yet registered");
         let ctx: Context = context();
         let minRequired: Int = self.mintFee + self.MIN_TIP_OVERHEAD;
         require(ctx.value >= minRequired, "ToonTrack: tip below minimum floor (including gas)");
 
-        // 1. Increment reputation
-        self.reputation = self.reputation + 1;
-
-        // 2. Forward value to artist (leaving some for gas/mint)
+        // 1. Forward value to artist (leaving some for gas/mint)
         send(SendParameters{
             to: self.artist,
             value: ctx.value - self.GAS_FORWARD_ARTIST,
@@ -120,7 +123,7 @@ contract ToonTrack with Deployable {
             body: "Tip received".asComment()
         });
 
-        // 3. Request $TOON mint for the tipper (Tip-to-Earn)
+        // 2. Request $TOON mint for the tipper (Tip-to-Earn)
         send(SendParameters{
             to: self.registry,
             value: self.GAS_REGISTRY_FEE,
@@ -139,8 +142,6 @@ contract ToonTrack with Deployable {
         let minRequired: Int = self.mintFee + self.MIN_TIP_OVERHEAD;
         require(ctx.value >= minRequired, "ToonTrack: tip below minimum floor (including gas)");
         
-        self.reputation = self.reputation + 1;
-
         send(SendParameters{
             to: self.artist,
             value: ctx.value - self.GAS_FORWARD_ARTIST,
@@ -159,7 +160,17 @@ contract ToonTrack with Deployable {
         });
     }
 
+    receive(msg: MintConfirmed) {
+        require(sender() == self.registry, "ToonTrack: only registry can confirm minting");
+        // Finalize the tip by incrementing local reputation
+        self.reputation = self.reputation + 1;
+    }
+
     // ── Getters ──────────────────────────────────────────────────────────────
+
+    get fun isRegistered(): Bool {
+        return self.isRegistered;
+    }
 
     get fun reputation(): Int {
         return self.reputation;

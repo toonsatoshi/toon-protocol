@@ -17,15 +17,32 @@ export async function run(provider: NetworkProvider) {
     
     // We need the registry address from env
     const registryAddress = Address.parse(process.env.TOON_REGISTRY_ADDRESS!);
+    const jettonMasterAddrStr = process.env.TOON_JETTON_ADDRESS;
+    if (!jettonMasterAddrStr) {
+        throw new Error('TOON_JETTON_ADDRESS not set in .env — cannot deploy vault');
+    }
+    const jettonMasterAddress = Address.parse(jettonMasterAddrStr.replace(/"/g, '').trim());
+    
+    const oracleSeedHex = process.env.ORACLE_SEED_HEX;
+    if (!oracleSeedHex || oracleSeedHex.length !== 64) {
+        throw new Error('ORACLE_SEED_HEX not set in .env — cannot deploy vault');
+    }
+    const { keyPairFromSeed } = await import('@ton/crypto');
+    const oracleKP = keyPairFromSeed(Buffer.from(oracleSeedHex, 'hex'));
+    const oraclePubKey = BigInt('0x' + Buffer.from(oracleKP.publicKey).toString('hex'));
 
     const newVault = provider.open(
         await ToonVault.fromInit(
             deployer.address!, 
             registryAddress,
-            toNano('1000000'), // 1M reserve
-            0n,
-            0n,
-            false
+            deployer.address!,     // temp governance
+            jettonMasterAddress,    // jettonMaster
+            oraclePubKey,           // oraclePublicKey
+            0n,                     // totalReserve
+            0n,                     // dailyEmitted
+            0n,                     // lastResetDay
+            false,                  // halved
+            0n                      // dailyClaimCount
         )
     );
 

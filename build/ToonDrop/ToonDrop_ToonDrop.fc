@@ -425,6 +425,11 @@ slice __gen_slice_string_fbcbfeb8bf39986124ce1667719be958eb48760756619c464a249ae
     B{b5ee9c7241010101001000001c207c20726f79616c746965733a202a27c801} B>boc <s PUSHSLICE
 """;
 
+;; Cell 3CYsIH1p8Dbtbn3cdHLpwUZ1s7Z+06IGY8X0KyIDpAk=
+cell __gen_cell_cell_dc262c207d69f036ed6e7ddc7472e9c14675b3b67ed3a20663c5f42b2203a409() asm """
+    B{b5ee9c7241010101002d00005600000000546f6f6e44726f703a20726566756e64696e672065786365737320636f6e747269627574696f6e24194cc2} B>boc PUSHREF
+""";
+
 ;; Cell +1V4Zihahxc8yv4skJo2XgY0lc2KoF/fECX/LbVwJV0=
 cell __gen_cell_cell_fb557866285a87173ccafe2c909a365e063495cd8aa05fdf1025ff2db570255d() asm """
     B{b5ee9c7241010101001600002800000000526f79616c74794465706f7369746564c99c2d22} B>boc PUSHREF
@@ -626,69 +631,69 @@ builder $ToonDrop$_store(builder build_0, (slice, int, slice, slice, int, int, i
     $sb~__tact_string_builder_append($Int$_fun_toString($self'investorCount));
     $sb~__tact_string_builder_append(__gen_slice_string_fbcbfeb8bf39986124ce1667719be958eb48760756619c464a249ae38bd85595());
     $sb~__tact_string_builder_append($Int$_fun_toString($self'totalRoyaltiesReceived));
-    var $fresh$ret_127 = __tact_string_builder_end_slice($sb);
-    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_127);
+    var $fresh$ret_131 = __tact_string_builder_end_slice($sb);
+    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_131);
 }
 
 ((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell), int) $ToonDrop$_fun_isSuccessful((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell) $self) impure inline_ref {
     var (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties)) = $self;
-    var $fresh$ret_128 = $self'isSuccessful;
-    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_128);
+    var $fresh$ret_132 = $self'isSuccessful;
+    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_132);
 }
 
 ((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell), int) $ToonDrop$_fun_isLocked((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell) $self) impure inline_ref {
     var (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties)) = $self;
-    var $fresh$ret_129 = $self'isLocked;
-    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_129);
+    var $fresh$ret_133 = $self'isLocked;
+    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_133);
 }
 
 ((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell), int) $ToonDrop$_fun_currentRaise((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell) $self) impure inline_ref {
     var (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties)) = $self;
-    var $fresh$ret_130 = $self'currentRaise;
-    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_130);
+    var $fresh$ret_134 = $self'currentRaise;
+    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_134);
 }
 
 ((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell), int) $ToonDrop$_fun_totalRoyalties((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell) $self) impure inline_ref {
     var (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties)) = $self;
-    var $fresh$ret_131 = $self'totalRoyaltiesReceived;
-    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_131);
+    var $fresh$ret_135 = $self'totalRoyaltiesReceived;
+    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_135);
 }
 
 ((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell), int) $ToonDrop$_fun_investorClaimable((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell) $self, slice $investor) impure inline_ref {
     var (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties)) = $self;
     int $invested = __tact_dict_get_slice_int($self'investments, 267, $investor, 257);
     if (( (( (null?($invested)) ? (true) : ((__tact_not_null($invested) == 0)) )) ? (true) : (($self'currentRaise == 0)) )) {
-        var $fresh$ret_132 = 0;
-        return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_132);
+        var $fresh$ret_136 = 0;
+        return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_136);
     }
     int $totalShare = ((__tact_not_null($invested) * $self'totalRoyaltiesReceived) / $self'currentRaise);
     int $prevClaim = __tact_dict_get_slice_int($self'claimedRoyalties, 267, $investor, 257);
     int $claimed = ((~ null?($prevClaim)) ? __tact_not_null($prevClaim) : 0);
     int $diff = ($totalShare - $claimed);
     if (($diff < 10000000)) {
-        var $fresh$ret_133 = 0;
-        return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_133);
+        var $fresh$ret_137 = 0;
+        return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_137);
     }
-    var $fresh$ret_134 = $diff;
-    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_134);
+    var $fresh$ret_138 = $diff;
+    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_138);
 }
 
 ((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell), int) $ToonDrop$_fun_investorTotal((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell) $self, slice $investor) impure inline_ref {
     var (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties)) = $self;
     int $invested = __tact_dict_get_slice_int($self'investments, 267, $investor, 257);
     if (( (null?($invested)) ? (true) : (($self'currentRaise == 0)) )) {
-        var $fresh$ret_135 = 0;
-        return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_135);
+        var $fresh$ret_139 = 0;
+        return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_139);
     }
-    var $fresh$ret_136 = ((__tact_not_null($invested) * $self'totalRoyaltiesReceived) / $self'currentRaise);
-    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_136);
+    var $fresh$ret_140 = ((__tact_not_null($invested) * $self'totalRoyaltiesReceived) / $self'currentRaise);
+    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_140);
 }
 
 ((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell), int) $ToonDrop$_fun_investorClaimed((slice, int, slice, slice, int, int, int, int, int, int, int, int, cell, int, cell) $self, slice $investor) impure inline_ref {
     var (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties)) = $self;
     int $c = __tact_dict_get_slice_int($self'claimedRoyalties, 267, $investor, 257);
-    var $fresh$ret_137 = ((~ null?($c)) ? __tact_not_null($c) : 0);
-    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_137);
+    var $fresh$ret_141 = ((~ null?($c)) ? __tact_not_null($c) : 0);
+    return (($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties), $fresh$ret_141);
 }
 
 ;;
@@ -786,6 +791,10 @@ _ %investorClaimed(slice $investor) method_id(105603) {
             if (($accepted > $headroom)) {
                 $accepted = $headroom;
             }
+            int $excess = ($msg'amount - $accepted);
+            if (($excess > 0)) {
+                $global_send($SendParameters$_constructor_to_value_mode_body($investor, $excess, 1, __gen_cell_cell_dc262c207d69f036ed6e7ddc7472e9c14675b3b67ed3a20663c5f42b2203a409()));
+            }
             int $existing = __tact_dict_get_slice_int($self'investments, 267, $investor, 257);
             if (null?($existing)) {
                 $self'investorCount = ($self'investorCount + 1);
@@ -842,6 +851,8 @@ _ %investorClaimed(slice $investor) method_id(105603) {
             throw_unless(41896, ( ((~ null?($invested))) ? ((__tact_not_null($invested) > 0)) : (false) ));
             int $refundAmount = __tact_not_null($invested);
             $self'investments~__tact_dict_set_slice_int(267, $investor, 0, 257);
+            $self'currentRaise = ($self'currentRaise - $refundAmount);
+            $self'investorCount = ($self'investorCount - 1);
             $global_send($SendParameters$_constructor_to_value_mode_body($investor, $refundAmount, 2, __gen_cell_cell_a41f82e898c3a23c8740c9c5bcdaae6d00ab315ee3df6bb7d8d8f03227438bae()));
             $ToonDrop$_contract_store(($self'artist, $self'trackId, $self'registry, $self'vault, $self'royaltyPercentage, $self'raiseTarget, $self'slicePrice, $self'deadline, $self'currentRaise, $self'isLocked, $self'isSuccessful, $self'investorCount, $self'investments, $self'totalRoyaltiesReceived, $self'claimedRoyalties));
             return ();

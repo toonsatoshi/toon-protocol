@@ -73,6 +73,12 @@ message RequestMint {
     amount:    Int as coins;
 }
 
+message MintConfirmed {
+    recipient: Address;
+    amount:    Int as coins;
+    origin:    Address;
+}
+
 message SetConfig {
     config: Configuration;
 }
@@ -106,6 +112,7 @@ struct PendingTrack {
     trackId: Int as uint256;
     fingerprint: Int as uint256;
     trackContract: Address;
+    artistContract: Address;
     timestamp: Int as uint32;
 }
 
@@ -142,8 +149,9 @@ message TrackRegistered {
 }
 
 message MintAuthorized {
-    recipient: Address;
-    amount:    Int as coins;
+    recipient:    Address;
+    amount:       Int as coins;
+    origin:       Address;
     authorizedAt: Int as uint32;
 }
 
@@ -180,6 +188,9 @@ contract ToonRegistry with Deployable {
 
     /// track ID  →  deployed ToonTrack contract address
     tracks: map<Int, Address>;
+
+    /// track ID  →  deployed ToonArtist contract address
+    trackToArtist: map<Int, Address>;
 
     /// deployed ToonTrack contract address → track ID
     trackContracts: map<Address, Int>;
@@ -318,6 +329,7 @@ contract ToonRegistry with Deployable {
             trackId: msg.trackId,
             fingerprint: msg.fingerprint,
             trackContract: msg.trackContract,
+            artistContract: caller,
             timestamp: now()
         });
 
@@ -336,6 +348,7 @@ contract ToonRegistry with Deployable {
         require(sender() == pending!!.trackContract, "ToonRegistry: unauthorized confirmation");
 
         self.tracks.set(pending!!.trackId, pending!!.trackContract);
+        self.trackToArtist.set(pending!!.trackId, pending!!.artistContract);
         self.trackContracts.set(pending!!.trackContract, pending!!.trackId);
         self.fingerprints.set(pending!!.fingerprint, true);
         self.totalTracks = self.totalTracks + 1;
@@ -390,6 +403,7 @@ contract ToonRegistry with Deployable {
             body: MintAuthorized{
                 recipient: msg.recipient,
                 amount: msg.amount,
+                origin: sender(),
                 authorizedAt: now()
             }.toCell()
         });
@@ -398,8 +412,9 @@ contract ToonRegistry with Deployable {
     receive(msg: RequestMint) {
         require(msg.recipient != newAddress(0, 0), "ToonRegistry: invalid recipient address");
         // Only a known ToonTrack contract can request minting
+        let trackAddr: Address = sender();
         require(
-            self.trackContracts.get(sender()) != null,
+            self.trackContracts.get(trackAddr) != null,
             "ToonRegistry: caller is not a registered ToonTrack contract"
         );
 
@@ -411,7 +426,24 @@ contract ToonRegistry with Deployable {
             body: MintAuthorized{
                 recipient: msg.recipient,
                 amount: msg.amount,
+                origin: trackAddr,
                 authorizedAt: now()
+            }.toCell()
+        });
+    }
+
+    receive(msg: MintConfirmed) {
+        require(sender() == self.vault, "ToonRegistry: only vault can confirm minting");
+        
+        // Forward confirmation back to the origin track
+        send(SendParameters{
+            to: msg.origin,
+            value: 0,
+            mode: SendRemainingValue,
+            body: MintConfirmed{
+                recipient: msg.recipient,
+                amount: msg.amount,
+                origin: msg.origin
             }.toCell()
         });
     }
@@ -443,11 +475,11 @@ contract ToonRegistry with Deployable {
         let caller: Address = sender();
 
         require(msg.dropContract != newAddress(0, 0), "ToonRegistry: invalid drop contract address");
-        // Caller must be a known ToonArtist contract
-        require(
-            self.isKnownArtistContract(caller),
-            "ToonRegistry: caller is not a registered ToonArtist contract"
-        );
+        
+        // Ownership verification: caller must be the artist contract that owns the trackId
+        let owner: Address? = self.trackToArtist.get(msg.trackId);
+        require(owner != null, "ToonRegistry: trackId not registered");
+        require(caller == owner!!, "ToonRegistry: caller is not the owner of this track");
 
         // One drop per track (simplified)
         require(
@@ -496,14 +528,19 @@ contract ToonRegistry with Deployable {
         // For now, allowing mintAuthority (deployer) or governance (if we knew its address).
         // Since we have self.vault and self.mintAuthority, let's assume governance is handled.
 
+        let found: Bool = false;
         if (msg.parameter == "emissionCap") {
             self.config.emissionCap = msg.newValue;
+            found = true;
         } else if (msg.parameter == "minWalletAgeDays") {
             self.config.minWalletAgeDays = msg.newValue;
+            found = true;
         } else if (msg.parameter == "targetDailyActivity") {
             self.config.targetDailyActivity = msg.newValue;
+            found = true;
         }
-        // ... add more as needed
+        
+        require(found, "ToonRegistry: unknown configuration parameter");
 
         // Push update to vault
         send(SendParameters{

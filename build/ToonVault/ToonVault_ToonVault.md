@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonVault
-BoC Size: 9325 bytes
+BoC Size: 9726 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 25
+Total structures: 27
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -57,6 +57,10 @@ Signature: `DeployOk{queryId:uint64}`
 TL-B: `factory_deploy#6d0ff13b queryId:uint64 cashback:address = FactoryDeploy`
 Signature: `FactoryDeploy{queryId:uint64,cashback:address}`
 
+### TokenMint
+TL-B: `token_mint#1674b0a0 queryId:uint64 amount:coins receiver:address = TokenMint`
+Signature: `TokenMint{queryId:uint64,amount:coins,receiver:address}`
+
 ### Configuration
 TL-B: `_ emissionCap:coins minWalletAgeDays:uint32 targetDailyActivity:uint32 rewardBaseActiveListener:coins rewardBaseGrowthAgent:coins rewardBaseArtistLaunch:coins rewardBaseTrendsetter:coins rewardBaseEarlyBeliever:coins rewardBaseDropInvestor:coins decayFactor:uint16 minThreshold:coins antiFarmingCoeff:uint16 = Configuration`
 Signature: `Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16}`
@@ -70,8 +74,12 @@ TL-B: `claim_reward#f9d49f8b walletAddress:address rewardId:uint8 telegramId:uin
 Signature: `ClaimReward{walletAddress:address,rewardId:uint8,telegramId:uint64,walletAgeDays:uint32,hasVibeStreak:bool,tipAmount:coins,claimId:uint64,expiry:uint32,sigHigh:uint256,sigLow:uint256,referrerId:uint64}`
 
 ### MintAuthorized
-TL-B: `mint_authorized#fa1d125c recipient:address amount:coins authorizedAt:uint32 = MintAuthorized`
-Signature: `MintAuthorized{recipient:address,amount:coins,authorizedAt:uint32}`
+TL-B: `mint_authorized#a976502b recipient:address amount:coins origin:address authorizedAt:uint32 = MintAuthorized`
+Signature: `MintAuthorized{recipient:address,amount:coins,origin:address,authorizedAt:uint32}`
+
+### MintConfirmed
+TL-B: `mint_confirmed#1bf9e8a5 recipient:address amount:coins origin:address = MintConfirmed`
+Signature: `MintConfirmed{recipient:address,amount:coins,origin:address}`
 
 ### RewardClaimed
 TL-B: `reward_claimed#81a35543 rewardId:uint8 recipient:address amount:coins = RewardClaimed`
@@ -102,8 +110,8 @@ TL-B: `update_identity_weight#60799de2 wallet:address weight:int257 = UpdateIden
 Signature: `UpdateIdentityWeight{wallet:address,weight:int257}`
 
 ### ToonVault$Data
-TL-B: `_ owner:address registry:address governance:address oraclePublicKey:uint256 totalReserve:coins dailyEmitted:coins lastResetDay:uint32 halved:bool config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16} dailyClaimCount:uint32 usedClaimIds:dict<int, bool> lastClaimTimestamp:dict<int, int> claimCounts:dict<int, int> pairingCounts:dict<int, int> participantEntropy:dict<int, int> lastRewardTimestamp:dict<int, int> identityWeights:dict<address, int> dailyIdentityRewards:dict<int, coins> dailyClusterRewards:dict<int, coins> lifetimeClaimed:dict<int, bool> = ToonVault`
-Signature: `ToonVault{owner:address,registry:address,governance:address,oraclePublicKey:uint256,totalReserve:coins,dailyEmitted:coins,lastResetDay:uint32,halved:bool,config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16},dailyClaimCount:uint32,usedClaimIds:dict<int, bool>,lastClaimTimestamp:dict<int, int>,claimCounts:dict<int, int>,pairingCounts:dict<int, int>,participantEntropy:dict<int, int>,lastRewardTimestamp:dict<int, int>,identityWeights:dict<address, int>,dailyIdentityRewards:dict<int, coins>,dailyClusterRewards:dict<int, coins>,lifetimeClaimed:dict<int, bool>}`
+TL-B: `_ owner:address registry:address governance:address jettonMaster:address oraclePublicKey:uint256 totalReserve:coins dailyEmitted:coins lastResetDay:uint32 halved:bool config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16} dailyClaimCount:uint32 usedClaimIds:dict<int, bool> lastClaimTimestamp:dict<int, int> claimCounts:dict<int, int> pairingCounts:dict<int, int> participantEntropy:dict<int, int> lastRewardTimestamp:dict<int, int> identityWeights:dict<address, int> dailyIdentityRewards:dict<int, coins> dailyClusterRewards:dict<int, coins> lifetimeClaimed:dict<int, bool> = ToonVault`
+Signature: `ToonVault{owner:address,registry:address,governance:address,jettonMaster:address,oraclePublicKey:uint256,totalReserve:coins,dailyEmitted:coins,lastResetDay:uint32,halved:bool,config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16},dailyClaimCount:uint32,usedClaimIds:dict<int, bool>,lastClaimTimestamp:dict<int, int>,claimCounts:dict<int, int>,pairingCounts:dict<int, int>,participantEntropy:dict<int, int>,lastRewardTimestamp:dict<int, int>,identityWeights:dict<address, int>,dailyIdentityRewards:dict<int, coins>,dailyClusterRewards:dict<int, coins>,lifetimeClaimed:dict<int, bool>}`
 
 ## Get methods
 Total get methods: 12

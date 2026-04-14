@@ -219,6 +219,7 @@ No arguments
 * 17513: ToonArtist: invalid track contract address
 * 18058: ToonArtist: wallet mismatch in confirmation
 * 23584: ToonArtist: unauthorized Jetton notification
+* 25338: ToonArtist: invalid track sender
 * 25644: Only ToonVault can mint
 * 27429: ToonArtist: only owner can initiate registration
 * 33141: ToonArtist: only owner can stake
@@ -228,6 +229,7 @@ No arguments
 * 41950: ToonArtist: unauthorized confirmation callback
 * 42813: ToonArtist: empty metadata URI
 * 44170: ToonArtist: only owner can add tracks
+* 48764: ToonArtist: track not pending
 * 54615: Insufficient balance
 * 59865: ToonArtist: insufficient stake
 * 62589: ToonArtist: only owner can confirm registration

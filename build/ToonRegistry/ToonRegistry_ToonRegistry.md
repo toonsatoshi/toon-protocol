@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonRegistry
-BoC Size: 7015 bytes
+BoC Size: 7066 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 43
+Total structures: 44
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -117,6 +117,10 @@ Signature: `UpdateVaultAddress{newVault:address}`
 TL-B: `request_mint#10859351 recipient:address amount:coins = RequestMint`
 Signature: `RequestMint{recipient:address,amount:coins}`
 
+### MintConfirmed
+TL-B: `mint_confirmed#1bf9e8a5 recipient:address amount:coins origin:address = MintConfirmed`
+Signature: `MintConfirmed{recipient:address,amount:coins,origin:address}`
+
 ### SetConfig
 TL-B: `set_config#2bd0b755 config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16} = SetConfig`
 Signature: `SetConfig{config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16}}`
@@ -142,8 +146,8 @@ TL-B: `_ wallet:address artistContract:address timestamp:uint32 = PendingArtist`
 Signature: `PendingArtist{wallet:address,artistContract:address,timestamp:uint32}`
 
 ### PendingTrack
-TL-B: `_ trackId:uint256 fingerprint:uint256 trackContract:address timestamp:uint32 = PendingTrack`
-Signature: `PendingTrack{trackId:uint256,fingerprint:uint256,trackContract:address,timestamp:uint32}`
+TL-B: `_ trackId:uint256 fingerprint:uint256 trackContract:address artistContract:address timestamp:uint32 = PendingTrack`
+Signature: `PendingTrack{trackId:uint256,fingerprint:uint256,trackContract:address,artistContract:address,timestamp:uint32}`
 
 ### Configuration
 TL-B: `_ emissionCap:coins minWalletAgeDays:uint32 targetDailyActivity:uint32 rewardBaseActiveListener:coins rewardBaseGrowthAgent:coins rewardBaseArtistLaunch:coins rewardBaseTrendsetter:coins rewardBaseEarlyBeliever:coins rewardBaseDropInvestor:coins decayFactor:uint16 minThreshold:coins antiFarmingCoeff:uint16 = Configuration`
@@ -158,8 +162,8 @@ TL-B: `track_registered#74e4a736 trackId:uint256 fingerprint:uint256 trackContra
 Signature: `TrackRegistered{trackId:uint256,fingerprint:uint256,trackContract:address,registeredAt:uint32}`
 
 ### MintAuthorized
-TL-B: `mint_authorized#fa1d125c recipient:address amount:coins authorizedAt:uint32 = MintAuthorized`
-Signature: `MintAuthorized{recipient:address,amount:coins,authorizedAt:uint32}`
+TL-B: `mint_authorized#a976502b recipient:address amount:coins origin:address authorizedAt:uint32 = MintAuthorized`
+Signature: `MintAuthorized{recipient:address,amount:coins,origin:address,authorizedAt:uint32}`
 
 ### RegisterDrop
 TL-B: `register_drop#a99ec9f7 trackId:uint256 dropContract:address = RegisterDrop`
@@ -174,8 +178,8 @@ TL-B: `drop_registered#5206fbd1 trackId:uint256 dropContract:address registeredA
 Signature: `DropRegistered{trackId:uint256,dropContract:address,registeredAt:uint32}`
 
 ### ToonRegistry$Data
-TL-B: `_ artists:dict<address, address> artistContracts:dict<address, address> tracks:dict<int, address> trackContracts:dict<address, int> drops:dict<int, address> fingerprints:dict<int, bool> mintAuthority:address vault:address isPaused:bool config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16} version:uint32 trackRewardEligible:dict<int, bool> artistRewardEligible:dict<address, bool> pendingArtists:dict<address, ^PendingArtist{wallet:address,artistContract:address,timestamp:uint32}> pendingTracks:dict<int, ^PendingTrack{trackId:uint256,fingerprint:uint256,trackContract:address,timestamp:uint32}> totalArtists:uint32 totalTracks:uint32 = ToonRegistry`
-Signature: `ToonRegistry{artists:dict<address, address>,artistContracts:dict<address, address>,tracks:dict<int, address>,trackContracts:dict<address, int>,drops:dict<int, address>,fingerprints:dict<int, bool>,mintAuthority:address,vault:address,isPaused:bool,config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16},version:uint32,trackRewardEligible:dict<int, bool>,artistRewardEligible:dict<address, bool>,pendingArtists:dict<address, ^PendingArtist{wallet:address,artistContract:address,timestamp:uint32}>,pendingTracks:dict<int, ^PendingTrack{trackId:uint256,fingerprint:uint256,trackContract:address,timestamp:uint32}>,totalArtists:uint32,totalTracks:uint32}`
+TL-B: `_ artists:dict<address, address> artistContracts:dict<address, address> tracks:dict<int, address> trackToArtist:dict<int, address> trackContracts:dict<address, int> drops:dict<int, address> fingerprints:dict<int, bool> mintAuthority:address vault:address isPaused:bool config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16} version:uint32 trackRewardEligible:dict<int, bool> artistRewardEligible:dict<address, bool> pendingArtists:dict<address, ^PendingArtist{wallet:address,artistContract:address,timestamp:uint32}> pendingTracks:dict<int, ^PendingTrack{trackId:uint256,fingerprint:uint256,trackContract:address,artistContract:address,timestamp:uint32}> totalArtists:uint32 totalTracks:uint32 = ToonRegistry`
+Signature: `ToonRegistry{artists:dict<address, address>,artistContracts:dict<address, address>,tracks:dict<int, address>,trackToArtist:dict<int, address>,trackContracts:dict<address, int>,drops:dict<int, address>,fingerprints:dict<int, bool>,mintAuthority:address,vault:address,isPaused:bool,config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16},version:uint32,trackRewardEligible:dict<int, bool>,artistRewardEligible:dict<address, bool>,pendingArtists:dict<address, ^PendingArtist{wallet:address,artistContract:address,timestamp:uint32}>,pendingTracks:dict<int, ^PendingTrack{trackId:uint256,fingerprint:uint256,trackContract:address,artistContract:address,timestamp:uint32}>,totalArtists:uint32,totalTracks:uint32}`
 
 ## Get methods
 Total get methods: 11
@@ -250,7 +254,10 @@ Argument: artist
 * 135: Code of a contract was not found
 * 136: Invalid standard address
 * 138: Not a basechain address
+* 3912: ToonRegistry: only vault can confirm minting
+* 3967: ToonRegistry: unknown configuration parameter
 * 4821: ToonRegistry: rollback not allowed yet
+* 5865: ToonRegistry: caller is not the owner of this track
 * 9299: ToonRegistry: wallet already has an artist identity
 * 9580: ToonRegistry: mint amount must be positive
 * 14803: ToonRegistry: unauthorized confirmation
@@ -259,6 +266,7 @@ Argument: artist
 * 17021: ToonRegistry: no pending track found
 * 18543: ToonRegistry: trackId cannot be zero
 * 26225: ToonRegistry: caller is not a registered ToonArtist contract
+* 27588: ToonRegistry: trackId not registered
 * 27890: ToonRegistry: caller is not the mint authority
 * 28295: ToonRegistry: only mint authority can update eligibility
 * 31774: ToonRegistry: invalid new authority address

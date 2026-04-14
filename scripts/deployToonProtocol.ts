@@ -33,6 +33,12 @@ export async function run(provider: NetworkProvider) {
     await provider.waitForDeploy(registry.address);
     console.log('     ✅ ToonRegistry:', registry.address.toString());
 
+    const jettonMasterAddrStr = process.env.TOON_JETTON_ADDRESS;
+    if (!jettonMasterAddrStr) {
+        throw new Error('TOON_JETTON_ADDRESS not set in .env — cannot deploy protocol');
+    }
+    const jettonMasterAddress = Address.parse(jettonMasterAddrStr.replace(/"/g, '').trim());
+
     // ── 2. Vault (registry address now known) ─────────────────────────────────
     console.log('2/5  Deploying ToonVault...');
     const oracleSeedHex = process.env.ORACLE_SEED_HEX;
@@ -48,7 +54,13 @@ export async function run(provider: NetworkProvider) {
             deployerAddress,        // owner
             registry.address,       // registry
             deployerAddress,        // governance (will be wired via SetGovernance)
-            oraclePubKey            // oraclePublicKey — Ed25519 oracle signing key
+            jettonMasterAddress,    // jettonMaster
+            oraclePubKey,           // oraclePublicKey
+            0n,                     // totalReserve
+            0n,                     // dailyEmitted
+            0n,                     // lastResetDay
+            false,                  // halved
+            0n                      // dailyClaimCount
         )
     );
     await vault.send(deployer, { value: toNano('0.1') }, { $$type: 'Deploy', queryId: 0n });
@@ -60,7 +72,7 @@ export async function run(provider: NetworkProvider) {
     await registry.send(
         deployer,
         { value: toNano('0.05') },
-        { $$type: 'SetVault', newVault: vault.address }
+        { $$type: 'UpdateVaultAddress', newVault: vault.address }
     );
     console.log('     ✅ Registry now points to real ToonVault');
 
@@ -72,7 +84,7 @@ export async function run(provider: NetworkProvider) {
     console.log('     ✅ ToonTip:', tip.address.toString());
 
     const governance = provider.open(
-        await ToonGovernance.fromInit(registry.address, vault.address)
+        await ToonGovernance.fromInit(registry.address, vault.address, jettonMasterAddress)
     );
     await governance.send(deployer, { value: toNano('0.1') }, { $$type: 'Deploy', queryId: 0n });
     await provider.waitForDeploy(governance.address);
@@ -92,9 +104,9 @@ export async function run(provider: NetworkProvider) {
     await registry.send(
         deployer,
         { value: toNano('0.05') },
-        { $$type: 'SetGovernance', newGovernance: governance.address }
+        { $$type: 'UpdateMintAuthority', newAuthority: governance.address }
     );
-    console.log('     ✅ Registry.governance → ToonGovernance');
+    console.log('     ✅ Registry.mintAuthority → ToonGovernance');
 
     console.log('');
     console.log('━━━ DEPLOYMENT COMPLETE ━━━');

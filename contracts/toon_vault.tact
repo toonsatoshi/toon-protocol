@@ -1,5 +1,11 @@
 import "@stdlib/deploy";
 
+message(0x1674b0a0) TokenMint {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    receiver: Address;
+}
+
 // ── Reward IDs ───────────────────────────────────────────────────────────────
 const REWARD_ACTIVE_LISTENER:   Int = 1;  // repeatable, decays
 const REWARD_GROWTH_AGENT:      Int = 2;  // repeatable, decays
@@ -77,7 +83,14 @@ message ClaimReward {
 message MintAuthorized {
     recipient:    Address;
     amount:       Int as coins;
+    origin:       Address;
     authorizedAt: Int as uint32;
+}
+
+message MintConfirmed {
+    recipient: Address;
+    amount:    Int as coins;
+    origin:    Address;
 }
 
 message RewardClaimed {
@@ -116,6 +129,7 @@ contract ToonVault with Deployable {
     owner:               Address;
     registry:            Address;
     governance:          Address;
+    jettonMaster:        Address;
     oraclePublicKey:     Int as uint256;
     totalReserve:        Int as coins;
     dailyEmitted:        Int as coins;
@@ -159,6 +173,7 @@ contract ToonVault with Deployable {
         owner:               Address,
         registry:            Address,
         governance:          Address,
+        jettonMaster:        Address,
         oraclePublicKey:     Int,
         totalReserve:        Int,
         dailyEmitted:        Int,
@@ -169,6 +184,7 @@ contract ToonVault with Deployable {
         self.owner               = owner;
         self.registry            = registry;
         self.governance          = governance;
+        self.jettonMaster        = jettonMaster;
         self.oraclePublicKey     = oraclePublicKey;
         self.totalReserve        = totalReserve;
         self.dailyEmitted        = dailyEmitted;
@@ -517,12 +533,16 @@ contract ToonVault with Deployable {
 
         emit(RewardClaimed{rewardId: msg.rewardId, recipient: msg.walletAddress, amount: reward}.toCell());
 
-        // ── 15. Send ──────────────────────────────────────────────────────
+        // ── 15. Send Jetton Reward ─────────────────────────────────────────
         send(SendParameters{
-            to:    msg.walletAddress,
-            value: reward,
+            to:    self.jettonMaster,
+            value: ton("0.05"), // Gas for JettonMaster -> Wallet
             mode:  SendPayGasSeparately,
-            body:  "toon_reward".asComment()
+            body:  TokenMint{
+                queryId: 0,
+                amount: reward,
+                receiver: msg.walletAddress
+            }.toCell()
         });
     }
 
@@ -533,11 +553,29 @@ contract ToonVault with Deployable {
         require(self.totalReserve >= msg.amount, "ToonVault: insufficient reserve");
 
         self.totalReserve = self.totalReserve - msg.amount;
+
+        // 1. Send TokenMint to JettonMaster
         send(SendParameters{
-            to:    msg.recipient,
-            value: msg.amount,
-            mode:  SendIgnoreErrors,
-            body:  "mint_authorized".asComment()
+            to:    self.jettonMaster,
+            value: ton("0.05"),
+            mode:  SendPayGasSeparately,
+            body:  TokenMint{
+                queryId: 0,
+                amount: msg.amount,
+                receiver: msg.recipient
+            }.toCell()
+        });
+
+        // 2. Notify Registry of success
+        send(SendParameters{
+            to: self.registry,
+            value: 0,
+            mode: SendRemainingValue,
+            body: MintConfirmed{
+                recipient: msg.recipient,
+                amount: msg.amount,
+                origin: msg.origin
+            }.toCell()
         });
     }
 

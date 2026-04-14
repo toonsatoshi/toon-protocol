@@ -1,6 +1,6 @@
 # Tact compilation report
 Contract: ToonDrop
-BoC Size: 3455 bytes
+BoC Size: 3531 bytes
 
 ## Structures (Structs and Messages)
 Total structures: 19

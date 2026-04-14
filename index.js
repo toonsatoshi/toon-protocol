@@ -146,7 +146,7 @@ if (apiKey) {
 }
 
 let client = new TonClient({
-    endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC',
+    endpoint: process.env.TON_ENDPOINT || 'https://testnet.toncenter.com/api/v2/jsonRPC',
     apiKey: apiKey
 });
 

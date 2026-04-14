@@ -112,6 +112,17 @@ contract ToonDrop with Deployable {
         let headroom: Int = self.raiseTarget - self.currentRaise;
         let accepted: Int = msg.amount;
         if (accepted > headroom) { accepted = headroom; }
+        
+        // Refund excess TON to sender immediately
+        let excess: Int = msg.amount - accepted;
+        if (excess > 0) {
+            send(SendParameters{
+                to:    investor,
+                value: excess,
+                mode:  SendPayGasSeparately,
+                body:  "ToonDrop: refunding excess contribution".asComment()
+            });
+        }
 
         let existing: Int? = self.investments.get(investor);
         if (existing == null) {
@@ -239,6 +250,8 @@ contract ToonDrop with Deployable {
 
         // Clear before sending — prevents re-entrancy.
         self.investments.set(investor, 0);
+        self.currentRaise = self.currentRaise - refundAmount;
+        self.investorCount = self.investorCount - 1;
 
         send(SendParameters{
             to:    investor,

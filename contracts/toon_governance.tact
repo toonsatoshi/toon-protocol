@@ -135,6 +135,9 @@ contract ToonGovernance with Deployable {
     hasVoted:        map<Int, Bool>;
     hasVotedAddress: map<Int, Bool>;
 
+    // Stake lock: Voter cannot unstake until the latest deadline they voted on.
+    lockUntil:       map<Address, Int as uint32>;
+
     init(registry: Address, vault: Address, jettonMaster: Address) {
         self.registry              = registry;
         self.vault                 = vault;
@@ -186,6 +189,11 @@ contract ToonGovernance with Deployable {
         let existing: Int? = self.stakes.get(sender());
         require(existing != null && existing!! >= msg.amount,
             "ToonGovernance: insufficient stake");
+
+        let lock: Int? = self.lockUntil.get(sender());
+        if (lock != null) {
+            require(now() > lock!!, "ToonGovernance: stake is locked due to active votes");
+        }
 
         let newBal: Int = existing!! - msg.amount;
         self.stakes.set(sender(), newBal);
@@ -257,6 +265,12 @@ contract ToonGovernance with Deployable {
             "ToonGovernance: already voted on this proposal");
 
         self.hasVoted.set(key, true);
+        
+        // Update lock: voter is locked until the latest deadline among their votes
+        let currentLock: Int? = self.lockUntil.get(sender());
+        if (currentLock == null || proposal.deadline > currentLock!!) {
+            self.lockUntil.set(sender(), proposal.deadline);
+        }
 
         if (msg.support) {
             proposal.votesFor     = proposal.votesFor     + weight!!;
@@ -343,6 +357,12 @@ contract ToonGovernance with Deployable {
             "ToonGovernance: already voted on this proposal");
 
         self.hasVotedAddress.set(key, true);
+
+        // Update lock
+        let currentLock: Int? = self.lockUntil.get(sender());
+        if (currentLock == null || proposal.deadline > currentLock!!) {
+            self.lockUntil.set(sender(), proposal.deadline);
+        }
 
         if (msg.support) {
             proposal.votesFor     = proposal.votesFor     + weight!!;

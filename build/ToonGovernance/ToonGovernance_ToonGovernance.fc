@@ -53,6 +53,12 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline;
 ;; __tact_dict_set_slice_int
 (cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline;
 
+;; __tact_dict_get_slice_uint
+int __tact_dict_get_slice_uint(cell d, int kl, slice k, int vl) inline;
+
+;; __tact_dict_set_slice_uint
+(cell, ()) __tact_dict_set_slice_uint(cell d, int kl, slice k, int v, int vl) inline;
+
 ;; __tact_dict_get_int_int
 int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline;
 
@@ -120,10 +126,10 @@ tuple $AddressProposal$_as_optional((slice, slice, slice, slice, int, int, int, 
 tuple $AddressProposal$_load_opt(cell cl) inline;
 
 ;; $ToonGovernance$_store
-builder $ToonGovernance$_store(builder build_0, (slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) v) inline;
+builder $ToonGovernance$_store(builder build_0, (slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) v) inline;
 
 ;; $ToonGovernance$_load
-(slice, ((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell))) $ToonGovernance$_load(slice sc_0) inline;
+(slice, ((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell))) $ToonGovernance$_load(slice sc_0) inline;
 
 ;; $Context$_get_value
 _ $Context$_get_value((int, slice, int, slice) v) inline;
@@ -159,13 +165,13 @@ builder $ToonJettonWallet$init$_store(builder build_0, (int, slice, slice) v) in
 (slice, ((slice, slice, slice))) $ToonGovernance$init$_load(slice sc_0) inline;
 
 ;; $ToonGovernance$_contract_init
-(slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $ToonGovernance$_contract_init(slice $registry, slice $vault, slice $jettonMaster) impure inline;
+(slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $ToonGovernance$_contract_init(slice $registry, slice $vault, slice $jettonMaster) impure inline;
 
 ;; $ToonGovernance$_contract_load
-(slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $ToonGovernance$_contract_load() impure inline;
+(slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $ToonGovernance$_contract_load() impure inline;
 
 ;; $ToonGovernance$_contract_store
-() $ToonGovernance$_contract_store((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) v) impure inline;
+() $ToonGovernance$_contract_store((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) v) impure inline;
 
 ;; $Cell$_fun_asSlice
 slice $Cell$_fun_asSlice(cell $self) impure inline;
@@ -186,37 +192,37 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 (cell, cell) $ToonJettonWallet$_init_child(int $balance, slice $owner, slice $master) inline_ref;
 
 ;; $ToonGovernance$_fun_voteKey
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_voteKey((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, int $proposalId, slice $voter) impure inline_ref;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_voteKey((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, int $proposalId, slice $voter) impure inline_ref;
 
 ;; $ToonGovernance$_fun_quorumPassed
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_quorumPassed((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, (slice, int, slice, slice, int, int, int, int) $proposal) impure inline_ref;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_quorumPassed((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, (slice, int, slice, slice, int, int, int, int) $proposal) impure inline_ref;
 
 ;; $ToonGovernance$_fun_quorumPassedAddr
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_quorumPassedAddr((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, (slice, slice, slice, slice, int, int, int, int) $proposal) impure inline_ref;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_quorumPassedAddr((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, (slice, slice, slice, slice, int, int, int, int) $proposal) impure inline_ref;
 
 ;; $ToonGovernance$_fun_totalStaked
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_totalStaked((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self) impure inline_ref;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_totalStaked((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self) impure inline_ref;
 
 ;; $ToonGovernance$_fun_stake
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_stake((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, slice $voter) impure inline_ref;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_stake((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, slice $voter) impure inline_ref;
 
 ;; $ToonGovernance$_fun_getProposal
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), tuple) $ToonGovernance$_fun_getProposal((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, int $proposalId) impure inline_ref;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), tuple) $ToonGovernance$_fun_getProposal((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, int $proposalId) impure inline_ref;
 
 ;; $ToonGovernance$_fun_getAddressProposal
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), tuple) $ToonGovernance$_fun_getAddressProposal((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, int $proposalId) impure inline_ref;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), tuple) $ToonGovernance$_fun_getAddressProposal((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, int $proposalId) impure inline_ref;
 
 ;; $ToonGovernance$_fun_hasAddressVoted
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_hasAddressVoted((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, int $proposalId, slice $voter) impure inline_ref;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_hasAddressVoted((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, int $proposalId, slice $voter) impure inline_ref;
 
 ;; $ToonGovernance$_fun_hasAddressVotedOnAddressProposal
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_hasAddressVotedOnAddressProposal((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, int $proposalId, slice $voter) impure inline_ref;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_hasAddressVotedOnAddressProposal((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, int $proposalId, slice $voter) impure inline_ref;
 
 ;; $ToonGovernance$_fun_quorumMet
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_quorumMet((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, int $proposalId) impure inline_ref;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_quorumMet((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, int $proposalId) impure inline_ref;
 
 ;; $ToonGovernance$_fun_notify
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), ()) $ToonGovernance$_fun_notify((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, cell $body) impure inline;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), ()) $ToonGovernance$_fun_notify((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, cell $body) impure inline;
 
 ;; $SendParameters$_constructor_to_value_mode_body
 ((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline;
@@ -446,6 +452,24 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
         return (r, ());
     } else {
         return (dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+int __tact_dict_get_slice_uint(cell d, int kl, slice k, int vl) inline {
+    var (r, ok) = __tact_dict_get(d, kl, k);
+    if (ok) {
+        return r~load_uint(vl);
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_slice_uint(cell d, int kl, slice k, int v, int vl) inline {
+    if (null?(v)) {
+        var (r, ok) = __tact_dict_delete(d, kl, k);
+        return (r, ());
+    } else {
+        return (dict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ());
     }
 }
 
@@ -690,8 +714,8 @@ slice $Int$_fun_toString(int $self) impure asm """
     ENDC CTOS // s
 """;
 
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), ()) $ToonGovernance$_fun_notify((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, cell $body) impure inline {
-    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)) = $self;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), ()) $ToonGovernance$_fun_notify((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, cell $body) impure inline {
+    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)) = $self;
     slice $to = __tact_context_get_sender();
     int $bounce = false;
     if (false) {
@@ -700,11 +724,11 @@ slice $Int$_fun_toString(int $self) impure asm """
         if (($balanceBeforeMessage < 0)) {
             $global_nativeReserve(0, 0);
             $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 130, $body));
-            return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress), ());
+            return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil), ());
         }
     }
     $global_message($MessageParameters$_constructor_bounce_to_value_mode_body($bounce, $to, 0, 66, $body));
-    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress), ());
+    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil), ());
 }
 
 ;; ToonGovernance_ToonGovernance.constants.fc
@@ -1035,11 +1059,11 @@ cell $ToonJettonWallet$_child_get_code() impure asm """
 
 ;;
 ;; Type: ToonGovernance
-;; TLB: _ registry:address vault:address jettonMaster:address stakes:dict<address, int> totalStaked:coins proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint64,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextProposalId:uint256 addressProposals:dict<int, ^AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextAddressProposalId:uint256 hasVoted:dict<int, bool> hasVotedAddress:dict<int, bool> = ToonGovernance
+;; TLB: _ registry:address vault:address jettonMaster:address stakes:dict<address, int> totalStaked:coins proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint64,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextProposalId:uint256 addressProposals:dict<int, ^AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextAddressProposalId:uint256 hasVoted:dict<int, bool> hasVotedAddress:dict<int, bool> lockUntil:dict<address, uint32> = ToonGovernance
 ;;
 
-builder $ToonGovernance$_store(builder build_0, (slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) v) inline {
-    var (v'registry, v'vault, v'jettonMaster, v'stakes, v'totalStaked, v'proposals, v'nextProposalId, v'addressProposals, v'nextAddressProposalId, v'hasVoted, v'hasVotedAddress) = v;
+builder $ToonGovernance$_store(builder build_0, (slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) v) inline {
+    var (v'registry, v'vault, v'jettonMaster, v'stakes, v'totalStaked, v'proposals, v'nextProposalId, v'addressProposals, v'nextAddressProposalId, v'hasVoted, v'hasVotedAddress, v'lockUntil) = v;
     build_0 = build_0.store_slice(v'registry);
     build_0 = build_0.store_slice(v'vault);
     build_0 = build_0.store_slice(v'jettonMaster);
@@ -1051,12 +1075,15 @@ builder $ToonGovernance$_store(builder build_0, (slice, slice, slice, cell, int,
     build_1 = build_1.store_dict(v'addressProposals);
     build_1 = build_1.store_uint(v'nextAddressProposalId, 256);
     build_1 = build_1.store_dict(v'hasVoted);
-    build_1 = build_1.store_dict(v'hasVotedAddress);
+    var build_2 = begin_cell();
+    build_2 = build_2.store_dict(v'hasVotedAddress);
+    build_2 = build_2.store_dict(v'lockUntil);
+    build_1 = store_builder_ref(build_1, build_2);
     build_0 = store_builder_ref(build_0, build_1);
     return build_0;
 }
 
-(slice, ((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell))) $ToonGovernance$_load(slice sc_0) inline {
+(slice, ((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell))) $ToonGovernance$_load(slice sc_0) inline {
     var v'registry = sc_0~load_msg_addr();
     var v'vault = sc_0~load_msg_addr();
     var v'jettonMaster = sc_0~load_msg_addr();
@@ -1068,8 +1095,10 @@ builder $ToonGovernance$_store(builder build_0, (slice, slice, slice, cell, int,
     var v'addressProposals = sc_1~load_dict();
     var v'nextAddressProposalId = sc_1~load_uint(256);
     var v'hasVoted = sc_1~load_dict();
-    var v'hasVotedAddress = sc_1~load_dict();
-    return (sc_0, (v'registry, v'vault, v'jettonMaster, v'stakes, v'totalStaked, v'proposals, v'nextProposalId, v'addressProposals, v'nextAddressProposalId, v'hasVoted, v'hasVotedAddress));
+    slice sc_2 = sc_1~load_ref().begin_parse();
+    var v'hasVotedAddress = sc_2~load_dict();
+    var v'lockUntil = sc_2~load_dict();
+    return (sc_0, (v'registry, v'vault, v'jettonMaster, v'stakes, v'totalStaked, v'proposals, v'nextProposalId, v'addressProposals, v'nextAddressProposalId, v'hasVoted, v'hasVotedAddress, v'lockUntil));
 }
 
 (slice, ((slice, slice, slice))) $ToonGovernance$init$_load(slice sc_0) inline {
@@ -1079,7 +1108,7 @@ builder $ToonGovernance$_store(builder build_0, (slice, slice, slice, cell, int,
     return (sc_0, (v'registry, v'vault, v'jettonMaster));
 }
 
-(slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $ToonGovernance$_contract_load() impure inline {
+(slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $ToonGovernance$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
@@ -1092,7 +1121,7 @@ builder $ToonGovernance$_store(builder build_0, (slice, slice, slice, cell, int,
     }
 }
 
-() $ToonGovernance$_contract_store((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) v) impure inline {
+() $ToonGovernance$_contract_store((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_int(true, 1);
     b = $ToonGovernance$_store(b, v);
@@ -1103,89 +1132,89 @@ builder $ToonGovernance$_store(builder build_0, (slice, slice, slice, cell, int,
 ;; Contract ToonGovernance functions
 ;;
 
-(slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $ToonGovernance$_contract_init(slice $registry, slice $vault, slice $jettonMaster) impure inline {
-    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)) = (null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null());
+(slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $ToonGovernance$_contract_init(slice $registry, slice $vault, slice $jettonMaster) impure inline {
+    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)) = (null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null());
     $self'registry = $registry;
     $self'vault = $vault;
     $self'jettonMaster = $jettonMaster;
     $self'totalStaked = 0;
     $self'nextProposalId = 0;
     $self'nextAddressProposalId = 0;
-    return ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress);
+    return ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil);
 }
 
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_voteKey((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, int $proposalId, slice $voter) impure inline_ref {
-    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)) = $self;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_voteKey((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, int $proposalId, slice $voter) impure inline_ref {
+    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)) = $self;
     tuple $sb = __tact_string_builder_start_string();
     $sb~__tact_string_builder_append($Int$_fun_toString($proposalId));
     $sb~__tact_string_builder_append(__gen_slice_string_d4945957eae362fe7564b6491c1f1933ef0e8c8d8c854b880ee9333b04f49c43());
     $sb~__tact_string_builder_append(__tact_address_to_user_friendly($voter));
-    var $fresh$ret_184 = __tact_sha256(__tact_string_builder_end_slice($sb));
-    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress), $fresh$ret_184);
+    var $fresh$ret_188 = __tact_sha256(__tact_string_builder_end_slice($sb));
+    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil), $fresh$ret_188);
 }
 
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_quorumPassed((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, (slice, int, slice, slice, int, int, int, int) $proposal) impure inline_ref {
-    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)) = $self;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_quorumPassed((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, (slice, int, slice, slice, int, int, int, int) $proposal) impure inline_ref {
+    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)) = $self;
     var (($proposal'parameter, $proposal'newValue, $proposal'description, $proposal'proposer, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed)) = $proposal;
-    var $fresh$ret_185 = ( (($proposal'votesFor > $proposal'votesAgainst)) ? (($proposal'votesFor > ($self'totalStaked / 4))) : (false) );
-    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress), $fresh$ret_185);
+    var $fresh$ret_189 = ( (($proposal'votesFor > $proposal'votesAgainst)) ? (($proposal'votesFor > ($self'totalStaked / 4))) : (false) );
+    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil), $fresh$ret_189);
 }
 
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_quorumPassedAddr((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, (slice, slice, slice, slice, int, int, int, int) $proposal) impure inline_ref {
-    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)) = $self;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_quorumPassedAddr((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, (slice, slice, slice, slice, int, int, int, int) $proposal) impure inline_ref {
+    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)) = $self;
     var (($proposal'parameter, $proposal'newAddress, $proposal'description, $proposal'proposer, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed)) = $proposal;
-    var $fresh$ret_186 = ( (($proposal'votesFor > $proposal'votesAgainst)) ? (($proposal'votesFor > ($self'totalStaked / 4))) : (false) );
-    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress), $fresh$ret_186);
+    var $fresh$ret_190 = ( (($proposal'votesFor > $proposal'votesAgainst)) ? (($proposal'votesFor > ($self'totalStaked / 4))) : (false) );
+    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil), $fresh$ret_190);
 }
 
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_totalStaked((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self) impure inline_ref {
-    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)) = $self;
-    var $fresh$ret_187 = $self'totalStaked;
-    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress), $fresh$ret_187);
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_totalStaked((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self) impure inline_ref {
+    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)) = $self;
+    var $fresh$ret_191 = $self'totalStaked;
+    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil), $fresh$ret_191);
 }
 
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_stake((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, slice $voter) impure inline_ref {
-    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)) = $self;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_stake((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, slice $voter) impure inline_ref {
+    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)) = $self;
     int $s = __tact_dict_get_slice_int($self'stakes, 267, $voter, 257);
-    var $fresh$ret_188 = ((~ null?($s)) ? __tact_not_null($s) : 0);
-    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress), $fresh$ret_188);
+    var $fresh$ret_192 = ((~ null?($s)) ? __tact_not_null($s) : 0);
+    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil), $fresh$ret_192);
 }
 
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), tuple) $ToonGovernance$_fun_getProposal((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, int $proposalId) impure inline_ref {
-    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)) = $self;
-    var $fresh$ret_189 = $GlobalProposal$_load_opt(__tact_dict_get_int_cell($self'proposals, 257, $proposalId));
-    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress), $fresh$ret_189);
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), tuple) $ToonGovernance$_fun_getProposal((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, int $proposalId) impure inline_ref {
+    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)) = $self;
+    var $fresh$ret_193 = $GlobalProposal$_load_opt(__tact_dict_get_int_cell($self'proposals, 257, $proposalId));
+    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil), $fresh$ret_193);
 }
 
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), tuple) $ToonGovernance$_fun_getAddressProposal((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, int $proposalId) impure inline_ref {
-    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)) = $self;
-    var $fresh$ret_190 = $AddressProposal$_load_opt(__tact_dict_get_int_cell($self'addressProposals, 257, $proposalId));
-    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress), $fresh$ret_190);
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), tuple) $ToonGovernance$_fun_getAddressProposal((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, int $proposalId) impure inline_ref {
+    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)) = $self;
+    var $fresh$ret_194 = $AddressProposal$_load_opt(__tact_dict_get_int_cell($self'addressProposals, 257, $proposalId));
+    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil), $fresh$ret_194);
 }
 
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_hasAddressVoted((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, int $proposalId, slice $voter) impure inline_ref {
-    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)) = $self;
-    int $key = ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)~$ToonGovernance$_fun_voteKey($proposalId, $voter);
-    var $fresh$ret_191 = (~ null?(__tact_dict_get_int_int($self'hasVoted, 257, $key, 1)));
-    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress), $fresh$ret_191);
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_hasAddressVoted((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, int $proposalId, slice $voter) impure inline_ref {
+    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)) = $self;
+    int $key = ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)~$ToonGovernance$_fun_voteKey($proposalId, $voter);
+    var $fresh$ret_195 = (~ null?(__tact_dict_get_int_int($self'hasVoted, 257, $key, 1)));
+    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil), $fresh$ret_195);
 }
 
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_hasAddressVotedOnAddressProposal((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, int $proposalId, slice $voter) impure inline_ref {
-    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)) = $self;
-    int $key = ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)~$ToonGovernance$_fun_voteKey($proposalId, $voter);
-    var $fresh$ret_192 = (~ null?(__tact_dict_get_int_int($self'hasVotedAddress, 257, $key, 1)));
-    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress), $fresh$ret_192);
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_hasAddressVotedOnAddressProposal((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, int $proposalId, slice $voter) impure inline_ref {
+    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)) = $self;
+    int $key = ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)~$ToonGovernance$_fun_voteKey($proposalId, $voter);
+    var $fresh$ret_196 = (~ null?(__tact_dict_get_int_int($self'hasVotedAddress, 257, $key, 1)));
+    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil), $fresh$ret_196);
 }
 
-((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell), int) $ToonGovernance$_fun_quorumMet((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell) $self, int $proposalId) impure inline_ref {
-    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)) = $self;
+((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell), int) $ToonGovernance$_fun_quorumMet((slice, slice, slice, cell, int, cell, int, cell, int, cell, cell, cell) $self, int $proposalId) impure inline_ref {
+    var (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)) = $self;
     tuple $p = $GlobalProposal$_load_opt(__tact_dict_get_int_cell($self'proposals, 257, $proposalId));
     if (null?($p)) {
-        var $fresh$ret_193 = false;
-        return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress), $fresh$ret_193);
+        var $fresh$ret_197 = false;
+        return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil), $fresh$ret_197);
     }
-    var $fresh$ret_194 = ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)~$ToonGovernance$_fun_quorumPassed($GlobalProposal$_tensor_cast($GlobalProposal$_not_null($p)));
-    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress), $fresh$ret_194);
+    var $fresh$ret_198 = ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)~$ToonGovernance$_fun_quorumPassed($GlobalProposal$_tensor_cast($GlobalProposal$_not_null($p)));
+    return (($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil), $fresh$ret_198);
 }
 
 ;;
@@ -1262,7 +1291,7 @@ _ %quorumMet(int $proposalId) method_id(99536) {
     __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
-    var ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress) = $ToonGovernance$_contract_load();
+    var ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil) = $ToonGovernance$_contract_load();
     
     ;; Handle bounced messages
     if (msg_bounced) { return (); }
@@ -1279,7 +1308,7 @@ _ %quorumMet(int $proposalId) method_id(99536) {
         int $current = ((~ null?($existing)) ? __tact_not_null($existing) : 0);
         $self'stakes~__tact_dict_set_slice_int(267, $msg'from, ($current + $msg'amount), 257);
         $self'totalStaked = ($self'totalStaked + $msg'amount);
-        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress));
+        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil));
         return ();
     }
     
@@ -1288,12 +1317,16 @@ _ %quorumMet(int $proposalId) method_id(99536) {
         var $msg'amount = in_msg~load_varuint16();
         int $existing = __tact_dict_get_slice_int($self'stakes, 267, __tact_context_get_sender(), 257);
         throw_unless(63274, ( ((~ null?($existing))) ? ((__tact_not_null($existing) >= $msg'amount)) : (false) ));
+        int $lock = __tact_dict_get_slice_uint($self'lockUntil, 267, __tact_context_get_sender(), 32);
+        if ((~ null?($lock))) {
+            throw_unless(12390, ($global_now() > __tact_not_null($lock)));
+        }
         int $newBal = (__tact_not_null($existing) - $msg'amount);
         $self'stakes~__tact_dict_set_slice_int(267, __tact_context_get_sender(), $newBal, 257);
         $self'totalStaked = ($self'totalStaked - $msg'amount);
         slice $jettonWallet = $global_contractAddress($ToonJettonWallet$_init_child(0, $global_myAddress(), $self'jettonMaster));
         $global_send($SendParameters$_constructor_to_value_mode_body($jettonWallet, 0, 64, $TokenTransfer$_store_cell($TokenTransfer$_constructor_queryId_amount_destination_response_destination_customPayload_forward_ton_amount_forward_payload(0, $msg'amount, __tact_context_get_sender(), __tact_context_get_sender(), null(), 0, $global_emptySlice()), begin_cell())));
-        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress));
+        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil));
         return ();
     }
     
@@ -1308,7 +1341,7 @@ _ %quorumMet(int $proposalId) method_id(99536) {
         int $pId = $self'nextProposalId;
         $self'nextProposalId = ($self'nextProposalId + 1);
         $self'proposals~__tact_dict_set_int_cell(257, $pId, $GlobalProposal$_store_cell($GlobalProposal$_constructor_parameter_newValue_description_proposer_votesFor_votesAgainst_deadline_executed($msg'parameter, $msg'newValue, $msg'description, __tact_context_get_sender(), 0, 0, ($global_now() + 1209600), false), begin_cell()));
-        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress));
+        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil));
         return ();
     }
     
@@ -1323,16 +1356,20 @@ _ %quorumMet(int $proposalId) method_id(99536) {
         throw_unless(9622, (~ $proposal'executed));
         int $weight = __tact_dict_get_slice_int($self'stakes, 267, __tact_context_get_sender(), 257);
         throw_unless(61996, ( ((~ null?($weight))) ? ((__tact_not_null($weight) > 0)) : (false) ));
-        int $key = ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)~$ToonGovernance$_fun_voteKey($msg'proposalId, __tact_context_get_sender());
+        int $key = ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)~$ToonGovernance$_fun_voteKey($msg'proposalId, __tact_context_get_sender());
         throw_unless(22462, null?(__tact_dict_get_int_int($self'hasVoted, 257, $key, 1)));
         $self'hasVoted~__tact_dict_set_int_int(257, $key, true, 1);
+        int $currentLock = __tact_dict_get_slice_uint($self'lockUntil, 267, __tact_context_get_sender(), 32);
+        if (( (null?($currentLock)) ? (true) : (($proposal'deadline > __tact_not_null($currentLock))) )) {
+            $self'lockUntil~__tact_dict_set_slice_uint(267, __tact_context_get_sender(), $proposal'deadline, 32);
+        }
         if ($msg'support) {
             $proposal'votesFor = ($proposal'votesFor + __tact_not_null($weight));
         } else {
             $proposal'votesAgainst = ($proposal'votesAgainst + __tact_not_null($weight));
         }
         $self'proposals~__tact_dict_set_int_cell(257, $msg'proposalId, $GlobalProposal$_store_cell(($proposal'parameter, $proposal'newValue, $proposal'description, $proposal'proposer, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed), begin_cell()));
-        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress));
+        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil));
         return ();
     }
     
@@ -1344,11 +1381,11 @@ _ %quorumMet(int $proposalId) method_id(99536) {
         var ($proposal'parameter, $proposal'newValue, $proposal'description, $proposal'proposer, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed) = $GlobalProposal$_not_null($p);
         throw_unless(37276, ($global_now() > $proposal'deadline));
         throw_unless(9622, (~ $proposal'executed));
-        throw_unless(2999, ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)~$ToonGovernance$_fun_quorumPassed($GlobalProposal$_tensor_cast(($proposal'parameter, $proposal'newValue, $proposal'description, $proposal'proposer, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed))));
+        throw_unless(2999, ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)~$ToonGovernance$_fun_quorumPassed($GlobalProposal$_tensor_cast(($proposal'parameter, $proposal'newValue, $proposal'description, $proposal'proposer, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed))));
         $proposal'executed = true;
         $self'proposals~__tact_dict_set_int_cell(257, $msg'proposalId, $GlobalProposal$_store_cell(($proposal'parameter, $proposal'newValue, $proposal'description, $proposal'proposer, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed), begin_cell()));
         $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 0, 64, $UpdateConfigParam$_store_cell($UpdateConfigParam$_constructor_parameter_newValue($proposal'parameter, $proposal'newValue), begin_cell())));
-        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress));
+        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil));
         return ();
     }
     
@@ -1363,7 +1400,7 @@ _ %quorumMet(int $proposalId) method_id(99536) {
         int $pId = $self'nextAddressProposalId;
         $self'nextAddressProposalId = ($self'nextAddressProposalId + 1);
         $self'addressProposals~__tact_dict_set_int_cell(257, $pId, $AddressProposal$_store_cell($AddressProposal$_constructor_parameter_newAddress_description_proposer_votesFor_votesAgainst_deadline_executed($msg'parameter, $msg'newAddress, $msg'description, __tact_context_get_sender(), 0, 0, ($global_now() + 1209600), false), begin_cell()));
-        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress));
+        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil));
         return ();
     }
     
@@ -1378,16 +1415,20 @@ _ %quorumMet(int $proposalId) method_id(99536) {
         throw_unless(9622, (~ $proposal'executed));
         int $weight = __tact_dict_get_slice_int($self'stakes, 267, __tact_context_get_sender(), 257);
         throw_unless(61996, ( ((~ null?($weight))) ? ((__tact_not_null($weight) > 0)) : (false) ));
-        int $key = ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)~$ToonGovernance$_fun_voteKey($msg'proposalId, __tact_context_get_sender());
+        int $key = ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)~$ToonGovernance$_fun_voteKey($msg'proposalId, __tact_context_get_sender());
         throw_unless(22462, null?(__tact_dict_get_int_int($self'hasVotedAddress, 257, $key, 1)));
         $self'hasVotedAddress~__tact_dict_set_int_int(257, $key, true, 1);
+        int $currentLock = __tact_dict_get_slice_uint($self'lockUntil, 267, __tact_context_get_sender(), 32);
+        if (( (null?($currentLock)) ? (true) : (($proposal'deadline > __tact_not_null($currentLock))) )) {
+            $self'lockUntil~__tact_dict_set_slice_uint(267, __tact_context_get_sender(), $proposal'deadline, 32);
+        }
         if ($msg'support) {
             $proposal'votesFor = ($proposal'votesFor + __tact_not_null($weight));
         } else {
             $proposal'votesAgainst = ($proposal'votesAgainst + __tact_not_null($weight));
         }
         $self'addressProposals~__tact_dict_set_int_cell(257, $msg'proposalId, $AddressProposal$_store_cell(($proposal'parameter, $proposal'newAddress, $proposal'description, $proposal'proposer, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed), begin_cell()));
-        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress));
+        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil));
         return ();
     }
     
@@ -1399,21 +1440,21 @@ _ %quorumMet(int $proposalId) method_id(99536) {
         var ($proposal'parameter, $proposal'newAddress, $proposal'description, $proposal'proposer, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed) = $AddressProposal$_not_null($p);
         throw_unless(37276, ($global_now() > $proposal'deadline));
         throw_unless(9622, (~ $proposal'executed));
-        throw_unless(2999, ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)~$ToonGovernance$_fun_quorumPassedAddr($AddressProposal$_tensor_cast(($proposal'parameter, $proposal'newAddress, $proposal'description, $proposal'proposer, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed))));
+        throw_unless(2999, ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)~$ToonGovernance$_fun_quorumPassedAddr($AddressProposal$_tensor_cast(($proposal'parameter, $proposal'newAddress, $proposal'description, $proposal'proposer, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed))));
         $proposal'executed = true;
         $self'addressProposals~__tact_dict_set_int_cell(257, $msg'proposalId, $AddressProposal$_store_cell(($proposal'parameter, $proposal'newAddress, $proposal'description, $proposal'proposer, $proposal'votesFor, $proposal'votesAgainst, $proposal'deadline, $proposal'executed), begin_cell()));
         if (__tact_slice_eq($proposal'parameter, __gen_slice_string_05ff446710ed0d4d5203084880517594198484dd80982404a990009d6d1f75c1())) {
             $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 0, 64, $UpdateMintAuthority$_store_cell($UpdateMintAuthority$_constructor_newAuthority($proposal'newAddress), begin_cell())));
         }
-        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress));
+        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil));
         return ();
     }
     
     ;; Receive Deploy message
     if (op == 0x946a98b6) {
         var $deploy'queryId = in_msg~load_uint(64);
-        ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress)~$ToonGovernance$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId), begin_cell()));
-        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress));
+        ($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil)~$ToonGovernance$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId), begin_cell()));
+        $ToonGovernance$_contract_store(($self'registry, $self'vault, $self'jettonMaster, $self'stakes, $self'totalStaked, $self'proposals, $self'nextProposalId, $self'addressProposals, $self'nextAddressProposalId, $self'hasVoted, $self'hasVotedAddress, $self'lockUntil));
         return ();
     }
     

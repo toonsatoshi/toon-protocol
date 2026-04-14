@@ -17,35 +17,8 @@ function setupPaymentHandlers(bot) {
         );
     });
 
-    bot.action('buy_stars', async (ctx) => {
-        await ctx.replyWithInvoice({
-            currency: 'XTR',
-            provider_token: '',
-            title: '⭐ Buy $TOON with Stars',
-            description: 'Purchase $TOON tokens to tip artists and earn rewards.',
-            payload: 'buy_toon_stars',
-            prices: [{ label: '100 $TOON', amount: 50 }]
-        });
-    });
-
-    bot.action('buy_ton', async (ctx) => {
-        const telegramId = ctx.from.id;
-        const res = await store.getUser(telegramId);
-        
-        if (!res.success || !res.data.walletAddress) {
-            return ctx.reply("❌ Please link your wallet first using 💎 Link Wallet");
-        }
-
-        const transaction = {
-            validUntil: Math.floor(Date.now() / 1000) + 600,
-            messages: [{
-                address: process.env.TOON_VAULT_ADDRESS,
-                amount: toNano('1').toString()
-            }]
-        };
-
-        await ctx.reply("✅ Send 1 TON to the vault to receive 100 $TOON. Transaction initiated in your wallet.");
-    });
+    // All buy_stars and buy_ton handlers are in index.js for better integration
+    // with TonConnect and session state.
 }
 
 module.exports = { setupPaymentHandlers };

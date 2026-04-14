@@ -1,7 +1,7 @@
 const { Address, toNano, beginCell } = require('@ton/core');
 const { TonClient, WalletContractV4 } = require('@ton/ton');
 const { mnemonicToWalletKey } = require('@ton/crypto');
-const { ToonVault } = require('./build/ToonVault/ToonVault_ToonVault');
+const { ToonRegistry } = require('./build/ToonRegistry/ToonRegistry_ToonRegistry');
 const logger = require('./logger');
 
 const client = new TonClient({
@@ -10,8 +10,8 @@ const client = new TonClient({
 });
 
 async function getDeployer() {
-    const mnemonic = process.env.DEPLOYER_MNEMONIC;
-    if (!mnemonic) throw new Error('DEPLOYER_MNEMONIC not set');
+    const mnemonic = process.env.WALLET_MNEMONIC;
+    if (!mnemonic) throw new Error('WALLET_MNEMONIC not set');
     const key = await mnemonicToWalletKey(mnemonic.split(' '));
     const wallet = WalletContractV4.create({ workchain: 0, publicKey: key.publicKey });
     const contract = client.open(wallet);
@@ -21,19 +21,18 @@ async function getDeployer() {
 async function authorizeMint(recipientAddress, amount) {
     try {
         const { contract, key } = await getDeployer();
-        const vaultAddress = Address.parse(process.env.TOON_VAULT_ADDRESS);
-        const vault = client.open(ToonVault.fromAddress(vaultAddress));
+        const registryAddress = Address.parse(process.env.TOON_REGISTRY_ADDRESS);
+        const registry = client.open(ToonRegistry.fromAddress(registryAddress));
 
         logger.info('Authorizing mint on-chain', { recipient: recipientAddress, amount: amount.toString() });
 
-        await vault.send(
+        await registry.send(
             contract.sender(key.secretKey),
             { value: toNano('0.05') },
             {
-                $$type: 'MintAuthorized',
+                $$type: 'AuthorizeMint',
                 recipient: Address.parse(recipientAddress),
-                amount: amount,
-                authorizedAt: Math.floor(Date.now() / 1000)
+                amount: amount
             }
         );
 

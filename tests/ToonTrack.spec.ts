@@ -27,20 +27,24 @@ describe('ToonTrack', () => {
         fan = await blockchain.treasury('fan');
 
         const vault = await blockchain.treasury('vault');
+        const jettonMaster = await blockchain.treasury('jettonMaster');
         // 1. Deploy Registry
         registry = blockchain.openContract(await ToonRegistry.fromInit(deployer.address, vault.address));
         await registry.send(deployer.getSender(), { value: toNano('0.05') }, { $$type: 'Deploy', queryId: 0n });
 
         // 2. Deploy Artist Contract
-        artistContract = blockchain.openContract(await ToonArtist.fromInit(artist.address, registry.address, 123n, "uri"));
+        artistContract = blockchain.openContract(await ToonArtist.fromInit(artist.address, registry.address, jettonMaster.address, 123n, "uri"));
         await artistContract.send(artist.getSender(), { value: toNano('0.05') }, { $$type: 'Deploy', queryId: 0n });
         
         // Register artist
-        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "RegisterSelf");
-        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "ConfirmRegistration");
-
-        // Stake to be active
-        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, { $$type: 'StakeToon', amount: toNano('100') });
+        const regRes = await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "RegisterSelf");
+        expect(regRes.transactions).toHaveTransaction({
+            from: registry.address,
+            to: artistContract.address,
+            success: true,
+            // Should be ArtistRegistrationConfirmed
+        });
+        expect(await artistContract.getIsRegistered()).toBe(true);
 
         // 3. Deploy Track
         const fingerprint = 999n;
@@ -51,19 +55,39 @@ describe('ToonTrack', () => {
             trackId,
             "ipfs://track-metadata",
             fingerprint,
-            trackId,
-            100000000n // 0.1 TON
+            100000000n // 0.1 TON mintFee
         ));
 
-        await trackContract.send(artist.getSender(), { value: 50000000n }, { $$type: 'Deploy', queryId: 0n });
-
-        // Register track in registry (usually done via ToonArtist.AddTrack, but we do it directly for isolation or via artist)
-        await artistContract.send(artist.getSender(), { value: 100000000n }, {
+        const trackDeployRes = await trackContract.send(artist.getSender(), { value: toNano('0.1') }, { $$type: 'Deploy', queryId: 0n });
+        expect(trackDeployRes.transactions).toHaveTransaction({
+            from: artist.address,
+            to: trackContract.address,
+            success: true
+        });
+        
+        // Add Track
+        const addTrackRes = await artistContract.send(artist.getSender(), { value: toNano('0.2') }, {
             $$type: 'AddTrack',
             trackId: trackId,
             fingerprint: fingerprint,
             trackContract: trackContract.address
         });
+
+        // The AddTrack flow:
+        // Artist -> Registry (Stage)
+        // Registry -> Artist (TrackStagingAccepted)
+        // Artist -> Track (ConfirmRegistration comment)
+        // Track -> Registry (ConfirmTrackRegistration message)
+        // Registry -> Track (TrackRegistrationConfirmed message)
+        
+        expect(addTrackRes.transactions).toHaveTransaction({
+            from: registry.address,
+            to: trackContract.address,
+            success: true,
+            // TrackRegistrationConfirmed
+        });
+
+        expect(await trackContract.getIsRegistered()).toBe(true);
     });
 
     it('should initialize correctly', async () => {
@@ -72,7 +96,7 @@ describe('ToonTrack', () => {
     });
 
     it('should handle tips and increment reputation', async () => {
-        const tipAmount = 200000000n; // 0.2 TON
+        const tipAmount = toNano('0.5'); // 0.5 TON, enough for 0.1 + 0.15 overhead
         
         const result = await trackContract.send(
             fan.getSender(),

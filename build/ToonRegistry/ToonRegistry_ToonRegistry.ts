@@ -1503,6 +1503,65 @@ export function dictValueParserRequestMint(): DictionaryValue<RequestMint> {
     }
 }
 
+export type MintConfirmed = {
+    $$type: 'MintConfirmed';
+    recipient: Address;
+    amount: bigint;
+    origin: Address;
+}
+
+export function storeMintConfirmed(src: MintConfirmed) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(469362853, 32);
+        b_0.storeAddress(src.recipient);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.origin);
+    };
+}
+
+export function loadMintConfirmed(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 469362853) { throw Error('Invalid prefix'); }
+    const _recipient = sc_0.loadAddress();
+    const _amount = sc_0.loadCoins();
+    const _origin = sc_0.loadAddress();
+    return { $$type: 'MintConfirmed' as const, recipient: _recipient, amount: _amount, origin: _origin };
+}
+
+export function loadTupleMintConfirmed(source: TupleReader) {
+    const _recipient = source.readAddress();
+    const _amount = source.readBigNumber();
+    const _origin = source.readAddress();
+    return { $$type: 'MintConfirmed' as const, recipient: _recipient, amount: _amount, origin: _origin };
+}
+
+export function loadGetterTupleMintConfirmed(source: TupleReader) {
+    const _recipient = source.readAddress();
+    const _amount = source.readBigNumber();
+    const _origin = source.readAddress();
+    return { $$type: 'MintConfirmed' as const, recipient: _recipient, amount: _amount, origin: _origin };
+}
+
+export function storeTupleMintConfirmed(source: MintConfirmed) {
+    const builder = new TupleBuilder();
+    builder.writeAddress(source.recipient);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.origin);
+    return builder.build();
+}
+
+export function dictValueParserMintConfirmed(): DictionaryValue<MintConfirmed> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeMintConfirmed(src)).endCell());
+        },
+        parse: (src) => {
+            return loadMintConfirmed(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type SetConfig = {
     $$type: 'SetConfig';
     config: Configuration;
@@ -1818,6 +1877,7 @@ export type PendingTrack = {
     trackId: bigint;
     fingerprint: bigint;
     trackContract: Address;
+    artistContract: Address;
     timestamp: bigint;
 }
 
@@ -1827,7 +1887,10 @@ export function storePendingTrack(src: PendingTrack) {
         b_0.storeUint(src.trackId, 256);
         b_0.storeUint(src.fingerprint, 256);
         b_0.storeAddress(src.trackContract);
-        b_0.storeUint(src.timestamp, 32);
+        const b_1 = new Builder();
+        b_1.storeAddress(src.artistContract);
+        b_1.storeUint(src.timestamp, 32);
+        b_0.storeRef(b_1.endCell());
     };
 }
 
@@ -1836,24 +1899,28 @@ export function loadPendingTrack(slice: Slice) {
     const _trackId = sc_0.loadUintBig(256);
     const _fingerprint = sc_0.loadUintBig(256);
     const _trackContract = sc_0.loadAddress();
-    const _timestamp = sc_0.loadUintBig(32);
-    return { $$type: 'PendingTrack' as const, trackId: _trackId, fingerprint: _fingerprint, trackContract: _trackContract, timestamp: _timestamp };
+    const sc_1 = sc_0.loadRef().beginParse();
+    const _artistContract = sc_1.loadAddress();
+    const _timestamp = sc_1.loadUintBig(32);
+    return { $$type: 'PendingTrack' as const, trackId: _trackId, fingerprint: _fingerprint, trackContract: _trackContract, artistContract: _artistContract, timestamp: _timestamp };
 }
 
 export function loadTuplePendingTrack(source: TupleReader) {
     const _trackId = source.readBigNumber();
     const _fingerprint = source.readBigNumber();
     const _trackContract = source.readAddress();
+    const _artistContract = source.readAddress();
     const _timestamp = source.readBigNumber();
-    return { $$type: 'PendingTrack' as const, trackId: _trackId, fingerprint: _fingerprint, trackContract: _trackContract, timestamp: _timestamp };
+    return { $$type: 'PendingTrack' as const, trackId: _trackId, fingerprint: _fingerprint, trackContract: _trackContract, artistContract: _artistContract, timestamp: _timestamp };
 }
 
 export function loadGetterTuplePendingTrack(source: TupleReader) {
     const _trackId = source.readBigNumber();
     const _fingerprint = source.readBigNumber();
     const _trackContract = source.readAddress();
+    const _artistContract = source.readAddress();
     const _timestamp = source.readBigNumber();
-    return { $$type: 'PendingTrack' as const, trackId: _trackId, fingerprint: _fingerprint, trackContract: _trackContract, timestamp: _timestamp };
+    return { $$type: 'PendingTrack' as const, trackId: _trackId, fingerprint: _fingerprint, trackContract: _trackContract, artistContract: _artistContract, timestamp: _timestamp };
 }
 
 export function storeTuplePendingTrack(source: PendingTrack) {
@@ -1861,6 +1928,7 @@ export function storeTuplePendingTrack(source: PendingTrack) {
     builder.writeNumber(source.trackId);
     builder.writeNumber(source.fingerprint);
     builder.writeAddress(source.trackContract);
+    builder.writeAddress(source.artistContract);
     builder.writeNumber(source.timestamp);
     return builder.build();
 }
@@ -2118,46 +2186,52 @@ export type MintAuthorized = {
     $$type: 'MintAuthorized';
     recipient: Address;
     amount: bigint;
+    origin: Address;
     authorizedAt: bigint;
 }
 
 export function storeMintAuthorized(src: MintAuthorized) {
     return (builder: Builder) => {
         const b_0 = builder;
-        b_0.storeUint(4196209244, 32);
+        b_0.storeUint(2843103275, 32);
         b_0.storeAddress(src.recipient);
         b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.origin);
         b_0.storeUint(src.authorizedAt, 32);
     };
 }
 
 export function loadMintAuthorized(slice: Slice) {
     const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 4196209244) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 2843103275) { throw Error('Invalid prefix'); }
     const _recipient = sc_0.loadAddress();
     const _amount = sc_0.loadCoins();
+    const _origin = sc_0.loadAddress();
     const _authorizedAt = sc_0.loadUintBig(32);
-    return { $$type: 'MintAuthorized' as const, recipient: _recipient, amount: _amount, authorizedAt: _authorizedAt };
+    return { $$type: 'MintAuthorized' as const, recipient: _recipient, amount: _amount, origin: _origin, authorizedAt: _authorizedAt };
 }
 
 export function loadTupleMintAuthorized(source: TupleReader) {
     const _recipient = source.readAddress();
     const _amount = source.readBigNumber();
+    const _origin = source.readAddress();
     const _authorizedAt = source.readBigNumber();
-    return { $$type: 'MintAuthorized' as const, recipient: _recipient, amount: _amount, authorizedAt: _authorizedAt };
+    return { $$type: 'MintAuthorized' as const, recipient: _recipient, amount: _amount, origin: _origin, authorizedAt: _authorizedAt };
 }
 
 export function loadGetterTupleMintAuthorized(source: TupleReader) {
     const _recipient = source.readAddress();
     const _amount = source.readBigNumber();
+    const _origin = source.readAddress();
     const _authorizedAt = source.readBigNumber();
-    return { $$type: 'MintAuthorized' as const, recipient: _recipient, amount: _amount, authorizedAt: _authorizedAt };
+    return { $$type: 'MintAuthorized' as const, recipient: _recipient, amount: _amount, origin: _origin, authorizedAt: _authorizedAt };
 }
 
 export function storeTupleMintAuthorized(source: MintAuthorized) {
     const builder = new TupleBuilder();
     builder.writeAddress(source.recipient);
     builder.writeNumber(source.amount);
+    builder.writeAddress(source.origin);
     builder.writeNumber(source.authorizedAt);
     return builder.build();
 }
@@ -2337,6 +2411,7 @@ export type ToonRegistry$Data = {
     artists: Dictionary<Address, Address>;
     artistContracts: Dictionary<Address, Address>;
     tracks: Dictionary<bigint, Address>;
+    trackToArtist: Dictionary<bigint, Address>;
     trackContracts: Dictionary<Address, bigint>;
     drops: Dictionary<bigint, Address>;
     fingerprints: Dictionary<bigint, boolean>;
@@ -2360,9 +2435,10 @@ export function storeToonRegistry$Data(src: ToonRegistry$Data) {
         b_0.storeDict(src.artistContracts, Dictionary.Keys.Address(), Dictionary.Values.Address());
         const b_1 = new Builder();
         b_1.storeDict(src.tracks, Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
+        b_1.storeDict(src.trackToArtist, Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
         b_1.storeDict(src.trackContracts, Dictionary.Keys.Address(), Dictionary.Values.BigInt(257));
-        b_1.storeDict(src.drops, Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
         const b_2 = new Builder();
+        b_2.storeDict(src.drops, Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
         b_2.storeDict(src.fingerprints, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
         b_2.storeAddress(src.mintAuthority);
         b_2.storeAddress(src.vault);
@@ -2390,9 +2466,10 @@ export function loadToonRegistry$Data(slice: Slice) {
     const _artistContracts = Dictionary.load(Dictionary.Keys.Address(), Dictionary.Values.Address(), sc_0);
     const sc_1 = sc_0.loadRef().beginParse();
     const _tracks = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), sc_1);
+    const _trackToArtist = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), sc_1);
     const _trackContracts = Dictionary.load(Dictionary.Keys.Address(), Dictionary.Values.BigInt(257), sc_1);
-    const _drops = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), sc_1);
     const sc_2 = sc_1.loadRef().beginParse();
+    const _drops = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), sc_2);
     const _fingerprints = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_2);
     const _mintAuthority = sc_2.loadAddress();
     const _vault = sc_2.loadAddress();
@@ -2407,13 +2484,14 @@ export function loadToonRegistry$Data(slice: Slice) {
     const _pendingTracks = Dictionary.load(Dictionary.Keys.BigInt(257), dictValueParserPendingTrack(), sc_4);
     const _totalArtists = sc_4.loadUintBig(32);
     const _totalTracks = sc_4.loadUintBig(32);
-    return { $$type: 'ToonRegistry$Data' as const, artists: _artists, artistContracts: _artistContracts, tracks: _tracks, trackContracts: _trackContracts, drops: _drops, fingerprints: _fingerprints, mintAuthority: _mintAuthority, vault: _vault, isPaused: _isPaused, config: _config, version: _version, trackRewardEligible: _trackRewardEligible, artistRewardEligible: _artistRewardEligible, pendingArtists: _pendingArtists, pendingTracks: _pendingTracks, totalArtists: _totalArtists, totalTracks: _totalTracks };
+    return { $$type: 'ToonRegistry$Data' as const, artists: _artists, artistContracts: _artistContracts, tracks: _tracks, trackToArtist: _trackToArtist, trackContracts: _trackContracts, drops: _drops, fingerprints: _fingerprints, mintAuthority: _mintAuthority, vault: _vault, isPaused: _isPaused, config: _config, version: _version, trackRewardEligible: _trackRewardEligible, artistRewardEligible: _artistRewardEligible, pendingArtists: _pendingArtists, pendingTracks: _pendingTracks, totalArtists: _totalArtists, totalTracks: _totalTracks };
 }
 
 export function loadTupleToonRegistry$Data(source: TupleReader) {
     const _artists = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.Address(), source.readCellOpt());
     const _artistContracts = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.Address(), source.readCellOpt());
     const _tracks = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), source.readCellOpt());
+    const _trackToArtist = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), source.readCellOpt());
     const _trackContracts = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.BigInt(257), source.readCellOpt());
     const _drops = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), source.readCellOpt());
     const _fingerprints = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
@@ -2424,18 +2502,19 @@ export function loadTupleToonRegistry$Data(source: TupleReader) {
     const _version = source.readBigNumber();
     const _trackRewardEligible = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
     const _artistRewardEligible = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.Bool(), source.readCellOpt());
-    const _pendingArtists = Dictionary.loadDirect(Dictionary.Keys.Address(), dictValueParserPendingArtist(), source.readCellOpt());
     source = source.readTuple();
+    const _pendingArtists = Dictionary.loadDirect(Dictionary.Keys.Address(), dictValueParserPendingArtist(), source.readCellOpt());
     const _pendingTracks = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), dictValueParserPendingTrack(), source.readCellOpt());
     const _totalArtists = source.readBigNumber();
     const _totalTracks = source.readBigNumber();
-    return { $$type: 'ToonRegistry$Data' as const, artists: _artists, artistContracts: _artistContracts, tracks: _tracks, trackContracts: _trackContracts, drops: _drops, fingerprints: _fingerprints, mintAuthority: _mintAuthority, vault: _vault, isPaused: _isPaused, config: _config, version: _version, trackRewardEligible: _trackRewardEligible, artistRewardEligible: _artistRewardEligible, pendingArtists: _pendingArtists, pendingTracks: _pendingTracks, totalArtists: _totalArtists, totalTracks: _totalTracks };
+    return { $$type: 'ToonRegistry$Data' as const, artists: _artists, artistContracts: _artistContracts, tracks: _tracks, trackToArtist: _trackToArtist, trackContracts: _trackContracts, drops: _drops, fingerprints: _fingerprints, mintAuthority: _mintAuthority, vault: _vault, isPaused: _isPaused, config: _config, version: _version, trackRewardEligible: _trackRewardEligible, artistRewardEligible: _artistRewardEligible, pendingArtists: _pendingArtists, pendingTracks: _pendingTracks, totalArtists: _totalArtists, totalTracks: _totalTracks };
 }
 
 export function loadGetterTupleToonRegistry$Data(source: TupleReader) {
     const _artists = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.Address(), source.readCellOpt());
     const _artistContracts = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.Address(), source.readCellOpt());
     const _tracks = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), source.readCellOpt());
+    const _trackToArtist = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), source.readCellOpt());
     const _trackContracts = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.BigInt(257), source.readCellOpt());
     const _drops = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), source.readCellOpt());
     const _fingerprints = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
@@ -2450,7 +2529,7 @@ export function loadGetterTupleToonRegistry$Data(source: TupleReader) {
     const _pendingTracks = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), dictValueParserPendingTrack(), source.readCellOpt());
     const _totalArtists = source.readBigNumber();
     const _totalTracks = source.readBigNumber();
-    return { $$type: 'ToonRegistry$Data' as const, artists: _artists, artistContracts: _artistContracts, tracks: _tracks, trackContracts: _trackContracts, drops: _drops, fingerprints: _fingerprints, mintAuthority: _mintAuthority, vault: _vault, isPaused: _isPaused, config: _config, version: _version, trackRewardEligible: _trackRewardEligible, artistRewardEligible: _artistRewardEligible, pendingArtists: _pendingArtists, pendingTracks: _pendingTracks, totalArtists: _totalArtists, totalTracks: _totalTracks };
+    return { $$type: 'ToonRegistry$Data' as const, artists: _artists, artistContracts: _artistContracts, tracks: _tracks, trackToArtist: _trackToArtist, trackContracts: _trackContracts, drops: _drops, fingerprints: _fingerprints, mintAuthority: _mintAuthority, vault: _vault, isPaused: _isPaused, config: _config, version: _version, trackRewardEligible: _trackRewardEligible, artistRewardEligible: _artistRewardEligible, pendingArtists: _pendingArtists, pendingTracks: _pendingTracks, totalArtists: _totalArtists, totalTracks: _totalTracks };
 }
 
 export function storeTupleToonRegistry$Data(source: ToonRegistry$Data) {
@@ -2458,6 +2537,7 @@ export function storeTupleToonRegistry$Data(source: ToonRegistry$Data) {
     builder.writeCell(source.artists.size > 0 ? beginCell().storeDictDirect(source.artists, Dictionary.Keys.Address(), Dictionary.Values.Address()).endCell() : null);
     builder.writeCell(source.artistContracts.size > 0 ? beginCell().storeDictDirect(source.artistContracts, Dictionary.Keys.Address(), Dictionary.Values.Address()).endCell() : null);
     builder.writeCell(source.tracks.size > 0 ? beginCell().storeDictDirect(source.tracks, Dictionary.Keys.BigInt(257), Dictionary.Values.Address()).endCell() : null);
+    builder.writeCell(source.trackToArtist.size > 0 ? beginCell().storeDictDirect(source.trackToArtist, Dictionary.Keys.BigInt(257), Dictionary.Values.Address()).endCell() : null);
     builder.writeCell(source.trackContracts.size > 0 ? beginCell().storeDictDirect(source.trackContracts, Dictionary.Keys.Address(), Dictionary.Values.BigInt(257)).endCell() : null);
     builder.writeCell(source.drops.size > 0 ? beginCell().storeDictDirect(source.drops, Dictionary.Keys.BigInt(257), Dictionary.Values.Address()).endCell() : null);
     builder.writeCell(source.fingerprints.size > 0 ? beginCell().storeDictDirect(source.fingerprints, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool()).endCell() : null);
@@ -2501,7 +2581,7 @@ function initToonRegistry_init_args(src: ToonRegistry_init_args) {
 }
 
 async function ToonRegistry_init(mintAuthority: Address, vault: Address) {
-    const __code = Cell.fromHex('b5ee9c7241025f01001b5b00022cff008e88f4a413f4bcf2c80bed53208e8130e1ed43d90121020271021c020120030b020120040603d9b540bda89a1a400031d15f481f480b205a203b679c61a223622382236223422362234223222342232223022322230222e2230222e222c222e222c222a222c222a2228222a22282226222822262224222622242222222422222220222222201e22201eaa1db678ae20be1ed983022240500448101012702714133f40c6fa19401d70030925b6de2206eb395206ef2d08092307fe20201c7070903d7a7fdda89a1a400031d15f481f480b205a203b679c61a223622382236223422362234223222342232223022322230222e2230222e222c222e222c222a222c222a2228222a22282226222822262224222622242222222422222220222222201e22201eaa1db678ae20be1ed9832224080030810101561802714133f40c6fa19401d70030925b6de26eb3033ba7c9da89a1a400031d15f481f480b205a203b679c61bb678ae20be1ed98322240a0002260201200c1102016a0d0f03d8abb1ed44d0d200018e8afa40fa405902d101db3ce30d111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cc122240e0022810101561b0259f40c6fa192306ddf6eb303d8aaf9ed44d0d200018e8afa40fa405902d101db3ce30d111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cc1222410002281010b561d0259f40a6fa192306ddf6eb30201201217020120131503d9af3276a268690000c7457d207d202c816880ed9e7186888d888e088d888d088d888d088c888d088c888c088c888c088b888c088b888b088b888b088a888b088a888a088a888a0889888a088988890889888908888889088888880888888807888807aa876d9e2b882f87b660c0222414001e81010b561d0259f40a6fa192306ddf033daf2576a268690000c7457d207d202c816880ed9e7186ed9e366636663626402224160030561256125612561256125612561256125612561256125612020158181a03d8a9a0ed44d0d200018e8afa40fa405902d101db3ce30d111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cc1222419001e810101561b0259f40c6fa192306ddf033caa9eed44d0d200018e8afa40fa405902d101db3ce30ddb3c57105f0f6cc122241b000456150201201d1f03d9b9b70ed44d0d200018e8afa40fa405902d101db3ce30d111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cc1822241e004481010b2602714133f40a6fa19401d70030925b6de2206eb395206ef2d08092307fe203d9b8916ed44d0d200018e8afa40fa405902d101db3ce30d111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cc18222420001e81010156190259f40c6fa192306ddf049a01d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e8afa40fa405902d101db3ce30d111d945f0f5f0ee0111bd70d1ff2e082218210cc4fedf7bae302218210c8526e47ba2224262a01f06d6d6d6d6d6d6d6d6d6d7070207182202d79883d2000778103e88212540be40082112a05f2008218746a5288008220048c2739500082182e90edd00082180ba43b74002682089896808101f41119111b11191118111a11181117111911171116111811161115111711151114111611140f11130f0b11120b2300320a11110a09111009108f107e106d105c104b103a497708050602f8f404d401d0f404f404f404d430d0f404f404fa40fa40d200d430d0db3c0cd31ff404f404d430d0f404f404d31fd31f30111b111c111b1111111211111110111111100f11100f10ef10de10cd10bc10ab109a10891078571c111a111b111a1119111a11191118111911181117111811171116111711161115111611154c2500481114111511141113111411131112111311121111111211111110111111100f11100f550e01f831fa40fa40308200d9458d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f4812453561c81010b2359f40a6fa192306ddf6ef2f48200deda2481010b2359f40b6fa192306ddf206e92306d9dd0fa40fa40d31f55206c136f03e26ef2f481010bf823546240c82702f455205023cececb1fc9103512206e953059f45930944133f413e27080408810355a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb001119111b11191118111a1118111711191117111611181116111511171115111411161114282900260000000053746167696e67416363657074656401481113111511131112111411121111111311111110111211100f11110f0e11100e10df551c5d02fe8efc31fa40302281010b2259f40b6fa192306ddf206e92306d9dd0fa40fa40d31f55206c136f03e28200de5b216eb3f2f48139d3f84222206ef2d0806f233031c705f2f481010b21206ef2d0806f235b22206ef2d0806f23303103111e03206e953059f4593096c8ce4133f441e281010b561c206ef2d0806f233031561de02b2e02fc206ef2d0806f235b03111d03206e953059f4593096c8ce4133f441e2111ca481010b6dc8216e925b6d8e1301206ef2d0806f23550255205023cececb1fc9e210354150206e953059f45930944133f413e2561a206ef2d0806f233031708040561d206ef2d0806f235bc80182100954aef858cb1fcec95a6d6d40037fc889402c01f4cf16ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00561a206ef2d0806f235b111b206ef2d0806f233031f82302111c02c855208210e2af76f95004cb1f12cececb1fc9c88258c000000000000000000000000101cb67ccc970fb001118111b11182d01a01117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a1079106810571046103540145d044c218210e59974c3bae302218210c09310edbae302218210a47a6deebae30221821073360001ba2f31353a01f631fa40302281010b2259f40b6fa192306ddf206e92306d9dd0fa40fa40d31f55206c136f03e28200de5b216eb3f2f4f82321206ef2d0806f236c21810e10a0bc8112d5f84203206ef2d0806f23303113c70592307fdef2f481010b6dc8216e925b6d8e1301206ef2d0806f23550255205023cececb1fc9e21034123001d4206e953059f45930944133f413e21119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a1079106810571046103541435d01f831d3ffd3fffa4030f842111a111d111a1119111c11191118111b11181117111d11171116111c11161115111b11151114111d11141113111c11131112111b11121111111d11111110111c11100f111b0f0e111d0e0d111c0d0c111b0c0b111d0b0a111c0a09111b0908111d0807111c0706111b0605111d0504111c043202d803111b0302111d0201111c01111e8166711120561fdb3c01112101f2f481486f561cc300f2f4813f255619810101561e59f40c6fa192306ddf6ef2f4813aa856168101015620714133f40c6fa19401d70030925b6de26ef2f48200e4d722810101561e59f40d6fa192306ddf493301fe206e92306d9fd0d3ffd3fffa40d31f55306c146f04e26ef2f4810101f823561d0302112002111f01c855305034cbffcbffcecb1fc91201111d01561b01206e953059f45a30944133f415e2708040111bc8018210d40bb4a958cb1fcbffc903111e031201111b015a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40023401e25c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb001116111b11161115111a11151114111911141113111811131112111711121111111611111110111511100f11140f0e11130e0d11120d0c11110c0b11100b10af109e108d107c106b105a1049103847154363145d01fe31d3ff30218101012259f40d6fa192306ddf206e92306d9fd0d3ffd3fffa40d31f55306c146f04e281427d216eb3f2f48139d3f84222206ef2d0806f24135f03c705f2f481010121206ef2d0806f245f0322206ef2d0806f24135f0303111c03206e953059f45a30944133f414e281010b561a206ef2d0806f24135f03561b3601e8206ef2d0806f245f0303111b03810101216e955b59f4593098c801cf004133f441e2810101561a206ef2d0806f2410235f03021118027f71216e955b59f45a3098c801cf004133f442e2111da48101016dc8216e925b6d8e1601206ef2d0806f24550355305034cbffcbffcecb1fc9e2103441403701f2206e953059f45a30944133f415e25618206ef2d0806f24135f03708040561b206ef2d0806f245f03c80182106a21f0df58cb1fcbffc95a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb005618206ef2d0806f245f0356193801fa206ef2d0806f2410235f03111a206ef2d0806f24135f03f823102302111b02c85530821074e4a7365005cb1f13cbffcbffcecb1fc9c88258c000000000000000000000000101cb67ccc970fb001119111b11191118111a111811161119111611141118111411151117111511131115111311121114111211111113111139014e1110111211100f11110f0e11100e10df10ce10bd10ac109b108a107910681057104610354430125d043ce302218210de13870dbae30221821010859351bae302218210787cca54ba3b3d3f4201fc31d3ff30218101012259f40d6fa192306ddf206e92306d9fd0d3ffd3fffa40d31f55306c146f04e281427d216eb3f2f4f82321206ef2d0806f246c31810e10a0bc8112d5f84203206ef2d0806f24135f0313c70592307fdef2f48101016dc8216e925b6d8e1601206ef2d0806f24550355305034cbffcbffcecb1fc9e2123c01ac206e953059f45a30944133f415e21119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df551c5d01fe31fa40fa00308200984f8d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f4816cf2f8425617c705f2f481256c21c200f2f4708040f8234430c855208210fa1d125c5004cb1f12ce01fa02cb1fc9561555205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf403e01ce025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb001119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df551c5d02fe31fa40fa00308200984f8d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f48200c59681010bf842561b598101014133f40a6fa19401d70030925b6de26eb3f2f4708040f8234430c855208210fa1d125c5004cb1f12ce01fa02cb1fc9561555205a6d6d40037fc889404100016001eccf16ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb001119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df551c5d043ce302218210db77da3fbae302218210a99ec9f7bae3022182102bd0b755ba4345474b01fc31fa4030817c1e8d08600000000000000000000000000000000000000000000000000000000000000000045220c705b3f2f4816cf2f842011116c70501111501f2f41119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211104401180f11110f0e11100e10df551c5d01fc3157131112fa40308200e26a8d08600000000000000000000000000000000000000000000000000000000000000000045220c705b3f2f4816cf2f8425615c705f2f41119111b11191118111a111811171119111711161118111611151117111511141116111411131115111311141111111311111110111211100f11110f4601380e11100e10df10ce10bd10ac109b108a1079106810571046103544035d01fe31d3fffa4030f8428200b9488d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f4111b111c111b111a111c111a1119111c11191118111c11181117111c11171116111c11161115111c11151114111c11141113111c11131112111c11121111111c11111110111c11104802fe0f111c0f0e111c0e0d111c0d0c111c0c0b111c0b0a111c0a09111c0908111c0807111c0706111c0605111c0504111c0403111c0302111c0201111d01111e816671111fdb3c01111f01f2f48200ad1e5617810101561e59f40c6fa192306ddf6ef2f41116810101561c561e206e953059f45a30944133f414e2f82302111c02494a002281010b561c0259f40a6fa192306ddf6eb301e201111d01c8552082105206fbd15004cb1f12cbffcecb1fc9c88258c000000000000000000000000101cb67ccc970fb001118111b11181117111a11171116111911161115111811151113111611131112111511121111111411111110111311100f11120f0e11110e0d11100d10cf552b125d04fe8ff6316cc6db3c3c820095eff8425615c705f2f488c88258c000000000000000000000000101cb67ccc970fb001119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311110a11120a0911110908111008557710370610354444e021820b958d4f4c4d5d4e0060fa00d31fd31ffa00fa00fa00fa00fa00fa00d30fd401d0fa00d30f30102c102b102a1029102810271026102510241023003000000000436f6e66696775726174696f6e55706461746564043ebae30221821009278fbdbae3022182109cd7d62cbae3022182100e849a55ba4f52545602fe313504d31f308200bc6cf8425615c705f2f488c88258c000000000000000000000000101cb67ccc970fb001119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a10791068505100240000000056657273696f6e5570646174656401f610570610354403c87f01ca00111c111b111a111911181117111611151114111311121111111055e001111b01111cf4001119c8f40001111801f40001111601f4001114c8f40001111301f40001111101ce1fce1dca00c855b00ddb3c12cb1f12f40012f40003c8f40014f40015cb1f15cb1f14cd13cdcdcdc9ed545e01fc31d3ffd20030816e87f8425617c705f2f410258101015971216e955b59f45a3098c801cf004133f442e21119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a107910685301f610571046443512c87f01ca00111c111b111a111911181117111611151114111311121111111055e001111b01111cf4001119c8f40001111801f40001111601f4001114c8f40001111301f40001111101ce1fce1dca00c855b00ddb3c12cb1f12f40012f40003c8f40014f40015cb1f15cb1f14cd13cdcdcdc9ed545e01fc31fa40d20030816e87f8425617c705f2f4102481010b5971216e955b59f4593098c801cf004133f441e21119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a107910685501fa105710461035504403c87f01ca00111c111b111a111911181117111611151114111311121111111055e001111b01111cf4001119c8f40001111801f40001111601f4001114c8f40001111301f40001111101ce1fce1dca00c855b00ddb3c12cb1f12f40012f40003c8f40014f40015cb1f15cb1f14cd13cdcdcdc9ed545e0226e302018210946a98b6bae3025f0f5f0ef2c082575b01fc31d401d001d33f308bb656d697373696f6e4361708522001f90101f901ba933157118e468d041b5a5b95d85b1b195d1059d951185e5ce0522001f90101f901ba933157108e238d04dd185c99d95d11185a5b1e5058dd1a5d9a5d1e601201f90101f901ba913f9130e2e2e2708040561256125612561256125612561256125803fc5612561256125612c855b082102bd0b755500dcb1f0cdb3cc9561555205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0088c88258c000000000000000000000000101cb67ccc970fb001119111b11191118111a11181117111911175e595a003a00000000436f6e66696775726174696f6e506172616d55706461746564016c1116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df551c5d01e8d33f30c8018210aff90f5758cb1fcb3fc9111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a107910681057104610354430125c0146f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb005d01e8c87f01ca00111c111b111a111911181117111611151114111311121111111055e001111b01111cf4001119c8f40001111801f40001111601f4001114c8f40001111301f40001111101ce1fce1dca00c855b00ddb3c12cb1f12f40012f40003c8f40014f40015cb1f15cb1f14cd13cdcdcdc9ed545e005050cbfa0219cb1f17cb1f5005fa025003fa0201fa0201fa0201fa0201fa02cb0fc85003fa02cb0fcd866396c1');
+    const __code = Cell.fromHex('b5ee9c7241026301001b8e00022cff008e88f4a413f4bcf2c80bed53208e8130e1ed43d90121020271021c020120030b020120040603e5b540bda89a1a400031d15f481f480b205a203b679c61a2238223a2238223622382236223422362234223222342232223022322230222e2230222e222c222e222c222a222c222a2228222a22282226222822262224222622242222222422222220222222201e22201eaa1db678ae20be1ed9a3022240500448101012702714133f40c6fa19401d70030925b6de2206eb395206ef2d08092307fe20201c7070903e3a7fdda89a1a400031d15f481f480b205a203b679c61a2238223a2238223622382236223422362234223222342232223022322230222e2230222e222c222e222c222a222c222a2228222a22282226222822262224222622242222222422222220222222201e22201eaa1db678ae20be1ed9a32224080030810101561802714133f40c6fa19401d70030925b6de26eb3033ba7c9da89a1a400031d15f481f480b205a203b679c61bb678ae20be1ed9a322240a0002260201200c1102016a0d0f03e4abb1ed44d0d200018e8afa40fa405902d101db3ce30d111c111d111c111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cd122240e0022810101561c0259f40c6fa192306ddf6eb303e4aaf9ed44d0d200018e8afa40fa405902d101db3ce30d111c111d111c111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cd1222410002281010b561e0259f40a6fa192306ddf6eb30201201217020120131503e5af3276a268690000c7457d207d202c816880ed9e7186888e088e888e088d888e088d888d088d888d088c888d088c888c088c888c088b888c088b888b088b888b088a888b088a888a088a888a0889888a088988890889888908888889088888880888888807888807aa876d9e2b882f87b668c0222414001e81010b561e0259f40a6fa192306ddf033daf2576a268690000c7457d207d202c816880ed9e7186ed9e36663666362e402224160030561256125612561256125612561256125612561256125612020158181a03e4a9a0ed44d0d200018e8afa40fa405902d101db3ce30d111c111d111c111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cd1222419001e810101561c0259f40c6fa192306ddf033caa9eed44d0d200018e8afa40fa405902d101db3ce30ddb3c57105f0f6cd122241b000456150201201d1f03e5b9b70ed44d0d200018e8afa40fa405902d101db3ce30d111c111d111c111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cd1822241e004481010b2602714133f40a6fa19401d70030925b6de2206eb395206ef2d08092307fe203e5b8916ed44d0d200018e8afa40fa405902d101db3ce30d111c111d111c111b111c111b111a111b111a1119111a11191118111911181117111811171116111711161115111611151114111511141113111411131112111311121111111211111110111111100f11100f550edb3c57105f0f6cd18222420001e81010156190259f40c6fa192306ddf049a01d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e8afa40fa405902d101db3ce30d111e945f0f5f0fe0111cd70d1ff2e082218210cc4fedf7bae302218210c8526e47ba2224262a01ee6d6d6d6d6d6d6d6d6d6d6d7070207182202d79883d2000778103e88212540be40082112a05f2008218746a5288008220048c2739500082182e90edd00082180ba43b74002682089896808101f4111a111c111a1119111b11191118111a111811171119111711161118111611151117111511141116111423004e1114111511140f11130f0b11120b0a11110a09111009108f107e106d105c104b103a497708050602fcf404d401d0f404f404f404d430d0f404f404f404fa40fa40d200d430d0db3c0cd31ff404f404d430d0f404f404d31fd31f30111c111d111c1111111211111110111111100f11100f10ef10de10cd10bc10ab109a10891078571d111b111c111b111a111b111a1119111a1119111811191118111711181117111611171116502500541115111611151114111511141113111411131112111311121111111211111110111111100f11100f550e01f831fa40fa40308200d9458d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f4812453561d81010b2359f40a6fa192306ddf6ef2f48200deda2481010b2359f40b6fa192306ddf206e92306d9dd0fa40fa40d31f55206c136f03e26ef2f481010bf823546240c82702f455205023cececb1fc9103512206e953059f45930944133f413e27080408810355a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00111a111c111a1119111b11191118111a1118111711191117111611181116111511171115282900260000000053746167696e67416363657074656401541114111611141113111511131112111411121111111311111110111211100f11110f0e11100e551ddb3c6002fe8efc31fa40302281010b2259f40b6fa192306ddf206e92306d9dd0fa40fa40d31f55206c136f03e28200de5b216eb3f2f48139d3f84222206ef2d0806f233031c705f2f481010b21206ef2d0806f235b22206ef2d0806f23303103111f03206e953059f4593096c8ce4133f441e281010b561d206ef2d0806f233031561ee02b2f02fc206ef2d0806f235b03111e03206e953059f4593096c8ce4133f441e2111da481010b6dc8216e925b6d8e1301206ef2d0806f23550255205023cececb1fc9e210354150206e953059f45930944133f413e2561b206ef2d0806f233031708040561e206ef2d0806f235bc80182100954aef858cb1fcec95a6d6d40037fc8892c2d00016001f4cf16ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00561b206ef2d0806f235b111c206ef2d0806f233031f82302111d02c855208210e2af76f95004cb1f12cececb1fc9c88258c000000000000000000000000101cb67ccc970fb001119111c11192e01b21118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a10791068105710461035401403db3c60044c218210e59974c3bae302218210c09310edbae302218210a47a6deebae30221821073360001ba3032383d01f631fa40302281010b2259f40b6fa192306ddf206e92306d9dd0fa40fa40d31f55206c136f03e28200de5b216eb3f2f4f82321206ef2d0806f236c21810e10a0bc8112d5f84203206ef2d0806f23303113c70592307fdef2f481010b6dc8216e925b6d8e1301206ef2d0806f23550255205023cececb1fc9e21034123101e6206e953059f45930944133f413e2111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a10791068105710461035443302db3c6001fc31d3ffd3fffa4030f842111b111e111b111a111d111a1119111c11191118111e11181117111d11171116111c11161115111e11151114111d11141113111c11131112111e11121111111d11111110111c11100f111e0f0e111d0e0d111c0d0c111e0c0b111d0b0a111c0a09111e0908111d0807111c0706111e0605111d053302e004111c0403111e0302111d0201111c01111f81667111215620db3c01112201f2f481486f561fc300f2f4813f25561a810101562159f40c6fa192306ddf6ef2f4813aa856168101015620714133f40c6fa19401d70030925b6de26ef2f48200e4d722810101562159f40d6fa192306ddf3435002281010b561d0259f40a6fa192306ddf6eb301fc206e92306d8e19d0d3ffd3fffa40d401d0fa40d31f301025102410236c156f05e26ef2f4810101f8235620030211200201111f015622011120c855405045cbff12cbffce01c8ce12cb1fcdc91201111d01561e01206e953059f45a30944133f415e2708040111ec8018210d40bb4a958cb1fcbffc903111f031201111e013601fc5a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb001117111c11171116111b11161115111a11151114111911141113111811131112111711121111111611111110111511100f11140f0e11130e0d11120d0c11110c0b11100b10af55493701084143db3c6001fc31d3ff30218101012259f40d6fa192306ddf206e92306d8e19d0d3ffd3fffa40d401d0fa40d31f301025102410236c156f05e281427d216eb3f2f48139d3f84222206ef2d0806f2510245f04c705f2f481010121206ef2d0806f255f0422206ef2d0806f2510245f0403111d03206e953059f45a30944133f414e28101013901e6561b206ef2d0806f255f04561c206ef2d0806f25145f0403111c03206e953059f45a30944133f414e281010b561b206ef2d0806f2510245f04561c206ef2d0806f255f0403111b03810101216e955b59f4593098c801cf004133f441e2810101561b206ef2d0806f2510345f04021118027f713a01fe216e955b59f45a3098c801cf004133f442e2111ea48101016dc8216e925b6d8e1c01206ef2d0806f25550455405045cbff12cbffce01c8ce12cb1fcdc9e210344140206e953059f45a30944133f415e25619206ef2d0806f2510245f04708040561c206ef2d0806f255f04c80182106a21f0df58cb1fcbffc95a6d6d40037f3b01e6c8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb005619206ef2d0806f255f04561a206ef2d0806f2510345f04111b206ef2d0806f2510245f04f823102302111c02c85530821074e4a7365005cb1f13cbffcbffcecb1fc93c01f8c88258c000000000000000000000000101cb67ccc970fb00111a111c111a1119111b11191117111a11171116111911161114111811141115111711151115111611151113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a107910681057104610354430db3c6003fe8eeb31d3ff30218101012259f40d6fa192306ddf206e92306d8e19d0d3ffd3fffa40d401d0fa40d31f301025102410236c156f05e281427d216eb3f2f4f82321206ef2d0806f256c41810e10a0bc8112d5f84203206ef2d0806f2510245f0413c70592307fdef2f48101016dc8e0218210de13870dbae302218210108593513e404201fe216e925b6d8e1c01206ef2d0806f25550455405045cbff12cbffce01c8ce12cb1fcdc9e212206e953059f45a30944133f415e2111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e551d3f0104db3c6001fc31fa40fa00308200984f8d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f4816cf2f8425617c705f2f481256c21c200f2f4708040f842f82310351024c855308210a976502b5005cb1f13ce01fa02cecb1fc9561555205a6d6d40037fc8cf8580ca00cf8440ce014101e6fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e551ddb3c6002feba8efa31fa40fa00308200984f8d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f4f8428200c596561a81010b238101014133f40a6fa19401d70030925b6de26eb3f2f4708040f82310355e31c855308210a976502b5005cb1f13ce01fa02cecb1fc956155033e021434501f85a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f4401100e11100e551ddb3c60044a82101bf9e8a5bae302218210787cca54bae302218210db77da3fbae302218210a99ec9f7ba4648494b01fa31fa40fa00fa4030810f48f8425617c705f2f4700380405132c8552082101bf9e8a55004cb1f12ce01fa02cec943305a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00111a111c111a1119111b11191118111a111811171119111747016c1116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e551ddb3c6001fc31fa4030817c1e8d08600000000000000000000000000000000000000000000000000000000000000000045220c705b3f2f4816cf2f842011116c70501111501f2f4111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311114d01f43157131112fa40308200e26a8d08600000000000000000000000000000000000000000000000000000000000000000045220c705b3f2f4816cf2f8425615c705f2f4111a111c111a1119111b11191118111a111811171119111711161118111611151117111511141116111411131115111311141111111311114a01501110111211100f11110f0e11100e10df10ce10bd10ac109b108a107910681057104610354430db3c6002fc8efa31d3fffa4030f8428200b9488d08600000000000000000000000000000000000000000000000000000000000000000045230c705b3f2f4561a8101012459f40c6fa192306ddf816bc4216eb3f2f48116e901206ef2d08012c705f2f48200ad1e56188101012459f40c6fa192306ddf6ef2f41117810101225619e0214c4e01f8206e953059f45a30944133f414e2f82301111801c8552082105206fbd15004cb1f12cbffcecb1fc9c88258c000000000000000000000000101cb67ccc970fb00111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311114d01241110111211100f11110f0e11100e551ddb3c60044882102bd0b755bae30221820b958d4fbae30221821009278fbdbae3022182109cd7d62cba4f52555703fc316cc6db3c3c820095eff8425615c705f2f488c88258c000000000000000000000000101cb67ccc970fb00111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311110a11120a0911110908111008557710370610354414db3c5051600060fa00d31fd31ffa00fa00fa00fa00fa00fa00d30fd401d0fa00d30f30102c102b102a1029102810271026102510241023003000000000436f6e66696775726174696f6e5570646174656402fe313504d31f308200bc6cf8425615c705f2f488c88258c000000000000000000000000101cb67ccc970fb00111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b535400240000000056657273696f6e55706461746564011e108a1079106810570610354430db3c6001fc31d3ffd20030816e87f8425617c705f2f410258101015971216e955b59f45a3098c801cf004133f442e2111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b560120108a107910681057104644554313db3c60033ae3022182100e849a55bae302018210946a98b6bae3025f0f5f0ff2c082585a5e01fc31fa40d20030816e87f8425617c705f2f4102481010b5971216e955b59f4593098c801cf004133f441e2111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b590120108a107910681057104610355034db3c6001fe31d401d001d33f30708bb656d697373696f6e4361708523001f90101f901ba95303157117f8e4a8d041b5a5b95d85b1b195d1059d951185e5ce0523001f90101f901ba95303157107f8e258d04dd185c99d95d11185a5b1e5058dd1a5d9a5d1e601301f90101f901ba93313f7f9130e2e2e2810f7f01f2f4708040561256125b03fc5612561256125612561256125612561256125612c855b082102bd0b755500dcb1f0cdb3cc9561555205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0088c88258c000000000000000000000000101cb67ccc970fb00111a111c111a615c5d003a00000000436f6e66696775726174696f6e506172616d5570646174656401901119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e551ddb3c6001f2d33f30c8018210aff90f5758cb1fcb3fc9111b111d111b111a111c111a1119111b11191118111a11181117111911171116111811161115111711151114111611141113111511131112111411121111111311111110111211100f11110f0e11100e10df10ce10bd10ac109b108a1079106810571046103544305f014af84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00db3c6002f4c87f01ca00111d111c111b111a111911181117111611151114111311121111111055e001111c01111df400111ac8f40001111901f40001111701f4001115c8f40001111401f40001111201f40001111001ce1ece1cca00c850cc0ddb3c12cb1f12f40012f40003c8f40014f40015cb1f15cb1f14cd13cdcdcdc96162005050cbfa0219cb1f17cb1f5005fa025003fa0201fa0201fa0201fa0201fa02cb0fc85003fa02cb0fcd0004ed546ed787e2');
     const builder = beginCell();
     builder.storeUint(0, 1);
     initToonRegistry_init_args({ $$type: 'ToonRegistry_init_args', mintAuthority, vault })(builder);
@@ -2546,7 +2626,10 @@ export const ToonRegistry_errors = {
     135: { message: "Code of a contract was not found" },
     136: { message: "Invalid standard address" },
     138: { message: "Not a basechain address" },
+    3912: { message: "ToonRegistry: only vault can confirm minting" },
+    3967: { message: "ToonRegistry: unknown configuration parameter" },
     4821: { message: "ToonRegistry: rollback not allowed yet" },
+    5865: { message: "ToonRegistry: caller is not the owner of this track" },
     9299: { message: "ToonRegistry: wallet already has an artist identity" },
     9580: { message: "ToonRegistry: mint amount must be positive" },
     14803: { message: "ToonRegistry: unauthorized confirmation" },
@@ -2555,6 +2638,7 @@ export const ToonRegistry_errors = {
     17021: { message: "ToonRegistry: no pending track found" },
     18543: { message: "ToonRegistry: trackId cannot be zero" },
     26225: { message: "ToonRegistry: caller is not a registered ToonArtist contract" },
+    27588: { message: "ToonRegistry: trackId not registered" },
     27890: { message: "ToonRegistry: caller is not the mint authority" },
     28295: { message: "ToonRegistry: only mint authority can update eligibility" },
     31774: { message: "ToonRegistry: invalid new authority address" },
@@ -2608,7 +2692,10 @@ export const ToonRegistry_errors_backward = {
     "Code of a contract was not found": 135,
     "Invalid standard address": 136,
     "Not a basechain address": 138,
+    "ToonRegistry: only vault can confirm minting": 3912,
+    "ToonRegistry: unknown configuration parameter": 3967,
     "ToonRegistry: rollback not allowed yet": 4821,
+    "ToonRegistry: caller is not the owner of this track": 5865,
     "ToonRegistry: wallet already has an artist identity": 9299,
     "ToonRegistry: mint amount must be positive": 9580,
     "ToonRegistry: unauthorized confirmation": 14803,
@@ -2617,6 +2704,7 @@ export const ToonRegistry_errors_backward = {
     "ToonRegistry: no pending track found": 17021,
     "ToonRegistry: trackId cannot be zero": 18543,
     "ToonRegistry: caller is not a registered ToonArtist contract": 26225,
+    "ToonRegistry: trackId not registered": 27588,
     "ToonRegistry: caller is not the mint authority": 27890,
     "ToonRegistry: only mint authority can update eligibility": 28295,
     "ToonRegistry: invalid new authority address": 31774,
@@ -2662,21 +2750,22 @@ const ToonRegistry_types: ABIType[] = [
     {"name":"UpdateMintAuthority","header":2021444180,"fields":[{"name":"newAuthority","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"UpdateVaultAddress","header":3682064959,"fields":[{"name":"newVault","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"RequestMint","header":277189457,"fields":[{"name":"recipient","type":{"kind":"simple","type":"address","optional":false}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"MintConfirmed","header":469362853,"fields":[{"name":"recipient","type":{"kind":"simple","type":"address","optional":false}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"origin","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"SetConfig","header":735098709,"fields":[{"name":"config","type":{"kind":"simple","type":"Configuration","optional":false}}]},
     {"name":"SetVersion","header":60132687,"fields":[{"name":"newVersion","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
     {"name":"SetTrackRewardEligibility","header":153587645,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"eligible","type":{"kind":"simple","type":"bool","optional":false}}]},
     {"name":"SetArtistRewardEligibility","header":2631390764,"fields":[{"name":"artist","type":{"kind":"simple","type":"address","optional":false}},{"name":"eligible","type":{"kind":"simple","type":"bool","optional":false}}]},
     {"name":"UpdateConfigParam","header":243571285,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"PendingArtist","header":null,"fields":[{"name":"wallet","type":{"kind":"simple","type":"address","optional":false}},{"name":"artistContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"timestamp","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
-    {"name":"PendingTrack","header":null,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"fingerprint","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"trackContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"timestamp","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
+    {"name":"PendingTrack","header":null,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"fingerprint","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"trackContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"artistContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"timestamp","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
     {"name":"Configuration","header":null,"fields":[{"name":"emissionCap","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"minWalletAgeDays","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"targetDailyActivity","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"rewardBaseActiveListener","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseGrowthAgent","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseArtistLaunch","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseTrendsetter","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseEarlyBeliever","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseDropInvestor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"decayFactor","type":{"kind":"simple","type":"uint","optional":false,"format":16}},{"name":"minThreshold","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"antiFarmingCoeff","type":{"kind":"simple","type":"uint","optional":false,"format":16}}]},
     {"name":"ArtistRegistered","header":3803150073,"fields":[{"name":"wallet","type":{"kind":"simple","type":"address","optional":false}},{"name":"artistContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"registeredAt","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
     {"name":"TrackRegistered","header":1961142070,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"fingerprint","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"trackContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"registeredAt","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
-    {"name":"MintAuthorized","header":4196209244,"fields":[{"name":"recipient","type":{"kind":"simple","type":"address","optional":false}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"authorizedAt","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
+    {"name":"MintAuthorized","header":2843103275,"fields":[{"name":"recipient","type":{"kind":"simple","type":"address","optional":false}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"origin","type":{"kind":"simple","type":"address","optional":false}},{"name":"authorizedAt","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
     {"name":"RegisterDrop","header":2845755895,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"dropContract","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"SetPaused","header":157817343,"fields":[{"name":"paused","type":{"kind":"simple","type":"bool","optional":false}}]},
     {"name":"DropRegistered","header":1376189393,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"dropContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"registeredAt","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
-    {"name":"ToonRegistry$Data","header":null,"fields":[{"name":"artists","type":{"kind":"dict","key":"address","value":"address"}},{"name":"artistContracts","type":{"kind":"dict","key":"address","value":"address"}},{"name":"tracks","type":{"kind":"dict","key":"int","value":"address"}},{"name":"trackContracts","type":{"kind":"dict","key":"address","value":"int"}},{"name":"drops","type":{"kind":"dict","key":"int","value":"address"}},{"name":"fingerprints","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"mintAuthority","type":{"kind":"simple","type":"address","optional":false}},{"name":"vault","type":{"kind":"simple","type":"address","optional":false}},{"name":"isPaused","type":{"kind":"simple","type":"bool","optional":false}},{"name":"config","type":{"kind":"simple","type":"Configuration","optional":false}},{"name":"version","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"trackRewardEligible","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"artistRewardEligible","type":{"kind":"dict","key":"address","value":"bool"}},{"name":"pendingArtists","type":{"kind":"dict","key":"address","value":"PendingArtist","valueFormat":"ref"}},{"name":"pendingTracks","type":{"kind":"dict","key":"int","value":"PendingTrack","valueFormat":"ref"}},{"name":"totalArtists","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"totalTracks","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
+    {"name":"ToonRegistry$Data","header":null,"fields":[{"name":"artists","type":{"kind":"dict","key":"address","value":"address"}},{"name":"artistContracts","type":{"kind":"dict","key":"address","value":"address"}},{"name":"tracks","type":{"kind":"dict","key":"int","value":"address"}},{"name":"trackToArtist","type":{"kind":"dict","key":"int","value":"address"}},{"name":"trackContracts","type":{"kind":"dict","key":"address","value":"int"}},{"name":"drops","type":{"kind":"dict","key":"int","value":"address"}},{"name":"fingerprints","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"mintAuthority","type":{"kind":"simple","type":"address","optional":false}},{"name":"vault","type":{"kind":"simple","type":"address","optional":false}},{"name":"isPaused","type":{"kind":"simple","type":"bool","optional":false}},{"name":"config","type":{"kind":"simple","type":"Configuration","optional":false}},{"name":"version","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"trackRewardEligible","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"artistRewardEligible","type":{"kind":"dict","key":"address","value":"bool"}},{"name":"pendingArtists","type":{"kind":"dict","key":"address","value":"PendingArtist","valueFormat":"ref"}},{"name":"pendingTracks","type":{"kind":"dict","key":"int","value":"PendingTrack","valueFormat":"ref"}},{"name":"totalArtists","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"totalTracks","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
 ]
 
 const ToonRegistry_opcodes = {
@@ -2698,6 +2787,7 @@ const ToonRegistry_opcodes = {
     "UpdateMintAuthority": 2021444180,
     "UpdateVaultAddress": 3682064959,
     "RequestMint": 277189457,
+    "MintConfirmed": 469362853,
     "SetConfig": 735098709,
     "SetVersion": 60132687,
     "SetTrackRewardEligibility": 153587645,
@@ -2705,7 +2795,7 @@ const ToonRegistry_opcodes = {
     "UpdateConfigParam": 243571285,
     "ArtistRegistered": 3803150073,
     "TrackRegistered": 1961142070,
-    "MintAuthorized": 4196209244,
+    "MintAuthorized": 2843103275,
     "RegisterDrop": 2845755895,
     "SetPaused": 157817343,
     "DropRegistered": 1376189393,
@@ -2748,6 +2838,7 @@ const ToonRegistry_receivers: ABIReceiver[] = [
     {"receiver":"internal","message":{"kind":"typed","type":"RollbackTrackRegistration"}},
     {"receiver":"internal","message":{"kind":"typed","type":"AuthorizeMint"}},
     {"receiver":"internal","message":{"kind":"typed","type":"RequestMint"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"MintConfirmed"}},
     {"receiver":"internal","message":{"kind":"typed","type":"UpdateMintAuthority"}},
     {"receiver":"internal","message":{"kind":"typed","type":"UpdateVaultAddress"}},
     {"receiver":"internal","message":{"kind":"typed","type":"RegisterDrop"}},
@@ -2794,7 +2885,7 @@ export class ToonRegistry implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: StageArtistRegistration | ConfirmArtistRegistration | RollbackArtistRegistration | StageTrackRegistration | ConfirmTrackRegistration | RollbackTrackRegistration | AuthorizeMint | RequestMint | UpdateMintAuthority | UpdateVaultAddress | RegisterDrop | SetConfig | SetVersion | SetTrackRewardEligibility | SetArtistRewardEligibility | UpdateConfigParam | Deploy) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: StageArtistRegistration | ConfirmArtistRegistration | RollbackArtistRegistration | StageTrackRegistration | ConfirmTrackRegistration | RollbackTrackRegistration | AuthorizeMint | RequestMint | MintConfirmed | UpdateMintAuthority | UpdateVaultAddress | RegisterDrop | SetConfig | SetVersion | SetTrackRewardEligibility | SetArtistRewardEligibility | UpdateConfigParam | Deploy) {
         
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'StageArtistRegistration') {
@@ -2820,6 +2911,9 @@ export class ToonRegistry implements Contract {
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'RequestMint') {
             body = beginCell().store(storeRequestMint(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'MintConfirmed') {
+            body = beginCell().store(storeMintConfirmed(message)).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'UpdateMintAuthority') {
             body = beginCell().store(storeUpdateMintAuthority(message)).endCell();

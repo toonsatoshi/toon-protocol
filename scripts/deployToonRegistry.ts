@@ -3,9 +3,11 @@ import { ToonRegistry } from '../build/ToonRegistry/ToonRegistry_ToonRegistry';
 import { NetworkProvider } from '@ton/blueprint';
 
 export async function run(provider: NetworkProvider) {
-    const mintAuthority = provider.sender().address!;
+    const deployerAddress = provider.sender().address!;
     
-    const registry = provider.open(await ToonRegistry.fromInit(mintAuthority));
+    // During standalone registry deploy, we use the deployer as a temporary vault
+    // to bootstrap the circular dependency (similar to deployToonProtocol.ts).
+    const registry = provider.open(await ToonRegistry.fromInit(deployerAddress, deployerAddress));
 
     await registry.send(
         provider.sender(),

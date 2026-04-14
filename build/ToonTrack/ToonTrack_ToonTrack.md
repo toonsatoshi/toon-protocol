@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonTrack
-BoC Size: 1557 bytes
+BoC Size: 1840 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 19
+Total structures: 20
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -77,12 +77,19 @@ Signature: `TrackRegistrationConfirmed{trackId:uint256}`
 TL-B: `track_registration_finalized#b2c8fdba trackId:uint256 trackContract:address = TrackRegistrationFinalized`
 Signature: `TrackRegistrationFinalized{trackId:uint256,trackContract:address}`
 
+### MintConfirmed
+TL-B: `mint_confirmed#1bf9e8a5 recipient:address amount:coins origin:address = MintConfirmed`
+Signature: `MintConfirmed{recipient:address,amount:coins,origin:address}`
+
 ### ToonTrack$Data
 TL-B: `_ artist:address registry:address trackId:uint256 metadataUri:^string fingerprint:uint256 mintFee:coins reputation:uint32 isRegistered:bool = ToonTrack`
 Signature: `ToonTrack{artist:address,registry:address,trackId:uint256,metadataUri:^string,fingerprint:uint256,mintFee:coins,reputation:uint32,isRegistered:bool}`
 
 ## Get methods
-Total get methods: 5
+Total get methods: 6
+
+## isRegistered
+No arguments
 
 ## reputation
 No arguments
@@ -137,6 +144,7 @@ No arguments
 * 136: Invalid standard address
 * 138: Not a basechain address
 * 11192: ToonTrack: only registry can confirm registration
+* 26832: ToonTrack: only registry can confirm minting
 * 30490: ToonTrack: invalid trackId
 * 37961: ToonTrack: track not yet registered
 * 43013: ToonTrack: tip below minimum floor (including gas)
