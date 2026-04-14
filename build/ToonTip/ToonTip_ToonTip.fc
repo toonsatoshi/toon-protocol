@@ -488,8 +488,8 @@ builder $ToonTip$_store(builder build_0, (slice, cell, int) v) inline {
 
 ((slice, cell, int), tuple) $ToonTip$_fun_getPool((slice, cell, int) $self, int $poolId) impure inline_ref {
     var (($self'registry, $self'pools, $self'nextPoolId)) = $self;
-    var $fresh$ret_122 = $Pool$_load_opt(__tact_dict_get_int_cell($self'pools, 257, $poolId));
-    return (($self'registry, $self'pools, $self'nextPoolId), $fresh$ret_122);
+    var $fresh$ret_124 = $Pool$_load_opt(__tact_dict_get_int_cell($self'pools, 257, $poolId));
+    return (($self'registry, $self'pools, $self'nextPoolId), $fresh$ret_124);
 }
 
 ;;

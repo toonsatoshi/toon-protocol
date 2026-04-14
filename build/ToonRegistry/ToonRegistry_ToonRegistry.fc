@@ -147,10 +147,16 @@ builder $TrackRegistered$_store(builder build_0, (int, int, slice, int) v) inlin
 cell $TrackRegistered$_store_cell((int, int, slice, int) v, builder b) inline;
 
 ;; $MintAuthorized$_store
-builder $MintAuthorized$_store(builder build_0, (slice, int, int) v) inline;
+builder $MintAuthorized$_store(builder build_0, (slice, int, slice, int) v) inline;
 
 ;; $MintAuthorized$_store_cell
-cell $MintAuthorized$_store_cell((slice, int, int) v, builder b) inline;
+cell $MintAuthorized$_store_cell((slice, int, slice, int) v, builder b) inline;
+
+;; $ConfirmTip$_store
+builder $ConfirmTip$_store(builder build_0, (int, slice) v) inline;
+
+;; $ConfirmTip$_store_cell
+cell $ConfirmTip$_store_cell((int, slice) v, builder b) inline;
 
 ;; $DropRegistered$_store
 builder $DropRegistered$_store(builder build_0, (int, slice, int) v) inline;
@@ -167,20 +173,11 @@ builder $ToonRegistry$_store(builder build_0, (cell, cell, cell, cell, cell, cel
 ;; $Context$_get_value
 _ $Context$_get_value((int, slice, int, slice) v) inline;
 
-;; $PendingArtist$_get_wallet
-_ $PendingArtist$_get_wallet((slice, slice, int) v) inline;
-
 ;; $PendingArtist$_get_artistContract
 _ $PendingArtist$_get_artistContract((slice, slice, int) v) inline;
 
 ;; $PendingArtist$_get_timestamp
 _ $PendingArtist$_get_timestamp((slice, slice, int) v) inline;
-
-;; $PendingTrack$_get_trackId
-_ $PendingTrack$_get_trackId((int, int, slice, int) v) inline;
-
-;; $PendingTrack$_get_fingerprint
-_ $PendingTrack$_get_fingerprint((int, int, slice, int) v) inline;
 
 ;; $PendingTrack$_get_trackContract
 _ $PendingTrack$_get_trackContract((int, int, slice, int) v) inline;
@@ -230,6 +227,9 @@ _ $PendingTrack$_get_timestamp((int, int, slice, int) v) inline;
 ;; $ToonRegistry$_fun_getMintAuthority
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int), slice) $ToonRegistry$_fun_getMintAuthority((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int) $self) impure inline_ref;
 
+;; $ToonRegistry$_fun_vault
+((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int), slice) $ToonRegistry$_fun_vault((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int) $self) impure inline_ref;
+
 ;; $ToonRegistry$_fun_getConfig
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int), (int, int, int, int, int, int, int, int, int, int, int, int)) $ToonRegistry$_fun_getConfig((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int) $self) impure inline_ref;
 
@@ -257,11 +257,11 @@ _ $PendingTrack$_get_timestamp((int, int, slice, int) v) inline;
 ;; $SendParameters$_constructor_to_value_mode_body
 ((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline;
 
-;; $ArtistRegistrationConfirmed$_constructor_wallet
-((slice)) $ArtistRegistrationConfirmed$_constructor_wallet(slice $wallet) inline;
-
 ;; $ArtistRegistered$_constructor_wallet_artistContract_registeredAt
 ((slice, slice, int)) $ArtistRegistered$_constructor_wallet_artistContract_registeredAt(slice $wallet, slice $artistContract, int $registeredAt) inline;
+
+;; $ArtistRegistrationConfirmed$_constructor_wallet
+((slice)) $ArtistRegistrationConfirmed$_constructor_wallet(slice $wallet) inline;
 
 ;; $PendingTrack$_constructor_trackId_fingerprint_trackContract_timestamp
 ((int, int, slice, int)) $PendingTrack$_constructor_trackId_fingerprint_trackContract_timestamp(int $trackId, int $fingerprint, slice $trackContract, int $timestamp) inline;
@@ -269,14 +269,17 @@ _ $PendingTrack$_get_timestamp((int, int, slice, int) v) inline;
 ;; $TrackStagingAccepted$_constructor_trackId
 ((int)) $TrackStagingAccepted$_constructor_trackId(int $trackId) inline;
 
-;; $TrackRegistrationConfirmed$_constructor_trackId
-((int)) $TrackRegistrationConfirmed$_constructor_trackId(int $trackId) inline;
-
 ;; $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt
 ((int, int, slice, int)) $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt(int $trackId, int $fingerprint, slice $trackContract, int $registeredAt) inline;
 
-;; $MintAuthorized$_constructor_recipient_amount_authorizedAt
-((slice, int, int)) $MintAuthorized$_constructor_recipient_amount_authorizedAt(slice $recipient, int $amount, int $authorizedAt) inline;
+;; $TrackRegistrationConfirmed$_constructor_trackId
+((int)) $TrackRegistrationConfirmed$_constructor_trackId(int $trackId) inline;
+
+;; $MintAuthorized$_constructor_recipient_amount_origin_authorizedAt
+((slice, int, slice, int)) $MintAuthorized$_constructor_recipient_amount_origin_authorizedAt(slice $recipient, int $amount, slice $origin, int $authorizedAt) inline;
+
+;; $ConfirmTip$_constructor_trackId_recipient
+((int, slice)) $ConfirmTip$_constructor_trackId_recipient(int $trackId, slice $recipient) inline;
 
 ;; $DropRegistered$_constructor_trackId_dropContract_registeredAt
 ((int, slice, int)) $DropRegistered$_constructor_trackId_dropContract_registeredAt(int $trackId, slice $dropContract, int $registeredAt) inline;
@@ -452,6 +455,10 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) inline {
 
 builder $global_beginCell() impure asm """
     NEWC
+""";
+
+slice $global_myAddress() impure asm """
+    MYADDR
 """;
 
 int $global_myBalance() impure asm """
@@ -870,11 +877,6 @@ tuple $PendingArtist$_load_opt(cell cl) inline {
     return $PendingArtist$_as_optional(sc~$PendingArtist$_load());
 }
 
-_ $PendingArtist$_get_wallet((slice, slice, int) v) inline {
-    var (v'wallet, v'artistContract, v'timestamp) = v;
-    return v'wallet;
-}
-
 _ $PendingArtist$_get_artistContract((slice, slice, int) v) inline {
     var (v'wallet, v'artistContract, v'timestamp) = v;
     return v'artistContract;
@@ -941,16 +943,6 @@ tuple $PendingTrack$_load_opt(cell cl) inline {
     return $PendingTrack$_as_optional(sc~$PendingTrack$_load());
 }
 
-_ $PendingTrack$_get_trackId((int, int, slice, int) v) inline {
-    var (v'trackId, v'fingerprint, v'trackContract, v'timestamp) = v;
-    return v'trackId;
-}
-
-_ $PendingTrack$_get_fingerprint((int, int, slice, int) v) inline {
-    var (v'trackId, v'fingerprint, v'trackContract, v'timestamp) = v;
-    return v'fingerprint;
-}
-
 _ $PendingTrack$_get_trackContract((int, int, slice, int) v) inline {
     var (v'trackId, v'fingerprint, v'trackContract, v'timestamp) = v;
     return v'trackContract;
@@ -1014,25 +1006,48 @@ cell $TrackRegistered$_store_cell((int, int, slice, int) v, builder b) inline {
 
 ;;
 ;; Type: MintAuthorized
-;; Header: 0xfa1d125c
-;; TLB: mint_authorized#fa1d125c recipient:address amount:coins authorizedAt:uint32 = MintAuthorized
+;; Header: 0xa976502b
+;; TLB: mint_authorized#a976502b recipient:address amount:coins origin:address authorizedAt:uint32 = MintAuthorized
 ;;
 
-builder $MintAuthorized$_store(builder build_0, (slice, int, int) v) inline {
-    var (v'recipient, v'amount, v'authorizedAt) = v;
-    build_0 = store_uint(build_0, 4196209244, 32);
+builder $MintAuthorized$_store(builder build_0, (slice, int, slice, int) v) inline {
+    var (v'recipient, v'amount, v'origin, v'authorizedAt) = v;
+    build_0 = store_uint(build_0, 2843103275, 32);
     build_0 = build_0.store_slice(v'recipient);
     build_0 = build_0.store_varuint16(v'amount);
+    build_0 = build_0.store_slice(v'origin);
     build_0 = build_0.store_uint(v'authorizedAt, 32);
     return build_0;
 }
 
-cell $MintAuthorized$_store_cell((slice, int, int) v, builder b) inline {
+cell $MintAuthorized$_store_cell((slice, int, slice, int) v, builder b) inline {
     return $MintAuthorized$_store(b, v).end_cell();
 }
 
-((slice, int, int)) $MintAuthorized$_constructor_recipient_amount_authorizedAt(slice $recipient, int $amount, int $authorizedAt) inline {
-    return ($recipient, $amount, $authorizedAt);
+((slice, int, slice, int)) $MintAuthorized$_constructor_recipient_amount_origin_authorizedAt(slice $recipient, int $amount, slice $origin, int $authorizedAt) inline {
+    return ($recipient, $amount, $origin, $authorizedAt);
+}
+
+;;
+;; Type: ConfirmTip
+;; Header: 0x0b32803d
+;; TLB: confirm_tip#0b32803d trackId:uint256 recipient:address = ConfirmTip
+;;
+
+builder $ConfirmTip$_store(builder build_0, (int, slice) v) inline {
+    var (v'trackId, v'recipient) = v;
+    build_0 = store_uint(build_0, 187859005, 32);
+    build_0 = build_0.store_uint(v'trackId, 256);
+    build_0 = build_0.store_slice(v'recipient);
+    return build_0;
+}
+
+cell $ConfirmTip$_store_cell((int, slice) v, builder b) inline {
+    return $ConfirmTip$_store(b, v).end_cell();
+}
+
+((int, slice)) $ConfirmTip$_constructor_trackId_recipient(int $trackId, slice $recipient) inline {
+    return ($trackId, $recipient);
 }
 
 ;;
@@ -1202,36 +1217,42 @@ builder $ToonRegistry$_store(builder build_0, (cell, cell, cell, cell, cell, cel
     return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks), $fresh$ret_63);
 }
 
+((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int), slice) $ToonRegistry$_fun_vault((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int) $self) impure inline_ref {
+    var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks)) = $self;
+    var $fresh$ret_64 = $self'vault;
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks), $fresh$ret_64);
+}
+
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int), (int, int, int, int, int, int, int, int, int, int, int, int)) $ToonRegistry$_fun_getConfig((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int) $self) impure inline_ref {
     var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks)) = $self;
-    var $fresh$ret_64 = ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff);
-    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks), $fresh$ret_64);
+    var $fresh$ret_65 = ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff);
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks), $fresh$ret_65);
 }
 
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int), int) $ToonRegistry$_fun_getVersion((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int) $self) impure inline_ref {
     var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks)) = $self;
-    var $fresh$ret_65 = $self'version;
-    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks), $fresh$ret_65);
+    var $fresh$ret_66 = $self'version;
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks), $fresh$ret_66);
 }
 
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int), int) $ToonRegistry$_fun_isTrackRewardEligible((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int) $self, int $trackId) impure inline_ref {
     var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks)) = $self;
     int $e = __tact_dict_get_int_int($self'trackRewardEligible, 257, $trackId, 1);
-    var $fresh$ret_66 = ((~ null?($e)) ? __tact_not_null($e) : true);
-    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks), $fresh$ret_66);
+    var $fresh$ret_67 = ((~ null?($e)) ? __tact_not_null($e) : true);
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks), $fresh$ret_67);
 }
 
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int), int) $ToonRegistry$_fun_isArtistRewardEligible((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int) $self, slice $artist) impure inline_ref {
     var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks)) = $self;
     int $e = __tact_dict_get_slice_int($self'artistRewardEligible, 267, $artist, 1);
-    var $fresh$ret_67 = ((~ null?($e)) ? __tact_not_null($e) : true);
-    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks), $fresh$ret_67);
+    var $fresh$ret_68 = ((~ null?($e)) ? __tact_not_null($e) : true);
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks), $fresh$ret_68);
 }
 
 ((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int), int) $ToonRegistry$_fun_isKnownArtistContract((cell, cell, cell, cell, cell, cell, slice, slice, int, (int, int, int, int, int, int, int, int, int, int, int, int), int, cell, cell, cell, cell, int, int) $self, slice $contractAddr) impure inline_ref {
     var (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks)) = $self;
-    var $fresh$ret_68 = (~ null?(__tact_dict_get_slice_slice($self'artistContracts, 267, $contractAddr)));
-    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks), $fresh$ret_68);
+    var $fresh$ret_69 = (~ null?(__tact_dict_get_slice_slice($self'artistContracts, 267, $contractAddr)));
+    return (($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks), $fresh$ret_69);
 }
 
 ;;
@@ -1283,6 +1304,12 @@ _ %fingerprintExists(int $fingerprint) method_id(74238) {
 _ %getMintAuthority() method_id(97950) {
     var self = $ToonRegistry$_contract_load();
     var res = self~$ToonRegistry$_fun_getMintAuthority();
+    return res;
+}
+
+_ %vault() method_id(113865) {
+    var self = $ToonRegistry$_contract_load();
+    var res = self~$ToonRegistry$_fun_vault();
     return res;
 }
 
@@ -1345,7 +1372,7 @@ _ %isArtistRewardEligible(slice $artist) method_id(105328) {
         throw_unless(9299, null?(__tact_dict_get_slice_slice($self'artists, 267, $msg'wallet)));
         throw_unless(57050, null?($PendingArtist$_load_opt(__tact_dict_get_slice_cell($self'pendingArtists, 267, $msg'wallet))));
         $self'pendingArtists~__tact_dict_set_slice_cell(267, $msg'wallet, $PendingArtist$_store_cell($PendingArtist$_constructor_wallet_artistContract_timestamp($msg'wallet, $msg'artistContract, $global_now()), begin_cell()));
-        $global_send($SendParameters$_constructor_to_value_mode_body($msg'artistContract, 0, 64, __gen_cell_cell_829f87cc3f0affee80f998af0b3260f60295e610d558e924ecc4602395b91ec7()));
+        $global_send($SendParameters$_constructor_to_value_mode_body($msg'artistContract, 100000000, 1, __gen_cell_cell_829f87cc3f0affee80f998af0b3260f60295e610d558e924ecc4602395b91ec7()));
         $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks));
         return ();
     }
@@ -1355,13 +1382,14 @@ _ %isArtistRewardEligible(slice $artist) method_id(105328) {
         var $msg'wallet = in_msg~load_msg_addr();
         tuple $pending = $PendingArtist$_load_opt(__tact_dict_get_slice_cell($self'pendingArtists, 267, $msg'wallet));
         throw_unless(56923, (~ null?($pending)));
-        throw_unless(14803, ( equal_slices_bits(__tact_context_get_sender(), $PendingArtist$_get_artistContract($PendingArtist$_not_null($pending))) ));
-        $self'artists~__tact_dict_set_slice_slice(267, $PendingArtist$_get_wallet($PendingArtist$_not_null($pending)), $PendingArtist$_get_artistContract($PendingArtist$_not_null($pending)));
-        $self'artistContracts~__tact_dict_set_slice_slice(267, $PendingArtist$_get_artistContract($PendingArtist$_not_null($pending)), $PendingArtist$_get_wallet($PendingArtist$_not_null($pending)));
+        var ($p'wallet, $p'artistContract, $p'timestamp) = $PendingArtist$_not_null($pending);
+        throw_unless(14803, ( equal_slices_bits(__tact_context_get_sender(), $p'artistContract) ));
+        $self'artists~__tact_dict_set_slice_slice(267, $p'wallet, $p'artistContract);
+        $self'artistContracts~__tact_dict_set_slice_slice(267, $p'artistContract, $p'wallet);
         $self'totalArtists = ($self'totalArtists + 1);
         $self'pendingArtists~__tact_dict_set_slice_cell(267, $msg'wallet, $PendingArtist$_store_opt(null(), begin_cell()));
-        $global_send($SendParameters$_constructor_to_value_mode_body($PendingArtist$_get_artistContract($PendingArtist$_not_null($pending)), 0, 64, $ArtistRegistrationConfirmed$_store_cell($ArtistRegistrationConfirmed$_constructor_wallet($PendingArtist$_get_wallet($PendingArtist$_not_null($pending))), begin_cell())));
-        $global_emit($ArtistRegistered$_store_cell($ArtistRegistered$_constructor_wallet_artistContract_registeredAt($PendingArtist$_get_wallet($PendingArtist$_not_null($pending)), $PendingArtist$_get_artistContract($PendingArtist$_not_null($pending)), $global_now()), begin_cell()));
+        $global_emit($ArtistRegistered$_store_cell($ArtistRegistered$_constructor_wallet_artistContract_registeredAt($p'wallet, $p'artistContract, $global_now()), begin_cell()));
+        $global_send($SendParameters$_constructor_to_value_mode_body($p'artistContract, 100000000, 1, $ArtistRegistrationConfirmed$_store_cell($ArtistRegistrationConfirmed$_constructor_wallet($p'wallet), begin_cell())));
         $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks));
         return ();
     }
@@ -1390,7 +1418,7 @@ _ %isArtistRewardEligible(slice $artist) method_id(105328) {
         throw_unless(15016, null?(__tact_dict_get_int_int($self'fingerprints, 257, $msg'fingerprint, 1)));
         throw_unless(58583, null?($PendingTrack$_load_opt(__tact_dict_get_int_cell($self'pendingTracks, 257, $msg'trackId))));
         $self'pendingTracks~__tact_dict_set_int_cell(257, $msg'trackId, $PendingTrack$_store_cell($PendingTrack$_constructor_trackId_fingerprint_trackContract_timestamp($msg'trackId, $msg'fingerprint, $msg'trackContract, $global_now()), begin_cell()));
-        $global_send($SendParameters$_constructor_to_value_mode_body($caller, 0, 64, $TrackStagingAccepted$_store_cell($TrackStagingAccepted$_constructor_trackId($msg'trackId), begin_cell())));
+        $global_send($SendParameters$_constructor_to_value_mode_body($caller, 100000000, 1, $TrackStagingAccepted$_store_cell($TrackStagingAccepted$_constructor_trackId($msg'trackId), begin_cell())));
         $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks));
         return ();
     }
@@ -1400,14 +1428,15 @@ _ %isArtistRewardEligible(slice $artist) method_id(105328) {
         var $msg'trackId = in_msg~load_uint(256);
         tuple $pending = $PendingTrack$_load_opt(__tact_dict_get_int_cell($self'pendingTracks, 257, $msg'trackId));
         throw_unless(17021, (~ null?($pending)));
-        throw_unless(14803, ( equal_slices_bits(__tact_context_get_sender(), $PendingTrack$_get_trackContract($PendingTrack$_not_null($pending))) ));
-        $self'tracks~__tact_dict_set_int_slice(257, $PendingTrack$_get_trackId($PendingTrack$_not_null($pending)), $PendingTrack$_get_trackContract($PendingTrack$_not_null($pending)));
-        $self'trackContracts~__tact_dict_set_slice_int(267, $PendingTrack$_get_trackContract($PendingTrack$_not_null($pending)), $PendingTrack$_get_trackId($PendingTrack$_not_null($pending)), 257);
-        $self'fingerprints~__tact_dict_set_int_int(257, $PendingTrack$_get_fingerprint($PendingTrack$_not_null($pending)), true, 1);
+        var ($p'trackId, $p'fingerprint, $p'trackContract, $p'timestamp) = $PendingTrack$_not_null($pending);
+        throw_unless(14803, ( equal_slices_bits(__tact_context_get_sender(), $p'trackContract) ));
+        $self'tracks~__tact_dict_set_int_slice(257, $p'trackId, $p'trackContract);
+        $self'trackContracts~__tact_dict_set_slice_int(267, $p'trackContract, $p'trackId, 257);
+        $self'fingerprints~__tact_dict_set_int_int(257, $p'fingerprint, true, 1);
         $self'totalTracks = ($self'totalTracks + 1);
         $self'pendingTracks~__tact_dict_set_int_cell(257, $msg'trackId, $PendingTrack$_store_opt(null(), begin_cell()));
-        $global_send($SendParameters$_constructor_to_value_mode_body($PendingTrack$_get_trackContract($PendingTrack$_not_null($pending)), 0, 64, $TrackRegistrationConfirmed$_store_cell($TrackRegistrationConfirmed$_constructor_trackId($PendingTrack$_get_trackId($PendingTrack$_not_null($pending))), begin_cell())));
-        $global_emit($TrackRegistered$_store_cell($TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt($PendingTrack$_get_trackId($PendingTrack$_not_null($pending)), $PendingTrack$_get_fingerprint($PendingTrack$_not_null($pending)), $PendingTrack$_get_trackContract($PendingTrack$_not_null($pending)), $global_now()), begin_cell()));
+        $global_emit($TrackRegistered$_store_cell($TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt($p'trackId, $p'fingerprint, $p'trackContract, $global_now()), begin_cell()));
+        $global_send($SendParameters$_constructor_to_value_mode_body($p'trackContract, 100000000, 1, $TrackRegistrationConfirmed$_store_cell($TrackRegistrationConfirmed$_constructor_trackId($p'trackId), begin_cell())));
         $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks));
         return ();
     }
@@ -1431,7 +1460,7 @@ _ %isArtistRewardEligible(slice $artist) method_id(105328) {
         throw_unless(38991, ( ~ equal_slices_bits($msg'recipient, __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c()) ));
         throw_unless(27890, ( equal_slices_bits(__tact_context_get_sender(), $self'mintAuthority) ));
         throw_unless(9580, ($msg'amount > 0));
-        $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 0, 64, $MintAuthorized$_store_cell($MintAuthorized$_constructor_recipient_amount_authorizedAt($msg'recipient, $msg'amount, $global_now()), begin_cell())));
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 100000000, 1, $MintAuthorized$_store_cell($MintAuthorized$_constructor_recipient_amount_origin_authorizedAt($msg'recipient, $msg'amount, $global_myAddress(), $global_now()), begin_cell())));
         $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks));
         return ();
     }
@@ -1440,9 +1469,24 @@ _ %isArtistRewardEligible(slice $artist) method_id(105328) {
     if (op == 277189457) {
         var $msg'recipient = in_msg~load_msg_addr();
         var $msg'amount = in_msg~load_varuint16();
+        slice $trackAddr = __tact_context_get_sender();
         throw_unless(38991, ( ~ equal_slices_bits($msg'recipient, __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c()) ));
-        throw_unless(50582, (~ null?(__tact_dict_get_slice_int($self'trackContracts, 267, __tact_context_get_sender(), 257))));
-        $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 0, 64, $MintAuthorized$_store_cell($MintAuthorized$_constructor_recipient_amount_authorizedAt($msg'recipient, $msg'amount, $global_now()), begin_cell())));
+        throw_unless(50582, (~ null?(__tact_dict_get_slice_int($self'trackContracts, 267, $trackAddr, 257))));
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 0, 64, $MintAuthorized$_store_cell($MintAuthorized$_constructor_recipient_amount_origin_authorizedAt($msg'recipient, $msg'amount, $trackAddr, $global_now()), begin_cell())));
+        $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks));
+        return ();
+    }
+
+    ;; Receive MintSuccess message
+    if (op == 464637375) {
+        var $msg'recipient = in_msg~load_msg_addr();
+        var $msg'amount = in_msg~load_varuint16();
+        var $msg'origin = in_msg~load_msg_addr();
+        throw_unless(62909, ( equal_slices_bits(__tact_context_get_sender(), $self'vault) ));
+        int $trackId = __tact_dict_get_slice_int($self'trackContracts, 267, $msg'origin, 257);
+        if ((~ null?($trackId))) {
+            $global_send($SendParameters$_constructor_to_value_mode_body($msg'origin, 100000000, 1, $ConfirmTip$_store_cell($ConfirmTip$_constructor_trackId_recipient(__tact_not_null($trackId), $msg'recipient), begin_cell())));
+        }
         $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks));
         return ();
     }
@@ -1532,8 +1576,8 @@ _ %isArtistRewardEligible(slice $artist) method_id(105328) {
         } elseif (__tact_slice_eq($msg'parameter, __gen_slice_string_b86ca8649955f561ab92d4b1e34fd804e06d27bb291ff66edcc1f15919ebc5d4())) {
             $self'config'targetDailyActivity = $msg'newValue;
         }
-        $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 0, 64, $SetConfig$_store_cell($SetConfig$_constructor_config(($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff)), begin_cell())));
         $global_emit(__gen_cell_cell_da9a191e7e01f090ed4ab95e8c524a76bebf72b1372a705abcb2edb5475dc4bc());
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 0, 64, $SetConfig$_store_cell($SetConfig$_constructor_config(($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff)), begin_cell())));
         $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks));
         return ();
     }

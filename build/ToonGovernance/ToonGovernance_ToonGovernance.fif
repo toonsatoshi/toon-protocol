@@ -1,4 +1,4 @@
-// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/toon-protocol-main/build/ToonGovernance/ToonGovernance_ToonGovernance.fc` 
+// automatically generated from `@stdlib/std/stdlib.fc` `/app/build/ToonGovernance/ToonGovernance_ToonGovernance.fc`
 PROGRAM{
   DECLPROC __tact_store_address_opt
   DECLPROC __tact_not_null
@@ -1124,6 +1124,46 @@ PROGRAM{
       }>
       267 PUSHINT
       s1 s3 XCPU
+      ADD
+      s3 s9 XCHG
+      s1 s2 XCHG
+      257 PUSHINT
+      __tact_dict_set_slice_int INLINECALLDICT
+      s5 s6 XCHG2
+      ADD
+      s8 s10 XCHG
+      s7 s9 XCHG
+      s6 s8 XCHG
+      s5 s7 XCHG
+      s0 s6 XCHG
+      s3 s5 XCHG
+      s4 s3 s0 XCHG3
+      $ToonGovernance$_contract_store INLINECALLDICT
+    }>
+    OVER
+    2952585114 PUSHINT
+    EQUAL
+    IFJMP:<{
+      2DROP
+      1000000000000 PUSHINT
+      267 PUSHINT
+      __tact_context_get_sender INLINECALLDICT
+      s8 PUSH
+      -ROT
+      257 PUSHINT
+      __tact_dict_get_slice_int INLINECALLDICT
+      DUP
+      ISNULL
+      NOT
+      IF:<{
+        __tact_not_null INLINECALLDICT
+      }>ELSE<{
+        DROP
+        0 PUSHINT
+      }>
+      267 PUSHINT
+      __tact_context_get_sender INLINECALLDICT
+      s2 s3 XCPU
       ADD
       s3 s9 XCHG
       s1 s2 XCHG

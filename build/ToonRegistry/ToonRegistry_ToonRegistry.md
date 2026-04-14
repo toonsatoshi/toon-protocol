@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonRegistry
-BoC Size: 7015 bytes
+BoC Size: 7086 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 43
+Total structures: 45
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -158,8 +158,16 @@ TL-B: `track_registered#74e4a736 trackId:uint256 fingerprint:uint256 trackContra
 Signature: `TrackRegistered{trackId:uint256,fingerprint:uint256,trackContract:address,registeredAt:uint32}`
 
 ### MintAuthorized
-TL-B: `mint_authorized#fa1d125c recipient:address amount:coins authorizedAt:uint32 = MintAuthorized`
-Signature: `MintAuthorized{recipient:address,amount:coins,authorizedAt:uint32}`
+TL-B: `mint_authorized#a976502b recipient:address amount:coins origin:address authorizedAt:uint32 = MintAuthorized`
+Signature: `MintAuthorized{recipient:address,amount:coins,origin:address,authorizedAt:uint32}`
+
+### MintSuccess
+TL-B: `mint_success#1bb1cdbf recipient:address amount:coins origin:address = MintSuccess`
+Signature: `MintSuccess{recipient:address,amount:coins,origin:address}`
+
+### ConfirmTip
+TL-B: `confirm_tip#0b32803d trackId:uint256 recipient:address = ConfirmTip`
+Signature: `ConfirmTip{trackId:uint256,recipient:address}`
 
 ### RegisterDrop
 TL-B: `register_drop#a99ec9f7 trackId:uint256 dropContract:address = RegisterDrop`
@@ -178,7 +186,7 @@ TL-B: `_ artists:dict<address, address> artistContracts:dict<address, address> t
 Signature: `ToonRegistry{artists:dict<address, address>,artistContracts:dict<address, address>,tracks:dict<int, address>,trackContracts:dict<address, int>,drops:dict<int, address>,fingerprints:dict<int, bool>,mintAuthority:address,vault:address,isPaused:bool,config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16},version:uint32,trackRewardEligible:dict<int, bool>,artistRewardEligible:dict<address, bool>,pendingArtists:dict<address, ^PendingArtist{wallet:address,artistContract:address,timestamp:uint32}>,pendingTracks:dict<int, ^PendingTrack{trackId:uint256,fingerprint:uint256,trackContract:address,timestamp:uint32}>,totalArtists:uint32,totalTracks:uint32}`
 
 ## Get methods
-Total get methods: 11
+Total get methods: 12
 
 ## getArtistContract
 Argument: wallet
@@ -199,6 +207,9 @@ Argument: trackId
 Argument: fingerprint
 
 ## getMintAuthority
+No arguments
+
+## vault
 No arguments
 
 ## getConfig
@@ -273,6 +284,7 @@ Argument: artist
 * 57050: ToonRegistry: registration already pending
 * 57962: ToonRegistry: invalid vault address
 * 58583: ToonRegistry: track registration already pending
+* 62909: ToonRegistry: only vault can confirm mint success
 
 ## Trait inheritance diagram
 

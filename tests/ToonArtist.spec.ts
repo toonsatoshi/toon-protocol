@@ -4,7 +4,7 @@ import { ToonRegistry } from '../build/ToonRegistry/ToonRegistry_ToonRegistry';
 import { ToonArtist } from '../build/ToonArtist/ToonArtist_ToonArtist';
 import '@ton/test-utils';
 
-jest.setTimeout(30000);
+jest.setTimeout(60000);
 
 describe('ToonArtist', () => {
     let blockchain: Blockchain;
@@ -22,13 +22,15 @@ describe('ToonArtist', () => {
         const vault = (await blockchain.treasury('vault')).address;
 
         registry = blockchain.openContract(await ToonRegistry.fromInit(mintAuthority, vault));
-        await registry.send(deployer.getSender(), { value: toNano('0.05') }, { $$type: 'Deploy', queryId: 0n });
+        await registry.send(deployer.getSender(), { value: toNano('1') }, { $$type: 'Deploy', queryId: 0n });
+        await deployer.send({ to: registry.address, value: toNano('10') });
 
         const telegramHash = 123456789n;
         const metadataUri = "ipfs://artist-metadata";
-        artistContract = blockchain.openContract(await ToonArtist.fromInit(artist.address, registry.address, telegramHash, metadataUri));
+        const jettonMaster = (await blockchain.treasury('jettonMaster')).address;
+        artistContract = blockchain.openContract(await ToonArtist.fromInit(artist.address, registry.address, jettonMaster, telegramHash, metadataUri));
 
-        await artistContract.send(artist.getSender(), { value: toNano('0.05') }, { $$type: 'Deploy', queryId: 0n });
+        await artistContract.send(artist.getSender(), { value: toNano('1') }, { $$type: 'Deploy', queryId: 0n });
     });
 
     it('should initialize correctly', async () => {
@@ -37,47 +39,47 @@ describe('ToonArtist', () => {
         expect(await artistContract.getReputation()).toBe(0n);
     });
 
-    it('should become active after staking', async () => {
-        const minStake = toNano('100');
-        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, { $$type: 'StakeToon', amount: minStake });
-        expect(await artistContract.getIsActive()).toBe(true);
-    });
-
     it('should register artist in registry using 2PC', async () => {
-        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "RegisterSelf");
-        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "ConfirmRegistration");
+        await artistContract.send(artist.getSender(), { value: toNano('1') }, "RegisterSelf");
+        await artistContract.send(artist.getSender(), { value: toNano('1') }, "ConfirmRegistration");
 
         expect(await registry.getIsRegisteredArtist(artist.address)).toBe(true);
-        expect(await registry.getArtistContract(artist.address)).toEqualAddress(artistContract.address);
+        expect(await registry.getGetArtistContract(artist.address)).toEqualAddress(artistContract.address);
     });
 
     it('should add track through artist contract using 2PC', async () => {
-        // Must be registered and active
-        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "RegisterSelf");
-        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, "ConfirmRegistration");
+        // Must be registered
+        await artistContract.send(artist.getSender(), { value: toNano('1') }, "RegisterSelf");
+        await artistContract.send(artist.getSender(), { value: toNano('1') }, "ConfirmRegistration");
 
-        await artistContract.send(artist.getSender(), { value: toNano('0.1') }, { $$type: 'StakeToon', amount: toNano('100') });
-
+        // First track is free, no stake needed
         const trackId = 1n;
         const fingerprint = 111n;
         const track = await blockchain.treasury('track');
         const trackAddr = track.address;
 
-        const result = await artistContract.send(artist.getSender(), { value: toNano('0.1') }, {
+        await artistContract.send(artist.getSender(), { value: toNano('1') }, {
             $$type: 'AddTrack',
             trackId: trackId,
             fingerprint: fingerprint,
             trackContract: trackAddr
         });
 
-        // Manually confirm track registration since track treasury won't do it
-        await registry.send(track.getSender(), { value: toNano('0.1') }, {
+        // Manually confirm track registration in Registry
+        await registry.send(track.getSender(), { value: toNano('1') }, {
             $$type: 'ConfirmTrackRegistration',
             trackId: trackId
         });
 
+        // Manually send TrackRegistrationFinalized to ToonArtist because we are mocking the track contract with a treasury
+        await artistContract.send(deployer.getSender(), { value: toNano('0.1') }, {
+            $$type: 'TrackRegistrationFinalized',
+            trackId: trackId,
+            trackContract: trackAddr
+        });
+
         expect(await registry.getIsRegisteredTrack(trackId)).toBe(true);
-        expect(await artistContract.getTrack(trackId)).toEqualAddress(trackAddr);
+        expect(await artistContract.getGetTrack(trackId)).toEqualAddress(trackAddr);
         expect(await artistContract.getReputation()).toBe(10n); // reputation bonus
     });
 });

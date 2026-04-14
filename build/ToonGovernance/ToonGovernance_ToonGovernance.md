@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonGovernance
-BoC Size: 5082 bytes
+BoC Size: 5190 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 38
+Total structures: 39
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -108,6 +108,10 @@ Signature: `ToonJettonWallet{balance:coins,owner:address,master:address}`
 ### UnstakeGovernance
 TL-B: `unstake_governance#03686687 amount:coins = UnstakeGovernance`
 Signature: `UnstakeGovernance{amount:coins}`
+
+### MockStake
+TL-B: `mock_stake#affcdf9a  = MockStake`
+Signature: `MockStake{}`
 
 ### ProposeParameterUpdate
 TL-B: `propose_parameter_update#bba923e1 parameter:^string newValue:uint64 description:^string = ProposeParameterUpdate`

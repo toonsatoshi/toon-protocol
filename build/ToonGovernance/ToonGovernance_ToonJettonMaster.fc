@@ -542,39 +542,39 @@ cell $ToonJettonWallet$_child_get_code() impure asm """
 ((slice, slice, int, slice), (int, int, slice, cell, cell)) $ToonJettonMaster$_fun_get_jetton_data((slice, slice, int, slice) $self) impure inline_ref {
     var (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri)) = $self;
     cell $content = $Builder$_fun_endCell($Builder$_fun_storeSlice(store_uint($global_beginCell(), 1, 8), $String$_fun_asSlice($self'metadataUri)));
-    var $fresh$ret_157 = $JettonData$_constructor_totalSupply_mintable_adminAddress_content_walletCode($self'totalSupply, true, $self'owner, $content, $StateInit$_get_code($ToonJettonWallet$_init_child(0, $global_myAddress(), $global_myAddress())));
-    return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), $fresh$ret_157);
+    var $fresh$ret_159 = $JettonData$_constructor_totalSupply_mintable_adminAddress_content_walletCode($self'totalSupply, true, $self'owner, $content, $StateInit$_get_code($ToonJettonWallet$_init_child(0, $global_myAddress(), $global_myAddress())));
+    return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), $fresh$ret_159);
 }
 
 ((slice, slice, int, slice), slice) $ToonJettonMaster$_fun_get_wallet_address((slice, slice, int, slice) $self, slice $owner) impure inline_ref {
     var (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri)) = $self;
     var ($init'code, $init'data) = $ToonJettonWallet$_init_child(0, $owner, $global_myAddress());
-    var $fresh$ret_158 = $global_contractAddress(($init'code, $init'data));
-    return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), $fresh$ret_158);
+    var $fresh$ret_160 = $global_contractAddress(($init'code, $init'data));
+    return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), $fresh$ret_160);
 }
 
 ((slice, slice, int, slice), int) $ToonJettonMaster$_fun_totalSupply((slice, slice, int, slice) $self) impure inline_ref {
     var (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri)) = $self;
-    var $fresh$ret_159 = $self'totalSupply;
-    return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), $fresh$ret_159);
+    var $fresh$ret_161 = $self'totalSupply;
+    return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), $fresh$ret_161);
 }
 
 ((slice, slice, int, slice), slice) $ToonJettonMaster$_fun_owner((slice, slice, int, slice) $self) impure inline_ref {
     var (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri)) = $self;
-    var $fresh$ret_160 = $self'owner;
-    return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), $fresh$ret_160);
+    var $fresh$ret_162 = $self'owner;
+    return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), $fresh$ret_162);
 }
 
 ((slice, slice, int, slice), slice) $ToonJettonMaster$_fun_mintAuthority((slice, slice, int, slice) $self) impure inline_ref {
     var (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri)) = $self;
-    var $fresh$ret_161 = $self'mintAuthority;
-    return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), $fresh$ret_161);
+    var $fresh$ret_163 = $self'mintAuthority;
+    return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), $fresh$ret_163);
 }
 
 ((slice, slice, int, slice), slice) $ToonJettonMaster$_fun_metadataUri((slice, slice, int, slice) $self) impure inline_ref {
     var (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri)) = $self;
-    var $fresh$ret_162 = $self'metadataUri;
-    return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), $fresh$ret_162);
+    var $fresh$ret_164 = $self'metadataUri;
+    return (($self'owner, $self'mintAuthority, $self'totalSupply, $self'metadataUri), $fresh$ret_164);
 }
 
 ;;

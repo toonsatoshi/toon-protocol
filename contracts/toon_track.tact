@@ -14,6 +14,11 @@ message RequestMint {
     amount:    Int as coins;
 }
 
+message ConfirmTip {
+    trackId: Int as uint256;
+    recipient: Address;
+}
+
 message ConfirmTrackRegistration {
     trackId: Int as uint256;
 }
@@ -45,15 +50,15 @@ contract ToonTrack with Deployable {
     
     mintFee:     Int as coins;   // Minimum tip floor
     reputation:  Int as uint32;  // Increments on every tip
+    pendingTips: Int as uint32;  // Tips in-flight (waiting for confirmation)
 
     isRegistered: Bool;      // Two-phase commit status
 
     // ── Constants ──────────────────────────────────────────────────────────
 
     const MINT_REWARD: Int = 1000000000; // 1 $TOON reward for tipping (mock)
-    const GAS_FORWARD_ARTIST: Int = 50000000; // 0.05 TON
-    const GAS_REGISTRY_FEE:   Int = 20000000; // 0.02 TON
-    const MIN_TIP_OVERHEAD:   Int = 80000000; // 0.08 TON safety buffer
+    const GAS_REGISTRY_FEE:   Int = 100000000; // 0.1 TON
+    const MIN_TIP_OVERHEAD:   Int = 250000000; // 0.25 TON safety buffer
 
     // ── Constructor ──────────────────────────────────────────────────────────
 
@@ -65,6 +70,7 @@ contract ToonTrack with Deployable {
         self.fingerprint = fingerprint;
         self.mintFee = mintFee;
         self.reputation = 0;
+        self.pendingTips = 0;
         self.isRegistered = false;
     }
 
@@ -100,27 +106,27 @@ contract ToonTrack with Deployable {
 
     /// Accepts TON tips. 
     /// If value >= mintFee:
-    ///   1. Increment reputation.
-    ///   2. Forward full value to artist.
-    ///   3. Request $TOON mint for the tipper via Registry.
+    ///   1. Forward full value to artist.
+    ///   2. Request $TOON mint for the tipper via Registry.
+    ///   3. Reputation increments ONLY on confirmation (see ConfirmTip).
     receive() {
         require(self.isRegistered, "ToonTrack: track not yet registered");
         let ctx: Context = context();
         let minRequired: Int = self.mintFee + self.MIN_TIP_OVERHEAD;
         require(ctx.value >= minRequired, "ToonTrack: tip below minimum floor (including gas)");
 
-        // 1. Increment reputation
-        self.reputation = self.reputation + 1;
+        // 1. Forward value to artist (leaving enough for registry fee and own gas)
+        let forwardValue: Int = ctx.value - self.MIN_TIP_OVERHEAD;
 
-        // 2. Forward value to artist (leaving some for gas/mint)
         send(SendParameters{
             to: self.artist,
-            value: ctx.value - self.GAS_FORWARD_ARTIST,
+            value: forwardValue,
             mode: 0,
             body: "Tip received".asComment()
         });
 
-        // 3. Request $TOON mint for the tipper (Tip-to-Earn)
+        // 2. Request $TOON mint for the tipper (Tip-to-Earn)
+        self.pendingTips = self.pendingTips + 1;
         send(SendParameters{
             to: self.registry,
             value: self.GAS_REGISTRY_FEE,
@@ -139,15 +145,16 @@ contract ToonTrack with Deployable {
         let minRequired: Int = self.mintFee + self.MIN_TIP_OVERHEAD;
         require(ctx.value >= minRequired, "ToonTrack: tip below minimum floor (including gas)");
         
-        self.reputation = self.reputation + 1;
+        let forwardValue: Int = ctx.value - self.MIN_TIP_OVERHEAD;
 
         send(SendParameters{
             to: self.artist,
-            value: ctx.value - self.GAS_FORWARD_ARTIST,
+            value: forwardValue,
             mode: 0,
             body: "Tip received".asComment()
         });
 
+        self.pendingTips = self.pendingTips + 1;
         send(SendParameters{
             to: self.registry,
             value: self.GAS_REGISTRY_FEE,
@@ -159,10 +166,24 @@ contract ToonTrack with Deployable {
         });
     }
 
+    receive(msg: ConfirmTip) {
+        require(sender() == self.registry, "ToonTrack: only registry can confirm tips");
+        require(msg.trackId == self.trackId, "ToonTrack: invalid trackId");
+
+        if (self.pendingTips > 0) {
+            self.pendingTips = self.pendingTips - 1;
+        }
+        self.reputation = self.reputation + 1;
+    }
+
     // ── Getters ──────────────────────────────────────────────────────────────
 
     get fun reputation(): Int {
         return self.reputation;
+    }
+
+    get fun pendingTips(): Int {
+        return self.pendingTips;
     }
 
     get fun artist(): Address {
