@@ -679,50 +679,50 @@ builder $ToonArtist$_store(builder build_0, (slice, slice, slice, int, slice, in
 
 ((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int), int) $ToonArtist$_fun_isActive((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered)) = $self;
-    var $fresh$ret_109 = ($self'stakedToon >= 100000000000);
-    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_109);
+    var $fresh$ret_110 = ($self'stakedToon >= 100000000000);
+    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_110);
 }
 
 ((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int), int) $ToonArtist$_fun_canLaunchToonDrop((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered)) = $self;
-    var $fresh$ret_110 = ($self'reputation >= 1000);
-    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_110);
+    var $fresh$ret_111 = ($self'reputation >= 1000);
+    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_111);
 }
 
 ((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int), (int, int, int, int, int)) $ToonArtist$_fun_getDetails((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered)) = $self;
-    var $fresh$ret_111 = $ArtistDetails$_constructor_reputation_totalTipVolume_stakedToon_isActive_totalTracks($self'reputation, $self'totalTipVolume, $self'stakedToon, ($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered)~$ToonArtist$_fun_isActive(), $self'totalTracks);
-    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_111);
+    var $fresh$ret_112 = $ArtistDetails$_constructor_reputation_totalTipVolume_stakedToon_isActive_totalTracks($self'reputation, $self'totalTipVolume, $self'stakedToon, ($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered)~$ToonArtist$_fun_isActive(), $self'totalTracks);
+    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_112);
 }
 
 ((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int), slice) $ToonArtist$_fun_getTrack((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int) $self, int $trackId) impure inline_ref {
     var (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered)) = $self;
-    var $fresh$ret_112 = __tact_dict_get_int_slice($self'tracks, 257, $trackId);
-    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_112);
+    var $fresh$ret_113 = __tact_dict_get_int_slice($self'tracks, 257, $trackId);
+    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_113);
 }
 
 ((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int), int) $ToonArtist$_fun_reputation((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered)) = $self;
-    var $fresh$ret_113 = $self'reputation;
-    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_113);
+    var $fresh$ret_114 = $self'reputation;
+    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_114);
 }
 
 ((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int), slice) $ToonArtist$_fun_owner((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered)) = $self;
-    var $fresh$ret_114 = $self'owner;
-    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_114);
+    var $fresh$ret_115 = $self'owner;
+    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_115);
 }
 
 ((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int), int) $ToonArtist$_fun_totalTracks((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered)) = $self;
-    var $fresh$ret_115 = $self'totalTracks;
-    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_115);
+    var $fresh$ret_116 = $self'totalTracks;
+    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_116);
 }
 
 ((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int), int) $ToonArtist$_fun_stakedToon((slice, slice, slice, int, slice, int, int, int, cell, int, cell, int) $self) impure inline_ref {
     var (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered)) = $self;
-    var $fresh$ret_116 = $self'stakedToon;
-    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_116);
+    var $fresh$ret_117 = $self'stakedToon;
+    return (($self'owner, $self'registry, $self'jettonMaster, $self'telegramHash, $self'metadataUri, $self'reputation, $self'totalTipVolume, $self'stakedToon, $self'tracks, $self'totalTracks, $self'pendingTracks, $self'isRegistered), $fresh$ret_117);
 }
 
 ;;

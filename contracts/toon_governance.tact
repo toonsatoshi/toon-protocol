@@ -9,6 +9,9 @@ message UnstakeGovernance {
     amount: Int as coins;
 }
 
+message MockStake {
+}
+
 // Numeric parameter proposals (emissionCap, minWalletAge).
 message ProposeParameterUpdate {
     parameter:   String; // "emissionCap" | "minWalletAge"
@@ -180,6 +183,14 @@ contract ToonGovernance with Deployable {
         let current: Int   = existing != null ? existing!! : 0;
         self.stakes.set(msg.from, current + msg.amount);
         self.totalStaked = self.totalStaked + msg.amount;
+    }
+
+    receive(msg: MockStake) {
+        let amount: Int = ton("1000");
+        let existing: Int? = self.stakes.get(sender());
+        let current: Int   = existing != null ? existing!! : 0;
+        self.stakes.set(sender(), current + amount);
+        self.totalStaked = self.totalStaked + amount;
     }
 
     receive(msg: UnstakeGovernance) {

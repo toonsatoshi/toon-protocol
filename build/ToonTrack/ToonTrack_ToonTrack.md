@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonTrack
-BoC Size: 1557 bytes
+BoC Size: 1799 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 19
+Total structures: 20
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -65,6 +65,10 @@ Signature: `AuthorizeMint{recipient:address,amount:coins}`
 TL-B: `request_mint#10859351 recipient:address amount:coins = RequestMint`
 Signature: `RequestMint{recipient:address,amount:coins}`
 
+### ConfirmTip
+TL-B: `confirm_tip#0b32803d trackId:uint256 recipient:address = ConfirmTip`
+Signature: `ConfirmTip{trackId:uint256,recipient:address}`
+
 ### ConfirmTrackRegistration
 TL-B: `confirm_track_registration#a47a6dee trackId:uint256 = ConfirmTrackRegistration`
 Signature: `ConfirmTrackRegistration{trackId:uint256}`
@@ -78,13 +82,16 @@ TL-B: `track_registration_finalized#b2c8fdba trackId:uint256 trackContract:addre
 Signature: `TrackRegistrationFinalized{trackId:uint256,trackContract:address}`
 
 ### ToonTrack$Data
-TL-B: `_ artist:address registry:address trackId:uint256 metadataUri:^string fingerprint:uint256 mintFee:coins reputation:uint32 isRegistered:bool = ToonTrack`
-Signature: `ToonTrack{artist:address,registry:address,trackId:uint256,metadataUri:^string,fingerprint:uint256,mintFee:coins,reputation:uint32,isRegistered:bool}`
+TL-B: `_ artist:address registry:address trackId:uint256 metadataUri:^string fingerprint:uint256 mintFee:coins reputation:uint32 pendingTips:uint32 isRegistered:bool = ToonTrack`
+Signature: `ToonTrack{artist:address,registry:address,trackId:uint256,metadataUri:^string,fingerprint:uint256,mintFee:coins,reputation:uint32,pendingTips:uint32,isRegistered:bool}`
 
 ## Get methods
-Total get methods: 5
+Total get methods: 6
 
 ## reputation
+No arguments
+
+## pendingTips
 No arguments
 
 ## artist
@@ -141,6 +148,7 @@ No arguments
 * 37961: ToonTrack: track not yet registered
 * 43013: ToonTrack: tip below minimum floor (including gas)
 * 57664: ToonTrack: only artist can confirm registration
+* 59792: ToonTrack: only registry can confirm tips
 
 ## Trait inheritance diagram
 

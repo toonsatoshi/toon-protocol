@@ -1541,6 +1541,47 @@ export function dictValueParserUnstakeGovernance(): DictionaryValue<UnstakeGover
     }
 }
 
+export type MockStake = {
+    $$type: 'MockStake';
+}
+
+export function storeMockStake(src: MockStake) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(2952585114, 32);
+    };
+}
+
+export function loadMockStake(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2952585114) { throw Error('Invalid prefix'); }
+    return { $$type: 'MockStake' as const };
+}
+
+export function loadTupleMockStake(source: TupleReader) {
+    return { $$type: 'MockStake' as const };
+}
+
+export function loadGetterTupleMockStake(source: TupleReader) {
+    return { $$type: 'MockStake' as const };
+}
+
+export function storeTupleMockStake(source: MockStake) {
+    const builder = new TupleBuilder();
+    return builder.build();
+}
+
+export function dictValueParserMockStake(): DictionaryValue<MockStake> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeMockStake(src)).endCell());
+        },
+        parse: (src) => {
+            return loadMockStake(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type ProposeParameterUpdate = {
     $$type: 'ProposeParameterUpdate';
     parameter: string;
@@ -2522,6 +2563,7 @@ const ToonJettonMaster_types: ABIType[] = [
     {"name":"ToonJettonMaster$Data","header":null,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"mintAuthority","type":{"kind":"simple","type":"address","optional":false}},{"name":"totalSupply","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"metadataUri","type":{"kind":"simple","type":"string","optional":false}}]},
     {"name":"ToonJettonWallet$Data","header":null,"fields":[{"name":"balance","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"master","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"UnstakeGovernance","header":57173639,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"MockStake","header":2952585114,"fields":[]},
     {"name":"ProposeParameterUpdate","header":3148424161,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}}]},
     {"name":"ProposeAddressUpdate","header":1506838652,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}}]},
     {"name":"VoteOnProposal","header":3302738496,"fields":[{"name":"proposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"support","type":{"kind":"simple","type":"bool","optional":false}}]},
@@ -2550,6 +2592,7 @@ const ToonJettonMaster_opcodes = {
     "UpdateMintAuthority": 2021444180,
     "UpdateMetadata": 293200627,
     "UnstakeGovernance": 57173639,
+    "MockStake": 2952585114,
     "ProposeParameterUpdate": 3148424161,
     "ProposeAddressUpdate": 1506838652,
     "VoteOnProposal": 3302738496,

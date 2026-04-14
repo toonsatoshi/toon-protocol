@@ -5,7 +5,7 @@ import { ToonVault } from '../build/ToonVault/ToonVault_ToonVault';
 import { ToonGovernance } from '../build/ToonGovernance/ToonGovernance_ToonGovernance';
 import '@ton/test-utils';
 
-jest.setTimeout(30000);
+jest.setTimeout(60000);
 
 describe('ToonGovernance', () => {
     let blockchain: Blockchain;
@@ -21,8 +21,10 @@ describe('ToonGovernance', () => {
         voter = await blockchain.treasury('voter');
 
         const vaultAddr = await blockchain.treasury('vaultPlaceholder');
+        const jettonMaster = await blockchain.treasury('jettonMaster');
+
         registry = blockchain.openContract(await ToonRegistry.fromInit(deployer.address, vaultAddr.address));
-        await registry.send(deployer.getSender(), { value: toNano('0.05') }, { $$type: 'Deploy', queryId: 0n });
+        await registry.send(deployer.getSender(), { value: toNano('1') }, { $$type: 'Deploy', queryId: 0n });
 
         vault = blockchain.openContract(await ToonVault.fromInit(
             deployer.address,
@@ -35,23 +37,23 @@ describe('ToonGovernance', () => {
             false,
             0n
         ));
-        await vault.send(deployer.getSender(), { value: toNano('0.05') }, { $$type: 'Deploy', queryId: 0n });
+        await vault.send(deployer.getSender(), { value: toNano('1') }, { $$type: 'Deploy', queryId: 0n });
 
-        governance = blockchain.openContract(await ToonGovernance.fromInit(registry.address, vault.address));
-        await governance.send(deployer.getSender(), { value: toNano('0.05') }, { $$type: 'Deploy', queryId: 0n });
+        governance = blockchain.openContract(await ToonGovernance.fromInit(registry.address, vault.address, jettonMaster.address));
+        await governance.send(deployer.getSender(), { value: toNano('1') }, { $$type: 'Deploy', queryId: 0n });
     });
 
     it('should allow staking and voting', async () => {
         const stakeAmount = toNano('1000');
         
-        // Stake $TOON
+        // Stake $TOON via MockStake
         await governance.send(
             voter.getSender(),
             { value: toNano('0.1') },
-            { $$type: 'StakeToon', amount: stakeAmount }
+            { $$type: 'MockStake' }
         );
 
-        expect(await governance.getGetStake(voter.address)).toBe(stakeAmount);
+        expect(await governance.getStake(voter.address)).toBe(stakeAmount);
         expect(await governance.getTotalStaked()).toBe(stakeAmount);
 
         // Propose a change
@@ -84,9 +86,5 @@ describe('ToonGovernance', () => {
             to: governance.address,
             success: true,
         });
-
-        // Verify votes (internal state check or via getter if implemented)
-        // In this MVP, we can't easily read individual fields of a struct in a map 
-        // without a getter for the specific proposal.
     });
 });

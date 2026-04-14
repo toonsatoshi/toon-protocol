@@ -144,7 +144,19 @@ message TrackRegistered {
 message MintAuthorized {
     recipient: Address;
     amount:    Int as coins;
+    origin:    Address;
     authorizedAt: Int as uint32;
+}
+
+message MintSuccess {
+    recipient: Address;
+    amount:    Int as coins;
+    origin:    Address;
+}
+
+message ConfirmTip {
+    trackId: Int as uint256;
+    recipient: Address;
 }
 
 message RegisterDrop {
@@ -260,8 +272,8 @@ contract ToonRegistry with Deployable {
         // Acknowledge staging to the artist contract
         send(SendParameters{
             to: msg.artistContract,
-            value: 0,
-            mode: SendRemainingValue,
+            value: ton("0.1"),
+            mode: SendPayGasSeparately,
             body: "StagingAccepted".asComment()
         });
     }
@@ -269,28 +281,29 @@ contract ToonRegistry with Deployable {
     receive(msg: ConfirmArtistRegistration) {
         let pending: PendingArtist? = self.pendingArtists.get(msg.wallet);
         require(pending != null, "ToonRegistry: no pending registration found");
+        let p: PendingArtist = pending!!;
 
         // Ensure only the Artist contract (or some authorized entity) can confirm
-        require(sender() == pending!!.artistContract, "ToonRegistry: unauthorized confirmation");
+        require(sender() == p.artistContract, "ToonRegistry: unauthorized confirmation");
 
-        self.artists.set(pending!!.wallet, pending!!.artistContract);
-        self.artistContracts.set(pending!!.artistContract, pending!!.wallet);
+        self.artists.set(p.wallet, p.artistContract);
+        self.artistContracts.set(p.artistContract, p.wallet);
         self.totalArtists = self.totalArtists + 1;
         self.pendingArtists.set(msg.wallet, null);
 
-        // Notify the artist contract of success
-        send(SendParameters{
-            to: pending!!.artistContract,
-            value: 0,
-            mode: SendRemainingValue,
-            body: ArtistRegistrationConfirmed{ wallet: pending!!.wallet }.toCell()
-        });
-
         emit(ArtistRegistered{
-            wallet:         pending!!.wallet,
-            artistContract: pending!!.artistContract,
+            wallet:         p.wallet,
+            artistContract: p.artistContract,
             registeredAt:   now()
         }.toCell());
+
+        // Notify the artist contract of success
+        send(SendParameters{
+            to: p.artistContract,
+            value: ton("0.1"),
+            mode: SendPayGasSeparately,
+            body: ArtistRegistrationConfirmed{ wallet: p.wallet }.toCell()
+        });
     }
 
     receive(msg: RollbackArtistRegistration) {
@@ -324,8 +337,8 @@ contract ToonRegistry with Deployable {
         // Acknowledge staging to the artist contract
         send(SendParameters{
             to: caller,
-            value: 0,
-            mode: SendRemainingValue,
+            value: ton("0.1"),
+            mode: SendPayGasSeparately,
             body: TrackStagingAccepted{ trackId: msg.trackId }.toCell()
         });
     }
@@ -333,28 +346,29 @@ contract ToonRegistry with Deployable {
     receive(msg: ConfirmTrackRegistration) {
         let pending: PendingTrack? = self.pendingTracks.get(msg.trackId);
         require(pending != null, "ToonRegistry: no pending track found");
-        require(sender() == pending!!.trackContract, "ToonRegistry: unauthorized confirmation");
+        let p: PendingTrack = pending!!;
+        require(sender() == p.trackContract, "ToonRegistry: unauthorized confirmation");
 
-        self.tracks.set(pending!!.trackId, pending!!.trackContract);
-        self.trackContracts.set(pending!!.trackContract, pending!!.trackId);
-        self.fingerprints.set(pending!!.fingerprint, true);
+        self.tracks.set(p.trackId, p.trackContract);
+        self.trackContracts.set(p.trackContract, p.trackId);
+        self.fingerprints.set(p.fingerprint, true);
         self.totalTracks = self.totalTracks + 1;
         self.pendingTracks.set(msg.trackId, null);
 
-        // Notify the track contract of success
-        send(SendParameters{
-            to: pending!!.trackContract,
-            value: 0,
-            mode: SendRemainingValue,
-            body: TrackRegistrationConfirmed{ trackId: pending!!.trackId }.toCell()
-        });
-
         emit(TrackRegistered{
-            trackId:       pending!!.trackId,
-            fingerprint:   pending!!.fingerprint,
-            trackContract: pending!!.trackContract,
+            trackId:       p.trackId,
+            fingerprint:   p.fingerprint,
+            trackContract: p.trackContract,
             registeredAt:  now()
         }.toCell());
+
+        // Notify the track contract of success
+        send(SendParameters{
+            to: p.trackContract,
+            value: ton("0.1"),
+            mode: SendPayGasSeparately,
+            body: TrackRegistrationConfirmed{ trackId: p.trackId }.toCell()
+        });
     }
 
     receive(msg: RollbackTrackRegistration) {
@@ -385,21 +399,23 @@ contract ToonRegistry with Deployable {
         // Forward authorization to the vault
         send(SendParameters{
             to: self.vault,
-            value: 0,
-            mode: SendRemainingValue,
+            value: ton("0.1"),
+            mode: SendPayGasSeparately,
             body: MintAuthorized{
                 recipient: msg.recipient,
                 amount: msg.amount,
+                origin: myAddress(),
                 authorizedAt: now()
             }.toCell()
         });
     }
 
     receive(msg: RequestMint) {
+        let trackAddr: Address = sender();
         require(msg.recipient != newAddress(0, 0), "ToonRegistry: invalid recipient address");
         // Only a known ToonTrack contract can request minting
         require(
-            self.trackContracts.get(sender()) != null,
+            self.trackContracts.get(trackAddr) != null,
             "ToonRegistry: caller is not a registered ToonTrack contract"
         );
 
@@ -411,9 +427,27 @@ contract ToonRegistry with Deployable {
             body: MintAuthorized{
                 recipient: msg.recipient,
                 amount: msg.amount,
+                origin: trackAddr,
                 authorizedAt: now()
             }.toCell()
         });
+    }
+
+    receive(msg: MintSuccess) {
+        require(sender() == self.vault, "ToonRegistry: only vault can confirm mint success");
+
+        let trackId: Int? = self.trackContracts.get(msg.origin);
+        if (trackId != null) {
+            send(SendParameters{
+                to: msg.origin,
+                value: ton("0.1"),
+                mode: SendPayGasSeparately,
+                body: ConfirmTip{
+                    trackId: trackId!!,
+                    recipient: msg.recipient
+                }.toCell()
+            });
+        }
     }
 
     /// Rotate the mint authority. Only the current authority can do this.
@@ -505,6 +539,8 @@ contract ToonRegistry with Deployable {
         }
         // ... add more as needed
 
+        emit("ConfigurationParamUpdated".asComment());
+
         // Push update to vault
         send(SendParameters{
             to: self.vault,
@@ -512,8 +548,6 @@ contract ToonRegistry with Deployable {
             mode: SendRemainingValue,
             body: SetConfig{config: self.config}.toCell()
         });
-
-        emit("ConfigurationParamUpdated".asComment());
     }
 
     // ── Read-only Getters ─────────────────────────────────────────────────────
@@ -544,6 +578,10 @@ contract ToonRegistry with Deployable {
 
     get fun getMintAuthority(): Address {
         return self.mintAuthority;
+    }
+
+    get fun vault(): Address {
+        return self.vault;
     }
 
     get fun getConfig(): Configuration {

@@ -24,7 +24,7 @@ describe('ToonRegistry', () => {
         const deployResult = await registry.send(
             deployer.getSender(),
             {
-                value: toNano('0.05'),
+                value: toNano('1'),
             },
             {
                 $$type: 'Deploy',
@@ -46,7 +46,7 @@ describe('ToonRegistry', () => {
         // Stage
         await registry.send(
             artist.getSender(),
-            { value: toNano('0.1') },
+            { value: toNano('1') },
             {
                 $$type: 'StageArtistRegistration',
                 artistContract: artistContract.address,
@@ -59,7 +59,7 @@ describe('ToonRegistry', () => {
         // Confirm
         const result = await registry.send(
             artistContract.getSender(),
-            { value: toNano('0.1') },
+            { value: toNano('1') },
             {
                 $$type: 'ConfirmArtistRegistration',
                 wallet: artist.address,
@@ -81,12 +81,12 @@ describe('ToonRegistry', () => {
     it('should register a track using 2PC', async () => {
         // Register artist first
         const artistContract = await blockchain.treasury('artistContract');
-        await registry.send(artist.getSender(), { value: toNano('0.1') }, {
+        await registry.send(artist.getSender(), { value: toNano('1') }, {
             $$type: 'StageArtistRegistration',
             artistContract: artistContract.address,
             wallet: artist.address,
         });
-        await registry.send(artistContract.getSender(), { value: toNano('0.1') }, { $$type: 'ConfirmArtistRegistration', wallet: artist.address });
+        await registry.send(artistContract.getSender(), { value: toNano('1') }, { $$type: 'ConfirmArtistRegistration', wallet: artist.address });
 
         const trackId = 12345n;
         const fingerprint = 67890n;
@@ -95,7 +95,7 @@ describe('ToonRegistry', () => {
         // Stage
         await registry.send(
             artistContract.getSender(),
-            { value: toNano('0.1') },
+            { value: toNano('1') },
             {
                 $$type: 'StageTrackRegistration',
                 trackId: trackId,
@@ -109,7 +109,7 @@ describe('ToonRegistry', () => {
         // Confirm
         const result = await registry.send(
             trackContract.getSender(),
-            { value: toNano('0.1') },
+            { value: toNano('1') },
             {
                 $$type: 'ConfirmTrackRegistration',
                 trackId: trackId,
@@ -133,7 +133,7 @@ describe('ToonRegistry', () => {
         const result = await registry.send(
             mintAuthority.getSender(),
             {
-                value: toNano('0.1'),
+                value: toNano('1'),
             },
             {
                 $$type: 'AuthorizeMint',
@@ -152,7 +152,7 @@ describe('ToonRegistry', () => {
         const failResult = await registry.send(
             artist.getSender(),
             {
-                value: toNano('0.1'),
+                value: toNano('1'),
             },
             {
                 $$type: 'AuthorizeMint',
@@ -175,7 +175,7 @@ describe('ToonRegistry', () => {
         await registry.send(
             mintAuthority.getSender(),
             {
-                value: toNano('0.1'),
+                value: toNano('1'),
             },
             {
                 $$type: 'UpdateMintAuthority',
