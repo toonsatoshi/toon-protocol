@@ -1,5 +1,6 @@
-// automatically generated from `@stdlib/std/stdlib.fc` `/app/build/ToonGovernance/ToonGovernance_ToonGovernance.fc`
+// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/toon-protocol-main/build/ToonGovernance/ToonGovernance_ToonGovernance.fc` 
 PROGRAM{
+  DECLPROC __tact_store_address_opt
   DECLPROC __tact_not_null
   DECLPROC __tact_crc16
   DECLPROC __tact_base64_encode
@@ -20,6 +21,8 @@ PROGRAM{
   DECLPROC __tact_dict_set_int_cell
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
+  DECLPROC $TokenTransfer$_store
+  DECLPROC $TokenTransfer$_store_cell
   DECLPROC $UpdateMintAuthority$_store
   DECLPROC $UpdateMintAuthority$_store_cell
   DECLPROC $UpdateConfigParam$_store
@@ -45,10 +48,17 @@ PROGRAM{
   DECLPROC $AddressProposal$_to_tuple
   DECLPROC $AddressProposal$_to_opt_tuple
   DECLPROC $AddressProposal$_to_opt_external
+  DECLPROC $ToonJettonWallet$init$_store
   DECLPROC $ToonGovernance$init$_load
   DECLPROC $ToonGovernance$_contract_init
   DECLPROC $ToonGovernance$_contract_load
   DECLPROC $ToonGovernance$_contract_store
+  DECLPROC $Cell$_fun_asSlice
+  DECLPROC $global_newAddress
+  DECLPROC $global_contractAddressExt
+  DECLPROC $global_contractAddress
+  DECLPROC $MessageParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $ToonJettonWallet$_init_child
   DECLPROC $ToonGovernance$_fun_voteKey
   DECLPROC $ToonGovernance$_fun_quorumPassed
   DECLPROC $ToonGovernance$_fun_quorumPassedAddr
@@ -59,9 +69,9 @@ PROGRAM{
   DECLPROC $ToonGovernance$_fun_hasAddressVoted
   DECLPROC $ToonGovernance$_fun_hasAddressVotedOnAddressProposal
   DECLPROC $ToonGovernance$_fun_quorumMet
-  DECLPROC $MessageParameters$_constructor_bounce_to_value_mode_body
   DECLPROC $ToonGovernance$_fun_notify
   DECLPROC $SendParameters$_constructor_to_value_mode_body
+  DECLPROC $TokenTransfer$_constructor_queryId_amount_destination_response_destination_customPayload_forward_ton_amount_forward_payload
   DECLPROC $GlobalProposal$_constructor_parameter_newValue_description_proposer_votesFor_votesAgainst_deadline_executed
   DECLPROC $UpdateConfigParam$_constructor_parameter_newValue
   DECLPROC $AddressProposal$_constructor_parameter_newAddress_description_proposer_votesFor_votesAgainst_deadline_executed
@@ -80,6 +90,17 @@ PROGRAM{
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_child_contract_codes
   DECLGLOBVAR __tact_randomized
+  __tact_store_address_opt PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      b{00} STSLICECONST
+    }>ELSE<{
+      SWAP
+      STSLICE
+    }>
+  }>
   __tact_not_null PROCINLINE:<{
     DUP
     ISNULL
@@ -433,6 +454,28 @@ PROGRAM{
     $DeployOk$_store INLINECALLDICT
     ENDC
   }>
+  $TokenTransfer$_store PROCINLINE:<{
+    260734629 PUSHINT
+    s0 s8 XCHG2
+    32 STU
+    s1 s6 XCHG
+    64 STU
+    s0 s4 XCHG2
+    STVARUINT16
+    s1 s2 XCHG
+    STSLICE
+    SWAP
+    __tact_store_address_opt INLINECALLDICT
+    STOPTREF
+    SWAP
+    STVARUINT16
+    STSLICE
+  }>
+  $TokenTransfer$_store_cell PROCINLINE:<{
+    7 -ROLL
+    $TokenTransfer$_store INLINECALLDICT
+    ENDC
+  }>
   $UpdateMintAuthority$_store PROCINLINE:<{
     2021444180 PUSHINT
     ROT
@@ -580,13 +623,15 @@ PROGRAM{
     }>
   }>
   $ToonGovernance$_store PROCINLINE:<{
-    s9 s10 XCHG2
+    s10 s11 XCHG2
     STSLICE
-    s1 s7 XCHG
+    s1 s8 XCHG
     STSLICE
-    s1 s5 XCHG
+    s1 s6 XCHG
+    STSLICE
+    s1 s4 XCHG
     STDICT
-    s0 s3 XCHG2
+    ROT
     STVARUINT16
     SWAP
     NEWC
@@ -606,6 +651,7 @@ PROGRAM{
   $ToonGovernance$_load PROCINLINE:<{
     LDMSGADDR
     LDMSGADDR
+    LDMSGADDR
     LDDICT
     LDVARUINT16
     LDREF
@@ -618,6 +664,7 @@ PROGRAM{
     LDDICT
     LDDICT
     DROP
+    s6 s11 XCHG
     s6 s10 XCHG
     s6 s9 XCHG
     s6 s8 XCHG
@@ -687,10 +734,18 @@ PROGRAM{
     }>ELSE<{
     }>
   }>
+  $ToonJettonWallet$init$_store PROCINLINE:<{
+    2SWAP
+    STVARUINT16
+    s1 s2 XCHG
+    STSLICE
+    STSLICE
+  }>
   $ToonGovernance$init$_load PROCINLINE:<{
     LDMSGADDR
     LDMSGADDR
-    -ROT
+    LDMSGADDR
+    3 -ROLL
   }>
   $ToonGovernance$_contract_init PROCINLINE:<{
     PUSHNULL
@@ -710,12 +765,12 @@ PROGRAM{
     SWAP
     IF:<{
       $ToonGovernance$_load INLINECALLDICT
-      1 10 BLKDROP2
+      1 11 BLKDROP2
     }>ELSE<{
       $ToonGovernance$init$_load INLINECALLDICT
-      s0 s2 XCHG
+      s0 s3 XCHG
       ENDS
-      SWAP
+      ROT
       $ToonGovernance$_contract_init INLINECALLDICT
     }>
   }>
@@ -724,10 +779,59 @@ PROGRAM{
     TRUE
     SWAP
     1 STI
-    10 -ROLL
+    11 -ROLL
     $ToonGovernance$_store INLINECALLDICT
     ENDC
     c4 POP
+  }>
+  $Cell$_fun_asSlice PROCINLINE:<{
+        CTOS
+  }>
+  $global_newAddress PROCINLINE:<{
+        NEWC
+    4 PUSHINT
+    SWAP
+    3 STU
+    s1 s2 XCHG
+    8 STI
+    256 STU
+        ENDC
+    $Cell$_fun_asSlice INLINECALLDICT
+  }>
+  $global_contractAddressExt PROCINLINE:<{
+        s0 PUSH HASHCU // `data` hash
+        s2 PUSH HASHCU // `code` hash
+        SWAP2
+        CDEPTH         // `data` depth
+        SWAP
+        CDEPTH         // `code` depth
+        131380 INT     // (2 << 16) | (1 << 8) | 0x34
+        // Group 2: Composition of the Builder
+        NEWC
+        24 STU  // store refs_descriptor | bits_descriptor | data
+        16 STU  // store depth_descriptor for `code`
+        16 STU  // store depth_descriptor for `data`
+        256 STU // store `code` hash
+        256 STU // store `data` hash
+        // Group 3: SHA256 hash of the resulting Builder
+        ONE HASHEXT_SHA256
+    $global_newAddress INLINECALLDICT
+  }>
+  $global_contractAddress PROCINLINE:<{
+    0 PUSHINT
+    -ROT
+    $global_contractAddressExt INLINECALLDICT
+  }>
+  $MessageParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
+    s3 s3 XCHG2
+    s0 s4 XCHG
+  }>
+  $ToonJettonWallet$_init_child PROCREF:<{
+        B{b5ee9c720102100100032d000228ff008e88f4a413f4bcf2c80bed5320e303ed43d90102020271030403a83001d072d721d200d200fa4021103450666f04f86102f862ed44d0fa00fa40fa4055206c1304925f04e002d70d1ff2e0822182100f8a7ea5bae302218210178d4519bae302018210595f07bcbae3025f04f2c0820708090127be28ef6a2687d007d207d202a903609ed9e3618c050127bcb6076a2687d007d207d202a903609ed9e3618c0600022100022201fe31d33ffa00fa40d72c01916d93fa4001e201f40431fa008138c6f84229c705f2f48200d5575375bef2f45164a15054708040544950528ac855508210178d45195007cb1f15cb3f5003fa02ce01206e9430cf84809201cee201fa02cec9102410231025146d50436d5033c8cf8580ca00cf8440ce01fa028069cf40025c6e010a04ee31d33ffa00fa40d72c01916d93fa4001e201fa00f8416f2410235f035309c705b38ebc70535adb3c0181114d02705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d012c705f2f49130e25164a021c2009436135f03e30d206eb3915be30d020b0c0d0f02f6d33ffa00d72c01916d93fa4001e2318138c6f84226c705f2f48200d5575342bef2f45131a170541325804006c8553082107bdd97de5005cb1f13cb3f01fa02ce01206e9430cf84809201cee2c9250350445a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf818ae2f400c901fb00020e0f00506eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0002c855205afa0212cecec9ed540018f82ac855215afa0212cecec900b271702747135069c8553082107362d09c5005cb1f13cb3f01fa02cecec9274314450010246d50436d03c8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0000a6206ef2d0807080407004c8018210d53276db58cb1fcb3fc91034413010246d50436d03c8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00001a58cf8680cf8480f400f400cf810018c855205afa0212cecec9ed54} B>boc PUSHREF
+    NEWC
+    3 2 BLKSWAP
+    $ToonJettonWallet$init$_store INLINECALLDICT
+    ENDC
   }>
   $ToonGovernance$_fun_voteKey PROCREF:<{
     __tact_string_builder_start_string INLINECALLDICT
@@ -874,10 +978,6 @@ PROGRAM{
     $GlobalProposal$_not_null INLINECALLDICT
     $ToonGovernance$_fun_quorumPassed INLINECALLDICT
   }>
-  $MessageParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    s3 s3 XCHG2
-    s0 s4 XCHG
-  }>
   $ToonGovernance$_fun_notify PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     FALSE
@@ -911,6 +1011,8 @@ PROGRAM{
     s0 s0 s3 XCHG3
     TRUE
   }>
+  $TokenTransfer$_constructor_queryId_amount_destination_response_destination_customPayload_forward_ton_amount_forward_payload PROCINLINE:<{
+  }>
   $GlobalProposal$_constructor_parameter_newValue_description_proposer_votesFor_votesAgainst_deadline_executed PROCINLINE:<{
   }>
   $UpdateConfigParam$_constructor_parameter_newValue PROCINLINE:<{
@@ -924,45 +1026,45 @@ PROGRAM{
   %totalStaked PROC:<{
     $ToonGovernance$_contract_load INLINECALLDICT
     $ToonGovernance$_fun_totalStaked INLINECALLDICT
-    10 1 BLKDROP2
+    11 1 BLKDROP2
   }>
   %stake PROC:<{
     $ToonGovernance$_contract_load INLINECALLDICT
-    10 ROLL
+    11 ROLL
     $ToonGovernance$_fun_stake INLINECALLDICT
-    10 1 BLKDROP2
+    11 1 BLKDROP2
   }>
   %getProposal PROC:<{
     $ToonGovernance$_contract_load INLINECALLDICT
-    10 ROLL
+    11 ROLL
     $ToonGovernance$_fun_getProposal INLINECALLDICT
-    10 1 BLKDROP2
+    11 1 BLKDROP2
     $GlobalProposal$_to_opt_external INLINECALLDICT
   }>
   %getAddressProposal PROC:<{
     $ToonGovernance$_contract_load INLINECALLDICT
-    10 ROLL
+    11 ROLL
     $ToonGovernance$_fun_getAddressProposal INLINECALLDICT
-    10 1 BLKDROP2
+    11 1 BLKDROP2
     $AddressProposal$_to_opt_external INLINECALLDICT
   }>
   %hasAddressVoted PROC:<{
     $ToonGovernance$_contract_load INLINECALLDICT
-    2 10 BLKSWAP
+    2 11 BLKSWAP
     $ToonGovernance$_fun_hasAddressVoted INLINECALLDICT
-    10 1 BLKDROP2
+    11 1 BLKDROP2
   }>
   %hasAddressVotedOnAddressProposal PROC:<{
     $ToonGovernance$_contract_load INLINECALLDICT
-    2 10 BLKSWAP
+    2 11 BLKSWAP
     $ToonGovernance$_fun_hasAddressVotedOnAddressProposal INLINECALLDICT
-    10 1 BLKDROP2
+    11 1 BLKDROP2
   }>
   %quorumMet PROC:<{
     $ToonGovernance$_contract_load INLINECALLDICT
-    10 ROLL
+    11 ROLL
     $ToonGovernance$_fun_quorumMet INLINECALLDICT
-    10 1 BLKDROP2
+    11 1 BLKDROP2
   }>
   recv_internal PROC:<{
     SWAP
@@ -980,23 +1082,35 @@ PROGRAM{
     s0 s2 XCHG
     __tact_context_sender SETGLOB
     $ToonGovernance$_contract_load INLINECALLDICT
-    s0 s11 XCHG
+    s0 s12 XCHG
     IFJMP:<{
-      11 BLKDROP
+      12 BLKDROP
     }>
-    s0 s9 XCHG
+    s0 s10 XCHG
     32 LDUQ 130 THROWIFNOT
     OVER
-    1144384149 PUSHINT
+    1935855772 PUSHINT
     EQUAL
     IFJMP:<{
       NIP
+      64 LDU
+      NIP
       LDVARUINT16
+      LDMSGADDR
       DROP
-      267 PUSHINT
+      0 PUSHINT
+          MYADDR
+      s10 PUSH
+      $ToonJettonWallet$_init_child INLINECALLDICT
+      $global_contractAddress INLINECALLDICT
+      2223 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      s8 PUSH
-      -ROT
+      ROT
+      SDEQ
+      THROWANYIFNOT
+      s7 PUSH
+      267 PUSHINT
+      s2 PUSH
       257 PUSHINT
       __tact_dict_get_slice_int INLINECALLDICT
       DUP
@@ -1009,8 +1123,7 @@ PROGRAM{
         0 PUSHINT
       }>
       267 PUSHINT
-      __tact_context_get_sender INLINECALLDICT
-      s2 s3 XCPU
+      s1 s3 XCPU
       ADD
       s3 s9 XCHG
       s1 s2 XCHG
@@ -1018,12 +1131,13 @@ PROGRAM{
       __tact_dict_set_slice_int INLINECALLDICT
       s5 s6 XCHG2
       ADD
+      s8 s10 XCHG
       s7 s9 XCHG
       s6 s8 XCHG
       s5 s7 XCHG
       s0 s6 XCHG
       s3 s5 XCHG
-      s4 s0 s3 XCHG3
+      s4 s3 s0 XCHG3
       $ToonGovernance$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1061,12 +1175,28 @@ PROGRAM{
       ROT
       257 PUSHINT
       __tact_dict_set_slice_int INLINECALLDICT
-      s5 s6 XCHG2
+      s5 s6 XCPU
       SUB
-      __tact_context_get_sender INLINECALLDICT
+      0 PUSHINT
+          MYADDR
+      s9 PUSH
+      $ToonJettonWallet$_init_child INLINECALLDICT
+      $global_contractAddress INLINECALLDICT
       0 PUSHINT
       64 PUSHINT
-          B{b5ee9c7241010101001400002400000000556e7374616b65642024544f4f4e53e7b05f} B>boc PUSHREF
+      OVER
+      __tact_context_get_sender INLINECALLDICT
+      __tact_context_get_sender INLINECALLDICT
+      PUSHNULL
+      s3 PUSH
+          b{} PUSHSLICE
+      s5 s6 XCHG
+      s5 s15 XCHG
+      $TokenTransfer$_constructor_queryId_amount_destination_response_destination_customPayload_forward_ton_amount_forward_payload INLINECALLDICT
+      NEWC
+      $TokenTransfer$_store_cell INLINECALLDICT
+      s1 s3 s0 XCHG3
+      s1 s9 XCHG
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
           b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
@@ -1134,12 +1264,12 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      s8 s10 XCHG
       s7 s9 XCHG
       s6 s8 XCHG
-      s5 s7 XCHG
-      s0 s6 XCHG
+      4 4 REVERSE
       s3 s5 XCHG
-      s4 s0 s3 XCHG3
+      2 3 BLKSWAP
       $ToonGovernance$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1204,12 +1334,13 @@ PROGRAM{
       s3 s6 XCHG
       s1 s5 XCHG
       __tact_dict_set_int_cell INLINECALLDICT
+      s8 s10 XCHG
       s7 s9 XCHG
       s6 s8 XCHG
       s5 s7 XCHG
       s4 s6 XCHG
-      s4 s3 s5 XCHG3
-      s1 s2 XCHG
+      s4 s5 s5 XCHG3
+      s3 s1 s3 XCHG3
       $ToonGovernance$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1259,6 +1390,7 @@ PROGRAM{
       }>
       THROWANYIFNOT
       __tact_context_get_sender INLINECALLDICT
+      s11 20 s() XCHG
       s10 19 s() XCHG
       s9 18 s() XCHG
       s8 17 s() XCHG
@@ -1267,9 +1399,10 @@ PROGRAM{
       s5 s14 XCHG
       s4 s13 XCHG
       s3 s12 XCHG
-      s2 20 s() XCHG
-      s1 21 s() XCHG
-      s11 s(-1) PUXC
+      s2 21 s() XCHG
+      s1 22 s() XCHG
+      20 s() PUSH
+      SWAP
       $ToonGovernance$_fun_voteKey INLINECALLDICT
       22462 PUSHINT
       s3 PUSH
@@ -1287,12 +1420,12 @@ PROGRAM{
       __tact_dict_set_int_int INLINECALLDICT
       s0 18 s() XCHG
       IF:<{
-        s0 19 s() XCHG
+        s0 20 s() XCHG
         __tact_not_null INLINECALLDICT
         s1 s12 XCHG
         ADD
       }>ELSE<{
-        s0 19 s() XCHG
+        s0 20 s() XCHG
         __tact_not_null INLINECALLDICT
         s1 s11 XCHG
         ADD
@@ -1305,13 +1438,14 @@ PROGRAM{
       s3 s12 XCHG
       s10 s2 XCHG2
       257 PUSHINT
-      s0 18 s() XCHG
+      s0 19 s() XCHG
       s1 s10 XCHG
       NEWC
       $GlobalProposal$_store_cell INLINECALLDICT
       s3 s6 XCHG
-      s11 s11 s0 XCHG3
+      s12 s11 s0 XCHG3
       __tact_dict_set_int_cell INLINECALLDICT
+      s9 s10 XCHG
       s8 s9 XCHG
       s6 s8 XCHG
       s5 s7 XCHG
@@ -1353,18 +1487,19 @@ PROGRAM{
       s7 PUSH
       2999 PUSHINT
       s0 s8 XCHG
+      18 s() 25 s() XCHG
       17 s() 24 s() XCHG
       16 s() 23 s() XCHG
       s15 22 s() XCHG
       s14 21 s() XCHG
       s13 20 s() XCHG
       s12 19 s() XCHG
-      s11 18 s() XCHG
+      s11 25 s() XCHG
       s10 24 s() XCHG
-      s9 25 s() XCHG
-      s8 26 s() XCHG
+      s9 26 s() XCHG
+      s8 27 s() XCHG
       $ToonGovernance$_fun_quorumPassed INLINECALLDICT
-      s1 19 s() XCHG
+      s1 20 s() XCHG
       THROWANYIFNOT
       TRUE
       257 PUSHINT
@@ -1375,10 +1510,11 @@ PROGRAM{
       s0 s7 XCHG
       s6 16 s() XCHG
       s5 s15 XCHG
-      s4 s14 XCHG
+      s4 21 s() XCHG
       s3 20 s() XCHG
-      s0 21 s() XCHG
-      s14 s2 XCHG2
+      s2 22 s() XCHG
+      s1 21 s() XCHG
+      s0 22 s() XCHG
       $GlobalProposal$_store_cell INLINECALLDICT
       s12 s3 s0 XCHG3
       s1 s11 XCHG
@@ -1390,7 +1526,7 @@ PROGRAM{
       $UpdateConfigParam$_constructor_parameter_newValue INLINECALLDICT
       NEWC
       $UpdateConfigParam$_store_cell INLINECALLDICT
-      s3 PUSH
+      s4 PUSH
       s9 s1 s3 XCHG3
       s8 s8 XCHG2
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
@@ -1460,11 +1596,10 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
-      s0 s9 XCHG
+      s10 s9 XCHG2
       s4 s8 XCHG
       s6 s7 XCHG
-      s1 s4 XCHG
-      s3 s3 s0 XCHG3
+      3 -ROLL
       $ToonGovernance$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1522,12 +1657,14 @@ PROGRAM{
       s1 s4 XCHG
       s1 s3 XCHG
       __tact_dict_set_int_cell INLINECALLDICT
+      s8 s10 XCHG
       s7 s9 XCHG
       s6 s8 XCHG
       s5 s7 XCHG
       s4 s6 XCHG
       s3 s5 XCHG
-      s1 s4 s3 XCHG3
+      s4 s3 s3 XCHG3
+      s0 s2 XCHG
       $ToonGovernance$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1577,6 +1714,7 @@ PROGRAM{
       }>
       THROWANYIFNOT
       __tact_context_get_sender INLINECALLDICT
+      s11 20 s() XCHG
       s10 19 s() XCHG
       s9 18 s() XCHG
       s8 17 s() XCHG
@@ -1585,9 +1723,10 @@ PROGRAM{
       s5 s14 XCHG
       s4 s13 XCHG
       s3 s12 XCHG
-      s2 20 s() XCHG
-      s1 21 s() XCHG
-      s11 s(-1) PUXC
+      s2 21 s() XCHG
+      s1 22 s() XCHG
+      20 s() PUSH
+      SWAP
       $ToonGovernance$_fun_voteKey INLINECALLDICT
       22462 PUSHINT
       s2 PUSH
@@ -1604,12 +1743,12 @@ PROGRAM{
       __tact_dict_set_int_int INLINECALLDICT
       s0 18 s() XCHG
       IF:<{
-        s0 19 s() XCHG
+        s0 20 s() XCHG
         __tact_not_null INLINECALLDICT
         s1 s12 XCHG
         ADD
       }>ELSE<{
-        s0 19 s() XCHG
+        s0 20 s() XCHG
         __tact_not_null INLINECALLDICT
         s1 s11 XCHG
         ADD
@@ -1622,13 +1761,14 @@ PROGRAM{
       s3 s12 XCHG
       s10 s2 XCHG2
       257 PUSHINT
-      s0 18 s() XCHG
+      s0 19 s() XCHG
       s1 s10 XCHG
       NEWC
       $AddressProposal$_store_cell INLINECALLDICT
       s3 s4 XCHG
-      s11 s11 s0 XCHG3
+      s12 s11 s0 XCHG3
       __tact_dict_set_int_cell INLINECALLDICT
+      s9 s10 XCHG
       s8 s9 XCHG
       s6 s8 XCHG
       s5 s7 XCHG
@@ -1669,18 +1809,19 @@ PROGRAM{
       s7 PUSH
       2999 PUSHINT
       s0 s8 XCHG
+      18 s() 25 s() XCHG
       17 s() 24 s() XCHG
       16 s() 23 s() XCHG
       s15 22 s() XCHG
       s14 21 s() XCHG
       s13 20 s() XCHG
       s12 19 s() XCHG
-      s11 18 s() XCHG
+      s11 25 s() XCHG
       s10 24 s() XCHG
-      s9 25 s() XCHG
-      s8 26 s() XCHG
+      s9 26 s() XCHG
+      s8 27 s() XCHG
       $ToonGovernance$_fun_quorumPassedAddr INLINECALLDICT
-      s1 19 s() XCHG
+      s1 20 s() XCHG
       THROWANYIFNOT
       TRUE
       257 PUSHINT
@@ -1691,12 +1832,13 @@ PROGRAM{
       s0 s7 XCHG
       s6 16 s() XCHG
       s5 s15 XCHG
-      s4 s14 XCHG
+      s4 21 s() XCHG
       s3 20 s() XCHG
-      s0 21 s() XCHG
-      s14 s2 XCHG2
+      s2 22 s() XCHG
+      s1 21 s() XCHG
+      s0 22 s() XCHG
       $AddressProposal$_store_cell INLINECALLDICT
-      s3 s13 XCHG
+      s3 s14 XCHG
       s12 s11 s0 XCHG3
       __tact_dict_set_int_cell INLINECALLDICT
           B{b5ee9c7241010101000f00001a6d696e74417574686f7269747931675077} B>boc <s PUSHSLICE
@@ -1709,7 +1851,7 @@ PROGRAM{
         $UpdateMintAuthority$_constructor_newAuthority INLINECALLDICT
         NEWC
         $UpdateMintAuthority$_store_cell INLINECALLDICT
-        s3 PUSH
+        s4 PUSH
         s0 s3 XCHG
         s8 s8 XCHG2
         $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
@@ -1782,12 +1924,12 @@ PROGRAM{
       }>ELSE<{
         s5 POP
       }>
-      s4 s9 XCHG2
-      s1 s8 XCHG
-      s1 s7 XCHG
-      s1 s6 XCHG
-      s1 s5 XCHG
-      s3 s3 s0 XCHG3
+      s10 s9 XCHG2
+      s4 s8 XCHG
+      s0 s7 XCHG
+      s0 s6 XCHG
+      s0 s5 XCHG
+      3 -ROLL
       $ToonGovernance$_contract_store INLINECALLDICT
     }>
     SWAP
@@ -1799,6 +1941,7 @@ PROGRAM{
       $DeployOk$_constructor_queryId INLINECALLDICT
       NEWC
       $DeployOk$_store_cell INLINECALLDICT
+      s9 s11 XCHG
       s8 s10 XCHG
       s7 s9 XCHG
       s6 s8 XCHG
@@ -1806,11 +1949,10 @@ PROGRAM{
       s4 s6 XCHG
       s3 s5 XCHG
       s4 s3 s0 XCHG3
-      s1 s2 XCHG
       $ToonGovernance$_fun_notify INLINECALLDICT
       $ToonGovernance$_contract_store INLINECALLDICT
     }>
-    11 BLKDROP
+    12 BLKDROP
     130 THROW
   }>
   __tact_selector_hack PROC:<{

@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonGovernance
-BoC Size: 4033 bytes
+BoC Size: 5082 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 28
+Total structures: 38
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -57,9 +57,53 @@ Signature: `DeployOk{queryId:uint64}`
 TL-B: `factory_deploy#6d0ff13b queryId:uint64 cashback:address = FactoryDeploy`
 Signature: `FactoryDeploy{queryId:uint64,cashback:address}`
 
-### StakeToon
-TL-B: `stake_toon#4435ea95 amount:coins = StakeToon`
-Signature: `StakeToon{amount:coins}`
+### JettonData
+TL-B: `_ totalSupply:int257 mintable:bool adminAddress:address content:^cell walletCode:^cell = JettonData`
+Signature: `JettonData{totalSupply:int257,mintable:bool,adminAddress:address,content:^cell,walletCode:^cell}`
+
+### TokenTransfer
+TL-B: `token_transfer#0f8a7ea5 queryId:uint64 amount:coins destination:address response_destination:address customPayload:Maybe ^cell forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransfer`
+Signature: `TokenTransfer{queryId:uint64,amount:coins,destination:address,response_destination:address,customPayload:Maybe ^cell,forward_ton_amount:coins,forward_payload:remainder<slice>}`
+
+### TokenMint
+TL-B: `token_mint#1674b0a0 queryId:uint64 amount:coins receiver:address = TokenMint`
+Signature: `TokenMint{queryId:uint64,amount:coins,receiver:address}`
+
+### TokenTransferInternal
+TL-B: `token_transfer_internal#178d4519 queryId:uint64 amount:coins from:address response_destination:address forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransferInternal`
+Signature: `TokenTransferInternal{queryId:uint64,amount:coins,from:address,response_destination:address,forward_ton_amount:coins,forward_payload:remainder<slice>}`
+
+### TokenNotification
+TL-B: `token_notification#7362d09c queryId:uint64 amount:coins from:address forward_payload:remainder<slice> = TokenNotification`
+Signature: `TokenNotification{queryId:uint64,amount:coins,from:address,forward_payload:remainder<slice>}`
+
+### TokenBurn
+TL-B: `token_burn#595f07bc queryId:uint64 amount:coins response_destination:address = TokenBurn`
+Signature: `TokenBurn{queryId:uint64,amount:coins,response_destination:address}`
+
+### TokenBurnNotification
+TL-B: `token_burn_notification#7bdd97de queryId:uint64 amount:coins owner:address response_destination:address = TokenBurnNotification`
+Signature: `TokenBurnNotification{queryId:uint64,amount:coins,owner:address,response_destination:address}`
+
+### TokenExcesses
+TL-B: `token_excesses#d53276db queryId:uint64 = TokenExcesses`
+Signature: `TokenExcesses{queryId:uint64}`
+
+### UpdateMintAuthority
+TL-B: `update_mint_authority#787cca54 newAuthority:address = UpdateMintAuthority`
+Signature: `UpdateMintAuthority{newAuthority:address}`
+
+### UpdateMetadata
+TL-B: `update_metadata#1179e2f3 newUri:^string = UpdateMetadata`
+Signature: `UpdateMetadata{newUri:^string}`
+
+### ToonJettonMaster$Data
+TL-B: `_ owner:address mintAuthority:address totalSupply:coins metadataUri:^string = ToonJettonMaster`
+Signature: `ToonJettonMaster{owner:address,mintAuthority:address,totalSupply:coins,metadataUri:^string}`
+
+### ToonJettonWallet$Data
+TL-B: `_ balance:coins owner:address master:address = ToonJettonWallet`
+Signature: `ToonJettonWallet{balance:coins,owner:address,master:address}`
 
 ### UnstakeGovernance
 TL-B: `unstake_governance#03686687 amount:coins = UnstakeGovernance`
@@ -97,10 +141,6 @@ Signature: `Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyA
 TL-B: `set_config#2bd0b755 config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16} = SetConfig`
 Signature: `SetConfig{config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16}}`
 
-### UpdateMintAuthority
-TL-B: `update_mint_authority#787cca54 newAuthority:address = UpdateMintAuthority`
-Signature: `UpdateMintAuthority{newAuthority:address}`
-
 ### UpdateConfigParam
 TL-B: `update_config_param#0e849a55 parameter:^string newValue:uint64 = UpdateConfigParam`
 Signature: `UpdateConfigParam{parameter:^string,newValue:uint64}`
@@ -114,8 +154,8 @@ TL-B: `_ parameter:^string newAddress:address description:^string proposer:addre
 Signature: `AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}`
 
 ### ToonGovernance$Data
-TL-B: `_ registry:address vault:address stakes:dict<address, int> totalStaked:coins proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint64,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextProposalId:uint256 addressProposals:dict<int, ^AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextAddressProposalId:uint256 hasVoted:dict<int, bool> hasVotedAddress:dict<int, bool> = ToonGovernance`
-Signature: `ToonGovernance{registry:address,vault:address,stakes:dict<address, int>,totalStaked:coins,proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint64,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}>,nextProposalId:uint256,addressProposals:dict<int, ^AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}>,nextAddressProposalId:uint256,hasVoted:dict<int, bool>,hasVotedAddress:dict<int, bool>}`
+TL-B: `_ registry:address vault:address jettonMaster:address stakes:dict<address, int> totalStaked:coins proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint64,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextProposalId:uint256 addressProposals:dict<int, ^AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}> nextAddressProposalId:uint256 hasVoted:dict<int, bool> hasVotedAddress:dict<int, bool> = ToonGovernance`
+Signature: `ToonGovernance{registry:address,vault:address,jettonMaster:address,stakes:dict<address, int>,totalStaked:coins,proposals:dict<int, ^GlobalProposal{parameter:^string,newValue:uint64,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}>,nextProposalId:uint256,addressProposals:dict<int, ^AddressProposal{parameter:^string,newAddress:address,description:^string,proposer:address,votesFor:coins,votesAgainst:coins,deadline:uint32,executed:bool}>,nextAddressProposalId:uint256,hasVoted:dict<int, bool>,hasVotedAddress:dict<int, bool>}`
 
 ## Get methods
 Total get methods: 7
@@ -180,15 +220,21 @@ Argument: proposalId
 * 135: Code of a contract was not found
 * 136: Invalid standard address
 * 138: Not a basechain address
+* 2223: ToonGovernance: unauthorized Jetton notification
 * 2999: ToonGovernance: quorum not met
+* 4429: Invalid sender
 * 9622: ToonGovernance: already executed
+* 14534: Not owner
 * 22462: ToonGovernance: already voted on this proposal
+* 25644: Only ToonVault can mint
 * 26849: ToonGovernance: voting closed
 * 33397: ToonGovernance: address proposal does not exist
+* 34393: Unauthorized burn notification
 * 36734: ToonGovernance: unknown numeric parameter
 * 37276: ToonGovernance: voting still open
 * 39639: ToonGovernance: proposal does not exist
 * 53903: ToonGovernance: unknown address parameter
+* 54615: Insufficient balance
 * 61996: ToonGovernance: no voting weight
 * 63274: ToonGovernance: insufficient stake
 * 63731: ToonGovernance: must stake to propose
@@ -208,4 +254,5 @@ Deployable --> BaseTrait
 ```mermaid
 graph TD
 ToonGovernance
+ToonGovernance --> ToonJettonWallet
 ```

@@ -18,6 +18,15 @@ message ConfirmTrackRegistration {
     trackId: Int as uint256;
 }
 
+message TrackRegistrationConfirmed {
+    trackId: Int as uint256;
+}
+
+message TrackRegistrationFinalized {
+    trackId: Int as uint256;
+    trackContract: Address;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  ToonTrack
 // ─────────────────────────────────────────────────────────────────────────────
@@ -37,6 +46,8 @@ contract ToonTrack with Deployable {
     mintFee:     Int as coins;   // Minimum tip floor
     reputation:  Int as uint32;  // Increments on every tip
 
+    isRegistered: Bool;      // Two-phase commit status
+
     // ── Constants ──────────────────────────────────────────────────────────
 
     const MINT_REWARD: Int = 1000000000; // 1 $TOON reward for tipping (mock)
@@ -54,6 +65,7 @@ contract ToonTrack with Deployable {
         self.fingerprint = fingerprint;
         self.mintFee = mintFee;
         self.reputation = 0;
+        self.isRegistered = false;
     }
 
     // ── Actions ──────────────────────────────────────────────────────────────
@@ -68,12 +80,31 @@ contract ToonTrack with Deployable {
         });
     }
 
+    receive(msg: TrackRegistrationConfirmed) {
+        require(sender() == self.registry, "ToonTrack: only registry can confirm registration");
+        require(msg.trackId == self.trackId, "ToonTrack: invalid trackId");
+
+        self.isRegistered = true;
+
+        // Notify artist contract to finalize state
+        send(SendParameters{
+            to: self.artist,
+            value: 0,
+            mode: SendRemainingValue,
+            body: TrackRegistrationFinalized{
+                trackId: self.trackId,
+                trackContract: myAddress()
+            }.toCell()
+        });
+    }
+
     /// Accepts TON tips. 
     /// If value >= mintFee:
     ///   1. Increment reputation.
     ///   2. Forward full value to artist.
     ///   3. Request $TOON mint for the tipper via Registry.
     receive() {
+        require(self.isRegistered, "ToonTrack: track not yet registered");
         let ctx: Context = context();
         let minRequired: Int = self.mintFee + self.MIN_TIP_OVERHEAD;
         require(ctx.value >= minRequired, "ToonTrack: tip below minimum floor (including gas)");
@@ -103,6 +134,7 @@ contract ToonTrack with Deployable {
 
     /// Explicit "tip" comment support
     receive("tip") {
+        require(self.isRegistered, "ToonTrack: track not yet registered");
         let ctx: Context = context();
         let minRequired: Int = self.mintFee + self.MIN_TIP_OVERHEAD;
         require(ctx.value >= minRequired, "ToonTrack: tip below minimum floor (including gas)");

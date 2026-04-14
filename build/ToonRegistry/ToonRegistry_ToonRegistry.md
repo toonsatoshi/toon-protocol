@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonRegistry
-BoC Size: 6598 bytes
+BoC Size: 7015 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 39
+Total structures: 43
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -77,6 +77,10 @@ Signature: `StageArtistRegistration{artistContract:address,wallet:address}`
 TL-B: `confirm_artist_registration#c8526e47 wallet:address = ConfirmArtistRegistration`
 Signature: `ConfirmArtistRegistration{wallet:address}`
 
+### ArtistRegistrationConfirmed
+TL-B: `artist_registration_confirmed#0954aef8 wallet:address = ArtistRegistrationConfirmed`
+Signature: `ArtistRegistrationConfirmed{wallet:address}`
+
 ### RollbackArtistRegistration
 TL-B: `rollback_artist_registration#e59974c3 wallet:address = RollbackArtistRegistration`
 Signature: `RollbackArtistRegistration{wallet:address}`
@@ -85,9 +89,17 @@ Signature: `RollbackArtistRegistration{wallet:address}`
 TL-B: `stage_track_registration#c09310ed trackId:uint256 fingerprint:uint256 trackContract:address = StageTrackRegistration`
 Signature: `StageTrackRegistration{trackId:uint256,fingerprint:uint256,trackContract:address}`
 
+### TrackStagingAccepted
+TL-B: `track_staging_accepted#d40bb4a9 trackId:uint256 = TrackStagingAccepted`
+Signature: `TrackStagingAccepted{trackId:uint256}`
+
 ### ConfirmTrackRegistration
 TL-B: `confirm_track_registration#a47a6dee trackId:uint256 = ConfirmTrackRegistration`
 Signature: `ConfirmTrackRegistration{trackId:uint256}`
+
+### TrackRegistrationConfirmed
+TL-B: `track_registration_confirmed#6a21f0df trackId:uint256 = TrackRegistrationConfirmed`
+Signature: `TrackRegistrationConfirmed{trackId:uint256}`
 
 ### RollbackTrackRegistration
 TL-B: `rollback_track_registration#73360001 trackId:uint256 = RollbackTrackRegistration`
@@ -153,13 +165,17 @@ Signature: `MintAuthorized{recipient:address,amount:coins,authorizedAt:uint32}`
 TL-B: `register_drop#a99ec9f7 trackId:uint256 dropContract:address = RegisterDrop`
 Signature: `RegisterDrop{trackId:uint256,dropContract:address}`
 
+### SetPaused
+TL-B: `set_paused#096819ff paused:bool = SetPaused`
+Signature: `SetPaused{paused:bool}`
+
 ### DropRegistered
 TL-B: `drop_registered#5206fbd1 trackId:uint256 dropContract:address registeredAt:uint32 = DropRegistered`
 Signature: `DropRegistered{trackId:uint256,dropContract:address,registeredAt:uint32}`
 
 ### ToonRegistry$Data
-TL-B: `_ artists:dict<address, address> artistContracts:dict<address, address> tracks:dict<int, address> trackContracts:dict<address, int> drops:dict<int, address> fingerprints:dict<int, bool> mintAuthority:address vault:address config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16} version:uint32 trackRewardEligible:dict<int, bool> artistRewardEligible:dict<address, bool> pendingArtists:dict<address, ^PendingArtist{wallet:address,artistContract:address,timestamp:uint32}> pendingTracks:dict<int, ^PendingTrack{trackId:uint256,fingerprint:uint256,trackContract:address,timestamp:uint32}> totalArtists:uint32 totalTracks:uint32 = ToonRegistry`
-Signature: `ToonRegistry{artists:dict<address, address>,artistContracts:dict<address, address>,tracks:dict<int, address>,trackContracts:dict<address, int>,drops:dict<int, address>,fingerprints:dict<int, bool>,mintAuthority:address,vault:address,config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16},version:uint32,trackRewardEligible:dict<int, bool>,artistRewardEligible:dict<address, bool>,pendingArtists:dict<address, ^PendingArtist{wallet:address,artistContract:address,timestamp:uint32}>,pendingTracks:dict<int, ^PendingTrack{trackId:uint256,fingerprint:uint256,trackContract:address,timestamp:uint32}>,totalArtists:uint32,totalTracks:uint32}`
+TL-B: `_ artists:dict<address, address> artistContracts:dict<address, address> tracks:dict<int, address> trackContracts:dict<address, int> drops:dict<int, address> fingerprints:dict<int, bool> mintAuthority:address vault:address isPaused:bool config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16} version:uint32 trackRewardEligible:dict<int, bool> artistRewardEligible:dict<address, bool> pendingArtists:dict<address, ^PendingArtist{wallet:address,artistContract:address,timestamp:uint32}> pendingTracks:dict<int, ^PendingTrack{trackId:uint256,fingerprint:uint256,trackContract:address,timestamp:uint32}> totalArtists:uint32 totalTracks:uint32 = ToonRegistry`
+Signature: `ToonRegistry{artists:dict<address, address>,artistContracts:dict<address, address>,tracks:dict<int, address>,trackContracts:dict<address, int>,drops:dict<int, address>,fingerprints:dict<int, bool>,mintAuthority:address,vault:address,isPaused:bool,config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16},version:uint32,trackRewardEligible:dict<int, bool>,artistRewardEligible:dict<address, bool>,pendingArtists:dict<address, ^PendingArtist{wallet:address,artistContract:address,timestamp:uint32}>,pendingTracks:dict<int, ^PendingTrack{trackId:uint256,fingerprint:uint256,trackContract:address,timestamp:uint32}>,totalArtists:uint32,totalTracks:uint32}`
 
 ## Get methods
 Total get methods: 11

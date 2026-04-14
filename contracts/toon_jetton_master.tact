@@ -186,7 +186,38 @@ contract ToonJettonWallet(
     }
 
     receive(msg: TokenTransferInternal) {
+        let ctx: Context = context();
+        if (ctx.sender != self.master) {
+            let init: StateInit = initOf ToonJettonWallet(0, msg.from, self.master);
+            require(ctx.sender == contractAddress(init), "Invalid sender");
+        }
+
         self.balance = self.balance + msg.amount;
+
+        if (msg.forward_ton_amount > 0) {
+            send(SendParameters{
+                to: self.owner,
+                value: msg.forward_ton_amount,
+                mode: SendPayGasSeparately,
+                bounce: false,
+                body: TokenNotification{
+                    queryId: msg.queryId,
+                    amount: msg.amount,
+                    from: msg.from,
+                    forward_payload: msg.forward_payload
+                }.toCell()
+            });
+        }
+
+        if (msg.response_destination != null) {
+            send(SendParameters{
+                to: msg.response_destination!!,
+                value: 0,
+                mode: SendRemainingValue,
+                bounce: false,
+                body: TokenExcesses{ queryId: msg.queryId }.toCell()
+            });
+        }
     }
 
     receive(msg: TokenBurn) {

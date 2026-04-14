@@ -1,5 +1,6 @@
-// automatically generated from `@stdlib/std/stdlib.fc` `/app/build/ToonArtist/ToonArtist_ToonArtist.fc`
+// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/toon-protocol-main/build/ToonArtist/ToonArtist_ToonArtist.fc` 
 PROGRAM{
+  DECLPROC __tact_store_address_opt
   DECLPROC __tact_context_get
   DECLPROC __tact_context_get_sender
   DECLPROC __tact_slice_neq
@@ -7,6 +8,8 @@ PROGRAM{
   DECLPROC __tact_dict_set_int_slice
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
+  DECLPROC $TokenTransfer$_store
+  DECLPROC $TokenTransfer$_store_cell
   DECLPROC $StageArtistRegistration$_store
   DECLPROC $StageArtistRegistration$_store_cell
   DECLPROC $ConfirmArtistRegistration$_store
@@ -17,10 +20,17 @@ PROGRAM{
   DECLPROC $ToonArtist$_load
   DECLPROC $Context$_get_value
   DECLPROC $ArtistDetails$_to_external
+  DECLPROC $ToonJettonWallet$init$_store
   DECLPROC $ToonArtist$init$_load
   DECLPROC $ToonArtist$_contract_init
   DECLPROC $ToonArtist$_contract_load
   DECLPROC $ToonArtist$_contract_store
+  DECLPROC $Cell$_fun_asSlice
+  DECLPROC $global_newAddress
+  DECLPROC $global_contractAddressExt
+  DECLPROC $global_contractAddress
+  DECLPROC $MessageParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $ToonJettonWallet$_init_child
   DECLPROC $ToonArtist$_fun_isActive
   DECLPROC $ToonArtist$_fun_canLaunchToonDrop
   DECLPROC $ArtistDetails$_constructor_reputation_totalTipVolume_stakedToon_isActive_totalTracks
@@ -30,9 +40,9 @@ PROGRAM{
   DECLPROC $ToonArtist$_fun_owner
   DECLPROC $ToonArtist$_fun_totalTracks
   DECLPROC $ToonArtist$_fun_stakedToon
-  DECLPROC $MessageParameters$_constructor_bounce_to_value_mode_body
   DECLPROC $ToonArtist$_fun_notify
   DECLPROC $SendParameters$_constructor_to_value_mode_body
+  DECLPROC $TokenTransfer$_constructor_queryId_amount_destination_response_destination_customPayload_forward_ton_amount_forward_payload
   DECLPROC $StageTrackRegistration$_constructor_trackId_fingerprint_trackContract
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $StageArtistRegistration$_constructor_artistContract_wallet
@@ -51,6 +61,17 @@ PROGRAM{
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_child_contract_codes
   DECLGLOBVAR __tact_randomized
+  __tact_store_address_opt PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      b{00} STSLICECONST
+    }>ELSE<{
+      SWAP
+      STSLICE
+    }>
+  }>
   __tact_context_get PROCINLINE:<{
     __tact_context GETGLOB
     4 UNTUPLE
@@ -99,6 +120,28 @@ PROGRAM{
     $DeployOk$_store INLINECALLDICT
     ENDC
   }>
+  $TokenTransfer$_store PROCINLINE:<{
+    260734629 PUSHINT
+    s0 s8 XCHG2
+    32 STU
+    s1 s6 XCHG
+    64 STU
+    s0 s4 XCHG2
+    STVARUINT16
+    s1 s2 XCHG
+    STSLICE
+    SWAP
+    __tact_store_address_opt INLINECALLDICT
+    STOPTREF
+    SWAP
+    STVARUINT16
+    STSLICE
+  }>
+  $TokenTransfer$_store_cell PROCINLINE:<{
+    7 -ROLL
+    $TokenTransfer$_store INLINECALLDICT
+    ENDC
+  }>
   $StageArtistRegistration$_store PROCINLINE:<{
     3427790327 PUSHINT
     s0 s3 XCHG2
@@ -137,32 +180,40 @@ PROGRAM{
     ENDC
   }>
   $ToonArtist$_store PROCINLINE:<{
-    s8 s9 XCHG2
+    s10 s11 XCHG2
+    STSLICE
+    s1 s8 XCHG
     STSLICE
     s1 s6 XCHG
     STSLICE
-    s1 s4 XCHG
+    s0 s4 XCHG
+    NEWC
     256 STU
-    s0 s2 XCHG
+    s0 s3 XCHG
     NEWC
     STSLICE
-    s1 s2 XCHG
+    s1 s3 XCHG
     STBREFR
     32 STU
     SWAP
     STVARUINT16
-    NEWC
     ROT
     STVARUINT16
     s1 s2 XCHG
     STDICT
     s1 s2 XCHG
     32 STU
+    s1 s2 XCHG
+    1 STI
     STBREFR
   }>
   $ToonArtist$_load PROCINLINE:<{
     LDMSGADDR
     LDMSGADDR
+    LDMSGADDR
+    LDREF
+    SWAP
+    CTOS
     256 LDU
     LDREF
     SWAP
@@ -170,19 +221,14 @@ PROGRAM{
     SWAP
     32 LDU
     LDVARUINT16
-    LDREF
-    SWAP
-    CTOS
     LDVARUINT16
     LDDICT
     32 LDU
+    1 LDI
     DROP
-    s3 s9 XCHG
-    s3 s8 XCHG
-    s3 s7 XCHG
-    s3 s6 XCHG
-    s3 s5 XCHG
-    s3 s4 XCHG
+    s8 s11 XCHG
+    s8 s10 XCHG
+    s8 s9 XCHG
   }>
   $Context$_get_value PROCINLINE:<{
     s1 s3 XCHG
@@ -190,16 +236,28 @@ PROGRAM{
   }>
   $ArtistDetails$_to_external PROCINLINE:<{
   }>
+  $ToonJettonWallet$init$_store PROCINLINE:<{
+    2SWAP
+    STVARUINT16
+    s1 s2 XCHG
+    STSLICE
+    STSLICE
+  }>
   $ToonArtist$init$_load PROCINLINE:<{
     LDMSGADDR
     LDMSGADDR
-    257 PUSHINT
-    LDIX
+    LDMSGADDR
     LDREF
     SWAP
     CTOS
-    s1 s4 XCHG
-    s3 s3 s0 XCHG3
+    257 PUSHINT
+    LDIX
+    LDREF
+    DROP
+    CTOS
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
   }>
   $ToonArtist$_contract_init PROCINLINE:<{
     PUSHNULL
@@ -207,6 +265,7 @@ PROGRAM{
     s0 s0 s0 PUSH3
     s3 s4 XCHG
     s1 s3 s0 XCHG3
+    FALSE
   }>
   $ToonArtist$_contract_load PROCINLINE:<{
     c4 PUSH
@@ -215,12 +274,12 @@ PROGRAM{
     SWAP
     IF:<{
       $ToonArtist$_load INLINECALLDICT
-      1 9 BLKDROP2
+      1 11 BLKDROP2
     }>ELSE<{
       $ToonArtist$init$_load INLINECALLDICT
-      s0 s4 XCHG
+      s0 s5 XCHG
       ENDS
-      3 ROLL
+      4 ROLL
       $ToonArtist$_contract_init INLINECALLDICT
     }>
   }>
@@ -229,31 +288,90 @@ PROGRAM{
     TRUE
     SWAP
     1 STI
-    9 -ROLL
+    11 -ROLL
     $ToonArtist$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
+  $Cell$_fun_asSlice PROCINLINE:<{
+        CTOS
+  }>
+  $global_newAddress PROCINLINE:<{
+        NEWC
+    4 PUSHINT
+    SWAP
+    3 STU
+    s1 s2 XCHG
+    8 STI
+    256 STU
+        ENDC
+    $Cell$_fun_asSlice INLINECALLDICT
+  }>
+  $global_contractAddressExt PROCINLINE:<{
+        s0 PUSH HASHCU // `data` hash
+        s2 PUSH HASHCU // `code` hash
+        SWAP2
+        CDEPTH         // `data` depth
+        SWAP
+        CDEPTH         // `code` depth
+        131380 INT     // (2 << 16) | (1 << 8) | 0x34
+        // Group 2: Composition of the Builder
+        NEWC
+        24 STU  // store refs_descriptor | bits_descriptor | data
+        16 STU  // store depth_descriptor for `code`
+        16 STU  // store depth_descriptor for `data`
+        256 STU // store `code` hash
+        256 STU // store `data` hash
+        // Group 3: SHA256 hash of the resulting Builder
+        ONE HASHEXT_SHA256
+    $global_newAddress INLINECALLDICT
+  }>
+  $global_contractAddress PROCINLINE:<{
+    0 PUSHINT
+    -ROT
+    $global_contractAddressExt INLINECALLDICT
+  }>
+  $MessageParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
+    s3 s3 XCHG2
+    s0 s4 XCHG
+  }>
+  $ToonJettonWallet$_init_child PROCREF:<{
+        B{b5ee9c720102100100032d000228ff008e88f4a413f4bcf2c80bed5320e303ed43d90102020271030403a83001d072d721d200d200fa4021103450666f04f86102f862ed44d0fa00fa40fa4055206c1304925f04e002d70d1ff2e0822182100f8a7ea5bae302218210178d4519bae302018210595f07bcbae3025f04f2c0820708090127be28ef6a2687d007d207d202a903609ed9e3618c050127bcb6076a2687d007d207d202a903609ed9e3618c0600022100022201fe31d33ffa00fa40d72c01916d93fa4001e201f40431fa008138c6f84229c705f2f48200d5575375bef2f45164a15054708040544950528ac855508210178d45195007cb1f15cb3f5003fa02ce01206e9430cf84809201cee201fa02cec9102410231025146d50436d5033c8cf8580ca00cf8440ce01fa028069cf40025c6e010a04ee31d33ffa00fa40d72c01916d93fa4001e201fa00f8416f2410235f035309c705b38ebc70535adb3c0181114d02705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d012c705f2f49130e25164a021c2009436135f03e30d206eb3915be30d020b0c0d0f02f6d33ffa00d72c01916d93fa4001e2318138c6f84226c705f2f48200d5575342bef2f45131a170541325804006c8553082107bdd97de5005cb1f13cb3f01fa02ce01206e9430cf84809201cee2c9250350445a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf818ae2f400c901fb00020e0f00506eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0002c855205afa0212cecec9ed540018f82ac855215afa0212cecec900b271702747135069c8553082107362d09c5005cb1f13cb3f01fa02cecec9274314450010246d50436d03c8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0000a6206ef2d0807080407004c8018210d53276db58cb1fcb3fc91034413010246d50436d03c8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00001a58cf8680cf8480f400f400cf810018c855205afa0212cecec9ed54} B>boc PUSHREF
+    NEWC
+    3 2 BLKSWAP
+    $ToonJettonWallet$init$_store INLINECALLDICT
+    ENDC
+  }>
   $ToonArtist$_fun_isActive PROCREF:<{
-    s2 PUSH
+    s3 PUSH
     100000000000 PUSHINT
     GEQ
   }>
   $ToonArtist$_fun_canLaunchToonDrop PROCREF:<{
-    s4 PUSH
+    s5 PUSH
     1000 PUSHINT
     GEQ
   }>
   $ArtistDetails$_constructor_reputation_totalTipVolume_stakedToon_isActive_totalTracks PROCINLINE:<{
   }>
   $ToonArtist$_fun_getDetails PROCREF:<{
-    s4 s3 s2 PUSH3
-    9 3 BLKSWAP
+    s5 s4 s3 PUSH3
+    s10 s13 XCHG
+    s9 s12 XCHG
+    s8 s11 XCHG
+    s7 s13 XCHG
+    s6 s12 XCHG
+    s5 s11 XCHG
+    s4 s13 XCHG
+    s3 s12 XCHG
+    s11 s13 s12 XCHG3
     $ToonArtist$_fun_isActive INLINECALLDICT
     s3 s12 XCHG
-    s11 s10 s0 XCHG3
-    s10 PUSH
+    s14 s13 s0 XCHG3
+    s14 PUSH
     $ArtistDetails$_constructor_reputation_totalTipVolume_stakedToon_isActive_totalTracks INLINECALLDICT
+    s12 s15 XCHG
+    s11 s14 XCHG
     s10 s13 XCHG
     s9 s12 XCHG
     s8 s11 XCHG
@@ -263,25 +381,21 @@ PROGRAM{
   }>
   $ToonArtist$_fun_getTrack PROCREF:<{
     257 PUSHINT
-    s3 PUSH
+    s4 PUSH
     s0 s2 XCHG
     __tact_dict_get_int_slice INLINECALLDICT
   }>
   $ToonArtist$_fun_reputation PROCREF:<{
-    s4 PUSH
+    s5 PUSH
   }>
   $ToonArtist$_fun_owner PROCREF:<{
-    s8 PUSH
+    s10 PUSH
   }>
   $ToonArtist$_fun_totalTracks PROCREF:<{
-    DUP
+    OVER
   }>
   $ToonArtist$_fun_stakedToon PROCREF:<{
-    s2 PUSH
-  }>
-  $MessageParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    s3 s3 XCHG2
-    s0 s4 XCHG
+    s3 PUSH
   }>
   $ToonArtist$_fun_notify PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
@@ -316,6 +430,8 @@ PROGRAM{
     s0 s0 s3 XCHG3
     TRUE
   }>
+  $TokenTransfer$_constructor_queryId_amount_destination_response_destination_customPayload_forward_ton_amount_forward_payload PROCINLINE:<{
+  }>
   $StageTrackRegistration$_constructor_trackId_fingerprint_trackContract PROCINLINE:<{
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
@@ -327,44 +443,44 @@ PROGRAM{
   %isActive PROC:<{
     $ToonArtist$_contract_load INLINECALLDICT
     $ToonArtist$_fun_isActive INLINECALLDICT
-    9 1 BLKDROP2
+    11 1 BLKDROP2
   }>
   %canLaunchToonDrop PROC:<{
     $ToonArtist$_contract_load INLINECALLDICT
     $ToonArtist$_fun_canLaunchToonDrop INLINECALLDICT
-    9 1 BLKDROP2
+    11 1 BLKDROP2
   }>
   %getDetails PROC:<{
     $ToonArtist$_contract_load INLINECALLDICT
     $ToonArtist$_fun_getDetails INLINECALLDICT
-    9 5 BLKDROP2
+    11 5 BLKDROP2
     $ArtistDetails$_to_external INLINECALLDICT
   }>
   %getTrack PROC:<{
     $ToonArtist$_contract_load INLINECALLDICT
-    9 ROLL
+    11 ROLL
     $ToonArtist$_fun_getTrack INLINECALLDICT
-    9 1 BLKDROP2
+    11 1 BLKDROP2
   }>
   %reputation PROC:<{
     $ToonArtist$_contract_load INLINECALLDICT
     $ToonArtist$_fun_reputation INLINECALLDICT
-    9 1 BLKDROP2
+    11 1 BLKDROP2
   }>
   %owner PROC:<{
     $ToonArtist$_contract_load INLINECALLDICT
     $ToonArtist$_fun_owner INLINECALLDICT
-    9 1 BLKDROP2
+    11 1 BLKDROP2
   }>
   %totalTracks PROC:<{
     $ToonArtist$_contract_load INLINECALLDICT
     $ToonArtist$_fun_totalTracks INLINECALLDICT
-    9 1 BLKDROP2
+    11 1 BLKDROP2
   }>
   %stakedToon PROC:<{
     $ToonArtist$_contract_load INLINECALLDICT
     $ToonArtist$_fun_stakedToon INLINECALLDICT
-    9 1 BLKDROP2
+    11 1 BLKDROP2
   }>
   recv_internal PROC:<{
     c2 SAVE
@@ -384,33 +500,33 @@ PROGRAM{
     s0 s2 XCHG
     __tact_context_sender SETGLOB
     $ToonArtist$_contract_load INLINECALLDICT
-    s0 s10 XCHG
+    s0 s12 XCHG
     IFJMP:<{
-      10 BLKDROP
+      12 BLKDROP
     }>
     0 PUSHINT
-    s9 PUSH
+    s11 PUSH
     SBITS
     DUP
     31 GTINT
     IF:<{
       NIP
-      s0 s9 XCHG
+      s0 s11 XCHG
       32 LDU
       OVER
       293200627 PUSHINT
       EQUAL
       IFJMP:<{
         NIP
-        s5 POP
-        s8 POP
-        s0 s3 XCHG
+        s6 POP
+        s10 POP
+        s0 s4 XCHG
         LDREF
         DROP
         CTOS
         34415 PUSHINT
         __tact_context_get_sender INLINECALLDICT
-        s8 PUSH
+        s10 PUSH
         SDEQ
         THROWANYIFNOT
         42813 PUSHINT
@@ -418,35 +534,52 @@ PROGRAM{
         s2 s(-1) PUXC
         __tact_slice_neq INLINECALLDICT
         THROWANYIFNOT
+        s8 s10 XCHG
+        s7 s9 XCHG
         s6 s8 XCHG
         s5 s7 XCHG
-        s4 s6 XCHG
-        s4 s5 s5 XCHG3
-        s3 s1 s3 XCHG3
+        s0 s6 XCHG
+        s3 s5 XCHG
+        s4 s3 s0 XCHG3
         $ToonArtist$_contract_store INLINECALLDICT
         RETALT
       }>
       OVER
-      1144384149 PUSHINT
+      1935855772 PUSHINT
       EQUAL
       IFJMP:<{
         NIP
-        s9 POP
-        s0 s8 XCHG
+        s11 POP
+        s0 s10 XCHG
+        64 LDU
+        NIP
         LDVARUINT16
+        LDMSGADDR
         DROP
-        33141 PUSHINT
+        0 PUSHINT
+            MYADDR
+        s10 PUSH
+        $ToonJettonWallet$_init_child INLINECALLDICT
+        $global_contractAddress INLINECALLDICT
+        23584 PUSHINT
         __tact_context_get_sender INLINECALLDICT
-        s9 PUSH
+        ROT
         SDEQ
         THROWANYIFNOT
-        9033 PUSHINT
-        OVER
-        0 GTINT
+        33141 PUSHINT
+        s1 s11 XCPU
+        SDEQ
         THROWANYIFNOT
+        s1 s2 XCHG
         ADD
+        s8 s10 XCHG
+        s7 s9 XCHG
         s6 s8 XCHG
-        2 6 BLKSWAP
+        s5 s7 XCHG
+        s4 s6 XCHG
+        s3 s5 XCHG
+        s4 s3 s3 XCHG3
+        s0 s2 XCHG
         $ToonArtist$_contract_store INLINECALLDICT
         RETALT
       }>
@@ -455,25 +588,43 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         NIP
-        s9 POP
-        s0 s8 XCHG
+        s11 POP
+        s0 s10 XCHG
         LDVARUINT16
         DROP
         36510 PUSHINT
         __tact_context_get_sender INLINECALLDICT
-        s9 PUSH
+        s11 PUSH
         SDEQ
         THROWANYIFNOT
         59865 PUSHINT
-        s2 s1 PUSH2
+        s3 s1 PUSH2
         GEQ
         THROWANYIFNOT
+        s2 s2 XCPU
         SUB
         0 PUSHINT
-        64 PUSHINT
-            B{b5ee9c7241010101001b00003200000000556e7374616b65642024544f4f4e20286d6f636b299c585433} B>boc PUSHREF
+            MYADDR
         s9 PUSH
-        3 -ROLL
+        $ToonJettonWallet$_init_child INLINECALLDICT
+        $global_contractAddress INLINECALLDICT
+        0 PUSHINT
+        64 PUSHINT
+        OVER
+        PUSHNULL
+        OVER
+            b{} PUSHSLICE
+        s3 s4 XCHG
+        s3 s9 XCHG
+        16 s() PUSH
+        s0 s3 XCHG
+        17 s() PUSH
+        s1 s3 s3 XCHG3
+        $TokenTransfer$_constructor_queryId_amount_destination_response_destination_customPayload_forward_ton_amount_forward_payload INLINECALLDICT
+        NEWC
+        $TokenTransfer$_store_cell INLINECALLDICT
+        s1 s3 s0 XCHG3
+        s1 s5 XCHG
         $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
             NEWC
             b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
@@ -541,8 +692,33 @@ PROGRAM{
             // Group 5: Sending the message, with `mode` on top
             SWAP
             SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
-        s6 s8 XCHG
-        2 6 BLKSWAP
+        s8 s10 XCHG
+        2 8 BLKSWAP
+        $ToonArtist$_contract_store INLINECALLDICT
+        RETALT
+      }>
+      OVER
+      156544760 PUSHINT
+      EQUAL
+      IFJMP:<{
+        NIP
+        s11 POP
+        s11 POP
+        s0 s9 XCHG
+        LDMSGADDR
+        DROP
+        41950 PUSHINT
+        __tact_context_get_sender INLINECALLDICT
+        s9 PUSH
+        SDEQ
+        THROWANYIFNOT
+        18058 PUSHINT
+        s1 s9 XCPU
+        SDEQ
+        THROWANYIFNOT
+        s7 s9 XCHG
+        2 7 BLKSWAP
+        TRUE
         $ToonArtist$_contract_store INLINECALLDICT
         RETALT
       }>
@@ -551,15 +727,15 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         NIP
-        s9 POP
-        s0 s8 XCHG
+        s11 POP
+        s0 s10 XCHG
         256 LDU
         256 LDU
         LDMSGADDR
         DROP
         44170 PUSHINT
         __tact_context_get_sender INLINECALLDICT
-        s11 PUSH
+        s13 PUSH
         SDEQ
         THROWANYIFNOT
         17513 PUSHINT
@@ -568,20 +744,24 @@ PROGRAM{
         SDEQ
         NOT
         THROWANYIFNOT
-        s11 PUSH
+        s12 PUSH
         0 GTINT
         IF:<{
-          s7 s9 XCHG
-          5 5 REVERSE
-          s4 s8 XCHG
-          s3 s9 XCHG
-          s8 s9 s10 XCHG3
+          s9 s11 XCHG
+          5 7 REVERSE
+          s6 s10 XCHG
+          s5 s11 XCHG
+          s4 s10 XCHG
+          s3 s11 XCHG
+          s10 s11 s12 XCHG3
           6995 PUSHINT
-          s0 s12 XCHG
+          s0 s14 XCHG
           $ToonArtist$_fun_isActive INLINECALLDICT
-          s1 s13 XCHG
+          s1 s15 XCHG
           THROWANYIFNOT
-          s0 s10 XCHG
+          s0 s12 XCHG
+          s9 s11 XCHG
+          s8 s10 XCHG
           s7 s9 XCHG
           s6 s8 XCHG
           s5 s7 XCHG
@@ -590,15 +770,14 @@ PROGRAM{
           s4 s3 s0 XCHG3
         }>
         50000000 PUSHINT
-        s3 PUSH
+        s0 s3 XCHG
         1 PUSHINT
-        s4 s3 XCPU
+        s3 s2 XCPU
         $StageTrackRegistration$_constructor_trackId_fingerprint_trackContract INLINECALLDICT
         NEWC
         $StageTrackRegistration$_store_cell INLINECALLDICT
-        s10 PUSH
-        s0 s3 XCHG
-        s4 s4 XCHG2
+        s11 PUSH
+        s4 s3 s3 XCHG3
         $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
             NEWC
             b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
@@ -666,18 +845,9 @@ PROGRAM{
             // Group 5: Sending the message, with `mode` on top
             SWAP
             SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
-        s1 s9 XCHG
-        257 PUSHINT
-        s0 s10 s10 XC2PU
-        __tact_dict_set_int_slice INLINECALLDICT
-        s0 s9 XCHG
-        INC
-        s0 s3 XCHG
-        10 ADDCONST
         50000000 PUSHINT
         1 PUSHINT
             B{b5ee9c7241010101001900002e00000000436f6e6669726d526567697374726174696f6eaed473b3} B>boc PUSHREF
-        s3 s11 XCHG
         $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
             NEWC
             b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
@@ -745,12 +915,41 @@ PROGRAM{
             // Group 5: Sending the message, with `mode` on top
             SWAP
             SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
-        s6 s8 XCHG
-        s5 s7 XCHG
-        s4 s6 XCHG
-        2SWAP
-        s1 s5 XCHG
-        s1 s4 XCHG
+        s8 s10 XCHG
+        2 8 BLKSWAP
+        $ToonArtist$_contract_store INLINECALLDICT
+        RETALT
+      }>
+      OVER
+      2999516602 PUSHINT
+      EQUAL
+      IFJMP:<{
+        NIP
+        s11 POP
+        s0 s10 XCHG
+        256 LDU
+        LDMSGADDR
+        DROP
+        s2 PUSH
+        257 PUSHINT
+        s3 PUSH
+        __tact_dict_get_int_slice INLINECALLDICT
+        ISNULL
+        IF:<{
+          257 PUSHINT
+          -ROT
+          __tact_dict_set_int_slice INLINECALLDICT
+          s0 s9 XCHG
+          INC
+          s0 s3 XCHG
+          10 ADDCONST
+          s0 s3 XCHG
+          s0 s9 XCHG
+        }>ELSE<{
+          2DROP
+        }>
+        s8 s10 XCHG
+        2 8 BLKSWAP
         $ToonArtist$_contract_store INLINECALLDICT
         RETALT
       }>
@@ -759,13 +958,15 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         NIP
-        s9 POP
-        s0 s8 XCHG
+        s11 POP
+        s0 s10 XCHG
         64 LDU
         DROP
         $DeployOk$_constructor_queryId INLINECALLDICT
         NEWC
         $DeployOk$_store_cell INLINECALLDICT
+        s9 s11 XCHG
+        s8 s10 XCHG
         s7 s9 XCHG
         s6 s8 XCHG
         s5 s7 XCHG
@@ -776,7 +977,7 @@ PROGRAM{
         $ToonArtist$_contract_store INLINECALLDICT
         RETALT
       }>
-      s0 s10 XCHG
+      s0 s12 XCHG
     }>
     SWAP
     0 EQINT
@@ -784,20 +985,21 @@ PROGRAM{
     33 LESSINT
     AND
     IFJMP:<{
-      s8 POP
+      s10 POP
       __tact_context_get INLINECALLDICT
       $Context$_get_value INLINECALLDICT
-      s1 s2 XCHG
+      s1 s3 XCHG
       ADD
+      s8 s10 XCHG
+      s7 s9 XCHG
       s6 s8 XCHG
       s5 s7 XCHG
       s4 s6 XCHG
       s3 s5 XCHG
-      s4 s3 s3 XCHG3
-      s0 s2 XCHG
+      s3 s4 XCHG2
       $ToonArtist$_contract_store INLINECALLDICT
     }>
-    s0 s8 XCHG
+    s0 s10 XCHG
     HASHSU
     DUP
     12540730720118958715357949127845064725622338782501327180192927970590754086893 PUSHINT
@@ -806,14 +1008,15 @@ PROGRAM{
       DROP
       __tact_context_get INLINECALLDICT
       $Context$_get_value INLINECALLDICT
-      s1 s2 XCHG
+      s1 s3 XCHG
       ADD
+      s8 s10 XCHG
+      s7 s9 XCHG
       s6 s8 XCHG
       s5 s7 XCHG
       s4 s6 XCHG
       s3 s5 XCHG
-      s4 s3 s3 XCHG3
-      s0 s2 XCHG
+      s3 s4 XCHG2
       $ToonArtist$_contract_store INLINECALLDICT
     }>
     DUP
@@ -823,17 +1026,17 @@ PROGRAM{
       DROP
       27429 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      s8 PUSH
+      s10 PUSH
       SDEQ
       THROWANYIFNOT
       0 PUSHINT
       64 PUSHINT
           MYADDR
-      s9 PUSH
+      s11 PUSH
       $StageArtistRegistration$_constructor_artistContract_wallet INLINECALLDICT
       NEWC
       $StageArtistRegistration$_store_cell INLINECALLDICT
-      s8 PUSH
+      s10 PUSH
       3 -ROLL
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
@@ -902,8 +1105,21 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
-      s6 s8 XCHG
-      2 6 BLKSWAP
+      s8 s10 XCHG
+      2 8 BLKSWAP
+      $ToonArtist$_contract_store INLINECALLDICT
+    }>
+    DUP
+    22715262495792525450987790631593992693011318955509566471106503765248953644762 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __tact_context_get_sender INLINECALLDICT
+      s8 PUSH
+      SDEQ
+      1310 THROWIFNOT
+      s8 s10 XCHG
+      2 8 BLKSWAP
       $ToonArtist$_contract_store INLINECALLDICT
     }>
     18150018367851043301976735269734639212269181382310373220832073141001411233091 PUSHINT
@@ -911,16 +1127,16 @@ PROGRAM{
     IFJMP:<{
       62589 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      s8 PUSH
+      s10 PUSH
       SDEQ
       THROWANYIFNOT
       0 PUSHINT
       64 PUSHINT
-      s8 PUSH
+      s10 PUSH
       $ConfirmArtistRegistration$_constructor_wallet INLINECALLDICT
       NEWC
       $ConfirmArtistRegistration$_store_cell INLINECALLDICT
-      s8 PUSH
+      s10 PUSH
       3 -ROLL
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
@@ -989,11 +1205,11 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
-      s6 s8 XCHG
-      2 6 BLKSWAP
+      s8 s10 XCHG
+      2 8 BLKSWAP
       $ToonArtist$_contract_store INLINECALLDICT
     }>
-    9 BLKDROP
+    11 BLKDROP
     130 THROW
   }>
   __tact_selector_hack PROC:<{

@@ -1,4 +1,4 @@
-// automatically generated from `@stdlib/std/stdlib.fc` `/app/build/ToonVault/ToonVault_ToonVault.fc`
+// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/toon-protocol-main/build/ToonVault/ToonVault_ToonVault.fc` 
 PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_crc16
@@ -11,6 +11,8 @@ PROGRAM{
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_end_slice
   DECLPROC __tact_string_builder_append
+  DECLPROC __tact_dict_get_slice_int
+  DECLPROC __tact_dict_set_slice_int
   DECLPROC __tact_dict_get_int_int
   DECLPROC __tact_dict_set_int_int
   DECLPROC __tact_dict_get_int_coins
@@ -337,6 +339,34 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
+  __tact_dict_get_slice_int PROCINLINE:<{
+    s1 s3 s3 XCHG3
+        DICTGET NULLSWAPIFNOT
+    IF:<{
+      SWAP
+      LDIX
+      DROP
+    }>ELSE<{
+      2DROP
+      PUSHNULL
+    }>
+  }>
+  __tact_dict_set_slice_int PROCINLINE:<{
+    OVER
+    ISNULL
+    IF:<{
+      2DROP
+      -ROT
+          DICTDEL
+      DROP
+    }>ELSE<{
+      NEWC
+      SWAP
+      STIX
+      s1 s3 s3 XCHG3
+      DICTSETB
+    }>
+  }>
   __tact_dict_get_int_int PROCINLINE:<{
     s1 s3 s3 XCHG3
     DICTIGET
@@ -475,33 +505,44 @@ PROGRAM{
     ENDC
   }>
   $ToonVault$_store PROCINLINE:<{
-    s1 29 s() XCHG
-    s0 30 s() XCHG
+    s1 30 s() XCHG
+    s0 31 s() XCHG
     STSLICE
-    s1 27 s() XCHG
+    s1 28 s() XCHG
     STSLICE
-    s1 25 s() XCHG
+    s1 26 s() XCHG
     STSLICE
-    s0 23 s() XCHG
+    s0 24 s() XCHG
     NEWC
     256 STU
     SWAP
-    s0 22 s() XCHG
+    s0 23 s() XCHG
     STVARUINT16
     SWAP
-    s0 20 s() XCHG
+    s0 21 s() XCHG
     STVARUINT16
-    s1 18 s() XCHG
+    s1 19 s() XCHG
     32 STU
-    s1 16 s() XCHG
+    s1 17 s() XCHG
     1 STI
     NEWC
-    12 4 BLKSWAP
+    s0 s12 XCHG
+    s11 16 s() XCHG
+    s10 s15 XCHG
+    s9 s14 XCHG
+    s8 s13 XCHG
+    s0 s7 XCHG
+    s6 16 s() XCHG
+    s5 s15 XCHG
+    s4 s14 XCHG
+    s3 s13 XCHG
+    s0 s2 XCHG
+    s1 16 s() XCHG
+    s0 s15 XCHG
     $Configuration$_store INLINECALLDICT
-    s1 s3 XCHG
+    s1 s2 XCHG
     32 STU
     STDICT
-    s1 s2 XCHG
     STDICT
     s0 s2 XCHG
     NEWC
@@ -510,18 +551,24 @@ PROGRAM{
     STDICT
     s1 s3 XCHG
     STDICT
-    s0 s4 XCHG
+    s0 s3 XCHG
     NEWC
     STDICT
     s1 s5 XCHG
     STDICT
     s1 s5 XCHG
     STDICT
-    s1 s5 XCHG
+    s0 s5 XCHG
+    NEWC
     STDICT
+    s1 s6 XCHG
+    STDICT
+    s1 s4 XCHG
+    STBREFR
+    s1 s4 XCHG
+    STBREFR
     STBREFR
     s1 s2 XCHG
-    STBREFR
     STBREFR
     STBREFR
   }>
@@ -557,11 +604,16 @@ PROGRAM{
     LDDICT
     LDDICT
     LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
     LDDICT
     DROP
-    27 s() 30 s() XCHG
-    27 s() 29 s() XCHG
-    27 s() 28 s() XCHG
+    28 s() 31 s() XCHG
+    28 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    21 s() 22 s() XCHG
     20 s() 21 s() XCHG
     19 s() 20 s() XCHG
     18 s() 19 s() XCHG
@@ -572,7 +624,6 @@ PROGRAM{
     s13 s14 XCHG
     s12 s13 XCHG
     s11 s12 XCHG
-    s10 s11 XCHG
   }>
   $Context$_get_value PROCINLINE:<{
     s1 s3 XCHG
@@ -618,6 +669,7 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
     PUSHNULL
+    PUSHNULL
     50000000000000 PUSHINT
     7 PUSHINT
     1000 PUSHINT
@@ -631,23 +683,18 @@ PROGRAM{
     10000000 PUSHINT
     500 PUSHINT
     $Configuration$_constructor_emissionCap_minWalletAgeDays_targetDailyActivity_rewardBaseActiveListener_rewardBaseGrowthAgent_rewardBaseArtistLaunch_rewardBaseTrendsetter_rewardBaseEarlyBeliever_rewardBaseDropInvestor_decayFactor_minThreshold_antiFarmingCoeff INLINECALLDICT
-    s11 21 s() XCHG
-    s10 20 s() XCHG
-    s9 19 s() XCHG
-    s8 18 s() XCHG
-    s7 17 s() XCHG
-    s6 16 s() XCHG
-    s5 s15 XCHG
-    s4 s14 XCHG
-    s3 s13 XCHG
-    s12 s1 s10 XCHG3
-    s0 s8 XCHG
-    s0 s6 XCHG
-    s4 s11 s4 XCHG3
-    s1 s9 XCHG
-    s1 s7 XCHG
-    s1 s5 XCHG
-    s1 s3 XCHG
+    s11 22 s() XCHG
+    s10 21 s() XCHG
+    s9 20 s() XCHG
+    s8 19 s() XCHG
+    s7 18 s() XCHG
+    s6 17 s() XCHG
+    s5 16 s() XCHG
+    s4 s15 XCHG
+    s3 s14 XCHG
+    s13 s1 s11 XCHG3
+    10 -ROLL
+    s0 s12 XCHG
   }>
   $ToonVault$_contract_load PROCINLINE:<{
     c4 PUSH
@@ -656,7 +703,8 @@ PROGRAM{
     SWAP
     IF:<{
       $ToonVault$_load INLINECALLDICT
-      30 s() POP
+      31 s() POP
+      29 s() 30 s() XCHG
       28 s() 29 s() XCHG
       27 s() 28 s() XCHG
       26 s() 27 s() XCHG
@@ -685,6 +733,7 @@ PROGRAM{
     TRUE
     SWAP
     1 STI
+    s0 31 s() XCHG
     s0 30 s() XCHG
     s0 29 s() XCHG
     s0 28 s() XCHG
@@ -947,22 +996,22 @@ PROGRAM{
     256 STU
         ENDC
     $Cell$_fun_asSlice INLINECALLDICT
-    28 s() PUSH
+    29 s() PUSH
         CHKSIGNU
   }>
   $ToonVault$_fun_checkDayReset PROCREF:<{
     DUP
-    25 s() PUSH
+    26 s() PUSH
     GREATER
     IF:<{
-      s10 POP
-      23 s() POP
-      23 s() POP
+      s11 POP
+      24 s() POP
+      24 s() POP
       0 PUSHINT
       DUP
-      s1 24 s() XCHG
-      s0 s9 XCHG
-      s0 23 s() XCHG
+      s1 25 s() XCHG
+      s0 s10 XCHG
+      s0 24 s() XCHG
     }>ELSE<{
       DROP
     }>
@@ -1131,8 +1180,8 @@ PROGRAM{
                 1 1 CALLXARGS
   }>
   $ToonVault$_fun_halvedBaseCap PROCREF:<{
-    21 s() PUSH
-    26 s() PUSH
+    22 s() PUSH
+    27 s() PUSH
     100 MULCONST
     1000000000000000 PUSHINT
     DIV
@@ -1140,31 +1189,31 @@ PROGRAM{
     11 LESSINT
     IF:<{
       TRUE
-      25 s() POP
+      26 s() POP
     }>
     19 GTINT
     IF:<{
       FALSE
-      24 s() POP
+      25 s() POP
     }>
-    23 s() PUSH
+    24 s() PUSH
     IF:<{
       1 RSHIFT#
     }>
   }>
   $ToonVault$_fun_activityMultiplier PROCREF:<{
-    19 s() PUSH
+    20 s() PUSH
     IFNOTJMP:<{
       10000 PUSHINT
     }>
-    s9 s9 PUSH2
-    21 s() PUSH
+    s10 s10 PUSH2
+    22 s() PUSH
     LEQ
     IFJMP:<{
       DROP
       10000 PUSHINT
     }>
-    20 s() PUSH
+    21 s() PUSH
     10000 PUSHINT
     MUL
     SWAP
@@ -1184,37 +1233,39 @@ PROGRAM{
       100 PUSHINT
       DIV
     }>
-    29 s() 30 s() XCHG
-    28 s() 30 s() XCHG
-    27 s() 30 s() XCHG
-    26 s() 30 s() XCHG
-    25 s() 30 s() XCHG
-    24 s() 30 s() XCHG
-    23 s() 30 s() XCHG
-    22 s() 30 s() XCHG
-    21 s() 30 s() XCHG
-    20 s() 30 s() XCHG
-    19 s() 30 s() XCHG
-    18 s() 30 s() XCHG
-    17 s() 30 s() XCHG
-    16 s() 30 s() XCHG
-    s15 30 s() XCHG
-    s14 30 s() XCHG
-    s13 30 s() XCHG
-    s12 30 s() XCHG
-    s11 30 s() XCHG
-    s10 30 s() XCHG
-    s9 30 s() XCHG
-    s0 30 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 31 s() XCHG
+    28 s() 31 s() XCHG
+    27 s() 31 s() XCHG
+    26 s() 31 s() XCHG
+    25 s() 31 s() XCHG
+    24 s() 31 s() XCHG
+    23 s() 31 s() XCHG
+    22 s() 31 s() XCHG
+    21 s() 31 s() XCHG
+    20 s() 31 s() XCHG
+    19 s() 31 s() XCHG
+    18 s() 31 s() XCHG
+    17 s() 31 s() XCHG
+    16 s() 31 s() XCHG
+    s15 31 s() XCHG
+    s14 31 s() XCHG
+    s13 31 s() XCHG
+    s12 31 s() XCHG
+    s11 31 s() XCHG
+    s10 31 s() XCHG
+    s9 31 s() XCHG
+    s0 31 s() XCHG
     s0 s8 XCHG
     s0 s7 XCHG
     s0 s6 XCHG
     5 -ROLL
     $ToonVault$_fun_activityMultiplier INLINECALLDICT
-    s1 31 s() XCHG
+    s1 32 s() XCHG
     MUL
     10000 PUSHINT
     DIV
+    30 s() 31 s() XCHG
     29 s() 30 s() XCHG
     28 s() 29 s() XCHG
     27 s() 28 s() XCHG
@@ -1301,7 +1352,7 @@ PROGRAM{
   $ToonVault$_fun_multiFactorScore PROCREF:<{
     9 BLKDROP
     257 PUSHINT
-    s8 s(-1) s(-1) PUXCPU
+    s9 s(-1) s(-1) PUXCPU
     s3 s(-1) PUXC
     __tact_dict_get_int_int INLINECALLDICT
     DUP
@@ -1323,7 +1374,7 @@ PROGRAM{
       s0 s3 XCHG
     }>
     257 PUSHINT
-    s8 s(-1) s(-1) PUXCPU
+    s9 s(-1) s(-1) PUXCPU
     s4 s(-1) PUXC
     __tact_dict_get_int_int INLINECALLDICT
     DUP
@@ -1345,66 +1396,86 @@ PROGRAM{
     }>ELSE<{
       DROP
     }>
+    s7 PUSH
+    267 PUSHINT
+    s4 PUSH
+    257 PUSHINT
+    __tact_dict_get_slice_int INLINECALLDICT
+    DUP
+    ISNULL
+    NOT
+    IF:<{
+      __tact_not_null INLINECALLDICT
+    }>ELSE<{
+      DROP
+      100 PUSHINT
+    }>
+    s1 s4 XCHG
+    MUL
+    100 PUSHINT
+    DIV
+    31 s() 34 s() XCHG
     30 s() 33 s() XCHG
     29 s() 32 s() XCHG
-    28 s() 31 s() XCHG
+    28 s() 34 s() XCHG
     27 s() 33 s() XCHG
     26 s() 32 s() XCHG
-    25 s() 31 s() XCHG
+    25 s() 34 s() XCHG
     24 s() 33 s() XCHG
     23 s() 32 s() XCHG
-    22 s() 31 s() XCHG
+    22 s() 34 s() XCHG
     21 s() 33 s() XCHG
     20 s() 32 s() XCHG
-    19 s() 31 s() XCHG
+    19 s() 34 s() XCHG
     18 s() 33 s() XCHG
     17 s() 32 s() XCHG
-    16 s() 31 s() XCHG
+    16 s() 34 s() XCHG
     s15 33 s() XCHG
     s14 32 s() XCHG
-    s13 31 s() XCHG
+    s13 34 s() XCHG
     s12 33 s() XCHG
     s11 32 s() XCHG
-    s10 31 s() XCHG
+    s10 34 s() XCHG
     s9 33 s() XCHG
     s8 32 s() XCHG
-    s7 31 s() XCHG
+    s7 34 s() XCHG
     s6 33 s() XCHG
     s5 32 s() XCHG
-    s4 31 s() XCHG
+    s4 34 s() XCHG
     s3 33 s() XCHG
     s2 32 s() XCHG
-    s1 31 s() XCHG
-    31 s() PUSH
+    s1 34 s() XCHG
+    34 s() PUSH
     SWAP
     s0 33 s() XCHG
     $ToonVault$_fun_countKey INLINECALLDICT
     257 PUSHINT
-    s0 s8 PUSH2
+    s0 s9 PUSH2
     s3 s3 XCHG2
     __tact_dict_get_int_int INLINECALLDICT
     ISNULL
     IF:<{
       257 PUSHINT
-      s0 32 s() XCHG
+      s0 33 s() XCHG
       INC
-      32 s() PUSH
-      s3 s6 XCHG
-      s2 33 s() XCHG
-      32 s() PUSH
+      33 s() PUSH
+      s3 s7 XCHG
+      s2 34 s() XCHG
+      35 s() PUSH
       -ROT
       __tact_dict_set_int_int INLINECALLDICT
-      s0 s3 XCHG
+      s0 s4 XCHG
     }>ELSE<{
-      31 s() POP
+      32 s() POP
     }>
     257 PUSHINT
         NOW
     OVER
-    s4 s5 XCHG
+    s4 s6 XCHG
     s2 s3 XCHG
-    s2 32 s() XCHG
+    s2 35 s() XCHG
     __tact_dict_set_int_int INLINECALLDICT
+    28 s() 31 s() XCHG
     27 s() 30 s() XCHG
     26 s() 29 s() XCHG
     25 s() 28 s() XCHG
@@ -1430,8 +1501,8 @@ PROGRAM{
     s5 s8 XCHG
     s4 s7 XCHG
     s3 s6 XCHG
-    s5 s1 s4 XCHG3
-    s0 s0 s3 XCHG3
+    s4 s4 s5 XCHG3
+    s1 s3 XCHG
   }>
   $ToonVault$_fun_isOneTimeReward PROCREF:<{
     DUP
@@ -1450,47 +1521,47 @@ PROGRAM{
     }>
   }>
   $ToonVault$_fun_totalReserve PROCREF:<{
-    25 s() PUSH
+    26 s() PUSH
   }>
   $ToonVault$_fun_dailyEmitted PROCREF:<{
-    24 s() PUSH
+    25 s() PUSH
   }>
   $ToonVault$_fun_dailyClaimCount PROCREF:<{
-    s9 PUSH
+    s10 PUSH
   }>
   $ToonVault$_fun_isHalved PROCREF:<{
-    22 s() PUSH
+    23 s() PUSH
   }>
   $ToonVault$_fun_getConfig PROCREF:<{
-    21 s() PUSH
-    21 s() PUSH
-    21 s() PUSH
-    21 s() PUSH
-    21 s() PUSH
-    21 s() PUSH
-    21 s() PUSH
-    21 s() PUSH
-    21 s() PUSH
-    21 s() PUSH
-    21 s() PUSH
-    21 s() PUSH
+    22 s() PUSH
+    22 s() PUSH
+    22 s() PUSH
+    22 s() PUSH
+    22 s() PUSH
+    22 s() PUSH
+    22 s() PUSH
+    22 s() PUSH
+    22 s() PUSH
+    22 s() PUSH
+    22 s() PUSH
+    22 s() PUSH
   }>
   $ToonVault$_fun_currentEmissionCap PROCREF:<{
-    21 s() PUSH
+    22 s() PUSH
   }>
   $ToonVault$_fun_minWalletAgeDays PROCREF:<{
-    20 s() PUSH
+    21 s() PUSH
   }>
   $ToonVault$_fun_effectiveDailyCap PROCREF:<{
     $ToonVault$_fun_halvedBaseCap INLINECALLDICT
   }>
   $ToonVault$_fun_governance PROCREF:<{
-    27 s() PUSH
+    28 s() PUSH
   }>
   $ToonVault$_fun_walletClaimCount PROCREF:<{
     $ToonVault$_fun_countKey INLINECALLDICT
     257 PUSHINT
-    s0 s8 PUSH2
+    s0 s9 PUSH2
     s3 s3 XCHG2
     __tact_dict_get_int_int INLINECALLDICT
     DUP
@@ -1505,46 +1576,48 @@ PROGRAM{
   }>
   $ToonVault$_fun_isOneTimeClaimed PROCREF:<{
     s2 PUSH
+    31 s() 33 s() XCHG
     30 s() 32 s() XCHG
-    29 s() 31 s() XCHG
+    29 s() 33 s() XCHG
     28 s() 32 s() XCHG
-    27 s() 31 s() XCHG
+    27 s() 33 s() XCHG
     26 s() 32 s() XCHG
-    25 s() 31 s() XCHG
+    25 s() 33 s() XCHG
     24 s() 32 s() XCHG
-    23 s() 31 s() XCHG
+    23 s() 33 s() XCHG
     22 s() 32 s() XCHG
-    21 s() 31 s() XCHG
+    21 s() 33 s() XCHG
     20 s() 32 s() XCHG
-    19 s() 31 s() XCHG
+    19 s() 33 s() XCHG
     18 s() 32 s() XCHG
-    17 s() 31 s() XCHG
+    17 s() 33 s() XCHG
     16 s() 32 s() XCHG
-    s15 31 s() XCHG
+    s15 33 s() XCHG
     s14 32 s() XCHG
-    s13 31 s() XCHG
+    s13 33 s() XCHG
     s12 32 s() XCHG
-    s11 31 s() XCHG
+    s11 33 s() XCHG
     s10 32 s() XCHG
-    s9 31 s() XCHG
+    s9 33 s() XCHG
     s8 32 s() XCHG
-    s7 31 s() XCHG
+    s7 33 s() XCHG
     s6 32 s() XCHG
-    s5 31 s() XCHG
+    s5 33 s() XCHG
     s4 32 s() XCHG
-    s3 31 s() XCHG
+    s3 33 s() XCHG
     s2 32 s() XCHG
-    s1 31 s() XCHG
+    s1 33 s() XCHG
     s0 32 s() XCHG
     257 PUSHINT
-    s0 32 s() XCHG
+    s0 34 s() XCHG
     $ToonVault$_fun_onceKey INLINECALLDICT
     s2 32 s() XCHG
-    s1 31 s() XCHG
+    s1 33 s() XCHG
     1 PUSHINT
     __tact_dict_get_int_int INLINECALLDICT
     ISNULL
     NOT
+    29 s() 31 s() XCHG
     28 s() 30 s() XCHG
     27 s() 29 s() XCHG
     26 s() 28 s() XCHG
@@ -1575,7 +1648,7 @@ PROGRAM{
   }>
   $ToonVault$_fun_isClaimIdUsed PROCREF:<{
     257 PUSHINT
-    s10 PUSH
+    s11 PUSH
     s0 s2 XCHG
     1 PUSHINT
     __tact_dict_get_int_int INLINECALLDICT
@@ -1628,35 +1701,35 @@ PROGRAM{
     $ToonVault$_fun_totalReserve INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    14 1 BLKDROP2
+    15 1 BLKDROP2
   }>
   %dailyEmitted PROC:<{
     $ToonVault$_contract_load INLINECALLDICT
     $ToonVault$_fun_dailyEmitted INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    14 1 BLKDROP2
+    15 1 BLKDROP2
   }>
   %dailyClaimCount PROC:<{
     $ToonVault$_contract_load INLINECALLDICT
     $ToonVault$_fun_dailyClaimCount INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    14 1 BLKDROP2
+    15 1 BLKDROP2
   }>
   %isHalved PROC:<{
     $ToonVault$_contract_load INLINECALLDICT
     $ToonVault$_fun_isHalved INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    14 1 BLKDROP2
+    15 1 BLKDROP2
   }>
   %getConfig PROC:<{
     $ToonVault$_contract_load INLINECALLDICT
     $ToonVault$_fun_getConfig INLINECALLDICT
     12 12 BLKDROP2
     12 12 BLKDROP2
-    6 12 BLKDROP2
+    7 12 BLKDROP2
     $Configuration$_to_external INLINECALLDICT
   }>
   %currentEmissionCap PROC:<{
@@ -1664,31 +1737,32 @@ PROGRAM{
     $ToonVault$_fun_currentEmissionCap INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    14 1 BLKDROP2
+    15 1 BLKDROP2
   }>
   %minWalletAgeDays PROC:<{
     $ToonVault$_contract_load INLINECALLDICT
     $ToonVault$_fun_minWalletAgeDays INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    14 1 BLKDROP2
+    15 1 BLKDROP2
   }>
   %effectiveDailyCap PROC:<{
     $ToonVault$_contract_load INLINECALLDICT
     $ToonVault$_fun_effectiveDailyCap INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    14 1 BLKDROP2
+    15 1 BLKDROP2
   }>
   %governance PROC:<{
     $ToonVault$_contract_load INLINECALLDICT
     $ToonVault$_fun_governance INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    14 1 BLKDROP2
+    15 1 BLKDROP2
   }>
   %walletClaimCount PROC:<{
     $ToonVault$_contract_load INLINECALLDICT
+    30 s() 32 s() XCHG
     29 s() 31 s() XCHG
     28 s() 30 s() XCHG
     27 s() 29 s() XCHG
@@ -1705,14 +1779,16 @@ PROGRAM{
     16 s() 18 s() XCHG
     s15 17 s() XCHG
     s14 16 s() XCHG
-    2 14 BLKSWAP
+    s13 s15 XCHG
+    2 13 BLKSWAP
     $ToonVault$_fun_walletClaimCount INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    14 1 BLKDROP2
+    15 1 BLKDROP2
   }>
   %isOneTimeClaimed PROC:<{
     $ToonVault$_contract_load INLINECALLDICT
+    30 s() 32 s() XCHG
     29 s() 31 s() XCHG
     28 s() 30 s() XCHG
     27 s() 29 s() XCHG
@@ -1729,14 +1805,16 @@ PROGRAM{
     16 s() 18 s() XCHG
     s15 17 s() XCHG
     s14 16 s() XCHG
-    2 14 BLKSWAP
+    s13 s15 XCHG
+    2 13 BLKSWAP
     $ToonVault$_fun_isOneTimeClaimed INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    14 1 BLKDROP2
+    15 1 BLKDROP2
   }>
   %isClaimIdUsed PROC:<{
     $ToonVault$_contract_load INLINECALLDICT
+    30 s() 31 s() XCHG
     29 s() 30 s() XCHG
     28 s() 29 s() XCHG
     27 s() 28 s() XCHG
@@ -1756,7 +1834,7 @@ PROGRAM{
     $ToonVault$_fun_isClaimIdUsed INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    14 1 BLKDROP2
+    15 1 BLKDROP2
   }>
   recv_internal PROC:<{
     SWAP
@@ -1774,29 +1852,29 @@ PROGRAM{
     s0 s2 XCHG
     __tact_context_sender SETGLOB
     $ToonVault$_contract_load INLINECALLDICT
-    s0 31 s() XCHG
+    s0 32 s() XCHG
     IFJMP:<{
       15 BLKDROP
       15 BLKDROP
-      DROP
+      2DROP
     }>
     0 PUSHINT
-    30 s() PUSH
+    31 s() PUSH
     SBITS
     DUP
     31 GTINT
     IF:<{
       NIP
-      s0 30 s() XCHG
-      32 LDU
       s0 31 s() XCHG
+      32 LDU
+      s0 32 s() XCHG
     }>
     OVER
     4191461259 PUSHINT
     EQUAL
     IFJMP:<{
       2DROP
-      s0 29 s() XCHG
+      s0 30 s() XCHG
       LDMSGADDR
       8 LDU
       64 LDU
@@ -1833,6 +1911,7 @@ PROGRAM{
       s11 s10 s9 PUSH3
       s11 s10 s9 PUSH3
       s11 s10 PUSH2
+      41 s() 51 s() XCHG
       40 s() 50 s() XCHG
       39 s() 49 s() XCHG
       38 s() 48 s() XCHG
@@ -1842,7 +1921,7 @@ PROGRAM{
       34 s() 44 s() XCHG
       33 s() 43 s() XCHG
       32 s() 42 s() XCHG
-      31 s() 41 s() XCHG
+      31 s() 51 s() XCHG
       30 s() 50 s() XCHG
       29 s() 49 s() XCHG
       28 s() 48 s() XCHG
@@ -1852,7 +1931,7 @@ PROGRAM{
       24 s() 44 s() XCHG
       23 s() 43 s() XCHG
       22 s() 42 s() XCHG
-      21 s() 41 s() XCHG
+      21 s() 51 s() XCHG
       20 s() 50 s() XCHG
       19 s() 49 s() XCHG
       18 s() 48 s() XCHG
@@ -1861,10 +1940,10 @@ PROGRAM{
       s15 45 s() XCHG
       s14 44 s() XCHG
       s13 43 s() XCHG
-      s12 51 s() XCHG
-      s11 52 s() XCHG
+      s12 52 s() XCHG
+      s11 53 s() XCHG
       $ToonVault$_fun_verifyOracleSignature INLINECALLDICT
-      s1 42 s() XCHG
+      s1 43 s() XCHG
       THROWANYIFNOT
       4234 PUSHINT
           NOW
@@ -1873,14 +1952,14 @@ PROGRAM{
       GEQ
       THROWANYIFNOT
       11229 PUSHINT
-      s8 PUSH
+      s9 PUSH
       257 PUSHINT
       37 s() PUSH
       1 PUSHINT
       __tact_dict_get_int_int INLINECALLDICT
       ISNULL
       THROWANYIFNOT
-      s0 s7 XCHG
+      s0 s8 XCHG
       257 PUSHINT
       35 s() PUSH
       TRUE
@@ -1888,7 +1967,7 @@ PROGRAM{
       __tact_dict_set_int_int INLINECALLDICT
       2528 PUSHINT
       38 s() PUSH
-      21 s() PUSH
+      22 s() PUSH
       GEQ
       THROWANYIFNOT
       26099 PUSHINT
@@ -1898,14 +1977,14 @@ PROGRAM{
           NOW
       86400 PUSHINT
       DIV
-      s0 41 s() XCHG
-      s1 s8 XCHG
-      41 s() PUSH
+      s0 42 s() XCHG
+      s1 s9 XCHG
+      42 s() PUSH
       $ToonVault$_fun_checkDayReset INLINECALLDICT
       31 s() PUSH
       $ToonVault$_fun_cooldownKey INLINECALLDICT
       257 PUSHINT
-      s9 s(-1) s(-1) PUXCPU
+      s10 s(-1) s(-1) PUXCPU
       s3 s(-1) PUXC
       __tact_dict_get_int_int INLINECALLDICT
       DUP
@@ -1924,68 +2003,70 @@ PROGRAM{
       }>ELSE<{
         DROP
       }>
-      29 s() 30 s() XCHG
-      28 s() 30 s() XCHG
-      27 s() 30 s() XCHG
-      26 s() 30 s() XCHG
-      25 s() 30 s() XCHG
-      24 s() 30 s() XCHG
-      23 s() 30 s() XCHG
-      22 s() 30 s() XCHG
-      21 s() 30 s() XCHG
-      20 s() 30 s() XCHG
-      19 s() 30 s() XCHG
-      18 s() 30 s() XCHG
-      17 s() 30 s() XCHG
-      16 s() 30 s() XCHG
-      s15 30 s() XCHG
-      s14 30 s() XCHG
-      s13 30 s() XCHG
-      s12 30 s() XCHG
-      s11 30 s() XCHG
-      s10 30 s() XCHG
-      s9 30 s() XCHG
-      s0 30 s() XCHG
+      30 s() 31 s() XCHG
+      29 s() 31 s() XCHG
+      28 s() 31 s() XCHG
+      27 s() 31 s() XCHG
+      26 s() 31 s() XCHG
+      25 s() 31 s() XCHG
+      24 s() 31 s() XCHG
+      23 s() 31 s() XCHG
+      22 s() 31 s() XCHG
+      21 s() 31 s() XCHG
+      20 s() 31 s() XCHG
+      19 s() 31 s() XCHG
+      18 s() 31 s() XCHG
+      17 s() 31 s() XCHG
+      16 s() 31 s() XCHG
+      s15 31 s() XCHG
+      s14 31 s() XCHG
+      s13 31 s() XCHG
+      s12 31 s() XCHG
+      s11 31 s() XCHG
+      s10 31 s() XCHG
+      s9 31 s() XCHG
+      s0 31 s() XCHG
       s0 s8 XCHG
       s0 s7 XCHG
       s0 s6 XCHG
       5 -ROLL
-      31 s() PUSH
+      41 s() PUSH
       33 s() PUSH
       $ToonVault$_fun_onceKey INLINECALLDICT
-      29 s() 30 s() XCHG
-      28 s() 30 s() XCHG
-      27 s() 30 s() XCHG
-      26 s() 30 s() XCHG
-      25 s() 30 s() XCHG
-      24 s() 30 s() XCHG
-      23 s() 30 s() XCHG
-      22 s() 30 s() XCHG
-      21 s() 30 s() XCHG
-      20 s() 30 s() XCHG
-      19 s() 30 s() XCHG
-      18 s() 30 s() XCHG
-      17 s() 30 s() XCHG
-      16 s() 30 s() XCHG
-      s15 30 s() XCHG
-      s14 30 s() XCHG
-      s13 30 s() XCHG
-      s12 30 s() XCHG
-      s11 30 s() XCHG
-      s10 30 s() XCHG
-      s9 30 s() XCHG
-      s0 30 s() XCHG
+      30 s() 31 s() XCHG
+      29 s() 31 s() XCHG
+      28 s() 31 s() XCHG
+      27 s() 31 s() XCHG
+      26 s() 31 s() XCHG
+      25 s() 31 s() XCHG
+      24 s() 31 s() XCHG
+      23 s() 31 s() XCHG
+      22 s() 31 s() XCHG
+      21 s() 31 s() XCHG
+      20 s() 31 s() XCHG
+      19 s() 31 s() XCHG
+      18 s() 31 s() XCHG
+      17 s() 31 s() XCHG
+      16 s() 31 s() XCHG
+      s15 31 s() XCHG
+      s14 31 s() XCHG
+      s13 31 s() XCHG
+      s12 31 s() XCHG
+      s11 31 s() XCHG
+      s10 31 s() XCHG
+      s9 31 s() XCHG
+      s0 31 s() XCHG
       s0 s8 XCHG
       s0 s7 XCHG
       s0 s6 XCHG
       5 -ROLL
-      32 s() PUSH
+      42 s() PUSH
       $ToonVault$_fun_isOneTimeReward INLINECALLDICT
       IF:<{
         54161 PUSHINT
         OVER
         257 PUSHINT
-        33 s() PUSH
+        34 s() PUSH
         1 PUSHINT
         __tact_dict_get_int_int INLINECALLDICT
         ISNULL
@@ -1993,48 +2074,48 @@ PROGRAM{
       }>
       $ToonVault$_fun_halvedBaseCap INLINECALLDICT
       57033 PUSHINT
-      26 s() PUSH
+      27 s() PUSH
       s2 PUSH
       LESS
       THROWANYIFNOT
       0 PUSHINT
-      34 s() PUSH
+      44 s() PUSH
       1 EQINT
       IF:<{
         DROP
-        19 s() PUSH
+        20 s() PUSH
       }>ELSE<{
-        34 s() PUSH
+        44 s() PUSH
         2 EQINT
         IF:<{
           DROP
-          18 s() PUSH
+          19 s() PUSH
         }>ELSE<{
-          34 s() PUSH
+          44 s() PUSH
           3 EQINT
           IF:<{
             DROP
-            17 s() PUSH
+            18 s() PUSH
           }>ELSE<{
-            34 s() PUSH
+            44 s() PUSH
             4 EQINT
             IF:<{
               DROP
-              16 s() PUSH
+              17 s() PUSH
             }>ELSE<{
-              34 s() PUSH
+              44 s() PUSH
               6 EQINT
               IF:<{
                 DROP
-                s15 PUSH
+                16 s() PUSH
               }>ELSE<{
-                34 s() PUSH
+                44 s() PUSH
                 7 EQINT
                 IF:<{
                   DROP
-                  s14 PUSH
+                  s15 PUSH
                 }>ELSE<{
-                  34 s() PUSH
+                  44 s() PUSH
                   5 EQINT
                   IF:<{
                     DROP
@@ -2058,88 +2139,91 @@ PROGRAM{
       DUP
       0 GTINT
       1842 THROWIFNOT
+      30 s() 32 s() XCHG
       29 s() 31 s() XCHG
-      28 s() 30 s() XCHG
+      28 s() 32 s() XCHG
       27 s() 31 s() XCHG
-      26 s() 30 s() XCHG
+      26 s() 32 s() XCHG
       25 s() 31 s() XCHG
-      24 s() 30 s() XCHG
+      24 s() 32 s() XCHG
       23 s() 31 s() XCHG
-      22 s() 30 s() XCHG
+      22 s() 32 s() XCHG
       21 s() 31 s() XCHG
-      20 s() 30 s() XCHG
+      20 s() 32 s() XCHG
       19 s() 31 s() XCHG
-      18 s() 30 s() XCHG
+      18 s() 32 s() XCHG
       17 s() 31 s() XCHG
-      16 s() 30 s() XCHG
+      16 s() 32 s() XCHG
       s15 31 s() XCHG
-      s14 30 s() XCHG
+      s14 32 s() XCHG
       s13 31 s() XCHG
-      s12 30 s() XCHG
+      s12 32 s() XCHG
       s11 31 s() XCHG
-      s10 30 s() XCHG
+      s10 32 s() XCHG
       s9 31 s() XCHG
-      s8 30 s() XCHG
+      s8 32 s() XCHG
       s7 31 s() XCHG
-      s6 30 s() XCHG
+      s6 32 s() XCHG
       s5 31 s() XCHG
-      s4 30 s() XCHG
+      s4 32 s() XCHG
       s3 31 s() XCHG
-      s2 30 s() XCHG
+      s2 32 s() XCHG
       s1 31 s() XCHG
-      s0 30 s() XCHG
-      34 s() PUSH
+      s0 32 s() XCHG
+      44 s() PUSH
       36 s() PUSH
       $ToonVault$_fun_countKey INLINECALLDICT
       257 PUSHINT
-      s8 s(-1) s(-1) PUXCPU
+      s9 s(-1) s(-1) PUXCPU
       s3 s(-1) PUXC
       __tact_dict_get_int_int INLINECALLDICT
       ISNULL
       NOT
       IF:<{
         257 PUSHINT
-        s8 s(-1) s(-1) PUXCPU
+        s9 s(-1) s(-1) PUXCPU
         s3 s(-1) PUXC
         __tact_dict_get_int_int INLINECALLDICT
         __tact_not_null INLINECALLDICT
       }>ELSE<{
         0 PUSHINT
       }>
+      30 s() 32 s() XCHG
       29 s() 31 s() XCHG
-      28 s() 30 s() XCHG
+      28 s() 32 s() XCHG
       27 s() 31 s() XCHG
-      26 s() 30 s() XCHG
+      26 s() 32 s() XCHG
       25 s() 31 s() XCHG
-      24 s() 30 s() XCHG
+      24 s() 32 s() XCHG
       23 s() 31 s() XCHG
-      22 s() 30 s() XCHG
+      22 s() 32 s() XCHG
       21 s() 31 s() XCHG
-      20 s() 30 s() XCHG
+      20 s() 32 s() XCHG
       19 s() 31 s() XCHG
-      18 s() 30 s() XCHG
+      18 s() 32 s() XCHG
       17 s() 31 s() XCHG
-      16 s() 30 s() XCHG
+      16 s() 32 s() XCHG
       s15 31 s() XCHG
-      s14 30 s() XCHG
+      s14 32 s() XCHG
       s13 31 s() XCHG
-      s12 30 s() XCHG
+      s12 32 s() XCHG
       s11 31 s() XCHG
-      s10 30 s() XCHG
+      s10 32 s() XCHG
       s9 31 s() XCHG
-      s8 30 s() XCHG
+      s8 32 s() XCHG
       s7 31 s() XCHG
-      s6 30 s() XCHG
+      s6 32 s() XCHG
       s5 31 s() XCHG
-      s4 30 s() XCHG
+      s4 32 s() XCHG
       s3 31 s() XCHG
-      s2 30 s() XCHG
+      s2 32 s() XCHG
       s1 31 s() XCHG
-      s0 30 s() XCHG
-      36 s() PUSH
+      s0 32 s() XCHG
+      46 s() PUSH
       $ToonVault$_fun_isOneTimeReward INLINECALLDICT
       IF:<{
       }>ELSE<{
+        30 s() 31 s() XCHG
         29 s() 30 s() XCHG
         28 s() 29 s() XCHG
         27 s() 28 s() XCHG
@@ -2156,10 +2240,11 @@ PROGRAM{
         16 s() 17 s() XCHG
         s15 16 s() XCHG
         15 ROLL
-        s0 32 s() XCHG
+        s0 34 s() XCHG
         32 s() PUSH
         $ToonVault$_fun_decayedReward INLINECALLDICT
-        s0 32 s() XCHG
+        s0 34 s() XCHG
+        s0 31 s() XCHG
         s0 30 s() XCHG
         s0 29 s() XCHG
         s0 28 s() XCHG
@@ -2178,67 +2263,69 @@ PROGRAM{
         15 -ROLL
       }>
       45 s() PUSH
-      47 s() PUSH
+      48 s() PUSH
       $ToonVault$_fun_pairingKey INLINECALLDICT
       DUP
       IF:<{
         257 PUSHINT
-        s7 s(-1) s(-1) PUXCPU
+        s8 s(-1) s(-1) PUXCPU
         s3 s(-1) PUXC
         __tact_dict_get_int_int INLINECALLDICT
         ISNULL
         NOT
         IF:<{
           257 PUSHINT
-          s7 s(-1) s(-1) PUXCPU
+          s8 s(-1) s(-1) PUXCPU
           s3 s(-1) PUXC
           __tact_dict_get_int_int INLINECALLDICT
           __tact_not_null INLINECALLDICT
         }>ELSE<{
           0 PUSHINT
         }>
-        30 s() 31 s() XCHG
-        29 s() 31 s() XCHG
-        28 s() 31 s() XCHG
-        27 s() 31 s() XCHG
-        26 s() 31 s() XCHG
-        25 s() 31 s() XCHG
-        24 s() 31 s() XCHG
-        23 s() 31 s() XCHG
-        22 s() 31 s() XCHG
-        21 s() 31 s() XCHG
-        20 s() 31 s() XCHG
-        19 s() 31 s() XCHG
-        18 s() 31 s() XCHG
-        17 s() 31 s() XCHG
-        16 s() 31 s() XCHG
-        s15 31 s() XCHG
-        s14 31 s() XCHG
-        s13 31 s() XCHG
-        s12 31 s() XCHG
-        s11 31 s() XCHG
-        s10 31 s() XCHG
-        s9 31 s() XCHG
-        s8 31 s() XCHG
-        s7 31 s() XCHG
-        s6 31 s() XCHG
-        s5 31 s() XCHG
-        s4 31 s() XCHG
-        s3 31 s() XCHG
-        s2 31 s() XCHG
-        s1 31 s() XCHG
-        s0 34 s() XCHG
-        34 s() PUSH
+        31 s() 32 s() XCHG
+        30 s() 32 s() XCHG
+        29 s() 32 s() XCHG
+        28 s() 32 s() XCHG
+        27 s() 32 s() XCHG
+        26 s() 32 s() XCHG
+        25 s() 32 s() XCHG
+        24 s() 32 s() XCHG
+        23 s() 32 s() XCHG
+        22 s() 32 s() XCHG
+        21 s() 32 s() XCHG
+        20 s() 32 s() XCHG
+        19 s() 32 s() XCHG
+        18 s() 32 s() XCHG
+        17 s() 32 s() XCHG
+        16 s() 32 s() XCHG
+        s15 32 s() XCHG
+        s14 32 s() XCHG
+        s13 32 s() XCHG
+        s12 32 s() XCHG
+        s11 32 s() XCHG
+        s10 32 s() XCHG
+        s9 32 s() XCHG
+        s8 32 s() XCHG
+        s7 32 s() XCHG
+        s6 32 s() XCHG
+        s5 32 s() XCHG
+        s4 32 s() XCHG
+        s3 32 s() XCHG
+        s2 32 s() XCHG
+        s1 32 s() XCHG
+        s0 36 s() XCHG
+        36 s() PUSH
         $ToonVault$_fun_pairingDecay INLINECALLDICT
         257 PUSHINT
-        s0 35 s() XCHG
+        s0 37 s() XCHG
         INC
-        35 s() PUSH
-        s4 s8 XCHG
-        s3 36 s() XCHG
-        s2 33 s() XCHG
+        37 s() PUSH
+        s4 s9 XCHG
+        s3 38 s() XCHG
+        s2 34 s() XCHG
         __tact_dict_set_int_int INLINECALLDICT
-        29 s() 32 s() XCHG
+        30 s() 34 s() XCHG
+        29 s() 30 s() XCHG
         28 s() 29 s() XCHG
         27 s() 28 s() XCHG
         26 s() 27 s() XCHG
@@ -2261,14 +2348,15 @@ PROGRAM{
         s9 s10 XCHG
         s8 s9 XCHG
         s7 s8 XCHG
-        s6 s7 XCHG
-        s0 s5 XCHG
         s0 s6 XCHG
+        s0 s7 XCHG
+        s4 s5 XCHG
         s3 s4 XCHG
         s1 s3 s0 XCHG3
       }>ELSE<{
         DROP
       }>
+      30 s() 31 s() XCHG
       29 s() 30 s() XCHG
       28 s() 29 s() XCHG
       27 s() 28 s() XCHG
@@ -2285,9 +2373,10 @@ PROGRAM{
       16 s() 17 s() XCHG
       s15 16 s() XCHG
       15 ROLL
-      s0 32 s() XCHG
+      s0 34 s() XCHG
       43 s() PUSH
       $ToonVault$_fun_applyMultiplier INLINECALLDICT
+      31 s() 38 s() XCHG
       30 s() 37 s() XCHG
       29 s() 36 s() XCHG
       28 s() 35 s() XCHG
@@ -2314,7 +2403,8 @@ PROGRAM{
       s7 s14 XCHG
       7 7 BLKSWAP
       s2 PUSH
-      s7 s2 XCPU
+      s0 s7 XCHG
+      47 s() PUSH
       s0 s7 XCHG
       47 s() PUSH
       s0 s7 XCHG
@@ -2324,37 +2414,38 @@ PROGRAM{
       s3 44 s() XCHG
       s2 43 s() XCHG
       s1 42 s() XCHG
-      s0 41 s() XCHG
-      49 s() PUSH
+      s0 47 s() XCHG
+      50 s() PUSH
       $ToonVault$_fun_multiFactorScore INLINECALLDICT
-      29 s() 30 s() XCHG
-      28 s() 30 s() XCHG
-      27 s() 30 s() XCHG
-      26 s() 30 s() XCHG
-      25 s() 30 s() XCHG
-      24 s() 30 s() XCHG
-      23 s() 30 s() XCHG
-      22 s() 30 s() XCHG
-      21 s() 30 s() XCHG
-      20 s() 30 s() XCHG
-      19 s() 30 s() XCHG
-      18 s() 30 s() XCHG
-      17 s() 30 s() XCHG
-      16 s() 30 s() XCHG
-      s15 30 s() XCHG
-      s14 30 s() XCHG
-      s13 30 s() XCHG
-      s12 30 s() XCHG
-      s11 30 s() XCHG
-      s10 30 s() XCHG
-      s9 30 s() XCHG
-      s0 30 s() XCHG
+      30 s() 31 s() XCHG
+      29 s() 31 s() XCHG
+      28 s() 31 s() XCHG
+      27 s() 31 s() XCHG
+      26 s() 31 s() XCHG
+      25 s() 31 s() XCHG
+      24 s() 31 s() XCHG
+      23 s() 31 s() XCHG
+      22 s() 31 s() XCHG
+      21 s() 31 s() XCHG
+      20 s() 31 s() XCHG
+      19 s() 31 s() XCHG
+      18 s() 31 s() XCHG
+      17 s() 31 s() XCHG
+      16 s() 31 s() XCHG
+      s15 31 s() XCHG
+      s14 31 s() XCHG
+      s13 31 s() XCHG
+      s12 31 s() XCHG
+      s11 31 s() XCHG
+      s10 31 s() XCHG
+      s9 31 s() XCHG
+      s0 31 s() XCHG
       s0 s8 XCHG
       s0 s7 XCHG
       s0 s6 XCHG
       5 -ROLL
       36 s() PUSH
-      41 s() PUSH
+      42 s() PUSH
       $ToonVault$_fun_dailyIdKey INLINECALLDICT
       s3 PUSH
       257 PUSHINT
@@ -2373,31 +2464,31 @@ PROGRAM{
       }>
       1000000000000 PUSHINT
       OVER
-      34 s() PUSH
+      35 s() PUSH
       ADD
       OVER
       GREATER
       IF:<{
-        33 s() POP
-        s0 32 s() XCHG
-        32 s() PUSH
+        34 s() POP
+        s0 33 s() XCHG
+        33 s() PUSH
         SUB
-        s0 32 s() XCHG
+        s0 33 s() XCHG
       }>ELSE<{
         DROP
       }>
-      32 s() PUSH
+      33 s() PUSH
       0 LESSINT
       IF:<{
         0 PUSHINT
-        33 s() POP
+        34 s() POP
       }>
       s1 40 s() XCHG
-      41 s() PUSH
+      42 s() PUSH
       SWAP
-      s0 43 s() XCHG
+      s0 44 s() XCHG
       $ToonVault$_fun_dailyClusterKey INLINECALLDICT
-      40 s() PUSH
+      41 s() PUSH
       0 GTINT
       IF:<{
         s2 PUSH
@@ -2417,96 +2508,96 @@ PROGRAM{
         }>
         2000000000000 PUSHINT
         OVER
-        34 s() PUSH
+        35 s() PUSH
         ADD
         OVER
         GREATER
         IF:<{
-          33 s() POP
-          s1 32 s() XCHG
+          34 s() POP
+          s1 33 s() XCHG
           SUB
-          s0 31 s() XCHG
+          s0 32 s() XCHG
         }>ELSE<{
           2DROP
         }>
       }>
-      31 s() PUSH
+      32 s() PUSH
       0 LESSINT
       IF:<{
         0 PUSHINT
-        32 s() POP
+        33 s() POP
       }>
       s0 33 s() XCHG
-      25 s() PUSH
+      26 s() PUSH
       SUB
-      31 s() PUSH
+      32 s() PUSH
       OVER
       GREATER
       IF:<{
-        31 s() POP
+        32 s() POP
       }>ELSE<{
         DROP
       }>
-      30 s() PUSH
+      31 s() PUSH
       100000 PUSHINT
       LESS
       IF:<{
-        30 s() PUSH
+        31 s() PUSH
         0 GTINT
       }>ELSE<{
         FALSE
       }>
       IF:<{
         100000 PUSHINT
-        31 s() POP
+        32 s() POP
       }>
       36280 PUSHINT
-      26 s() PUSH
-      32 s() PUSH
+      27 s() PUSH
+      33 s() PUSH
       GEQ
       THROWANYIFNOT
-      s0 25 s() XCHG
-      30 s() PUSH
+      s0 26 s() XCHG
+      31 s() PUSH
       SUB
-      s0 24 s() XCHG
-      30 s() PUSH
+      s0 25 s() XCHG
+      31 s() PUSH
       ADD
-      s0 s9 XCHG
+      s0 s10 XCHG
       INC
       257 PUSHINT
           NOW
       OVER
-      s4 s10 XCHG
+      s4 s11 XCHG
       s2 s3 XCHG
-      s2 37 s() XCHG
+      s2 38 s() XCHG
       __tact_dict_set_int_int INLINECALLDICT
       257 PUSHINT
-      s0 31 s() XCHG
+      s0 37 s() XCHG
       INC
-      31 s() PUSH
-      s4 s7 XCHG
-      s3 32 s() XCHG
-      s2 38 s() XCHG
+      37 s() PUSH
+      s4 s8 XCHG
+      s3 38 s() XCHG
+      s2 34 s() XCHG
       __tact_dict_set_int_int INLINECALLDICT
       257 PUSHINT
-      s0 38 s() XCHG
-      28 s() PUSH
+      s0 39 s() XCHG
+      29 s() PUSH
       ADD
-      s3 29 s() XCHG
-      s2 38 s() XCHG
+      s3 35 s() XCHG
+      s2 39 s() XCHG
       s1 36 s() XCHG
       __tact_dict_set_int_coins INLINECALLDICT
-      s0 34 s() XCHG
+      s0 35 s() XCHG
       0 GTINT
       IF:<{
-        OVER
+        s2 PUSH
         257 PUSHINT
         28 s() PUSH
         __tact_dict_get_int_coins INLINECALLDICT
         ISNULL
         NOT
         IF:<{
-          OVER
+          s2 PUSH
           257 PUSHINT
           28 s() PUSH
           __tact_dict_get_int_coins INLINECALLDICT
@@ -2516,20 +2607,23 @@ PROGRAM{
         }>
         257 PUSHINT
         SWAP
-        26 s() PUSH
+        27 s() PUSH
         ADD
+        s3 s4 XCHG
         s1 s2 XCHG
         s1 28 s() XCHG
         __tact_dict_set_int_coins INLINECALLDICT
+        SWAP
       }>ELSE<{
         26 s() POP
       }>
+      23 s() 30 s() XCHG
       22 s() 29 s() XCHG
       21 s() 28 s() XCHG
       20 s() 27 s() XCHG
-      19 s() 26 s() XCHG
-      17 s() 25 s() XCHG
-      s2 24 s() XCHG
+      18 s() 26 s() XCHG
+      s3 25 s() XCHG
+      17 s() 24 s() XCHG
       16 s() 23 s() XCHG
       s15 22 s() XCHG
       s14 21 s() XCHG
@@ -2543,31 +2637,31 @@ PROGRAM{
       s6 s13 XCHG
       s5 s12 XCHG
       s4 s11 XCHG
-      s3 s10 XCHG
-      s6 s9 XCHG
-      s1 s8 XCHG
-      s7 30 s() XCHG
-      s6 31 s() XCHG
+      s7 s10 XCHG
+      s2 s9 XCHG
+      s4 s8 XCHG
+      s7 31 s() XCHG
+      s3 s6 XCHG
       s2 s5 XCHG
-      s4 33 s() XCHG
-      s2 32 s() XCHG
-      SWAP
+      s4 34 s() XCHG
+      s0 s3 XCHG
       s0 33 s() XCHG
-      30 s() PUSH
+      s0 s2 XCHG
+      32 s() PUSH
       $ToonVault$_fun_isOneTimeReward INLINECALLDICT
       IF:<{
         257 PUSHINT
         ROT
-        s0 33 s() XCHG
+        s0 34 s() XCHG
         TRUE
         1 PUSHINT
         __tact_dict_set_int_int INLINECALLDICT
-        s0 31 s() XCHG
+        s0 32 s() XCHG
       }>ELSE<{
-        32 s() POP
+        33 s() POP
       }>
-      s0 29 s() XCHG
-      32 s() PUSH
+      s0 31 s() XCHG
+      33 s() PUSH
       31 s() PUSH
       $RewardClaimed$_constructor_rewardId_recipient_amount INLINECALLDICT
       NEWC
@@ -2575,7 +2669,7 @@ PROGRAM{
       $global_emit INLINECALLDICT
       1 PUSHINT
           B{b5ee9c7241010101001100001e00000000746f6f6e5f72657761726419eb5d8f} B>boc PUSHREF
-      s3 33 s() XCHG
+      s3 34 s() XCHG
       s2 31 s() XCHG
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
@@ -2644,6 +2738,7 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      26 s() 30 s() XCHG
       25 s() 29 s() XCHG
       24 s() 28 s() XCHG
       23 s() 27 s() XCHG
@@ -2659,7 +2754,7 @@ PROGRAM{
       s13 17 s() XCHG
       s12 16 s() XCHG
       4 12 BLKSWAP
-      s3 s3 s0 XCHG3
+      s3 s0 s0 XCHG3
       $ToonVault$_contract_store INLINECALLDICT
     }>
     OVER
@@ -2667,26 +2762,26 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       2DROP
-      s0 29 s() XCHG
+      s0 30 s() XCHG
       LDMSGADDR
       LDVARUINT16
       DROP
       4630 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      30 s() PUSH
+      31 s() PUSH
       SDEQ
       THROWANYIFNOT
       36280 PUSHINT
-      26 s() PUSH
+      27 s() PUSH
       s2 PUSH
       GEQ
       THROWANYIFNOT
-      s0 25 s() XCHG
-      25 s() PUSH
+      s0 26 s() XCHG
+      26 s() PUSH
       SUB
       2 PUSHINT
           B{b5ee9c72410101010015000026000000006d696e745f617574686f72697a656403446d71} B>boc PUSHREF
-      s2 27 s() XCHG
+      s2 28 s() XCHG
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
           b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
@@ -2754,6 +2849,7 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      28 s() 30 s() XCHG
       27 s() 29 s() XCHG
       26 s() 28 s() XCHG
       25 s() 27 s() XCHG
@@ -2768,8 +2864,7 @@ PROGRAM{
       16 s() 18 s() XCHG
       s15 17 s() XCHG
       s14 16 s() XCHG
-      s13 s15 XCHG
-      2 13 BLKSWAP
+      2 14 BLKSWAP
       $ToonVault$_contract_store INLINECALLDICT
     }>
     OVER
@@ -2777,18 +2872,18 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       2DROP
-      9 9 BLKDROP2
-      s9 POP
-      s9 POP
-      s9 POP
-      s0 17 s() XCHG
+      10 10 BLKDROP2
+      s10 POP
+      s10 POP
+      s0 18 s() XCHG
       $Configuration$_load INLINECALLDICT
       s12 POP
       55558 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      28 s() PUSH
+      29 s() PUSH
       SDEQ
       THROWANYIFNOT
+      28 s() 30 s() XCHG
       27 s() 29 s() XCHG
       26 s() 28 s() XCHG
       25 s() 27 s() XCHG
@@ -2796,23 +2891,17 @@ PROGRAM{
       23 s() 25 s() XCHG
       22 s() 24 s() XCHG
       21 s() 23 s() XCHG
-      20 s() 22 s() XCHG
-      s10 21 s() XCHG
-      s9 20 s() XCHG
-      s8 19 s() XCHG
-      s7 18 s() XCHG
-      s6 17 s() XCHG
-      s5 16 s() XCHG
-      s4 s15 XCHG
-      s3 s14 XCHG
-      s13 s1 s11 XCHG3
-      s12 s10 XCHG2
-      s5 s9 XCHG
-      s4 s8 XCHG
-      s3 s7 XCHG
-      s6 s5 s0 XCHG3
-      s1 s4 XCHG
-      s3 s3 s0 XCHG3
+      s10 22 s() XCHG
+      s9 21 s() XCHG
+      s8 20 s() XCHG
+      s7 19 s() XCHG
+      s6 18 s() XCHG
+      s5 17 s() XCHG
+      s4 16 s() XCHG
+      s3 s15 XCHG
+      s14 s13 s12 XCHG3
+      s6 s10 XCHG
+      4 6 BLKSWAP
       $ToonVault$_contract_store INLINECALLDICT
     }>
     OVER
@@ -2820,21 +2909,97 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       2DROP
-      s0 29 s() XCHG
+      s0 30 s() XCHG
       LDVARUINT16
+      DROP
+      52129 PUSHINT
+      __tact_context_get_sender INLINECALLDICT
+      31 s() PUSH
+      SDEQ
+      THROWANYIFNOT
+      s1 25 s() XCHG
+      ADD
+      28 s() 30 s() XCHG
+      27 s() 29 s() XCHG
+      26 s() 28 s() XCHG
+      25 s() 27 s() XCHG
+      s0 26 s() XCHG
+      23 s() 25 s() XCHG
+      22 s() 24 s() XCHG
+      21 s() 23 s() XCHG
+      20 s() 22 s() XCHG
+      19 s() 21 s() XCHG
+      18 s() 20 s() XCHG
+      17 s() 19 s() XCHG
+      16 s() 18 s() XCHG
+      s15 17 s() XCHG
+      s14 16 s() XCHG
+      s13 s15 XCHG
+      s12 s14 XCHG
+      s11 s13 XCHG
+      s10 s12 XCHG
+      s9 s11 XCHG
+      s8 s10 XCHG
+      s7 s9 XCHG
+      s6 s8 XCHG
+      s5 s7 XCHG
+      s4 s6 XCHG
+      s3 s5 XCHG
+      s4 s3 s0 XCHG3
+      $ToonVault$_contract_store INLINECALLDICT
+    }>
+    OVER
+    272637735 PUSHINT
+    EQUAL
+    IFJMP:<{
+      2DROP
+      28 s() POP
+      s0 29 s() XCHG
+      LDMSGADDR
       DROP
       52129 PUSHINT
       __tact_context_get_sender INLINECALLDICT
       30 s() PUSH
       SDEQ
       THROWANYIFNOT
-      s1 24 s() XCHG
-      ADD
-      27 s() 29 s() XCHG
+      28 s() 30 s() XCHG
+      s0 29 s() XCHG
       26 s() 28 s() XCHG
       25 s() 27 s() XCHG
       24 s() 26 s() XCHG
-      s0 25 s() XCHG
+      23 s() 25 s() XCHG
+      22 s() 24 s() XCHG
+      21 s() 23 s() XCHG
+      20 s() 22 s() XCHG
+      19 s() 21 s() XCHG
+      18 s() 20 s() XCHG
+      17 s() 19 s() XCHG
+      16 s() 18 s() XCHG
+      s15 17 s() XCHG
+      s14 16 s() XCHG
+      2 14 BLKSWAP
+      $ToonVault$_contract_store INLINECALLDICT
+    }>
+    OVER
+    3079187044 PUSHINT
+    EQUAL
+    IFJMP:<{
+      2DROP
+      27 s() POP
+      s0 29 s() XCHG
+      LDMSGADDR
+      DROP
+      52129 PUSHINT
+      __tact_context_get_sender INLINECALLDICT
+      30 s() PUSH
+      SDEQ
+      THROWANYIFNOT
+      28 s() 30 s() XCHG
+      27 s() 29 s() XCHG
+      s0 28 s() XCHG
+      25 s() 27 s() XCHG
+      24 s() 26 s() XCHG
+      23 s() 25 s() XCHG
       22 s() 24 s() XCHG
       21 s() 23 s() XCHG
       20 s() 22 s() XCHG
@@ -2860,51 +3025,26 @@ PROGRAM{
       $ToonVault$_contract_store INLINECALLDICT
     }>
     OVER
-    272637735 PUSHINT
-    EQUAL
-    IFJMP:<{
-      2DROP
-      27 s() POP
-      s0 28 s() XCHG
-      LDMSGADDR
-      DROP
-      52129 PUSHINT
-      __tact_context_get_sender INLINECALLDICT
-      29 s() PUSH
-      SDEQ
-      THROWANYIFNOT
-      27 s() 29 s() XCHG
-      s0 28 s() XCHG
-      25 s() 27 s() XCHG
-      24 s() 26 s() XCHG
-      23 s() 25 s() XCHG
-      22 s() 24 s() XCHG
-      21 s() 23 s() XCHG
-      20 s() 22 s() XCHG
-      19 s() 21 s() XCHG
-      18 s() 20 s() XCHG
-      17 s() 19 s() XCHG
-      16 s() 18 s() XCHG
-      s15 17 s() XCHG
-      s14 16 s() XCHG
-      s13 s15 XCHG
-      2 13 BLKSWAP
-      $ToonVault$_contract_store INLINECALLDICT
-    }>
-    OVER
-    3079187044 PUSHINT
+    1504480982 PUSHINT
     EQUAL
     IFJMP:<{
       2DROP
       26 s() POP
-      s0 28 s() XCHG
-      LDMSGADDR
+      s0 29 s() XCHG
+      256 LDU
       DROP
       52129 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      29 s() PUSH
+      30 s() PUSH
       SDEQ
       THROWANYIFNOT
+      8406 PUSHINT
+      OVER
+      0 NEQINT
+      THROWANYIFNOT
+          B{b5ee9c72410101010016000028000000004f7261636c654b6579526f74617465646c10913b} B>boc PUSHREF
+      $global_emit INLINECALLDICT
+      28 s() 30 s() XCHG
       27 s() 29 s() XCHG
       26 s() 28 s() XCHG
       s0 27 s() XCHG
@@ -2919,56 +3059,7 @@ PROGRAM{
       16 s() 18 s() XCHG
       s15 17 s() XCHG
       s14 16 s() XCHG
-      s13 s15 XCHG
-      s12 s14 XCHG
-      s11 s13 XCHG
-      s10 s12 XCHG
-      s9 s11 XCHG
-      s8 s10 XCHG
-      s7 s9 XCHG
-      s6 s8 XCHG
-      s5 s7 XCHG
-      s4 s6 XCHG
-      s3 s5 XCHG
-      s4 s3 s0 XCHG3
-      $ToonVault$_contract_store INLINECALLDICT
-    }>
-    OVER
-    1504480982 PUSHINT
-    EQUAL
-    IFJMP:<{
-      2DROP
-      25 s() POP
-      s0 28 s() XCHG
-      256 LDU
-      DROP
-      52129 PUSHINT
-      __tact_context_get_sender INLINECALLDICT
-      29 s() PUSH
-      SDEQ
-      THROWANYIFNOT
-      8406 PUSHINT
-      OVER
-      0 NEQINT
-      THROWANYIFNOT
-          B{b5ee9c72410101010016000028000000004f7261636c654b6579526f74617465646c10913b} B>boc PUSHREF
-      $global_emit INLINECALLDICT
-      27 s() 29 s() XCHG
-      26 s() 28 s() XCHG
-      25 s() 27 s() XCHG
-      s0 26 s() XCHG
-      23 s() 25 s() XCHG
-      22 s() 24 s() XCHG
-      21 s() 23 s() XCHG
-      20 s() 22 s() XCHG
-      19 s() 21 s() XCHG
-      18 s() 20 s() XCHG
-      17 s() 19 s() XCHG
-      16 s() 18 s() XCHG
-      s15 17 s() XCHG
-      s14 16 s() XCHG
-      s13 s15 XCHG
-      2 13 BLKSWAP
+      2 14 BLKSWAP
       $ToonVault$_contract_store INLINECALLDICT
     }>
     OVER
@@ -2976,27 +3067,27 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       2DROP
-      s0 29 s() XCHG
+      s0 30 s() XCHG
       LDVARUINT16
       LDMSGADDR
       DROP
       52129 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      31 s() PUSH
+      32 s() PUSH
       SDEQ
       THROWANYIFNOT
       36280 PUSHINT
-      26 s() PUSH
+      27 s() PUSH
       s3 PUSH
       GEQ
       THROWANYIFNOT
-      s0 25 s() XCHG
+      s0 26 s() XCHG
       OVER
       SUB
       2 PUSHINT
           B{b5ee9c7241010101001000001c000000007769746864726177616cf4d2c6d5} B>boc PUSHREF
-      s3 27 s() XCHG
-      s2 27 s() XCHG
+      s3 28 s() XCHG
+      s2 28 s() XCHG
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
           b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
@@ -3064,6 +3155,52 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      28 s() 30 s() XCHG
+      27 s() 29 s() XCHG
+      26 s() 28 s() XCHG
+      25 s() 27 s() XCHG
+      24 s() 26 s() XCHG
+      23 s() 25 s() XCHG
+      22 s() 24 s() XCHG
+      21 s() 23 s() XCHG
+      20 s() 22 s() XCHG
+      19 s() 21 s() XCHG
+      18 s() 20 s() XCHG
+      17 s() 19 s() XCHG
+      16 s() 18 s() XCHG
+      s15 17 s() XCHG
+      s14 16 s() XCHG
+      2 14 BLKSWAP
+      $ToonVault$_contract_store INLINECALLDICT
+    }>
+    OVER
+    1618583010 PUSHINT
+    EQUAL
+    IFJMP:<{
+      2DROP
+      s0 30 s() XCHG
+      LDMSGADDR
+      257 PUSHINT
+      LDIX
+      DROP
+      42423 PUSHINT
+      __tact_context_get_sender INLINECALLDICT
+      31 s() PUSH
+      SDEQ
+      IF:<{
+        TRUE
+      }>ELSE<{
+        __tact_context_get_sender INLINECALLDICT
+        32 s() PUSH
+        SDEQ
+      }>
+      THROWANYIFNOT
+      s2 s3 XCHG
+      267 PUSHINT
+      -ROT
+      257 PUSHINT
+      __tact_dict_set_slice_int INLINECALLDICT
+      28 s() 30 s() XCHG
       27 s() 29 s() XCHG
       26 s() 28 s() XCHG
       25 s() 27 s() XCHG
@@ -3079,7 +3216,18 @@ PROGRAM{
       s15 17 s() XCHG
       s14 16 s() XCHG
       s13 s15 XCHG
-      2 13 BLKSWAP
+      s12 s14 XCHG
+      s11 s13 XCHG
+      s10 s12 XCHG
+      s9 s11 XCHG
+      s8 s10 XCHG
+      s7 s9 XCHG
+      s6 s8 XCHG
+      s5 s7 XCHG
+      s4 s6 XCHG
+      s3 s5 XCHG
+      s4 s3 s3 XCHG3
+      s0 s2 XCHG
       $ToonVault$_contract_store INLINECALLDICT
     }>
     OVER
@@ -3087,12 +3235,13 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       2DROP
-      s0 29 s() XCHG
+      s0 30 s() XCHG
       64 LDU
       DROP
       $DeployOk$_constructor_queryId INLINECALLDICT
       NEWC
       $DeployOk$_store_cell INLINECALLDICT
+      29 s() 31 s() XCHG
       28 s() 30 s() XCHG
       27 s() 29 s() XCHG
       26 s() 28 s() XCHG
@@ -3120,17 +3269,17 @@ PROGRAM{
       s4 s6 XCHG
       s3 s5 XCHG
       s4 s3 s0 XCHG3
-      s1 s2 XCHG
       $ToonVault$_fun_notify INLINECALLDICT
       $ToonVault$_contract_store INLINECALLDICT
     }>
-    31 s() POP
+    32 s() POP
     0 EQINT
-    s0 30 s() XCHG
+    s0 31 s() XCHG
     33 LESSINT
-    s1 30 s() XCHG
+    s1 31 s() XCHG
     AND
     IFJMP:<{
+      28 s() 30 s() XCHG
       27 s() 29 s() XCHG
       26 s() 28 s() XCHG
       25 s() 27 s() XCHG
@@ -3145,12 +3294,12 @@ PROGRAM{
       16 s() 18 s() XCHG
       s15 17 s() XCHG
       s14 16 s() XCHG
-      s13 s15 XCHG
-      2 13 BLKSWAP
+      2 14 BLKSWAP
       $ToonVault$_contract_store INLINECALLDICT
     }>
     15 BLKDROP
     15 BLKDROP
+    DROP
     130 THROW
   }>
   __tact_selector_hack PROC:<{

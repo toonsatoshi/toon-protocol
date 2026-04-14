@@ -1,13 +1,9 @@
 import "@stdlib/deploy";
+import "./toon_jetton_master.tact";
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Messages — inbound
 // ─────────────────────────────────────────────────────────────────────────────
-
-// Staking is mocked until real Jetton transfer flow is wired.
-message StakeToon {
-    amount: Int as coins;
-}
 
 message UnstakeGovernance {
     amount: Int as coins;
@@ -69,11 +65,6 @@ message SetConfig {
     config: Configuration;
 }
 
-// Dispatched to ToonRegistry on mintAuthority proposal execution.
-message UpdateMintAuthority {
-    newAuthority: Address;
-}
-
 message UpdateConfigParam {
     parameter: String;
     newValue: Int as uint64;
@@ -124,8 +115,9 @@ struct AddressProposal {
 //
 contract ToonGovernance with Deployable {
 
-    registry: Address;
-    vault:    Address;
+    registry:     Address;
+    vault:        Address;
+    jettonMaster: Address;
 
     stakes:      map<Address, Int>;
     totalStaked: Int as coins;
@@ -143,9 +135,10 @@ contract ToonGovernance with Deployable {
     hasVoted:        map<Int, Bool>;
     hasVotedAddress: map<Int, Bool>;
 
-    init(registry: Address, vault: Address) {
+    init(registry: Address, vault: Address, jettonMaster: Address) {
         self.registry              = registry;
         self.vault                 = vault;
+        self.jettonMaster          = jettonMaster;
         self.totalStaked           = 0;
         self.nextProposalId        = 0;
         self.nextAddressProposalId = 0;
@@ -175,13 +168,17 @@ contract ToonGovernance with Deployable {
     }
 
     // ─────────────────────────────────────────────────────────
-    //  Staking (mock — no real Jetton transfer yet)
+    //  Staking (TEP-74 compliant)
     // ─────────────────────────────────────────────────────────
 
-    receive(msg: StakeToon) {
-        let existing: Int? = self.stakes.get(sender());
+    receive(msg: TokenNotification) {
+        // Verify sender is the ToonGovernance's own Jetton wallet
+        let expectedWallet: Address = contractAddress(initOf ToonJettonWallet(0, myAddress(), self.jettonMaster));
+        require(sender() == expectedWallet, "ToonGovernance: unauthorized Jetton notification");
+
+        let existing: Int? = self.stakes.get(msg.from);
         let current: Int   = existing != null ? existing!! : 0;
-        self.stakes.set(sender(), current + msg.amount);
+        self.stakes.set(msg.from, current + msg.amount);
         self.totalStaked = self.totalStaked + msg.amount;
     }
 
@@ -189,14 +186,26 @@ contract ToonGovernance with Deployable {
         let existing: Int? = self.stakes.get(sender());
         require(existing != null && existing!! >= msg.amount,
             "ToonGovernance: insufficient stake");
+
         let newBal: Int = existing!! - msg.amount;
         self.stakes.set(sender(), newBal);
         self.totalStaked = self.totalStaked - msg.amount;
+
+        // Send Jettons back to the user
+        let jettonWallet: Address = contractAddress(initOf ToonJettonWallet(0, myAddress(), self.jettonMaster));
         send(SendParameters{
-            to:   sender(),
+            to:    jettonWallet,
             value: 0,
             mode:  SendRemainingValue,
-            body:  "Unstaked $TOON".asComment()
+            body:  TokenTransfer{
+                queryId:              0,
+                amount:               msg.amount,
+                destination:          sender(),
+                response_destination: sender(),
+                customPayload:        null,
+                forward_ton_amount:   0,
+                forward_payload:      emptySlice()
+            }.toCell()
         });
     }
 

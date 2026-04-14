@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonVault
-BoC Size: 8862 bytes
+BoC Size: 9325 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 24
+Total structures: 25
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -97,9 +97,13 @@ Signature: `SetOracleKey{newPublicKey:uint256}`
 TL-B: `treasury_withdraw#79d47611 amount:coins recipient:address = TreasuryWithdraw`
 Signature: `TreasuryWithdraw{amount:coins,recipient:address}`
 
+### UpdateIdentityWeight
+TL-B: `update_identity_weight#60799de2 wallet:address weight:int257 = UpdateIdentityWeight`
+Signature: `UpdateIdentityWeight{wallet:address,weight:int257}`
+
 ### ToonVault$Data
-TL-B: `_ owner:address registry:address governance:address oraclePublicKey:uint256 totalReserve:coins dailyEmitted:coins lastResetDay:uint32 halved:bool config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16} dailyClaimCount:uint32 usedClaimIds:dict<int, bool> lastClaimTimestamp:dict<int, int> claimCounts:dict<int, int> pairingCounts:dict<int, int> participantEntropy:dict<int, int> lastRewardTimestamp:dict<int, int> dailyIdentityRewards:dict<int, coins> dailyClusterRewards:dict<int, coins> lifetimeClaimed:dict<int, bool> = ToonVault`
-Signature: `ToonVault{owner:address,registry:address,governance:address,oraclePublicKey:uint256,totalReserve:coins,dailyEmitted:coins,lastResetDay:uint32,halved:bool,config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16},dailyClaimCount:uint32,usedClaimIds:dict<int, bool>,lastClaimTimestamp:dict<int, int>,claimCounts:dict<int, int>,pairingCounts:dict<int, int>,participantEntropy:dict<int, int>,lastRewardTimestamp:dict<int, int>,dailyIdentityRewards:dict<int, coins>,dailyClusterRewards:dict<int, coins>,lifetimeClaimed:dict<int, bool>}`
+TL-B: `_ owner:address registry:address governance:address oraclePublicKey:uint256 totalReserve:coins dailyEmitted:coins lastResetDay:uint32 halved:bool config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16} dailyClaimCount:uint32 usedClaimIds:dict<int, bool> lastClaimTimestamp:dict<int, int> claimCounts:dict<int, int> pairingCounts:dict<int, int> participantEntropy:dict<int, int> lastRewardTimestamp:dict<int, int> identityWeights:dict<address, int> dailyIdentityRewards:dict<int, coins> dailyClusterRewards:dict<int, coins> lifetimeClaimed:dict<int, bool> = ToonVault`
+Signature: `ToonVault{owner:address,registry:address,governance:address,oraclePublicKey:uint256,totalReserve:coins,dailyEmitted:coins,lastResetDay:uint32,halved:bool,config:Configuration{emissionCap:coins,minWalletAgeDays:uint32,targetDailyActivity:uint32,rewardBaseActiveListener:coins,rewardBaseGrowthAgent:coins,rewardBaseArtistLaunch:coins,rewardBaseTrendsetter:coins,rewardBaseEarlyBeliever:coins,rewardBaseDropInvestor:coins,decayFactor:uint16,minThreshold:coins,antiFarmingCoeff:uint16},dailyClaimCount:uint32,usedClaimIds:dict<int, bool>,lastClaimTimestamp:dict<int, int>,claimCounts:dict<int, int>,pairingCounts:dict<int, int>,participantEntropy:dict<int, int>,lastRewardTimestamp:dict<int, int>,identityWeights:dict<address, int>,dailyIdentityRewards:dict<int, coins>,dailyClusterRewards:dict<int, coins>,lifetimeClaimed:dict<int, bool>}`
 
 ## Get methods
 Total get methods: 12
@@ -190,6 +194,7 @@ Argument: claimId
 * 26099: ToonVault: no Telegram identity
 * 36280: ToonVault: insufficient reserve
 * 40789: ToonVault: invalid rewardId
+* 42423: ToonVault: unauthorized identity weight update
 * 43615: ToonVault: invalid wallet address
 * 44370: ToonVault: invalid oracle signature
 * 52129: ToonVault: not owner

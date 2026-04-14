@@ -756,6 +756,744 @@ export function dictValueParserFactoryDeploy(): DictionaryValue<FactoryDeploy> {
     }
 }
 
+export type JettonData = {
+    $$type: 'JettonData';
+    totalSupply: bigint;
+    mintable: boolean;
+    adminAddress: Address;
+    content: Cell;
+    walletCode: Cell;
+}
+
+export function storeJettonData(src: JettonData) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeInt(src.totalSupply, 257);
+        b_0.storeBit(src.mintable);
+        b_0.storeAddress(src.adminAddress);
+        b_0.storeRef(src.content);
+        b_0.storeRef(src.walletCode);
+    };
+}
+
+export function loadJettonData(slice: Slice) {
+    const sc_0 = slice;
+    const _totalSupply = sc_0.loadIntBig(257);
+    const _mintable = sc_0.loadBit();
+    const _adminAddress = sc_0.loadAddress();
+    const _content = sc_0.loadRef();
+    const _walletCode = sc_0.loadRef();
+    return { $$type: 'JettonData' as const, totalSupply: _totalSupply, mintable: _mintable, adminAddress: _adminAddress, content: _content, walletCode: _walletCode };
+}
+
+export function loadTupleJettonData(source: TupleReader) {
+    const _totalSupply = source.readBigNumber();
+    const _mintable = source.readBoolean();
+    const _adminAddress = source.readAddress();
+    const _content = source.readCell();
+    const _walletCode = source.readCell();
+    return { $$type: 'JettonData' as const, totalSupply: _totalSupply, mintable: _mintable, adminAddress: _adminAddress, content: _content, walletCode: _walletCode };
+}
+
+export function loadGetterTupleJettonData(source: TupleReader) {
+    const _totalSupply = source.readBigNumber();
+    const _mintable = source.readBoolean();
+    const _adminAddress = source.readAddress();
+    const _content = source.readCell();
+    const _walletCode = source.readCell();
+    return { $$type: 'JettonData' as const, totalSupply: _totalSupply, mintable: _mintable, adminAddress: _adminAddress, content: _content, walletCode: _walletCode };
+}
+
+export function storeTupleJettonData(source: JettonData) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.totalSupply);
+    builder.writeBoolean(source.mintable);
+    builder.writeAddress(source.adminAddress);
+    builder.writeCell(source.content);
+    builder.writeCell(source.walletCode);
+    return builder.build();
+}
+
+export function dictValueParserJettonData(): DictionaryValue<JettonData> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeJettonData(src)).endCell());
+        },
+        parse: (src) => {
+            return loadJettonData(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenTransfer = {
+    $$type: 'TokenTransfer';
+    queryId: bigint;
+    amount: bigint;
+    destination: Address;
+    response_destination: Address | null;
+    customPayload: Cell | null;
+    forward_ton_amount: bigint;
+    forward_payload: Slice;
+}
+
+export function storeTokenTransfer(src: TokenTransfer) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(260734629, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.destination);
+        b_0.storeAddress(src.response_destination);
+        if (src.customPayload !== null && src.customPayload !== undefined) { b_0.storeBit(true).storeRef(src.customPayload); } else { b_0.storeBit(false); }
+        b_0.storeCoins(src.forward_ton_amount);
+        b_0.storeBuilder(src.forward_payload.asBuilder());
+    };
+}
+
+export function loadTokenTransfer(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 260734629) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _destination = sc_0.loadAddress();
+    const _response_destination = sc_0.loadMaybeAddress();
+    const _customPayload = sc_0.loadBit() ? sc_0.loadRef() : null;
+    const _forward_ton_amount = sc_0.loadCoins();
+    const _forward_payload = sc_0;
+    return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, response_destination: _response_destination, customPayload: _customPayload, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+}
+
+export function loadTupleTokenTransfer(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _destination = source.readAddress();
+    const _response_destination = source.readAddressOpt();
+    const _customPayload = source.readCellOpt();
+    const _forward_ton_amount = source.readBigNumber();
+    const _forward_payload = source.readCell().asSlice();
+    return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, response_destination: _response_destination, customPayload: _customPayload, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+}
+
+export function loadGetterTupleTokenTransfer(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _destination = source.readAddress();
+    const _response_destination = source.readAddressOpt();
+    const _customPayload = source.readCellOpt();
+    const _forward_ton_amount = source.readBigNumber();
+    const _forward_payload = source.readCell().asSlice();
+    return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, response_destination: _response_destination, customPayload: _customPayload, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+}
+
+export function storeTupleTokenTransfer(source: TokenTransfer) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.destination);
+    builder.writeAddress(source.response_destination);
+    builder.writeCell(source.customPayload);
+    builder.writeNumber(source.forward_ton_amount);
+    builder.writeSlice(source.forward_payload.asCell());
+    return builder.build();
+}
+
+export function dictValueParserTokenTransfer(): DictionaryValue<TokenTransfer> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenTransfer(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenTransfer(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenMint = {
+    $$type: 'TokenMint';
+    queryId: bigint;
+    amount: bigint;
+    receiver: Address;
+}
+
+export function storeTokenMint(src: TokenMint) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(376746144, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.receiver);
+    };
+}
+
+export function loadTokenMint(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 376746144) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _receiver = sc_0.loadAddress();
+    return { $$type: 'TokenMint' as const, queryId: _queryId, amount: _amount, receiver: _receiver };
+}
+
+export function loadTupleTokenMint(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _receiver = source.readAddress();
+    return { $$type: 'TokenMint' as const, queryId: _queryId, amount: _amount, receiver: _receiver };
+}
+
+export function loadGetterTupleTokenMint(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _receiver = source.readAddress();
+    return { $$type: 'TokenMint' as const, queryId: _queryId, amount: _amount, receiver: _receiver };
+}
+
+export function storeTupleTokenMint(source: TokenMint) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.receiver);
+    return builder.build();
+}
+
+export function dictValueParserTokenMint(): DictionaryValue<TokenMint> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenMint(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenMint(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenTransferInternal = {
+    $$type: 'TokenTransferInternal';
+    queryId: bigint;
+    amount: bigint;
+    from: Address;
+    response_destination: Address | null;
+    forward_ton_amount: bigint;
+    forward_payload: Slice;
+}
+
+export function storeTokenTransferInternal(src: TokenTransferInternal) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(395134233, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.from);
+        b_0.storeAddress(src.response_destination);
+        b_0.storeCoins(src.forward_ton_amount);
+        b_0.storeBuilder(src.forward_payload.asBuilder());
+    };
+}
+
+export function loadTokenTransferInternal(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 395134233) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _from = sc_0.loadAddress();
+    const _response_destination = sc_0.loadMaybeAddress();
+    const _forward_ton_amount = sc_0.loadCoins();
+    const _forward_payload = sc_0;
+    return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, response_destination: _response_destination, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+}
+
+export function loadTupleTokenTransferInternal(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _from = source.readAddress();
+    const _response_destination = source.readAddressOpt();
+    const _forward_ton_amount = source.readBigNumber();
+    const _forward_payload = source.readCell().asSlice();
+    return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, response_destination: _response_destination, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+}
+
+export function loadGetterTupleTokenTransferInternal(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _from = source.readAddress();
+    const _response_destination = source.readAddressOpt();
+    const _forward_ton_amount = source.readBigNumber();
+    const _forward_payload = source.readCell().asSlice();
+    return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, response_destination: _response_destination, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+}
+
+export function storeTupleTokenTransferInternal(source: TokenTransferInternal) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.from);
+    builder.writeAddress(source.response_destination);
+    builder.writeNumber(source.forward_ton_amount);
+    builder.writeSlice(source.forward_payload.asCell());
+    return builder.build();
+}
+
+export function dictValueParserTokenTransferInternal(): DictionaryValue<TokenTransferInternal> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenTransferInternal(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenTransferInternal(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenNotification = {
+    $$type: 'TokenNotification';
+    queryId: bigint;
+    amount: bigint;
+    from: Address;
+    forward_payload: Slice;
+}
+
+export function storeTokenNotification(src: TokenNotification) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(1935855772, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.from);
+        b_0.storeBuilder(src.forward_payload.asBuilder());
+    };
+}
+
+export function loadTokenNotification(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1935855772) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _from = sc_0.loadAddress();
+    const _forward_payload = sc_0;
+    return { $$type: 'TokenNotification' as const, queryId: _queryId, amount: _amount, from: _from, forward_payload: _forward_payload };
+}
+
+export function loadTupleTokenNotification(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _from = source.readAddress();
+    const _forward_payload = source.readCell().asSlice();
+    return { $$type: 'TokenNotification' as const, queryId: _queryId, amount: _amount, from: _from, forward_payload: _forward_payload };
+}
+
+export function loadGetterTupleTokenNotification(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _from = source.readAddress();
+    const _forward_payload = source.readCell().asSlice();
+    return { $$type: 'TokenNotification' as const, queryId: _queryId, amount: _amount, from: _from, forward_payload: _forward_payload };
+}
+
+export function storeTupleTokenNotification(source: TokenNotification) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.from);
+    builder.writeSlice(source.forward_payload.asCell());
+    return builder.build();
+}
+
+export function dictValueParserTokenNotification(): DictionaryValue<TokenNotification> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenNotification(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenNotification(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenBurn = {
+    $$type: 'TokenBurn';
+    queryId: bigint;
+    amount: bigint;
+    response_destination: Address | null;
+}
+
+export function storeTokenBurn(src: TokenBurn) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(1499400124, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.response_destination);
+    };
+}
+
+export function loadTokenBurn(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1499400124) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _response_destination = sc_0.loadMaybeAddress();
+    return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, response_destination: _response_destination };
+}
+
+export function loadTupleTokenBurn(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _response_destination = source.readAddressOpt();
+    return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, response_destination: _response_destination };
+}
+
+export function loadGetterTupleTokenBurn(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _response_destination = source.readAddressOpt();
+    return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, response_destination: _response_destination };
+}
+
+export function storeTupleTokenBurn(source: TokenBurn) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.response_destination);
+    return builder.build();
+}
+
+export function dictValueParserTokenBurn(): DictionaryValue<TokenBurn> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenBurn(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenBurn(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenBurnNotification = {
+    $$type: 'TokenBurnNotification';
+    queryId: bigint;
+    amount: bigint;
+    owner: Address;
+    response_destination: Address | null;
+}
+
+export function storeTokenBurnNotification(src: TokenBurnNotification) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(2078119902, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.owner);
+        b_0.storeAddress(src.response_destination);
+    };
+}
+
+export function loadTokenBurnNotification(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2078119902) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _owner = sc_0.loadAddress();
+    const _response_destination = sc_0.loadMaybeAddress();
+    return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, response_destination: _response_destination };
+}
+
+export function loadTupleTokenBurnNotification(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _owner = source.readAddress();
+    const _response_destination = source.readAddressOpt();
+    return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, response_destination: _response_destination };
+}
+
+export function loadGetterTupleTokenBurnNotification(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _owner = source.readAddress();
+    const _response_destination = source.readAddressOpt();
+    return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, response_destination: _response_destination };
+}
+
+export function storeTupleTokenBurnNotification(source: TokenBurnNotification) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.owner);
+    builder.writeAddress(source.response_destination);
+    return builder.build();
+}
+
+export function dictValueParserTokenBurnNotification(): DictionaryValue<TokenBurnNotification> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenBurnNotification(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenBurnNotification(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenExcesses = {
+    $$type: 'TokenExcesses';
+    queryId: bigint;
+}
+
+export function storeTokenExcesses(src: TokenExcesses) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(3576854235, 32);
+        b_0.storeUint(src.queryId, 64);
+    };
+}
+
+export function loadTokenExcesses(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 3576854235) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    return { $$type: 'TokenExcesses' as const, queryId: _queryId };
+}
+
+export function loadTupleTokenExcesses(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    return { $$type: 'TokenExcesses' as const, queryId: _queryId };
+}
+
+export function loadGetterTupleTokenExcesses(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    return { $$type: 'TokenExcesses' as const, queryId: _queryId };
+}
+
+export function storeTupleTokenExcesses(source: TokenExcesses) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    return builder.build();
+}
+
+export function dictValueParserTokenExcesses(): DictionaryValue<TokenExcesses> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenExcesses(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenExcesses(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type UpdateMintAuthority = {
+    $$type: 'UpdateMintAuthority';
+    newAuthority: Address;
+}
+
+export function storeUpdateMintAuthority(src: UpdateMintAuthority) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(2021444180, 32);
+        b_0.storeAddress(src.newAuthority);
+    };
+}
+
+export function loadUpdateMintAuthority(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2021444180) { throw Error('Invalid prefix'); }
+    const _newAuthority = sc_0.loadAddress();
+    return { $$type: 'UpdateMintAuthority' as const, newAuthority: _newAuthority };
+}
+
+export function loadTupleUpdateMintAuthority(source: TupleReader) {
+    const _newAuthority = source.readAddress();
+    return { $$type: 'UpdateMintAuthority' as const, newAuthority: _newAuthority };
+}
+
+export function loadGetterTupleUpdateMintAuthority(source: TupleReader) {
+    const _newAuthority = source.readAddress();
+    return { $$type: 'UpdateMintAuthority' as const, newAuthority: _newAuthority };
+}
+
+export function storeTupleUpdateMintAuthority(source: UpdateMintAuthority) {
+    const builder = new TupleBuilder();
+    builder.writeAddress(source.newAuthority);
+    return builder.build();
+}
+
+export function dictValueParserUpdateMintAuthority(): DictionaryValue<UpdateMintAuthority> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeUpdateMintAuthority(src)).endCell());
+        },
+        parse: (src) => {
+            return loadUpdateMintAuthority(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type UpdateMetadata = {
+    $$type: 'UpdateMetadata';
+    newUri: string;
+}
+
+export function storeUpdateMetadata(src: UpdateMetadata) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(293200627, 32);
+        b_0.storeStringRefTail(src.newUri);
+    };
+}
+
+export function loadUpdateMetadata(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 293200627) { throw Error('Invalid prefix'); }
+    const _newUri = sc_0.loadStringRefTail();
+    return { $$type: 'UpdateMetadata' as const, newUri: _newUri };
+}
+
+export function loadTupleUpdateMetadata(source: TupleReader) {
+    const _newUri = source.readString();
+    return { $$type: 'UpdateMetadata' as const, newUri: _newUri };
+}
+
+export function loadGetterTupleUpdateMetadata(source: TupleReader) {
+    const _newUri = source.readString();
+    return { $$type: 'UpdateMetadata' as const, newUri: _newUri };
+}
+
+export function storeTupleUpdateMetadata(source: UpdateMetadata) {
+    const builder = new TupleBuilder();
+    builder.writeString(source.newUri);
+    return builder.build();
+}
+
+export function dictValueParserUpdateMetadata(): DictionaryValue<UpdateMetadata> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeUpdateMetadata(src)).endCell());
+        },
+        parse: (src) => {
+            return loadUpdateMetadata(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type ToonJettonMaster$Data = {
+    $$type: 'ToonJettonMaster$Data';
+    owner: Address;
+    mintAuthority: Address;
+    totalSupply: bigint;
+    metadataUri: string;
+}
+
+export function storeToonJettonMaster$Data(src: ToonJettonMaster$Data) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeAddress(src.owner);
+        b_0.storeAddress(src.mintAuthority);
+        b_0.storeCoins(src.totalSupply);
+        b_0.storeStringRefTail(src.metadataUri);
+    };
+}
+
+export function loadToonJettonMaster$Data(slice: Slice) {
+    const sc_0 = slice;
+    const _owner = sc_0.loadAddress();
+    const _mintAuthority = sc_0.loadAddress();
+    const _totalSupply = sc_0.loadCoins();
+    const _metadataUri = sc_0.loadStringRefTail();
+    return { $$type: 'ToonJettonMaster$Data' as const, owner: _owner, mintAuthority: _mintAuthority, totalSupply: _totalSupply, metadataUri: _metadataUri };
+}
+
+export function loadTupleToonJettonMaster$Data(source: TupleReader) {
+    const _owner = source.readAddress();
+    const _mintAuthority = source.readAddress();
+    const _totalSupply = source.readBigNumber();
+    const _metadataUri = source.readString();
+    return { $$type: 'ToonJettonMaster$Data' as const, owner: _owner, mintAuthority: _mintAuthority, totalSupply: _totalSupply, metadataUri: _metadataUri };
+}
+
+export function loadGetterTupleToonJettonMaster$Data(source: TupleReader) {
+    const _owner = source.readAddress();
+    const _mintAuthority = source.readAddress();
+    const _totalSupply = source.readBigNumber();
+    const _metadataUri = source.readString();
+    return { $$type: 'ToonJettonMaster$Data' as const, owner: _owner, mintAuthority: _mintAuthority, totalSupply: _totalSupply, metadataUri: _metadataUri };
+}
+
+export function storeTupleToonJettonMaster$Data(source: ToonJettonMaster$Data) {
+    const builder = new TupleBuilder();
+    builder.writeAddress(source.owner);
+    builder.writeAddress(source.mintAuthority);
+    builder.writeNumber(source.totalSupply);
+    builder.writeString(source.metadataUri);
+    return builder.build();
+}
+
+export function dictValueParserToonJettonMaster$Data(): DictionaryValue<ToonJettonMaster$Data> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeToonJettonMaster$Data(src)).endCell());
+        },
+        parse: (src) => {
+            return loadToonJettonMaster$Data(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type ToonJettonWallet$Data = {
+    $$type: 'ToonJettonWallet$Data';
+    balance: bigint;
+    owner: Address;
+    master: Address;
+}
+
+export function storeToonJettonWallet$Data(src: ToonJettonWallet$Data) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeCoins(src.balance);
+        b_0.storeAddress(src.owner);
+        b_0.storeAddress(src.master);
+    };
+}
+
+export function loadToonJettonWallet$Data(slice: Slice) {
+    const sc_0 = slice;
+    const _balance = sc_0.loadCoins();
+    const _owner = sc_0.loadAddress();
+    const _master = sc_0.loadAddress();
+    return { $$type: 'ToonJettonWallet$Data' as const, balance: _balance, owner: _owner, master: _master };
+}
+
+export function loadTupleToonJettonWallet$Data(source: TupleReader) {
+    const _balance = source.readBigNumber();
+    const _owner = source.readAddress();
+    const _master = source.readAddress();
+    return { $$type: 'ToonJettonWallet$Data' as const, balance: _balance, owner: _owner, master: _master };
+}
+
+export function loadGetterTupleToonJettonWallet$Data(source: TupleReader) {
+    const _balance = source.readBigNumber();
+    const _owner = source.readAddress();
+    const _master = source.readAddress();
+    return { $$type: 'ToonJettonWallet$Data' as const, balance: _balance, owner: _owner, master: _master };
+}
+
+export function storeTupleToonJettonWallet$Data(source: ToonJettonWallet$Data) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.balance);
+    builder.writeAddress(source.owner);
+    builder.writeAddress(source.master);
+    return builder.build();
+}
+
+export function dictValueParserToonJettonWallet$Data(): DictionaryValue<ToonJettonWallet$Data> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeToonJettonWallet$Data(src)).endCell());
+        },
+        parse: (src) => {
+            return loadToonJettonWallet$Data(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type RegisterArtist = {
     $$type: 'RegisterArtist';
     artistContract: Address;
@@ -903,6 +1641,53 @@ export function dictValueParserConfirmArtistRegistration(): DictionaryValue<Conf
     }
 }
 
+export type ArtistRegistrationConfirmed = {
+    $$type: 'ArtistRegistrationConfirmed';
+    wallet: Address;
+}
+
+export function storeArtistRegistrationConfirmed(src: ArtistRegistrationConfirmed) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(156544760, 32);
+        b_0.storeAddress(src.wallet);
+    };
+}
+
+export function loadArtistRegistrationConfirmed(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 156544760) { throw Error('Invalid prefix'); }
+    const _wallet = sc_0.loadAddress();
+    return { $$type: 'ArtistRegistrationConfirmed' as const, wallet: _wallet };
+}
+
+export function loadTupleArtistRegistrationConfirmed(source: TupleReader) {
+    const _wallet = source.readAddress();
+    return { $$type: 'ArtistRegistrationConfirmed' as const, wallet: _wallet };
+}
+
+export function loadGetterTupleArtistRegistrationConfirmed(source: TupleReader) {
+    const _wallet = source.readAddress();
+    return { $$type: 'ArtistRegistrationConfirmed' as const, wallet: _wallet };
+}
+
+export function storeTupleArtistRegistrationConfirmed(source: ArtistRegistrationConfirmed) {
+    const builder = new TupleBuilder();
+    builder.writeAddress(source.wallet);
+    return builder.build();
+}
+
+export function dictValueParserArtistRegistrationConfirmed(): DictionaryValue<ArtistRegistrationConfirmed> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeArtistRegistrationConfirmed(src)).endCell());
+        },
+        parse: (src) => {
+            return loadArtistRegistrationConfirmed(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type StageTrackRegistration = {
     $$type: 'StageTrackRegistration';
     trackId: bigint;
@@ -1009,49 +1794,102 @@ export function dictValueParserConfirmTrackRegistration(): DictionaryValue<Confi
     }
 }
 
-export type StakeToon = {
-    $$type: 'StakeToon';
-    amount: bigint;
+export type TrackStagingAccepted = {
+    $$type: 'TrackStagingAccepted';
+    trackId: bigint;
 }
 
-export function storeStakeToon(src: StakeToon) {
+export function storeTrackStagingAccepted(src: TrackStagingAccepted) {
     return (builder: Builder) => {
         const b_0 = builder;
-        b_0.storeUint(1144384149, 32);
-        b_0.storeCoins(src.amount);
+        b_0.storeUint(3557536937, 32);
+        b_0.storeUint(src.trackId, 256);
     };
 }
 
-export function loadStakeToon(slice: Slice) {
+export function loadTrackStagingAccepted(slice: Slice) {
     const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1144384149) { throw Error('Invalid prefix'); }
-    const _amount = sc_0.loadCoins();
-    return { $$type: 'StakeToon' as const, amount: _amount };
+    if (sc_0.loadUint(32) !== 3557536937) { throw Error('Invalid prefix'); }
+    const _trackId = sc_0.loadUintBig(256);
+    return { $$type: 'TrackStagingAccepted' as const, trackId: _trackId };
 }
 
-export function loadTupleStakeToon(source: TupleReader) {
-    const _amount = source.readBigNumber();
-    return { $$type: 'StakeToon' as const, amount: _amount };
+export function loadTupleTrackStagingAccepted(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    return { $$type: 'TrackStagingAccepted' as const, trackId: _trackId };
 }
 
-export function loadGetterTupleStakeToon(source: TupleReader) {
-    const _amount = source.readBigNumber();
-    return { $$type: 'StakeToon' as const, amount: _amount };
+export function loadGetterTupleTrackStagingAccepted(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    return { $$type: 'TrackStagingAccepted' as const, trackId: _trackId };
 }
 
-export function storeTupleStakeToon(source: StakeToon) {
+export function storeTupleTrackStagingAccepted(source: TrackStagingAccepted) {
     const builder = new TupleBuilder();
-    builder.writeNumber(source.amount);
+    builder.writeNumber(source.trackId);
     return builder.build();
 }
 
-export function dictValueParserStakeToon(): DictionaryValue<StakeToon> {
+export function dictValueParserTrackStagingAccepted(): DictionaryValue<TrackStagingAccepted> {
     return {
         serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeStakeToon(src)).endCell());
+            builder.storeRef(beginCell().store(storeTrackStagingAccepted(src)).endCell());
         },
         parse: (src) => {
-            return loadStakeToon(src.loadRef().beginParse());
+            return loadTrackStagingAccepted(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TrackRegistrationFinalized = {
+    $$type: 'TrackRegistrationFinalized';
+    trackId: bigint;
+    trackContract: Address;
+}
+
+export function storeTrackRegistrationFinalized(src: TrackRegistrationFinalized) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(2999516602, 32);
+        b_0.storeUint(src.trackId, 256);
+        b_0.storeAddress(src.trackContract);
+    };
+}
+
+export function loadTrackRegistrationFinalized(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2999516602) { throw Error('Invalid prefix'); }
+    const _trackId = sc_0.loadUintBig(256);
+    const _trackContract = sc_0.loadAddress();
+    return { $$type: 'TrackRegistrationFinalized' as const, trackId: _trackId, trackContract: _trackContract };
+}
+
+export function loadTupleTrackRegistrationFinalized(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    const _trackContract = source.readAddress();
+    return { $$type: 'TrackRegistrationFinalized' as const, trackId: _trackId, trackContract: _trackContract };
+}
+
+export function loadGetterTupleTrackRegistrationFinalized(source: TupleReader) {
+    const _trackId = source.readBigNumber();
+    const _trackContract = source.readAddress();
+    return { $$type: 'TrackRegistrationFinalized' as const, trackId: _trackId, trackContract: _trackContract };
+}
+
+export function storeTupleTrackRegistrationFinalized(source: TrackRegistrationFinalized) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.trackId);
+    builder.writeAddress(source.trackContract);
+    return builder.build();
+}
+
+export function dictValueParserTrackRegistrationFinalized(): DictionaryValue<TrackRegistrationFinalized> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTrackRegistrationFinalized(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTrackRegistrationFinalized(src.loadRef().beginParse());
         }
     }
 }
@@ -1099,53 +1937,6 @@ export function dictValueParserUnstakeToon(): DictionaryValue<UnstakeToon> {
         },
         parse: (src) => {
             return loadUnstakeToon(src.loadRef().beginParse());
-        }
-    }
-}
-
-export type UpdateMetadata = {
-    $$type: 'UpdateMetadata';
-    newUri: string;
-}
-
-export function storeUpdateMetadata(src: UpdateMetadata) {
-    return (builder: Builder) => {
-        const b_0 = builder;
-        b_0.storeUint(293200627, 32);
-        b_0.storeStringRefTail(src.newUri);
-    };
-}
-
-export function loadUpdateMetadata(slice: Slice) {
-    const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 293200627) { throw Error('Invalid prefix'); }
-    const _newUri = sc_0.loadStringRefTail();
-    return { $$type: 'UpdateMetadata' as const, newUri: _newUri };
-}
-
-export function loadTupleUpdateMetadata(source: TupleReader) {
-    const _newUri = source.readString();
-    return { $$type: 'UpdateMetadata' as const, newUri: _newUri };
-}
-
-export function loadGetterTupleUpdateMetadata(source: TupleReader) {
-    const _newUri = source.readString();
-    return { $$type: 'UpdateMetadata' as const, newUri: _newUri };
-}
-
-export function storeTupleUpdateMetadata(source: UpdateMetadata) {
-    const builder = new TupleBuilder();
-    builder.writeString(source.newUri);
-    return builder.build();
-}
-
-export function dictValueParserUpdateMetadata(): DictionaryValue<UpdateMetadata> {
-    return {
-        serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeUpdateMetadata(src)).endCell());
-        },
-        parse: (src) => {
-            return loadUpdateMetadata(src.loadRef().beginParse());
         }
     }
 }
@@ -1282,6 +2073,7 @@ export type ToonArtist$Data = {
     $$type: 'ToonArtist$Data';
     owner: Address;
     registry: Address;
+    jettonMaster: Address;
     telegramHash: bigint;
     metadataUri: string;
     reputation: bigint;
@@ -1289,6 +2081,7 @@ export type ToonArtist$Data = {
     stakedToon: bigint;
     tracks: Dictionary<bigint, Address>;
     totalTracks: bigint;
+    isRegistered: boolean;
 }
 
 export function storeToonArtist$Data(src: ToonArtist$Data) {
@@ -1296,14 +2089,16 @@ export function storeToonArtist$Data(src: ToonArtist$Data) {
         const b_0 = builder;
         b_0.storeAddress(src.owner);
         b_0.storeAddress(src.registry);
-        b_0.storeUint(src.telegramHash, 256);
-        b_0.storeStringRefTail(src.metadataUri);
-        b_0.storeUint(src.reputation, 32);
-        b_0.storeCoins(src.totalTipVolume);
+        b_0.storeAddress(src.jettonMaster);
         const b_1 = new Builder();
+        b_1.storeUint(src.telegramHash, 256);
+        b_1.storeStringRefTail(src.metadataUri);
+        b_1.storeUint(src.reputation, 32);
+        b_1.storeCoins(src.totalTipVolume);
         b_1.storeCoins(src.stakedToon);
         b_1.storeDict(src.tracks, Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
         b_1.storeUint(src.totalTracks, 32);
+        b_1.storeBit(src.isRegistered);
         b_0.storeRef(b_1.endCell());
     };
 }
@@ -1312,20 +2107,23 @@ export function loadToonArtist$Data(slice: Slice) {
     const sc_0 = slice;
     const _owner = sc_0.loadAddress();
     const _registry = sc_0.loadAddress();
-    const _telegramHash = sc_0.loadUintBig(256);
-    const _metadataUri = sc_0.loadStringRefTail();
-    const _reputation = sc_0.loadUintBig(32);
-    const _totalTipVolume = sc_0.loadCoins();
+    const _jettonMaster = sc_0.loadAddress();
     const sc_1 = sc_0.loadRef().beginParse();
+    const _telegramHash = sc_1.loadUintBig(256);
+    const _metadataUri = sc_1.loadStringRefTail();
+    const _reputation = sc_1.loadUintBig(32);
+    const _totalTipVolume = sc_1.loadCoins();
     const _stakedToon = sc_1.loadCoins();
     const _tracks = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), sc_1);
     const _totalTracks = sc_1.loadUintBig(32);
-    return { $$type: 'ToonArtist$Data' as const, owner: _owner, registry: _registry, telegramHash: _telegramHash, metadataUri: _metadataUri, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, tracks: _tracks, totalTracks: _totalTracks };
+    const _isRegistered = sc_1.loadBit();
+    return { $$type: 'ToonArtist$Data' as const, owner: _owner, registry: _registry, jettonMaster: _jettonMaster, telegramHash: _telegramHash, metadataUri: _metadataUri, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, tracks: _tracks, totalTracks: _totalTracks, isRegistered: _isRegistered };
 }
 
 export function loadTupleToonArtist$Data(source: TupleReader) {
     const _owner = source.readAddress();
     const _registry = source.readAddress();
+    const _jettonMaster = source.readAddress();
     const _telegramHash = source.readBigNumber();
     const _metadataUri = source.readString();
     const _reputation = source.readBigNumber();
@@ -1333,12 +2131,14 @@ export function loadTupleToonArtist$Data(source: TupleReader) {
     const _stakedToon = source.readBigNumber();
     const _tracks = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), source.readCellOpt());
     const _totalTracks = source.readBigNumber();
-    return { $$type: 'ToonArtist$Data' as const, owner: _owner, registry: _registry, telegramHash: _telegramHash, metadataUri: _metadataUri, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, tracks: _tracks, totalTracks: _totalTracks };
+    const _isRegistered = source.readBoolean();
+    return { $$type: 'ToonArtist$Data' as const, owner: _owner, registry: _registry, jettonMaster: _jettonMaster, telegramHash: _telegramHash, metadataUri: _metadataUri, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, tracks: _tracks, totalTracks: _totalTracks, isRegistered: _isRegistered };
 }
 
 export function loadGetterTupleToonArtist$Data(source: TupleReader) {
     const _owner = source.readAddress();
     const _registry = source.readAddress();
+    const _jettonMaster = source.readAddress();
     const _telegramHash = source.readBigNumber();
     const _metadataUri = source.readString();
     const _reputation = source.readBigNumber();
@@ -1346,13 +2146,15 @@ export function loadGetterTupleToonArtist$Data(source: TupleReader) {
     const _stakedToon = source.readBigNumber();
     const _tracks = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), source.readCellOpt());
     const _totalTracks = source.readBigNumber();
-    return { $$type: 'ToonArtist$Data' as const, owner: _owner, registry: _registry, telegramHash: _telegramHash, metadataUri: _metadataUri, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, tracks: _tracks, totalTracks: _totalTracks };
+    const _isRegistered = source.readBoolean();
+    return { $$type: 'ToonArtist$Data' as const, owner: _owner, registry: _registry, jettonMaster: _jettonMaster, telegramHash: _telegramHash, metadataUri: _metadataUri, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, tracks: _tracks, totalTracks: _totalTracks, isRegistered: _isRegistered };
 }
 
 export function storeTupleToonArtist$Data(source: ToonArtist$Data) {
     const builder = new TupleBuilder();
     builder.writeAddress(source.owner);
     builder.writeAddress(source.registry);
+    builder.writeAddress(source.jettonMaster);
     builder.writeNumber(source.telegramHash);
     builder.writeString(source.metadataUri);
     builder.writeNumber(source.reputation);
@@ -1360,6 +2162,7 @@ export function storeTupleToonArtist$Data(source: ToonArtist$Data) {
     builder.writeNumber(source.stakedToon);
     builder.writeCell(source.tracks.size > 0 ? beginCell().storeDictDirect(source.tracks, Dictionary.Keys.BigInt(257), Dictionary.Values.Address()).endCell() : null);
     builder.writeNumber(source.totalTracks);
+    builder.writeBoolean(source.isRegistered);
     return builder.build();
 }
 
@@ -1378,6 +2181,7 @@ export function dictValueParserToonArtist$Data(): DictionaryValue<ToonArtist$Dat
     $$type: 'ToonArtist_init_args';
     owner: Address;
     registry: Address;
+    jettonMaster: Address;
     telegramHash: bigint;
     metadataUri: string;
 }
@@ -1387,16 +2191,19 @@ function initToonArtist_init_args(src: ToonArtist_init_args) {
         const b_0 = builder;
         b_0.storeAddress(src.owner);
         b_0.storeAddress(src.registry);
-        b_0.storeInt(src.telegramHash, 257);
-        b_0.storeStringRefTail(src.metadataUri);
+        b_0.storeAddress(src.jettonMaster);
+        const b_1 = new Builder();
+        b_1.storeInt(src.telegramHash, 257);
+        b_1.storeStringRefTail(src.metadataUri);
+        b_0.storeRef(b_1.endCell());
     };
 }
 
-async function ToonArtist_init(owner: Address, registry: Address, telegramHash: bigint, metadataUri: string) {
-    const __code = Cell.fromHex('b5ee9c7241022901000900000228ff008e88f4a413f4bcf2c80bed5320e303ed43d90117020271020c020120030501a7ba89aed44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e2db3c6c91804000224020120060a020162070801a6ab6eed44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e2db3c6c911e01a6a91ded44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e2db3c6c910900022801a7b7217da89a1a400031c4df481f481a7ffa803a003a63ff401a803a1f401e809a63e6020722070206e206c206a2068d8331c39f481f481020203ae01a803a028866009a2aa04dae0a8e00020688261c5b678d92300b0002220201200d120201200e1001a7b48e9da89a1a400031c4df481f481a7ffa803a003a63ff401a803a1f401e809a63e6020722070206e206c206a2068d8331c39f481f481020203ae01a803a028866009a2aa04dae0a8e00020688261c5b678d92300f000a248103e8be01a7b6029da89a1a400031c4df481f481a7ffa803a003a63ff401a803a1f401e809a63e6020722070206e206c206a2068d8331c39f481f481020203ae01a803a028866009a2aa04dae0a8e00020688261c5b678d923011000220020273131501a6a9f9ed44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e2db3c6c951401305474325582db3c103c4ba02a10ad109c108b107a106910581e01aaabe6ed44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e25508db3c6c9116001c810101230259f40c6fa192306ddf02f630eda2edfb01d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e26fa40fa40d3ffd401d001d31ffa00d401d0fa00f404d31f301039103810371036103510346c198e1cfa40fa40810101d700d401d014433004d155026d7054700010344130e20a925f0ae07029d74920c21fe30001c00001182303f43109d31f2182101179e2f3ba8e5631353803d430d08200866ff84228c705f2f48200a73d8b08522001f90101f901bdf2f410681057104644554313c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db31e02182104435ea95bae302218210dfc52f97bae30221191a1d008e313908fa003082008175f84229c705f2f481234921c200f2f4a010685515c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db3102b8313908fa003082008e9ef84229c705f2f48200e9d95321bef2f4a1708040882955205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00106855151b1c003200000000556e7374616b65642024544f4f4e20286d6f636b290052c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db3103fc821021a5a79dba8f73313908d3ffd3fffa40308200ac8af8422bc705f2f48144698d08600000000000000000000000000000000000000000000000000000000000000000045220c705b3f2f42bc2008ea010795e3510481039489a811b530cdb3c1df2f40a107910681057104610354430de820afaf08023715143c8e0211e1f220012228218174876e800be02fe55208210c09310ed5004cb1f12cbffcbffcec92a0350445a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00198101015410aa206e953059f45a30944133f414e209a403a60a820afaf0807188103b5a6d6d40037fc8cf8580ca00cf84402021002e00000000436f6e6669726d526567697374726174696f6e00b2ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb001068105710465a1514c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db3100ee8210946a98b6ba8e6c313908d33f30c8018210aff90f5758cb1fcb3fc9107910681057104610354430f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54db31e00a02d8c121b08e3c38f8416f24135f0312a01068105710461035443302c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54e008f9012082f01bb9cd5336387bc2aaa2f0088c6feb124b79ae38f229da1812e8471232681fedbae302202425007830f8416f24135f0312a01068105710461035443302c87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed54029e82f067e1a8da995a857806a50314469a5a8ae5a88c019f923ae780311567f3df06aabae30282f028208bdda6b6da97d2a1534c928b42e898752fbd839be4045590daafcb220543bae3025f09f2c082262701ba30816b25f84228c705f2f4708040f82829c8598210cc4fedf75003cb1fcecec92855205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00106855152801b28200f47df84228c705f2f470804028c8018210c8526e4758cb1fcec92855205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb001068551528004ec87f01ca0055805089ce16ce14cbff02c8ce12cdcb1f01fa02c858fa0212f40012cb1fcdc9ed542ab7ef3a');
+async function ToonArtist_init(owner: Address, registry: Address, jettonMaster: Address, telegramHash: bigint, metadataUri: string) {
+    const __code = Cell.fromHex('b5ee9c7241023c01000e3a000228ff008e88f4a413f4bcf2c80bed5320e303ed43d90116020271020c020120030501b5ba89aed44d0d200018e24fa40fa40fa40d401d0d3ffd401d001d31ffa00fa00f404d31fd20030108b108a10896c1b8e25fa40fa40fa40d401d0810101d700d430d010251024102305d155036d705470001034413070e2db3c6cb1804000225020120060a020162070801b4ab6eed44d0d200018e24fa40fa40fa40d401d0d3ffd401d001d31ffa00fa00f404d31fd20030108b108a10896c1b8e25fa40fa40fa40d401d0810101d700d430d010251024102305d155036d705470001034413070e2db3c6cb12f01b4a91ded44d0d200018e24fa40fa40fa40d401d0d3ffd401d001d31ffa00fa00f404d31fd20030108b108a10896c1b8e25fa40fa40fa40d401d0810101d700d430d010251024102305d155036d705470001034413070e2db3c6cb10900022a01b5b7217da89a1a400031c49f481f481f481a803a1a7ffa803a003a63ff401f401e809a63fa40060211621142112d8371c4bf481f481f481a803a1020203ae01a861a0204a204820460ba2aa06dae0a8e00020688260e1c5b678d96300b0002230201200d110201200e1001b5b48e9da89a1a400031c49f481f481f481a803a1a7ffa803a003a63ff401f401e809a63fa40060211621142112d8371c4bf481f481f481a803a1020203ae01a861a0204a204820460ba2aa06dae0a8e00020688260e1c5b678d96300f000a258103e8be01b5b6029da89a1a400031c49f481f481f481a803a1a7ffa803a003a63ff401f401e809a63fa40060211621142112d8371c4bf481f481f481a803a1020203ae01a861a0204a204820460ba2aa06dae0a8e00020688260e1c5b678d96301f020273121401b4a9f9ed44d0d200018e24fa40fa40fa40d401d0d3ffd401d001d31ffa00fa00f404d31fd20030108b108a10896c1b8e25fa40fa40fa40d401d0810101d700d430d010251024102305d155036d705470001034413070e2db3c6cb513015854754310ad109c108b107d106c105b104d103c4bdcdb3c103c4ed02e10cf10be10ad109c108b107a106910582f01b8abe6ed44d0d200018e24fa40fa40fa40d401d0d3ffd401d001d31ffa00fa00f404d31fd20030108b108a10896c1b8e25fa40fa40fa40d401d0810101d700d430d010251024102305d155036d705470001034413070e2550adb3c6cb115001c810101240259f40c6fa192306ddf01f830eda2edfb01d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e24fa40fa40fa40d401d0d3ffd401d001d31ffa00fa00f404d31fd20030108b108a10896c1b8e25fa40fa40fa40d401d0810101d700d430d010251024102305d155036d705470001034413070e20c925f0ce0702bd74920c21f1703f4e30001c00001c121b08e443af8416f24135f0313a0108a107910681057104610355034c87f01ca0055a050abce18ce16ce04c8cbff03c8ce13cdcb1f01fa0258fa0212f40012cb1f12ca00cdc9ed54e00af9012082f01bb9cd5336387bc2aaa2f0088c6feb124b79ae38f229da1812e8471232681fedbae3022018363702fe310bd31f2182101179e2f3ba8e5e31363a04d430d08200866ff8422ac705f2f48200a73d8b08522001f90101f901bdf2f4108a1079106810570610354430c87f01ca0055a050abce18ce16ce04c8cbff03c8ce13cdcb1f01fa0258fa0212f40012cb1f12ca00cdc9ed54db31e02182107362d09cbae302218210dfc52f97ba191a02c6313b0ad33f31fa00fa403070f8282adb3c705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d0815c20f84258c705f2f482008175511bc705f2f412a0108a107910681057104610354433021b2c04f28f64313b0afa003082008e9ef8422bc705f2f48200e9d95331bef2f45122a170f82829db3c705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d0708040216d218b081034103956100356114133c8e02182100954aef8bae30221821021a5a79dba1b2b2d2e011688c855215afa0212cecec91c0228ff008e88f4a413f4bcf2c80bed5320e303ed43d91d220202711e200127be28ef6a2687d007d207d202a903609ed9e3618c1f0002210127bcb6076a2687d007d207d202a903609ed9e3618c2100022203a83001d072d721d200d200fa4021103450666f04f86102f862ed44d0fa00fa40fa4055206c1304925f04e002d70d1ff2e0822182100f8a7ea5bae302218210178d4519bae302018210595f07bcbae3025f04f2c08223252901fe31d33ffa00fa40d72c01916d93fa4001e201f40431fa008138c6f84229c705f2f48200d5575375bef2f45164a15054708040544950528ac855508210178d45195007cb1f15cb3f5003fa02ce01206e9430cf84809201cee201fa02cec9102410231025146d50436d5033c8cf8580ca00cf8440ce01fa028069cf40025c6e012400506eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0002c855205afa0212cecec9ed5404ee31d33ffa00fa40d72c01916d93fa4001e201fa00f8416f2410235f035309c705b38ebc70535adb3c0181114d02705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d012c705f2f49130e25164a021c2009436135f03e30d206eb3915be30d022627282a0018f82ac855215afa0212cecec900b271702747135069c8553082107362d09c5005cb1f13cb3f01fa02cecec9274314450010246d50436d03c8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0000a6206ef2d0807080407004c8018210d53276db58cb1fcb3fc91034413010246d50436d03c8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0002f6d33ffa00d72c01916d93fa4001e2318138c6f84226c705f2f48200d5575342bef2f45131a170541325804006c8553082107bdd97de5005cb1f13cb3f01fa02ce01206e9430cf84809201cee2c9250350445a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf818ae2f400c901fb0002322a0018c855205afa0212cecec9ed5401ca556082100f8a7ea55008cb1f16cb3f5004fa0212ce01206e9430cf84809201cee2f40001fa02cec94130155a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00108a55172c005cc87f01ca0055a050abce18ce16ce04c8cbff03c8ce13cdcb1f01fa0258fa0212f40012cb1f12ca00cdc9ed54db31009c313b3b09fa40308200a3def84229c705f2f481468a5119c705f2f4107955167fc87f01ca0055a050abce18ce16ce04c8cbff03c8ce13cdcb1f01fa0258fa0212f40012cb1f12ca00cdc9ed54db3103fe8f7b313b0ad3ffd3fffa40308200ac8af8422dc705f2f48144698d08600000000000000000000000000000000000000000000000000000000000000000045220c705b3f2f42cc2008ea8109b5e37106a105b104a103b4abc811b530edb3c1ff2f40c109b108a107910681057104610354430de820afaf08003715132c8e0212f30340012238218174876e800be03fc55208210c09310ed5004cb1f12cbffcbffcec92b44335a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00820afaf08071885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf818ae2f400c901fb00108a313233002e00000000436f6e6669726d526567697374726174696f6e001a58cf8680cf8480f400f400cf8100605517c87f01ca0055a050abce18ce16ce04c8cbff03c8ce13cdcb1f01fa0258fa0212f40012cb1f12ca00cdc9ed54db3101f88210b2c8fdbaba8e67313b0ad3fffa4030228101012359f40c6fa192306ddf6e8e1981010159206e953059f45a30944133f414e209a403a60a0309915be2108a5517c87f01ca0055a050abce18ce16ce04c8cbff03c8ce13cdcb1f01fa0258fa0212f40012cb1f12ca00cdc9ed54db31e0218210946a98b6bae3020c3500ea313b0ad33f30c8018210aff90f5758cb1fcb3fc9109b108a107910681057104610354430f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00c87f01ca0055a050abce18ce16ce04c8cbff03c8ce13cdcb1f01fa0258fa0212f40012cb1f12ca00cdc9ed54db31008830f8416f24135f0313a0108a107910681057104610355034c87f01ca0055a050abce18ce16ce04c8cbff03c8ce13cdcb1f01fa0258fa0212f40012cb1f12ca00cdc9ed5403ea82f067e1a8da995a857806a50314469a5a8ae5a88c019f923ae780311567f3df06aabae3022082f032386209a383c5671c5508593700c7eb5ec366205b8a124ffc44e5370fd976dabae30282f028208bdda6b6da97d2a1534c928b42e898752fbd839be4045590daafcb220543bae3025f0bf2c08238393a01ba30816b25f8422ac705f2f4708040f8282bc8598210cc4fedf75003cb1fcecec92a55205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00108a55173b007230f84228c705f2e51e108a5517c87f01ca0055a050abce18ce16ce04c8cbff03c8ce13cdcb1f01fa0258fa0212f40012cb1f12ca00cdc9ed5401b28200f47df8422ac705f2f47080402ac8018210c8526e4758cb1fcec92a55205a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00108a55173b0058c87f01ca0055a050abce18ce16ce04c8cbff03c8ce13cdcb1f01fa0258fa0212f40012cb1f12ca00cdc9ed54eabcb74b');
     const builder = beginCell();
     builder.storeUint(0, 1);
-    initToonArtist_init_args({ $$type: 'ToonArtist_init_args', owner, registry, telegramHash, metadataUri })(builder);
+    initToonArtist_init_args({ $$type: 'ToonArtist_init_args', owner, registry, jettonMaster, telegramHash, metadataUri })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };
 }
@@ -1438,15 +2245,23 @@ export const ToonArtist_errors = {
     135: { message: "Code of a contract was not found" },
     136: { message: "Invalid standard address" },
     138: { message: "Not a basechain address" },
+    1310: { message: "ToonArtist: unauthorized staging callback" },
+    4429: { message: "Invalid sender" },
     6995: { message: "ToonArtist: stake required for additional tracks" },
-    9033: { message: "ToonArtist: stake amount must be positive" },
+    14534: { message: "Not owner" },
     17513: { message: "ToonArtist: invalid track contract address" },
+    18058: { message: "ToonArtist: wallet mismatch in confirmation" },
+    23584: { message: "ToonArtist: unauthorized Jetton notification" },
+    25644: { message: "Only ToonVault can mint" },
     27429: { message: "ToonArtist: only owner can initiate registration" },
     33141: { message: "ToonArtist: only owner can stake" },
+    34393: { message: "Unauthorized burn notification" },
     34415: { message: "ToonArtist: only owner can update metadata" },
     36510: { message: "ToonArtist: only owner can unstake" },
+    41950: { message: "ToonArtist: unauthorized confirmation callback" },
     42813: { message: "ToonArtist: empty metadata URI" },
     44170: { message: "ToonArtist: only owner can add tracks" },
+    54615: { message: "Insufficient balance" },
     59865: { message: "ToonArtist: insufficient stake" },
     62589: { message: "ToonArtist: only owner can confirm registration" },
 } as const
@@ -1488,15 +2303,23 @@ export const ToonArtist_errors_backward = {
     "Code of a contract was not found": 135,
     "Invalid standard address": 136,
     "Not a basechain address": 138,
+    "ToonArtist: unauthorized staging callback": 1310,
+    "Invalid sender": 4429,
     "ToonArtist: stake required for additional tracks": 6995,
-    "ToonArtist: stake amount must be positive": 9033,
+    "Not owner": 14534,
     "ToonArtist: invalid track contract address": 17513,
+    "ToonArtist: wallet mismatch in confirmation": 18058,
+    "ToonArtist: unauthorized Jetton notification": 23584,
+    "Only ToonVault can mint": 25644,
     "ToonArtist: only owner can initiate registration": 27429,
     "ToonArtist: only owner can stake": 33141,
+    "Unauthorized burn notification": 34393,
     "ToonArtist: only owner can update metadata": 34415,
     "ToonArtist: only owner can unstake": 36510,
+    "ToonArtist: unauthorized confirmation callback": 41950,
     "ToonArtist: empty metadata URI": 42813,
     "ToonArtist: only owner can add tracks": 44170,
+    "Insufficient balance": 54615,
     "ToonArtist: insufficient stake": 59865,
     "ToonArtist: only owner can confirm registration": 62589,
 } as const
@@ -1515,31 +2338,54 @@ const ToonArtist_types: ABIType[] = [
     {"name":"Deploy","header":2490013878,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"DeployOk","header":2952335191,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"FactoryDeploy","header":1829761339,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"cashback","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"JettonData","header":null,"fields":[{"name":"totalSupply","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mintable","type":{"kind":"simple","type":"bool","optional":false}},{"name":"adminAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"content","type":{"kind":"simple","type":"cell","optional":false}},{"name":"walletCode","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"TokenTransfer","header":260734629,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"destination","type":{"kind":"simple","type":"address","optional":false}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}},{"name":"customPayload","type":{"kind":"simple","type":"cell","optional":true}},{"name":"forward_ton_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
+    {"name":"TokenMint","header":376746144,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"receiver","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"TokenTransferInternal","header":395134233,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"from","type":{"kind":"simple","type":"address","optional":false}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}},{"name":"forward_ton_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
+    {"name":"TokenNotification","header":1935855772,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"from","type":{"kind":"simple","type":"address","optional":false}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
+    {"name":"TokenBurn","header":1499400124,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}}]},
+    {"name":"TokenBurnNotification","header":2078119902,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}}]},
+    {"name":"TokenExcesses","header":3576854235,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
+    {"name":"UpdateMintAuthority","header":2021444180,"fields":[{"name":"newAuthority","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"UpdateMetadata","header":293200627,"fields":[{"name":"newUri","type":{"kind":"simple","type":"string","optional":false}}]},
+    {"name":"ToonJettonMaster$Data","header":null,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"mintAuthority","type":{"kind":"simple","type":"address","optional":false}},{"name":"totalSupply","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"metadataUri","type":{"kind":"simple","type":"string","optional":false}}]},
+    {"name":"ToonJettonWallet$Data","header":null,"fields":[{"name":"balance","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"master","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"RegisterArtist","header":3754294261,"fields":[{"name":"artistContract","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"StageArtistRegistration","header":3427790327,"fields":[{"name":"artistContract","type":{"kind":"simple","type":"address","optional":false}},{"name":"wallet","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"ConfirmArtistRegistration","header":3360845383,"fields":[{"name":"wallet","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"ArtistRegistrationConfirmed","header":156544760,"fields":[{"name":"wallet","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"StageTrackRegistration","header":3230863597,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"fingerprint","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"trackContract","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"ConfirmTrackRegistration","header":2759486958,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}}]},
-    {"name":"StakeToon","header":1144384149,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"TrackStagingAccepted","header":3557536937,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}}]},
+    {"name":"TrackRegistrationFinalized","header":2999516602,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"trackContract","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"UnstakeToon","header":3754241943,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
-    {"name":"UpdateMetadata","header":293200627,"fields":[{"name":"newUri","type":{"kind":"simple","type":"string","optional":false}}]},
     {"name":"AddTrack","header":564504477,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"fingerprint","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"trackContract","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"ArtistDetails","header":null,"fields":[{"name":"reputation","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"totalTipVolume","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"stakedToon","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"isActive","type":{"kind":"simple","type":"bool","optional":false}},{"name":"totalTracks","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
-    {"name":"ToonArtist$Data","header":null,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"telegramHash","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"metadataUri","type":{"kind":"simple","type":"string","optional":false}},{"name":"reputation","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"totalTipVolume","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"stakedToon","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"tracks","type":{"kind":"dict","key":"int","value":"address"}},{"name":"totalTracks","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
+    {"name":"ToonArtist$Data","header":null,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"jettonMaster","type":{"kind":"simple","type":"address","optional":false}},{"name":"telegramHash","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"metadataUri","type":{"kind":"simple","type":"string","optional":false}},{"name":"reputation","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"totalTipVolume","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"stakedToon","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"tracks","type":{"kind":"dict","key":"int","value":"address"}},{"name":"totalTracks","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"isRegistered","type":{"kind":"simple","type":"bool","optional":false}}]},
 ]
 
 const ToonArtist_opcodes = {
     "Deploy": 2490013878,
     "DeployOk": 2952335191,
     "FactoryDeploy": 1829761339,
+    "TokenTransfer": 260734629,
+    "TokenMint": 376746144,
+    "TokenTransferInternal": 395134233,
+    "TokenNotification": 1935855772,
+    "TokenBurn": 1499400124,
+    "TokenBurnNotification": 2078119902,
+    "TokenExcesses": 3576854235,
+    "UpdateMintAuthority": 2021444180,
+    "UpdateMetadata": 293200627,
     "RegisterArtist": 3754294261,
     "StageArtistRegistration": 3427790327,
     "ConfirmArtistRegistration": 3360845383,
+    "ArtistRegistrationConfirmed": 156544760,
     "StageTrackRegistration": 3230863597,
     "ConfirmTrackRegistration": 2759486958,
-    "StakeToon": 1144384149,
+    "TrackStagingAccepted": 3557536937,
+    "TrackRegistrationFinalized": 2999516602,
     "UnstakeToon": 3754241943,
-    "UpdateMetadata": 293200627,
     "AddTrack": 564504477,
 }
 
@@ -1569,29 +2415,32 @@ const ToonArtist_receivers: ABIReceiver[] = [
     {"receiver":"internal","message":{"kind":"typed","type":"UpdateMetadata"}},
     {"receiver":"internal","message":{"kind":"empty"}},
     {"receiver":"internal","message":{"kind":"text","text":"Tip received"}},
-    {"receiver":"internal","message":{"kind":"typed","type":"StakeToon"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"TokenNotification"}},
     {"receiver":"internal","message":{"kind":"typed","type":"UnstakeToon"}},
     {"receiver":"internal","message":{"kind":"text","text":"RegisterSelf"}},
+    {"receiver":"internal","message":{"kind":"text","text":"StagingAccepted"}},
     {"receiver":"internal","message":{"kind":"text","text":"ConfirmRegistration"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"ArtistRegistrationConfirmed"}},
     {"receiver":"internal","message":{"kind":"typed","type":"AddTrack"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"TrackRegistrationFinalized"}},
     {"receiver":"internal","message":{"kind":"typed","type":"Deploy"}},
 ]
 
 
 export class ToonArtist implements Contract {
     
+    public static readonly storageReserve = 0n;
     public static readonly MIN_STAKE = 100000000000n;
     public static readonly TOON_DROP_THRESHOLD = 1000n;
-    public static readonly storageReserve = 0n;
     public static readonly errors = ToonArtist_errors_backward;
     public static readonly opcodes = ToonArtist_opcodes;
     
-    static async init(owner: Address, registry: Address, telegramHash: bigint, metadataUri: string) {
-        return await ToonArtist_init(owner, registry, telegramHash, metadataUri);
+    static async init(owner: Address, registry: Address, jettonMaster: Address, telegramHash: bigint, metadataUri: string) {
+        return await ToonArtist_init(owner, registry, jettonMaster, telegramHash, metadataUri);
     }
     
-    static async fromInit(owner: Address, registry: Address, telegramHash: bigint, metadataUri: string) {
-        const __gen_init = await ToonArtist_init(owner, registry, telegramHash, metadataUri);
+    static async fromInit(owner: Address, registry: Address, jettonMaster: Address, telegramHash: bigint, metadataUri: string) {
+        const __gen_init = await ToonArtist_init(owner, registry, jettonMaster, telegramHash, metadataUri);
         const address = contractAddress(0, __gen_init);
         return new ToonArtist(address, __gen_init);
     }
@@ -1614,7 +2463,7 @@ export class ToonArtist implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: UpdateMetadata | null | "Tip received" | StakeToon | UnstakeToon | "RegisterSelf" | "ConfirmRegistration" | AddTrack | Deploy) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: UpdateMetadata | null | "Tip received" | TokenNotification | UnstakeToon | "RegisterSelf" | "StagingAccepted" | "ConfirmRegistration" | ArtistRegistrationConfirmed | AddTrack | TrackRegistrationFinalized | Deploy) {
         
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'UpdateMetadata') {
@@ -1626,8 +2475,8 @@ export class ToonArtist implements Contract {
         if (message === "Tip received") {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'StakeToon') {
-            body = beginCell().store(storeStakeToon(message)).endCell();
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TokenNotification') {
+            body = beginCell().store(storeTokenNotification(message)).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'UnstakeToon') {
             body = beginCell().store(storeUnstakeToon(message)).endCell();
@@ -1635,11 +2484,20 @@ export class ToonArtist implements Contract {
         if (message === "RegisterSelf") {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
+        if (message === "StagingAccepted") {
+            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
+        }
         if (message === "ConfirmRegistration") {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'ArtistRegistrationConfirmed') {
+            body = beginCell().store(storeArtistRegistrationConfirmed(message)).endCell();
+        }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'AddTrack') {
             body = beginCell().store(storeAddTrack(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TrackRegistrationFinalized') {
+            body = beginCell().store(storeTrackRegistrationFinalized(message)).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Deploy') {
             body = beginCell().store(storeDeploy(message)).endCell();

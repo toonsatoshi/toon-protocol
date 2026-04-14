@@ -1,6 +1,6 @@
 # Tact compilation report
 Contract: ToonJettonMaster
-BoC Size: 1493 bytes
+BoC Size: 1789 bytes
 
 ## Structures (Structs and Messages)
 Total structures: 25
@@ -163,6 +163,7 @@ No arguments
 * 135: Code of a contract was not found
 * 136: Invalid standard address
 * 138: Not a basechain address
+* 4429: Invalid sender
 * 14534: Not owner
 * 25644: Only ToonVault can mint
 * 34393: Unauthorized burn notification

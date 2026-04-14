@@ -1,4 +1,4 @@
-// automatically generated from `@stdlib/std/stdlib.fc` `/app/build/ToonRegistry/ToonRegistry_ToonRegistry.fc`
+// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/toon-protocol-main/build/ToonRegistry/ToonRegistry_ToonRegistry.fc` 
 PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get
@@ -18,6 +18,12 @@ PROGRAM{
   DECLPROC __tact_dict_set_int_cell
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
+  DECLPROC $ArtistRegistrationConfirmed$_store
+  DECLPROC $ArtistRegistrationConfirmed$_store_cell
+  DECLPROC $TrackStagingAccepted$_store
+  DECLPROC $TrackStagingAccepted$_store_cell
+  DECLPROC $TrackRegistrationConfirmed$_store
+  DECLPROC $TrackRegistrationConfirmed$_store_cell
   DECLPROC $Configuration$_store
   DECLPROC $Configuration$_load
   DECLPROC $SetConfig$_store
@@ -76,10 +82,13 @@ PROGRAM{
   DECLPROC $MessageParameters$_constructor_bounce_to_value_mode_body
   DECLPROC $ToonRegistry$_fun_notify
   DECLPROC $PendingArtist$_constructor_wallet_artistContract_timestamp
+  DECLPROC $SendParameters$_constructor_to_value_mode_body
+  DECLPROC $ArtistRegistrationConfirmed$_constructor_wallet
   DECLPROC $ArtistRegistered$_constructor_wallet_artistContract_registeredAt
   DECLPROC $PendingTrack$_constructor_trackId_fingerprint_trackContract_timestamp
+  DECLPROC $TrackStagingAccepted$_constructor_trackId
+  DECLPROC $TrackRegistrationConfirmed$_constructor_trackId
   DECLPROC $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt
-  DECLPROC $SendParameters$_constructor_to_value_mode_body
   DECLPROC $MintAuthorized$_constructor_recipient_amount_authorizedAt
   DECLPROC $DropRegistered$_constructor_trackId_dropContract_registeredAt
   DECLPROC $SetConfig$_constructor_config
@@ -278,6 +287,39 @@ PROGRAM{
   $DeployOk$_store_cell PROCINLINE:<{
     SWAP
     $DeployOk$_store INLINECALLDICT
+    ENDC
+  }>
+  $ArtistRegistrationConfirmed$_store PROCINLINE:<{
+    156544760 PUSHINT
+    ROT
+    32 STU
+    STSLICE
+  }>
+  $ArtistRegistrationConfirmed$_store_cell PROCINLINE:<{
+    SWAP
+    $ArtistRegistrationConfirmed$_store INLINECALLDICT
+    ENDC
+  }>
+  $TrackStagingAccepted$_store PROCINLINE:<{
+    3557536937 PUSHINT
+    ROT
+    32 STU
+    256 STU
+  }>
+  $TrackStagingAccepted$_store_cell PROCINLINE:<{
+    SWAP
+    $TrackStagingAccepted$_store INLINECALLDICT
+    ENDC
+  }>
+  $TrackRegistrationConfirmed$_store PROCINLINE:<{
+    1780609247 PUSHINT
+    ROT
+    32 STU
+    256 STU
+  }>
+  $TrackRegistrationConfirmed$_store_cell PROCINLINE:<{
+    SWAP
+    $TrackRegistrationConfirmed$_store INLINECALLDICT
     ENDC
   }>
   $Configuration$_store PROCREF:<{
@@ -511,27 +553,30 @@ PROGRAM{
     ENDC
   }>
   $ToonRegistry$_store PROCINLINE:<{
-    s1 26 s() XCHG
-    s0 27 s() XCHG
+    s1 27 s() XCHG
+    s0 28 s() XCHG
     STDICT
-    s0 24 s() XCHG
+    s0 25 s() XCHG
     NEWC
     STDICT
-    s1 23 s() XCHG
+    s1 24 s() XCHG
     STDICT
-    s1 21 s() XCHG
+    s1 22 s() XCHG
     STDICT
-    s0 19 s() XCHG
+    s0 20 s() XCHG
     NEWC
     STDICT
-    s1 18 s() XCHG
+    s1 19 s() XCHG
     STDICT
-    s1 16 s() XCHG
+    s1 17 s() XCHG
     STSLICE
-    s1 s14 XCHG
+    s1 s15 XCHG
     STSLICE
+    s1 s13 XCHG
+    1 STI
     NEWC
-    12 2 BLKSWAP
+    12 -ROLL
+    s0 s13 XCHG
     $Configuration$_store INLINECALLDICT
     s1 s2 XCHG
     32 STU
@@ -570,6 +615,7 @@ PROGRAM{
     LDDICT
     LDMSGADDR
     LDMSGADDR
+    1 LDI
     LDREF
     DROP
     CTOS
@@ -586,7 +632,7 @@ PROGRAM{
     32 LDU
     32 LDU
     DROP
-    26 s() 27 s() XCHG
+    27 s() 28 s() XCHG
     17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
@@ -647,6 +693,7 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
     PUSHNULL
+    FALSE
     0 PUSHINT
     DUP
     1 PUSHINT
@@ -663,19 +710,26 @@ PROGRAM{
     10000000 PUSHINT
     500 PUSHINT
     $Configuration$_constructor_emissionCap_minWalletAgeDays_targetDailyActivity_rewardBaseActiveListener_rewardBaseGrowthAgent_rewardBaseArtistLaunch_rewardBaseTrendsetter_rewardBaseEarlyBeliever_rewardBaseDropInvestor_decayFactor_minThreshold_antiFarmingCoeff INLINECALLDICT
+    25 s() 27 s() XCHG
     24 s() 26 s() XCHG
     23 s() 25 s() XCHG
     22 s() 24 s() XCHG
     21 s() 23 s() XCHG
     20 s() 22 s() XCHG
-    19 s() 21 s() XCHG
+    s15 19 s() XCHG
     s11 18 s() XCHG
     s10 17 s() XCHG
     s9 16 s() XCHG
     s8 s15 XCHG
     s7 s14 XCHG
-    7 7 BLKSWAP
-    6 ROLL
+    s6 s13 XCHG
+    s5 s12 XCHG
+    s4 s11 XCHG
+    s3 s10 XCHG
+    s9 s7 s7 XCHG3
+    s0 s8 XCHG
+    s0 s5 XCHG
+    s0 s6 XCHG
   }>
   $ToonRegistry$_contract_load PROCINLINE:<{
     c4 PUSH
@@ -684,7 +738,8 @@ PROGRAM{
     SWAP
     IF:<{
       $ToonRegistry$_load INLINECALLDICT
-      27 s() POP
+      28 s() POP
+      26 s() 27 s() XCHG
       25 s() 26 s() XCHG
       24 s() 25 s() XCHG
       23 s() 24 s() XCHG
@@ -710,6 +765,7 @@ PROGRAM{
     TRUE
     SWAP
     1 STI
+    s0 28 s() XCHG
     s0 27 s() XCHG
     s0 26 s() XCHG
     s0 25 s() XCHG
@@ -739,25 +795,25 @@ PROGRAM{
   }>
   $ToonRegistry$_fun_getArtistContract PROCREF:<{
     267 PUSHINT
-    28 s() PUSH
+    29 s() PUSH
     s0 s2 XCHG
     __tact_dict_get_slice_slice INLINECALLDICT
   }>
   $ToonRegistry$_fun_getTrackContract PROCREF:<{
     257 PUSHINT
-    26 s() PUSH
+    27 s() PUSH
     s0 s2 XCHG
     __tact_dict_get_int_slice INLINECALLDICT
   }>
   $ToonRegistry$_fun_getDropContract PROCREF:<{
     257 PUSHINT
-    24 s() PUSH
+    25 s() PUSH
     s0 s2 XCHG
     __tact_dict_get_int_slice INLINECALLDICT
   }>
   $ToonRegistry$_fun_isRegisteredArtist PROCREF:<{
     267 PUSHINT
-    28 s() PUSH
+    29 s() PUSH
     s0 s2 XCHG
     __tact_dict_get_slice_slice INLINECALLDICT
     ISNULL
@@ -765,7 +821,7 @@ PROGRAM{
   }>
   $ToonRegistry$_fun_isRegisteredTrack PROCREF:<{
     257 PUSHINT
-    26 s() PUSH
+    27 s() PUSH
     s0 s2 XCHG
     __tact_dict_get_int_slice INLINECALLDICT
     ISNULL
@@ -773,7 +829,7 @@ PROGRAM{
   }>
   $ToonRegistry$_fun_fingerprintExists PROCREF:<{
     257 PUSHINT
-    23 s() PUSH
+    24 s() PUSH
     s0 s2 XCHG
     1 PUSHINT
     __tact_dict_get_int_int INLINECALLDICT
@@ -781,7 +837,7 @@ PROGRAM{
     NOT
   }>
   $ToonRegistry$_fun_getMintAuthority PROCREF:<{
-    20 s() PUSH
+    21 s() PUSH
   }>
   $ToonRegistry$_fun_getConfig PROCREF:<{
     18 s() PUSH
@@ -834,7 +890,7 @@ PROGRAM{
   }>
   $ToonRegistry$_fun_isKnownArtistContract PROCREF:<{
     267 PUSHINT
-    27 s() PUSH
+    28 s() PUSH
     s0 s2 XCHG
     __tact_dict_get_slice_slice INLINECALLDICT
     ISNULL
@@ -872,18 +928,24 @@ PROGRAM{
   }>
   $PendingArtist$_constructor_wallet_artistContract_timestamp PROCINLINE:<{
   }>
-  $ArtistRegistered$_constructor_wallet_artistContract_registeredAt PROCINLINE:<{
-  }>
-  $PendingTrack$_constructor_trackId_fingerprint_trackContract_timestamp PROCINLINE:<{
-  }>
-  $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt PROCINLINE:<{
-  }>
   $SendParameters$_constructor_to_value_mode_body PROCINLINE:<{
     2SWAP
     PUSHNULL
     PUSHNULL
     s0 s0 s3 XCHG3
     TRUE
+  }>
+  $ArtistRegistrationConfirmed$_constructor_wallet PROCINLINE:<{
+  }>
+  $ArtistRegistered$_constructor_wallet_artistContract_registeredAt PROCINLINE:<{
+  }>
+  $PendingTrack$_constructor_trackId_fingerprint_trackContract_timestamp PROCINLINE:<{
+  }>
+  $TrackStagingAccepted$_constructor_trackId PROCINLINE:<{
+  }>
+  $TrackRegistrationConfirmed$_constructor_trackId PROCINLINE:<{
+  }>
+  $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt PROCINLINE:<{
   }>
   $MintAuthorized$_constructor_recipient_amount_authorizedAt PROCINLINE:<{
   }>
@@ -895,6 +957,7 @@ PROGRAM{
   }>
   %getArtistContract PROC:<{
     $ToonRegistry$_contract_load INLINECALLDICT
+    27 s() 28 s() XCHG
     26 s() 27 s() XCHG
     25 s() 26 s() XCHG
     24 s() 25 s() XCHG
@@ -911,10 +974,11 @@ PROGRAM{
     $ToonRegistry$_fun_getArtistContract INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    11 1 BLKDROP2
+    12 1 BLKDROP2
   }>
   %getTrackContract PROC:<{
     $ToonRegistry$_contract_load INLINECALLDICT
+    27 s() 28 s() XCHG
     26 s() 27 s() XCHG
     25 s() 26 s() XCHG
     24 s() 25 s() XCHG
@@ -931,10 +995,11 @@ PROGRAM{
     $ToonRegistry$_fun_getTrackContract INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    11 1 BLKDROP2
+    12 1 BLKDROP2
   }>
   %getDropContract PROC:<{
     $ToonRegistry$_contract_load INLINECALLDICT
+    27 s() 28 s() XCHG
     26 s() 27 s() XCHG
     25 s() 26 s() XCHG
     24 s() 25 s() XCHG
@@ -951,10 +1016,11 @@ PROGRAM{
     $ToonRegistry$_fun_getDropContract INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    11 1 BLKDROP2
+    12 1 BLKDROP2
   }>
   %isRegisteredArtist PROC:<{
     $ToonRegistry$_contract_load INLINECALLDICT
+    27 s() 28 s() XCHG
     26 s() 27 s() XCHG
     25 s() 26 s() XCHG
     24 s() 25 s() XCHG
@@ -971,10 +1037,11 @@ PROGRAM{
     $ToonRegistry$_fun_isRegisteredArtist INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    11 1 BLKDROP2
+    12 1 BLKDROP2
   }>
   %isRegisteredTrack PROC:<{
     $ToonRegistry$_contract_load INLINECALLDICT
+    27 s() 28 s() XCHG
     26 s() 27 s() XCHG
     25 s() 26 s() XCHG
     24 s() 25 s() XCHG
@@ -991,10 +1058,11 @@ PROGRAM{
     $ToonRegistry$_fun_isRegisteredTrack INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    11 1 BLKDROP2
+    12 1 BLKDROP2
   }>
   %fingerprintExists PROC:<{
     $ToonRegistry$_contract_load INLINECALLDICT
+    27 s() 28 s() XCHG
     26 s() 27 s() XCHG
     25 s() 26 s() XCHG
     24 s() 25 s() XCHG
@@ -1011,21 +1079,21 @@ PROGRAM{
     $ToonRegistry$_fun_fingerprintExists INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    11 1 BLKDROP2
+    12 1 BLKDROP2
   }>
   %getMintAuthority PROC:<{
     $ToonRegistry$_contract_load INLINECALLDICT
     $ToonRegistry$_fun_getMintAuthority INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    11 1 BLKDROP2
+    12 1 BLKDROP2
   }>
   %getConfig PROC:<{
     $ToonRegistry$_contract_load INLINECALLDICT
     $ToonRegistry$_fun_getConfig INLINECALLDICT
     12 12 BLKDROP2
     12 12 BLKDROP2
-    3 12 BLKDROP2
+    4 12 BLKDROP2
     $Configuration$_to_external INLINECALLDICT
   }>
   %getVersion PROC:<{
@@ -1033,10 +1101,11 @@ PROGRAM{
     $ToonRegistry$_fun_getVersion INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    11 1 BLKDROP2
+    12 1 BLKDROP2
   }>
   %isTrackRewardEligible PROC:<{
     $ToonRegistry$_contract_load INLINECALLDICT
+    27 s() 28 s() XCHG
     26 s() 27 s() XCHG
     25 s() 26 s() XCHG
     24 s() 25 s() XCHG
@@ -1053,10 +1122,11 @@ PROGRAM{
     $ToonRegistry$_fun_isTrackRewardEligible INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    11 1 BLKDROP2
+    12 1 BLKDROP2
   }>
   %isArtistRewardEligible PROC:<{
     $ToonRegistry$_contract_load INLINECALLDICT
+    27 s() 28 s() XCHG
     26 s() 27 s() XCHG
     25 s() 26 s() XCHG
     24 s() 25 s() XCHG
@@ -1073,7 +1143,7 @@ PROGRAM{
     $ToonRegistry$_fun_isArtistRewardEligible INLINECALLDICT
     16 s() POP
     15 BLKDROP
-    11 1 BLKDROP2
+    12 1 BLKDROP2
   }>
   recv_internal PROC:<{
     SWAP
@@ -1091,12 +1161,12 @@ PROGRAM{
     s0 s2 XCHG
     __tact_context_sender SETGLOB
     $ToonRegistry$_contract_load INLINECALLDICT
-    s0 28 s() XCHG
+    s0 29 s() XCHG
     IFJMP:<{
       15 BLKDROP
-      13 BLKDROP
+      14 BLKDROP
     }>
-    s0 26 s() XCHG
+    s0 27 s() XCHG
     32 LDUQ 130 THROWIFNOT
     OVER
     3427790327 PUSHINT
@@ -1113,7 +1183,7 @@ PROGRAM{
       NOT
       THROWANYIFNOT
       9299 PUSHINT
-      27 s() PUSH
+      28 s() PUSH
       267 PUSHINT
       s3 PUSH
       __tact_dict_get_slice_slice INLINECALLDICT
@@ -1129,12 +1199,85 @@ PROGRAM{
       THROWANYIFNOT
       267 PUSHINT
           NOW
-      s2 s3 s3 PUXC2
+      s2 s3 s(-2) PU2XC
       $PendingArtist$_constructor_wallet_artistContract_timestamp INLINECALLDICT
       NEWC
       $PendingArtist$_store_cell INLINECALLDICT
-      s3 s4 XCHG
+      s3 s5 XCHG
+      s1 s2 XCHG
       __tact_dict_set_slice_cell INLINECALLDICT
+      0 PUSHINT
+      64 PUSHINT
+          B{b5ee9c724101010100150000260000000053746167696e67416363657074656419bf6cee} B>boc PUSHREF
+      s3 s5 XCHG
+      $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
+          NEWC
+          b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+          1 STI               // store `bounce`
+          b{000} STSLICECONST // store bounced = false and src = addr_none
+          STSLICE             // store `to`
+          SWAP
+          STGRAMS             // store `value`
+          105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+          STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+          // → Stack state
+          // s0: Builder
+          // s1: `data`
+          // s2: `code`
+          // s3: `body`
+          // s4: `mode`
+          // Group 2: Placing the Builder after code and data, then checking those for nullability
+          s2 XCHG0
+          DUP2
+          ISNULL
+          SWAP
+          ISNULL
+          AND
+          // → Stack state
+          // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+          // s1: `code`
+          // s2: `data`
+          // s3: Builder
+          // s4: `body`
+          // s5: `mode`
+          // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+          <{
+              DROP2 // drop `data` and `code`, since either of those is null
+              b{0} STSLICECONST
+          }> PUSHCONT
+          // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+          <{
+              // _ split_depth:(Maybe (## 5))
+              //   special:(Maybe TickTock)
+              //   code:(Maybe ^Cell)
+              //   data:(Maybe ^Cell)
+              //   library:(Maybe ^Cell)
+              // = StateInit;
+              ROT                // place message Builder on top
+              b{10} STSLICECONST // store Maybe = true, Either = false
+              // Start composing inlined StateInit
+              b{00} STSLICECONST // store split_depth and special first
+              STDICT             // store code
+              STDICT             // store data
+              b{0} STSLICECONST  // store library
+          }> PUSHCONT
+          // Group 3: IFELSE that does the branching shown above
+          IFELSE
+          // → Stack state
+          // s0: Builder
+          // s1: null or StateInit
+          // s2: `body`
+          // s3: `mode`
+          // Group 4: Finalizing the message
+          STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+          ENDC
+          // → Stack state
+          // s0: Cell
+          // s1: `mode`
+          // Group 5: Sending the message, with `mode` on top
+          SWAP
+          SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
       22 s() 24 s() XCHG
@@ -1147,18 +1290,7 @@ PROGRAM{
       s15 17 s() XCHG
       s14 16 s() XCHG
       s13 s15 XCHG
-      s12 s14 XCHG
-      s11 s13 XCHG
-      s10 s12 XCHG
-      s9 s11 XCHG
-      s8 s10 XCHG
-      s7 s9 XCHG
-      s6 s8 XCHG
-      s5 s7 XCHG
-      s4 s6 XCHG
-      s3 s5 XCHG
-      s4 s3 s3 XCHG3
-      s0 s2 XCHG
+      2 13 BLKSWAP
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1192,18 +1324,18 @@ PROGRAM{
       s2 PUSH
       $PendingArtist$_not_null INLINECALLDICT
       $PendingArtist$_get_artistContract INLINECALLDICT
-      s3 29 s() XCHG
+      s3 30 s() XCHG
       __tact_dict_set_slice_slice INLINECALLDICT
       267 PUSHINT
-      27 s() PUSH
-      $PendingArtist$_not_null INLINECALLDICT
-      $PendingArtist$_get_artistContract INLINECALLDICT
       28 s() PUSH
       $PendingArtist$_not_null INLINECALLDICT
+      $PendingArtist$_get_artistContract INLINECALLDICT
+      29 s() PUSH
+      $PendingArtist$_not_null INLINECALLDICT
       $PendingArtist$_get_wallet INLINECALLDICT
-      s3 28 s() XCHG
+      s3 29 s() XCHG
       __tact_dict_set_slice_slice INLINECALLDICT
-      s0 27 s() XCHG
+      s0 28 s() XCHG
       INC
       267 PUSHINT
       PUSHNULL
@@ -1212,19 +1344,98 @@ PROGRAM{
       s3 s5 XCHG
       s1 s5 s0 XCHG3
       __tact_dict_set_slice_cell INLINECALLDICT
-      25 s() PUSH
+      26 s() PUSH
+      $PendingArtist$_not_null INLINECALLDICT
+      $PendingArtist$_get_artistContract INLINECALLDICT
+      0 PUSHINT
+      64 PUSHINT
+      29 s() PUSH
       $PendingArtist$_not_null INLINECALLDICT
       $PendingArtist$_get_wallet INLINECALLDICT
-      s0 26 s() XCHG
+      $ArtistRegistrationConfirmed$_constructor_wallet INLINECALLDICT
+      NEWC
+      $ArtistRegistrationConfirmed$_store_cell INLINECALLDICT
+      $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
+          NEWC
+          b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+          1 STI               // store `bounce`
+          b{000} STSLICECONST // store bounced = false and src = addr_none
+          STSLICE             // store `to`
+          SWAP
+          STGRAMS             // store `value`
+          105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+          STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+          // → Stack state
+          // s0: Builder
+          // s1: `data`
+          // s2: `code`
+          // s3: `body`
+          // s4: `mode`
+          // Group 2: Placing the Builder after code and data, then checking those for nullability
+          s2 XCHG0
+          DUP2
+          ISNULL
+          SWAP
+          ISNULL
+          AND
+          // → Stack state
+          // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+          // s1: `code`
+          // s2: `data`
+          // s3: Builder
+          // s4: `body`
+          // s5: `mode`
+          // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+          <{
+              DROP2 // drop `data` and `code`, since either of those is null
+              b{0} STSLICECONST
+          }> PUSHCONT
+          // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+          <{
+              // _ split_depth:(Maybe (## 5))
+              //   special:(Maybe TickTock)
+              //   code:(Maybe ^Cell)
+              //   data:(Maybe ^Cell)
+              //   library:(Maybe ^Cell)
+              // = StateInit;
+              ROT                // place message Builder on top
+              b{10} STSLICECONST // store Maybe = true, Either = false
+              // Start composing inlined StateInit
+              b{00} STSLICECONST // store split_depth and special first
+              STDICT             // store code
+              STDICT             // store data
+              b{0} STSLICECONST  // store library
+          }> PUSHCONT
+          // Group 3: IFELSE that does the branching shown above
+          IFELSE
+          // → Stack state
+          // s0: Builder
+          // s1: null or StateInit
+          // s2: `body`
+          // s3: `mode`
+          // Group 4: Finalizing the message
+          STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+          ENDC
+          // → Stack state
+          // s0: Cell
+          // s1: `mode`
+          // Group 5: Sending the message, with `mode` on top
+          SWAP
+          SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      26 s() PUSH
+      $PendingArtist$_not_null INLINECALLDICT
+      $PendingArtist$_get_wallet INLINECALLDICT
+      s0 27 s() XCHG
       $PendingArtist$_not_null INLINECALLDICT
       $PendingArtist$_get_artistContract INLINECALLDICT
           NOW
-      s2 27 s() XCHG
+      s2 28 s() XCHG
       $ArtistRegistered$_constructor_wallet_artistContract_registeredAt INLINECALLDICT
       NEWC
       $ArtistRegistered$_store_cell INLINECALLDICT
       $global_emit INLINECALLDICT
-      23 s() 26 s() XCHG
+      24 s() 27 s() XCHG
+      23 s() 25 s() XCHG
       22 s() 24 s() XCHG
       21 s() 23 s() XCHG
       20 s() 22 s() XCHG
@@ -1246,7 +1457,6 @@ PROGRAM{
       s4 s6 XCHG
       s3 s5 XCHG
       s0 s1 s4 XCHG3
-      s0 s3 XCHG
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1293,6 +1503,7 @@ PROGRAM{
       s3 s4 XCHG
       s1 s2 XCHG
       __tact_dict_set_slice_cell INLINECALLDICT
+      25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
       22 s() 24 s() XCHG
@@ -1315,8 +1526,7 @@ PROGRAM{
       s5 s7 XCHG
       s4 s6 XCHG
       s3 s5 XCHG
-      s4 s3 s3 XCHG3
-      s0 s2 XCHG
+      s1 s4 s3 XCHG3
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1329,53 +1539,54 @@ PROGRAM{
       LDMSGADDR
       DROP
       __tact_context_get_sender INLINECALLDICT
-      26 s() 28 s() XCHG
-      25 s() 27 s() XCHG
-      24 s() 28 s() XCHG
-      23 s() 27 s() XCHG
+      26 s() 29 s() XCHG
+      25 s() 28 s() XCHG
+      24 s() 27 s() XCHG
+      23 s() 29 s() XCHG
       22 s() 28 s() XCHG
       21 s() 27 s() XCHG
-      20 s() 28 s() XCHG
-      19 s() 27 s() XCHG
-      18 s() 28 s() XCHG
-      17 s() 27 s() XCHG
+      20 s() 29 s() XCHG
+      19 s() 28 s() XCHG
+      18 s() 27 s() XCHG
+      17 s() 29 s() XCHG
       16 s() 28 s() XCHG
       s15 27 s() XCHG
-      s14 28 s() XCHG
-      s13 27 s() XCHG
-      s12 28 s() XCHG
-      s11 27 s() XCHG
+      s14 29 s() XCHG
+      s13 28 s() XCHG
+      s12 27 s() XCHG
+      s11 29 s() XCHG
       s10 28 s() XCHG
       s9 27 s() XCHG
-      s8 28 s() XCHG
-      s7 27 s() XCHG
-      s6 28 s() XCHG
-      s5 27 s() XCHG
+      s8 29 s() XCHG
+      s7 28 s() XCHG
+      s6 27 s() XCHG
+      s5 29 s() XCHG
       s4 28 s() XCHG
       s3 27 s() XCHG
-      s2 28 s() XCHG
-      s1 29 s() XCHG
+      s2 29 s() XCHG
+      s1 28 s() XCHG
       s0 30 s() XCHG
       26225 PUSHINT
-      s0 31 s() XCHG
+      s0 32 s() XCHG
+      31 s() PUSH
       $ToonRegistry$_fun_isKnownArtistContract INLINECALLDICT
-      s1 31 s() XCHG
+      s1 33 s() XCHG
       THROWANYIFNOT
       18543 PUSHINT
-      27 s() PUSH
+      28 s() PUSH
       0 NEQINT
       THROWANYIFNOT
       16165 PUSHINT
-      24 s() PUSH
+      25 s() PUSH
       257 PUSHINT
-      29 s() PUSH
+      30 s() PUSH
       __tact_dict_get_int_slice INLINECALLDICT
       ISNULL
       THROWANYIFNOT
       15016 PUSHINT
-      21 s() PUSH
+      22 s() PUSH
       257 PUSHINT
-      30 s() PUSH
+      32 s() PUSH
       1 PUSHINT
       __tact_dict_get_int_int INLINECALLDICT
       ISNULL
@@ -1383,48 +1594,125 @@ PROGRAM{
       58583 PUSHINT
       s2 PUSH
       257 PUSHINT
-      29 s() PUSH
+      30 s() PUSH
       __tact_dict_get_int_cell INLINECALLDICT
       $PendingTrack$_load_opt INLINECALLDICT
       ISNULL
       THROWANYIFNOT
       257 PUSHINT
           NOW
-      28 s() PUSH
+      29 s() PUSH
       s0 s3 XCHG
-      s2 30 s() XCHG
+      s2 32 s() XCHG
       s0 31 s() XCHG
       SWAP
       $PendingTrack$_constructor_trackId_fingerprint_trackContract_timestamp INLINECALLDICT
       NEWC
       $PendingTrack$_store_cell INLINECALLDICT
-      s1 s3 XCHG
-      s2 27 s() XCHG
-      s1 26 s() XCHG
+      s1 s2 XCHG
+      s1 29 s() XCHG
+      27 s() PUSH
+      SWAP
       __tact_dict_set_int_cell INLINECALLDICT
-      22 s() 26 s() XCHG
-      21 s() 25 s() XCHG
-      20 s() 24 s() XCHG
-      19 s() 23 s() XCHG
-      18 s() 22 s() XCHG
-      17 s() 21 s() XCHG
-      16 s() 20 s() XCHG
-      s15 19 s() XCHG
-      s14 18 s() XCHG
-      s13 17 s() XCHG
-      s12 16 s() XCHG
-      s11 s15 XCHG
-      s10 s14 XCHG
-      s9 s13 XCHG
-      s8 s12 XCHG
-      s7 s11 XCHG
-      s6 s10 XCHG
-      s5 s9 XCHG
-      s4 s8 XCHG
-      s3 s7 XCHG
-      s6 s5 s0 XCHG3
-      s3 s4 XCHG
-      s0 s2 XCHG
+      0 PUSHINT
+      64 PUSHINT
+      s0 27 s() XCHG
+      $TrackStagingAccepted$_constructor_trackId INLINECALLDICT
+      NEWC
+      $TrackStagingAccepted$_store_cell INLINECALLDICT
+      s3 30 s() XCHG
+      s1 s2 XCHG
+      s1 27 s() XCHG
+      $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
+          NEWC
+          b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+          1 STI               // store `bounce`
+          b{000} STSLICECONST // store bounced = false and src = addr_none
+          STSLICE             // store `to`
+          SWAP
+          STGRAMS             // store `value`
+          105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+          STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+          // → Stack state
+          // s0: Builder
+          // s1: `data`
+          // s2: `code`
+          // s3: `body`
+          // s4: `mode`
+          // Group 2: Placing the Builder after code and data, then checking those for nullability
+          s2 XCHG0
+          DUP2
+          ISNULL
+          SWAP
+          ISNULL
+          AND
+          // → Stack state
+          // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+          // s1: `code`
+          // s2: `data`
+          // s3: Builder
+          // s4: `body`
+          // s5: `mode`
+          // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+          <{
+              DROP2 // drop `data` and `code`, since either of those is null
+              b{0} STSLICECONST
+          }> PUSHCONT
+          // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+          <{
+              // _ split_depth:(Maybe (## 5))
+              //   special:(Maybe TickTock)
+              //   code:(Maybe ^Cell)
+              //   data:(Maybe ^Cell)
+              //   library:(Maybe ^Cell)
+              // = StateInit;
+              ROT                // place message Builder on top
+              b{10} STSLICECONST // store Maybe = true, Either = false
+              // Start composing inlined StateInit
+              b{00} STSLICECONST // store split_depth and special first
+              STDICT             // store code
+              STDICT             // store data
+              b{0} STSLICECONST  // store library
+          }> PUSHCONT
+          // Group 3: IFELSE that does the branching shown above
+          IFELSE
+          // → Stack state
+          // s0: Builder
+          // s1: null or StateInit
+          // s2: `body`
+          // s3: `mode`
+          // Group 4: Finalizing the message
+          STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+          ENDC
+          // → Stack state
+          // s0: Cell
+          // s1: `mode`
+          // Group 5: Sending the message, with `mode` on top
+          SWAP
+          SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      22 s() 27 s() XCHG
+      21 s() 26 s() XCHG
+      20 s() 25 s() XCHG
+      19 s() 24 s() XCHG
+      18 s() 23 s() XCHG
+      17 s() 22 s() XCHG
+      16 s() 21 s() XCHG
+      s15 20 s() XCHG
+      s14 19 s() XCHG
+      s13 18 s() XCHG
+      s12 17 s() XCHG
+      s11 16 s() XCHG
+      s10 s15 XCHG
+      s9 s14 XCHG
+      s8 s13 XCHG
+      s7 s12 XCHG
+      s6 s11 XCHG
+      s5 s10 XCHG
+      s4 s9 XCHG
+      s3 s8 XCHG
+      s7 s1 s5 XCHG3
+      s3 s6 s3 XCHG3
+      s1 s4 XCHG
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1458,27 +1746,27 @@ PROGRAM{
       s2 PUSH
       $PendingTrack$_not_null INLINECALLDICT
       $PendingTrack$_get_trackContract INLINECALLDICT
-      s3 27 s() XCHG
+      s3 28 s() XCHG
       __tact_dict_set_int_slice INLINECALLDICT
       267 PUSHINT
-      25 s() PUSH
-      $PendingTrack$_not_null INLINECALLDICT
-      $PendingTrack$_get_trackContract INLINECALLDICT
       26 s() PUSH
       $PendingTrack$_not_null INLINECALLDICT
+      $PendingTrack$_get_trackContract INLINECALLDICT
+      27 s() PUSH
+      $PendingTrack$_not_null INLINECALLDICT
       $PendingTrack$_get_trackId INLINECALLDICT
-      s3 26 s() XCHG
+      s3 27 s() XCHG
       257 PUSHINT
       __tact_dict_set_slice_int INLINECALLDICT
       257 PUSHINT
-      25 s() PUSH
+      26 s() PUSH
       $PendingTrack$_not_null INLINECALLDICT
       $PendingTrack$_get_fingerprint INLINECALLDICT
-      s2 23 s() XCHG
+      s2 24 s() XCHG
       TRUE
       1 PUSHINT
       __tact_dict_set_int_int INLINECALLDICT
-      s0 28 s() XCHG
+      s0 29 s() XCHG
       INC
       257 PUSHINT
       PUSHNULL
@@ -1487,27 +1775,106 @@ PROGRAM{
       s3 s4 XCHG
       s1 s4 s0 XCHG3
       __tact_dict_set_int_cell INLINECALLDICT
-      23 s() PUSH
-      $PendingTrack$_not_null INLINECALLDICT
-      $PendingTrack$_get_trackId INLINECALLDICT
       24 s() PUSH
       $PendingTrack$_not_null INLINECALLDICT
+      $PendingTrack$_get_trackContract INLINECALLDICT
+      0 PUSHINT
+      64 PUSHINT
+      27 s() PUSH
+      $PendingTrack$_not_null INLINECALLDICT
+      $PendingTrack$_get_trackId INLINECALLDICT
+      $TrackRegistrationConfirmed$_constructor_trackId INLINECALLDICT
+      NEWC
+      $TrackRegistrationConfirmed$_store_cell INLINECALLDICT
+      $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
+          NEWC
+          b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+          1 STI               // store `bounce`
+          b{000} STSLICECONST // store bounced = false and src = addr_none
+          STSLICE             // store `to`
+          SWAP
+          STGRAMS             // store `value`
+          105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+          STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+          // → Stack state
+          // s0: Builder
+          // s1: `data`
+          // s2: `code`
+          // s3: `body`
+          // s4: `mode`
+          // Group 2: Placing the Builder after code and data, then checking those for nullability
+          s2 XCHG0
+          DUP2
+          ISNULL
+          SWAP
+          ISNULL
+          AND
+          // → Stack state
+          // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+          // s1: `code`
+          // s2: `data`
+          // s3: Builder
+          // s4: `body`
+          // s5: `mode`
+          // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+          <{
+              DROP2 // drop `data` and `code`, since either of those is null
+              b{0} STSLICECONST
+          }> PUSHCONT
+          // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+          <{
+              // _ split_depth:(Maybe (## 5))
+              //   special:(Maybe TickTock)
+              //   code:(Maybe ^Cell)
+              //   data:(Maybe ^Cell)
+              //   library:(Maybe ^Cell)
+              // = StateInit;
+              ROT                // place message Builder on top
+              b{10} STSLICECONST // store Maybe = true, Either = false
+              // Start composing inlined StateInit
+              b{00} STSLICECONST // store split_depth and special first
+              STDICT             // store code
+              STDICT             // store data
+              b{0} STSLICECONST  // store library
+          }> PUSHCONT
+          // Group 3: IFELSE that does the branching shown above
+          IFELSE
+          // → Stack state
+          // s0: Builder
+          // s1: null or StateInit
+          // s2: `body`
+          // s3: `mode`
+          // Group 4: Finalizing the message
+          STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+          ENDC
+          // → Stack state
+          // s0: Cell
+          // s1: `mode`
+          // Group 5: Sending the message, with `mode` on top
+          SWAP
+          SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      24 s() PUSH
+      $PendingTrack$_not_null INLINECALLDICT
+      $PendingTrack$_get_trackId INLINECALLDICT
+      25 s() PUSH
+      $PendingTrack$_not_null INLINECALLDICT
       $PendingTrack$_get_fingerprint INLINECALLDICT
-      s0 25 s() XCHG
+      s0 26 s() XCHG
       $PendingTrack$_not_null INLINECALLDICT
       $PendingTrack$_get_trackContract INLINECALLDICT
           NOW
       s2 s3 XCHG
-      s2 26 s() XCHG
+      s2 27 s() XCHG
       $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt INLINECALLDICT
       NEWC
       $TrackRegistered$_store_cell INLINECALLDICT
       $global_emit INLINECALLDICT
+      25 s() 27 s() XCHG
       24 s() 26 s() XCHG
-      23 s() 25 s() XCHG
-      21 s() 24 s() XCHG
-      19 s() 23 s() XCHG
-      20 s() 22 s() XCHG
+      22 s() 25 s() XCHG
+      20 s() 24 s() XCHG
+      21 s() 23 s() XCHG
+      19 s() 21 s() XCHG
       18 s() 20 s() XCHG
       17 s() 19 s() XCHG
       16 s() 18 s() XCHG
@@ -1525,6 +1892,7 @@ PROGRAM{
       s4 s6 XCHG
       s3 s5 XCHG
       s4 s3 s0 XCHG3
+      s1 s2 XCHG
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1570,6 +1938,7 @@ PROGRAM{
       $PendingTrack$_store_opt INLINECALLDICT
       s1 s2 XCHG
       __tact_dict_set_int_cell INLINECALLDICT
+      25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
       22 s() 24 s() XCHG
@@ -1581,7 +1950,8 @@ PROGRAM{
       16 s() 18 s() XCHG
       s15 17 s() XCHG
       s14 16 s() XCHG
-      2 14 BLKSWAP
+      s13 s15 XCHG
+      2 13 BLKSWAP
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1600,7 +1970,7 @@ PROGRAM{
       THROWANYIFNOT
       27890 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      22 s() PUSH
+      23 s() PUSH
       SDEQ
       THROWANYIFNOT
       9580 PUSHINT
@@ -1614,7 +1984,7 @@ PROGRAM{
       $MintAuthorized$_constructor_recipient_amount_authorizedAt INLINECALLDICT
       NEWC
       $MintAuthorized$_store_cell INLINECALLDICT
-      20 s() PUSH
+      21 s() PUSH
       3 -ROLL
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
@@ -1683,6 +2053,7 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
       22 s() 24 s() XCHG
@@ -1694,7 +2065,8 @@ PROGRAM{
       16 s() 18 s() XCHG
       s15 17 s() XCHG
       s14 16 s() XCHG
-      2 14 BLKSWAP
+      s13 s15 XCHG
+      2 13 BLKSWAP
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1714,7 +2086,7 @@ PROGRAM{
       50582 PUSHINT
       267 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      26 s() PUSH
+      27 s() PUSH
       -ROT
       257 PUSHINT
       __tact_dict_get_slice_int INLINECALLDICT
@@ -1728,7 +2100,7 @@ PROGRAM{
       $MintAuthorized$_constructor_recipient_amount_authorizedAt INLINECALLDICT
       NEWC
       $MintAuthorized$_store_cell INLINECALLDICT
-      20 s() PUSH
+      21 s() PUSH
       3 -ROLL
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
@@ -1797,6 +2169,7 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
       22 s() 24 s() XCHG
@@ -1808,7 +2181,8 @@ PROGRAM{
       16 s() 18 s() XCHG
       s15 17 s() XCHG
       s14 16 s() XCHG
-      2 14 BLKSWAP
+      s13 s15 XCHG
+      2 13 BLKSWAP
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1827,10 +2201,11 @@ PROGRAM{
       27890 PUSHINT
       __tact_context_get_sender INLINECALLDICT
       SWAP
-      s0 21 s() XCHG
+      s0 22 s() XCHG
       SDEQ
-      s1 20 s() XCHG
+      s1 21 s() XCHG
       THROWANYIFNOT
+      25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
       22 s() 24 s() XCHG
@@ -1842,7 +2217,8 @@ PROGRAM{
       16 s() 18 s() XCHG
       s15 17 s() XCHG
       s14 16 s() XCHG
-      2 14 BLKSWAP
+      s13 s15 XCHG
+      2 13 BLKSWAP
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1850,8 +2226,8 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      18 s() POP
-      s0 17 s() XCHG
+      19 s() POP
+      s0 18 s() XCHG
       LDMSGADDR
       DROP
       57962 PUSHINT
@@ -1862,17 +2238,18 @@ PROGRAM{
       THROWANYIFNOT
       27890 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      20 s() PUSH
+      21 s() PUSH
       SDEQ
       THROWANYIFNOT
+      25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
       22 s() 24 s() XCHG
       21 s() 23 s() XCHG
       20 s() 22 s() XCHG
       19 s() 21 s() XCHG
-      18 s() 20 s() XCHG
-      s0 19 s() XCHG
+      s0 20 s() XCHG
+      17 s() 19 s() XCHG
       16 s() 18 s() XCHG
       s15 17 s() XCHG
       s14 16 s() XCHG
@@ -1888,7 +2265,6 @@ PROGRAM{
       s4 s6 XCHG
       s3 s5 XCHG
       s4 s0 s3 XCHG3
-      s0 s2 XCHG
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1906,61 +2282,63 @@ PROGRAM{
       SDEQ
       NOT
       THROWANYIFNOT
-      26 s() 27 s() XCHG
-      25 s() 27 s() XCHG
-      24 s() 27 s() XCHG
-      23 s() 27 s() XCHG
-      22 s() 27 s() XCHG
-      21 s() 27 s() XCHG
-      20 s() 27 s() XCHG
-      19 s() 27 s() XCHG
-      18 s() 27 s() XCHG
-      17 s() 27 s() XCHG
-      16 s() 27 s() XCHG
-      s15 27 s() XCHG
-      s14 27 s() XCHG
-      s13 27 s() XCHG
-      s12 27 s() XCHG
-      s11 27 s() XCHG
-      s10 27 s() XCHG
-      s9 27 s() XCHG
-      s8 27 s() XCHG
-      s7 27 s() XCHG
-      s6 27 s() XCHG
-      s5 27 s() XCHG
-      s4 27 s() XCHG
-      s3 27 s() XCHG
-      s2 27 s() XCHG
-      s1 28 s() XCHG
-      s0 29 s() XCHG
-      26225 PUSHINT
+      27 s() 28 s() XCHG
+      26 s() 28 s() XCHG
+      25 s() 28 s() XCHG
+      24 s() 28 s() XCHG
+      23 s() 28 s() XCHG
+      22 s() 28 s() XCHG
+      21 s() 28 s() XCHG
+      20 s() 28 s() XCHG
+      19 s() 28 s() XCHG
+      18 s() 28 s() XCHG
+      17 s() 28 s() XCHG
+      16 s() 28 s() XCHG
+      s15 28 s() XCHG
+      s14 28 s() XCHG
+      s13 28 s() XCHG
+      s12 28 s() XCHG
+      s11 28 s() XCHG
+      s10 28 s() XCHG
+      s9 28 s() XCHG
+      s8 28 s() XCHG
+      s7 28 s() XCHG
+      s6 28 s() XCHG
+      s5 28 s() XCHG
+      s4 28 s() XCHG
+      s3 28 s() XCHG
+      s2 28 s() XCHG
+      s1 29 s() XCHG
       s0 30 s() XCHG
+      26225 PUSHINT
+      s0 31 s() XCHG
       $ToonRegistry$_fun_isKnownArtistContract INLINECALLDICT
-      s1 30 s() XCHG
+      s1 31 s() XCHG
       THROWANYIFNOT
       44318 PUSHINT
-      22 s() PUSH
+      23 s() PUSH
       257 PUSHINT
-      29 s() PUSH
+      30 s() PUSH
       __tact_dict_get_int_slice INLINECALLDICT
       ISNULL
       THROWANYIFNOT
-      s0 21 s() XCHG
+      s0 22 s() XCHG
       257 PUSHINT
-      27 s() PUSH
-      29 s() PUSH
+      28 s() PUSH
+      30 s() PUSH
       __tact_dict_set_int_slice INLINECALLDICT
           NOW
-      s2 27 s() XCHG
-      s1 28 s() XCHG
+      s2 28 s() XCHG
+      s1 29 s() XCHG
       $DropRegistered$_constructor_trackId_dropContract_registeredAt INLINECALLDICT
       NEWC
       $DropRegistered$_store_cell INLINECALLDICT
       $global_emit INLINECALLDICT
+      24 s() 27 s() XCHG
       23 s() 26 s() XCHG
       22 s() 25 s() XCHG
       21 s() 24 s() XCHG
-      20 s() 23 s() XCHG
+      19 s() 22 s() XCHG
       18 s() 21 s() XCHG
       17 s() 20 s() XCHG
       16 s() 19 s() XCHG
@@ -1968,17 +2346,8 @@ PROGRAM{
       s14 17 s() XCHG
       s13 16 s() XCHG
       s12 s15 XCHG
-      s11 s14 XCHG
-      s10 s13 XCHG
-      s9 s12 XCHG
-      s8 s11 XCHG
-      s7 s10 XCHG
-      s6 s9 XCHG
-      s5 s8 XCHG
-      s4 s7 XCHG
-      s3 s6 XCHG
-      s5 s1 s3 XCHG3
-      s4 s2 XCHG2
+      3 12 BLKSWAP
+      s1 s2 XCHG
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -1991,11 +2360,12 @@ PROGRAM{
       s12 POP
       38383 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      20 s() PUSH
+      21 s() PUSH
       SDEQ
       THROWANYIFNOT
           B{b5ee9c7241010101001a00003000000000436f6e66696775726174696f6e55706461746564094a4d18} B>boc PUSHREF
       $global_emit INLINECALLDICT
+      25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
       22 s() 24 s() XCHG
@@ -2011,7 +2381,7 @@ PROGRAM{
       s3 s7 XCHG
       s0 s6 XCHG
       s3 s5 XCHG
-      s4 s1 s4 XCHG3
+      s4 s4 s4 XCHG3
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -2025,11 +2395,12 @@ PROGRAM{
       DROP
       48236 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      20 s() PUSH
+      21 s() PUSH
       SDEQ
       THROWANYIFNOT
           B{b5ee9c724101010100140000240000000056657273696f6e55706461746564ca63a8ce} B>boc PUSHREF
       $global_emit INLINECALLDICT
+      25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
       22 s() 24 s() XCHG
@@ -2052,7 +2423,7 @@ PROGRAM{
       s5 s7 XCHG
       s0 s6 XCHG
       s3 s5 XCHG
-      s4 s3 s0 XCHG3
+      s4 s0 s3 XCHG3
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -2065,7 +2436,7 @@ PROGRAM{
       DROP
       28295 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      22 s() PUSH
+      23 s() PUSH
       SDEQ
       THROWANYIFNOT
       s2 s5 XCHG
@@ -2073,6 +2444,7 @@ PROGRAM{
       -ROT
       1 PUSHINT
       __tact_dict_set_int_int INLINECALLDICT
+      25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
       22 s() 24 s() XCHG
@@ -2094,8 +2466,8 @@ PROGRAM{
       s6 s8 XCHG
       s5 s7 XCHG
       s4 s6 XCHG
-      s4 s5 s5 XCHG3
-      s3 s1 s3 XCHG3
+      s4 s3 s5 XCHG3
+      s1 s2 XCHG
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -2108,7 +2480,7 @@ PROGRAM{
       DROP
       28295 PUSHINT
       __tact_context_get_sender INLINECALLDICT
-      22 s() PUSH
+      23 s() PUSH
       SDEQ
       THROWANYIFNOT
       s2 s4 XCHG
@@ -2116,6 +2488,7 @@ PROGRAM{
       -ROT
       1 PUSHINT
       __tact_dict_set_slice_int INLINECALLDICT
+      25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
       22 s() 24 s() XCHG
@@ -2138,7 +2511,8 @@ PROGRAM{
       s5 s7 XCHG
       s4 s6 XCHG
       s3 s5 XCHG
-      s3 s4 XCHG2
+      s4 s4 XCHG2
+      s0 s3 XCHG
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     OVER
@@ -2193,7 +2567,7 @@ PROGRAM{
       $SetConfig$_constructor_config INLINECALLDICT
       NEWC
       $SetConfig$_store_cell INLINECALLDICT
-      20 s() PUSH
+      21 s() PUSH
       3 -ROLL
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
@@ -2264,6 +2638,7 @@ PROGRAM{
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
           B{b5ee9c7241010101001f00003a00000000436f6e66696775726174696f6e506172616d5570646174656482d4ee0c} B>boc PUSHREF
       $global_emit INLINECALLDICT
+      25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
       22 s() 24 s() XCHG
@@ -2275,7 +2650,8 @@ PROGRAM{
       16 s() 18 s() XCHG
       s15 17 s() XCHG
       s14 16 s() XCHG
-      2 14 BLKSWAP
+      s13 s15 XCHG
+      2 13 BLKSWAP
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     SWAP
@@ -2287,6 +2663,7 @@ PROGRAM{
       $DeployOk$_constructor_queryId INLINECALLDICT
       NEWC
       $DeployOk$_store_cell INLINECALLDICT
+      26 s() 28 s() XCHG
       25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
@@ -2311,11 +2688,12 @@ PROGRAM{
       s4 s6 XCHG
       s3 s5 XCHG
       s4 s3 s0 XCHG3
+      s1 s2 XCHG
       $ToonRegistry$_fun_notify INLINECALLDICT
       $ToonRegistry$_contract_store INLINECALLDICT
     }>
     15 BLKDROP
-    13 BLKDROP
+    14 BLKDROP
     130 THROW
   }>
   __tact_selector_hack PROC:<{

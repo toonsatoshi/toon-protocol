@@ -756,49 +756,740 @@ export function dictValueParserFactoryDeploy(): DictionaryValue<FactoryDeploy> {
     }
 }
 
-export type StakeToon = {
-    $$type: 'StakeToon';
-    amount: bigint;
+export type JettonData = {
+    $$type: 'JettonData';
+    totalSupply: bigint;
+    mintable: boolean;
+    adminAddress: Address;
+    content: Cell;
+    walletCode: Cell;
 }
 
-export function storeStakeToon(src: StakeToon) {
+export function storeJettonData(src: JettonData) {
     return (builder: Builder) => {
         const b_0 = builder;
-        b_0.storeUint(1144384149, 32);
-        b_0.storeCoins(src.amount);
+        b_0.storeInt(src.totalSupply, 257);
+        b_0.storeBit(src.mintable);
+        b_0.storeAddress(src.adminAddress);
+        b_0.storeRef(src.content);
+        b_0.storeRef(src.walletCode);
     };
 }
 
-export function loadStakeToon(slice: Slice) {
+export function loadJettonData(slice: Slice) {
     const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1144384149) { throw Error('Invalid prefix'); }
-    const _amount = sc_0.loadCoins();
-    return { $$type: 'StakeToon' as const, amount: _amount };
+    const _totalSupply = sc_0.loadIntBig(257);
+    const _mintable = sc_0.loadBit();
+    const _adminAddress = sc_0.loadAddress();
+    const _content = sc_0.loadRef();
+    const _walletCode = sc_0.loadRef();
+    return { $$type: 'JettonData' as const, totalSupply: _totalSupply, mintable: _mintable, adminAddress: _adminAddress, content: _content, walletCode: _walletCode };
 }
 
-export function loadTupleStakeToon(source: TupleReader) {
-    const _amount = source.readBigNumber();
-    return { $$type: 'StakeToon' as const, amount: _amount };
+export function loadTupleJettonData(source: TupleReader) {
+    const _totalSupply = source.readBigNumber();
+    const _mintable = source.readBoolean();
+    const _adminAddress = source.readAddress();
+    const _content = source.readCell();
+    const _walletCode = source.readCell();
+    return { $$type: 'JettonData' as const, totalSupply: _totalSupply, mintable: _mintable, adminAddress: _adminAddress, content: _content, walletCode: _walletCode };
 }
 
-export function loadGetterTupleStakeToon(source: TupleReader) {
-    const _amount = source.readBigNumber();
-    return { $$type: 'StakeToon' as const, amount: _amount };
+export function loadGetterTupleJettonData(source: TupleReader) {
+    const _totalSupply = source.readBigNumber();
+    const _mintable = source.readBoolean();
+    const _adminAddress = source.readAddress();
+    const _content = source.readCell();
+    const _walletCode = source.readCell();
+    return { $$type: 'JettonData' as const, totalSupply: _totalSupply, mintable: _mintable, adminAddress: _adminAddress, content: _content, walletCode: _walletCode };
 }
 
-export function storeTupleStakeToon(source: StakeToon) {
+export function storeTupleJettonData(source: JettonData) {
     const builder = new TupleBuilder();
-    builder.writeNumber(source.amount);
+    builder.writeNumber(source.totalSupply);
+    builder.writeBoolean(source.mintable);
+    builder.writeAddress(source.adminAddress);
+    builder.writeCell(source.content);
+    builder.writeCell(source.walletCode);
     return builder.build();
 }
 
-export function dictValueParserStakeToon(): DictionaryValue<StakeToon> {
+export function dictValueParserJettonData(): DictionaryValue<JettonData> {
     return {
         serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeStakeToon(src)).endCell());
+            builder.storeRef(beginCell().store(storeJettonData(src)).endCell());
         },
         parse: (src) => {
-            return loadStakeToon(src.loadRef().beginParse());
+            return loadJettonData(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenTransfer = {
+    $$type: 'TokenTransfer';
+    queryId: bigint;
+    amount: bigint;
+    destination: Address;
+    response_destination: Address | null;
+    customPayload: Cell | null;
+    forward_ton_amount: bigint;
+    forward_payload: Slice;
+}
+
+export function storeTokenTransfer(src: TokenTransfer) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(260734629, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.destination);
+        b_0.storeAddress(src.response_destination);
+        if (src.customPayload !== null && src.customPayload !== undefined) { b_0.storeBit(true).storeRef(src.customPayload); } else { b_0.storeBit(false); }
+        b_0.storeCoins(src.forward_ton_amount);
+        b_0.storeBuilder(src.forward_payload.asBuilder());
+    };
+}
+
+export function loadTokenTransfer(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 260734629) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _destination = sc_0.loadAddress();
+    const _response_destination = sc_0.loadMaybeAddress();
+    const _customPayload = sc_0.loadBit() ? sc_0.loadRef() : null;
+    const _forward_ton_amount = sc_0.loadCoins();
+    const _forward_payload = sc_0;
+    return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, response_destination: _response_destination, customPayload: _customPayload, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+}
+
+export function loadTupleTokenTransfer(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _destination = source.readAddress();
+    const _response_destination = source.readAddressOpt();
+    const _customPayload = source.readCellOpt();
+    const _forward_ton_amount = source.readBigNumber();
+    const _forward_payload = source.readCell().asSlice();
+    return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, response_destination: _response_destination, customPayload: _customPayload, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+}
+
+export function loadGetterTupleTokenTransfer(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _destination = source.readAddress();
+    const _response_destination = source.readAddressOpt();
+    const _customPayload = source.readCellOpt();
+    const _forward_ton_amount = source.readBigNumber();
+    const _forward_payload = source.readCell().asSlice();
+    return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, response_destination: _response_destination, customPayload: _customPayload, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+}
+
+export function storeTupleTokenTransfer(source: TokenTransfer) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.destination);
+    builder.writeAddress(source.response_destination);
+    builder.writeCell(source.customPayload);
+    builder.writeNumber(source.forward_ton_amount);
+    builder.writeSlice(source.forward_payload.asCell());
+    return builder.build();
+}
+
+export function dictValueParserTokenTransfer(): DictionaryValue<TokenTransfer> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenTransfer(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenTransfer(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenMint = {
+    $$type: 'TokenMint';
+    queryId: bigint;
+    amount: bigint;
+    receiver: Address;
+}
+
+export function storeTokenMint(src: TokenMint) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(376746144, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.receiver);
+    };
+}
+
+export function loadTokenMint(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 376746144) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _receiver = sc_0.loadAddress();
+    return { $$type: 'TokenMint' as const, queryId: _queryId, amount: _amount, receiver: _receiver };
+}
+
+export function loadTupleTokenMint(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _receiver = source.readAddress();
+    return { $$type: 'TokenMint' as const, queryId: _queryId, amount: _amount, receiver: _receiver };
+}
+
+export function loadGetterTupleTokenMint(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _receiver = source.readAddress();
+    return { $$type: 'TokenMint' as const, queryId: _queryId, amount: _amount, receiver: _receiver };
+}
+
+export function storeTupleTokenMint(source: TokenMint) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.receiver);
+    return builder.build();
+}
+
+export function dictValueParserTokenMint(): DictionaryValue<TokenMint> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenMint(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenMint(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenTransferInternal = {
+    $$type: 'TokenTransferInternal';
+    queryId: bigint;
+    amount: bigint;
+    from: Address;
+    response_destination: Address | null;
+    forward_ton_amount: bigint;
+    forward_payload: Slice;
+}
+
+export function storeTokenTransferInternal(src: TokenTransferInternal) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(395134233, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.from);
+        b_0.storeAddress(src.response_destination);
+        b_0.storeCoins(src.forward_ton_amount);
+        b_0.storeBuilder(src.forward_payload.asBuilder());
+    };
+}
+
+export function loadTokenTransferInternal(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 395134233) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _from = sc_0.loadAddress();
+    const _response_destination = sc_0.loadMaybeAddress();
+    const _forward_ton_amount = sc_0.loadCoins();
+    const _forward_payload = sc_0;
+    return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, response_destination: _response_destination, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+}
+
+export function loadTupleTokenTransferInternal(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _from = source.readAddress();
+    const _response_destination = source.readAddressOpt();
+    const _forward_ton_amount = source.readBigNumber();
+    const _forward_payload = source.readCell().asSlice();
+    return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, response_destination: _response_destination, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+}
+
+export function loadGetterTupleTokenTransferInternal(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _from = source.readAddress();
+    const _response_destination = source.readAddressOpt();
+    const _forward_ton_amount = source.readBigNumber();
+    const _forward_payload = source.readCell().asSlice();
+    return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, response_destination: _response_destination, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+}
+
+export function storeTupleTokenTransferInternal(source: TokenTransferInternal) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.from);
+    builder.writeAddress(source.response_destination);
+    builder.writeNumber(source.forward_ton_amount);
+    builder.writeSlice(source.forward_payload.asCell());
+    return builder.build();
+}
+
+export function dictValueParserTokenTransferInternal(): DictionaryValue<TokenTransferInternal> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenTransferInternal(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenTransferInternal(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenNotification = {
+    $$type: 'TokenNotification';
+    queryId: bigint;
+    amount: bigint;
+    from: Address;
+    forward_payload: Slice;
+}
+
+export function storeTokenNotification(src: TokenNotification) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(1935855772, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.from);
+        b_0.storeBuilder(src.forward_payload.asBuilder());
+    };
+}
+
+export function loadTokenNotification(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1935855772) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _from = sc_0.loadAddress();
+    const _forward_payload = sc_0;
+    return { $$type: 'TokenNotification' as const, queryId: _queryId, amount: _amount, from: _from, forward_payload: _forward_payload };
+}
+
+export function loadTupleTokenNotification(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _from = source.readAddress();
+    const _forward_payload = source.readCell().asSlice();
+    return { $$type: 'TokenNotification' as const, queryId: _queryId, amount: _amount, from: _from, forward_payload: _forward_payload };
+}
+
+export function loadGetterTupleTokenNotification(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _from = source.readAddress();
+    const _forward_payload = source.readCell().asSlice();
+    return { $$type: 'TokenNotification' as const, queryId: _queryId, amount: _amount, from: _from, forward_payload: _forward_payload };
+}
+
+export function storeTupleTokenNotification(source: TokenNotification) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.from);
+    builder.writeSlice(source.forward_payload.asCell());
+    return builder.build();
+}
+
+export function dictValueParserTokenNotification(): DictionaryValue<TokenNotification> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenNotification(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenNotification(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenBurn = {
+    $$type: 'TokenBurn';
+    queryId: bigint;
+    amount: bigint;
+    response_destination: Address | null;
+}
+
+export function storeTokenBurn(src: TokenBurn) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(1499400124, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.response_destination);
+    };
+}
+
+export function loadTokenBurn(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1499400124) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _response_destination = sc_0.loadMaybeAddress();
+    return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, response_destination: _response_destination };
+}
+
+export function loadTupleTokenBurn(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _response_destination = source.readAddressOpt();
+    return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, response_destination: _response_destination };
+}
+
+export function loadGetterTupleTokenBurn(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _response_destination = source.readAddressOpt();
+    return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, response_destination: _response_destination };
+}
+
+export function storeTupleTokenBurn(source: TokenBurn) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.response_destination);
+    return builder.build();
+}
+
+export function dictValueParserTokenBurn(): DictionaryValue<TokenBurn> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenBurn(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenBurn(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenBurnNotification = {
+    $$type: 'TokenBurnNotification';
+    queryId: bigint;
+    amount: bigint;
+    owner: Address;
+    response_destination: Address | null;
+}
+
+export function storeTokenBurnNotification(src: TokenBurnNotification) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(2078119902, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.owner);
+        b_0.storeAddress(src.response_destination);
+    };
+}
+
+export function loadTokenBurnNotification(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2078119902) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    const _amount = sc_0.loadCoins();
+    const _owner = sc_0.loadAddress();
+    const _response_destination = sc_0.loadMaybeAddress();
+    return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, response_destination: _response_destination };
+}
+
+export function loadTupleTokenBurnNotification(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _owner = source.readAddress();
+    const _response_destination = source.readAddressOpt();
+    return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, response_destination: _response_destination };
+}
+
+export function loadGetterTupleTokenBurnNotification(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _owner = source.readAddress();
+    const _response_destination = source.readAddressOpt();
+    return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, response_destination: _response_destination };
+}
+
+export function storeTupleTokenBurnNotification(source: TokenBurnNotification) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.owner);
+    builder.writeAddress(source.response_destination);
+    return builder.build();
+}
+
+export function dictValueParserTokenBurnNotification(): DictionaryValue<TokenBurnNotification> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenBurnNotification(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenBurnNotification(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type TokenExcesses = {
+    $$type: 'TokenExcesses';
+    queryId: bigint;
+}
+
+export function storeTokenExcesses(src: TokenExcesses) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(3576854235, 32);
+        b_0.storeUint(src.queryId, 64);
+    };
+}
+
+export function loadTokenExcesses(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 3576854235) { throw Error('Invalid prefix'); }
+    const _queryId = sc_0.loadUintBig(64);
+    return { $$type: 'TokenExcesses' as const, queryId: _queryId };
+}
+
+export function loadTupleTokenExcesses(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    return { $$type: 'TokenExcesses' as const, queryId: _queryId };
+}
+
+export function loadGetterTupleTokenExcesses(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    return { $$type: 'TokenExcesses' as const, queryId: _queryId };
+}
+
+export function storeTupleTokenExcesses(source: TokenExcesses) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    return builder.build();
+}
+
+export function dictValueParserTokenExcesses(): DictionaryValue<TokenExcesses> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeTokenExcesses(src)).endCell());
+        },
+        parse: (src) => {
+            return loadTokenExcesses(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type UpdateMintAuthority = {
+    $$type: 'UpdateMintAuthority';
+    newAuthority: Address;
+}
+
+export function storeUpdateMintAuthority(src: UpdateMintAuthority) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(2021444180, 32);
+        b_0.storeAddress(src.newAuthority);
+    };
+}
+
+export function loadUpdateMintAuthority(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2021444180) { throw Error('Invalid prefix'); }
+    const _newAuthority = sc_0.loadAddress();
+    return { $$type: 'UpdateMintAuthority' as const, newAuthority: _newAuthority };
+}
+
+export function loadTupleUpdateMintAuthority(source: TupleReader) {
+    const _newAuthority = source.readAddress();
+    return { $$type: 'UpdateMintAuthority' as const, newAuthority: _newAuthority };
+}
+
+export function loadGetterTupleUpdateMintAuthority(source: TupleReader) {
+    const _newAuthority = source.readAddress();
+    return { $$type: 'UpdateMintAuthority' as const, newAuthority: _newAuthority };
+}
+
+export function storeTupleUpdateMintAuthority(source: UpdateMintAuthority) {
+    const builder = new TupleBuilder();
+    builder.writeAddress(source.newAuthority);
+    return builder.build();
+}
+
+export function dictValueParserUpdateMintAuthority(): DictionaryValue<UpdateMintAuthority> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeUpdateMintAuthority(src)).endCell());
+        },
+        parse: (src) => {
+            return loadUpdateMintAuthority(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type UpdateMetadata = {
+    $$type: 'UpdateMetadata';
+    newUri: string;
+}
+
+export function storeUpdateMetadata(src: UpdateMetadata) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeUint(293200627, 32);
+        b_0.storeStringRefTail(src.newUri);
+    };
+}
+
+export function loadUpdateMetadata(slice: Slice) {
+    const sc_0 = slice;
+    if (sc_0.loadUint(32) !== 293200627) { throw Error('Invalid prefix'); }
+    const _newUri = sc_0.loadStringRefTail();
+    return { $$type: 'UpdateMetadata' as const, newUri: _newUri };
+}
+
+export function loadTupleUpdateMetadata(source: TupleReader) {
+    const _newUri = source.readString();
+    return { $$type: 'UpdateMetadata' as const, newUri: _newUri };
+}
+
+export function loadGetterTupleUpdateMetadata(source: TupleReader) {
+    const _newUri = source.readString();
+    return { $$type: 'UpdateMetadata' as const, newUri: _newUri };
+}
+
+export function storeTupleUpdateMetadata(source: UpdateMetadata) {
+    const builder = new TupleBuilder();
+    builder.writeString(source.newUri);
+    return builder.build();
+}
+
+export function dictValueParserUpdateMetadata(): DictionaryValue<UpdateMetadata> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeUpdateMetadata(src)).endCell());
+        },
+        parse: (src) => {
+            return loadUpdateMetadata(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type ToonJettonMaster$Data = {
+    $$type: 'ToonJettonMaster$Data';
+    owner: Address;
+    mintAuthority: Address;
+    totalSupply: bigint;
+    metadataUri: string;
+}
+
+export function storeToonJettonMaster$Data(src: ToonJettonMaster$Data) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeAddress(src.owner);
+        b_0.storeAddress(src.mintAuthority);
+        b_0.storeCoins(src.totalSupply);
+        b_0.storeStringRefTail(src.metadataUri);
+    };
+}
+
+export function loadToonJettonMaster$Data(slice: Slice) {
+    const sc_0 = slice;
+    const _owner = sc_0.loadAddress();
+    const _mintAuthority = sc_0.loadAddress();
+    const _totalSupply = sc_0.loadCoins();
+    const _metadataUri = sc_0.loadStringRefTail();
+    return { $$type: 'ToonJettonMaster$Data' as const, owner: _owner, mintAuthority: _mintAuthority, totalSupply: _totalSupply, metadataUri: _metadataUri };
+}
+
+export function loadTupleToonJettonMaster$Data(source: TupleReader) {
+    const _owner = source.readAddress();
+    const _mintAuthority = source.readAddress();
+    const _totalSupply = source.readBigNumber();
+    const _metadataUri = source.readString();
+    return { $$type: 'ToonJettonMaster$Data' as const, owner: _owner, mintAuthority: _mintAuthority, totalSupply: _totalSupply, metadataUri: _metadataUri };
+}
+
+export function loadGetterTupleToonJettonMaster$Data(source: TupleReader) {
+    const _owner = source.readAddress();
+    const _mintAuthority = source.readAddress();
+    const _totalSupply = source.readBigNumber();
+    const _metadataUri = source.readString();
+    return { $$type: 'ToonJettonMaster$Data' as const, owner: _owner, mintAuthority: _mintAuthority, totalSupply: _totalSupply, metadataUri: _metadataUri };
+}
+
+export function storeTupleToonJettonMaster$Data(source: ToonJettonMaster$Data) {
+    const builder = new TupleBuilder();
+    builder.writeAddress(source.owner);
+    builder.writeAddress(source.mintAuthority);
+    builder.writeNumber(source.totalSupply);
+    builder.writeString(source.metadataUri);
+    return builder.build();
+}
+
+export function dictValueParserToonJettonMaster$Data(): DictionaryValue<ToonJettonMaster$Data> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeToonJettonMaster$Data(src)).endCell());
+        },
+        parse: (src) => {
+            return loadToonJettonMaster$Data(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type ToonJettonWallet$Data = {
+    $$type: 'ToonJettonWallet$Data';
+    balance: bigint;
+    owner: Address;
+    master: Address;
+}
+
+export function storeToonJettonWallet$Data(src: ToonJettonWallet$Data) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeCoins(src.balance);
+        b_0.storeAddress(src.owner);
+        b_0.storeAddress(src.master);
+    };
+}
+
+export function loadToonJettonWallet$Data(slice: Slice) {
+    const sc_0 = slice;
+    const _balance = sc_0.loadCoins();
+    const _owner = sc_0.loadAddress();
+    const _master = sc_0.loadAddress();
+    return { $$type: 'ToonJettonWallet$Data' as const, balance: _balance, owner: _owner, master: _master };
+}
+
+export function loadTupleToonJettonWallet$Data(source: TupleReader) {
+    const _balance = source.readBigNumber();
+    const _owner = source.readAddress();
+    const _master = source.readAddress();
+    return { $$type: 'ToonJettonWallet$Data' as const, balance: _balance, owner: _owner, master: _master };
+}
+
+export function loadGetterTupleToonJettonWallet$Data(source: TupleReader) {
+    const _balance = source.readBigNumber();
+    const _owner = source.readAddress();
+    const _master = source.readAddress();
+    return { $$type: 'ToonJettonWallet$Data' as const, balance: _balance, owner: _owner, master: _master };
+}
+
+export function storeTupleToonJettonWallet$Data(source: ToonJettonWallet$Data) {
+    const builder = new TupleBuilder();
+    builder.writeNumber(source.balance);
+    builder.writeAddress(source.owner);
+    builder.writeAddress(source.master);
+    return builder.build();
+}
+
+export function dictValueParserToonJettonWallet$Data(): DictionaryValue<ToonJettonWallet$Data> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeToonJettonWallet$Data(src)).endCell());
+        },
+        parse: (src) => {
+            return loadToonJettonWallet$Data(src.loadRef().beginParse());
         }
     }
 }
@@ -1329,53 +2020,6 @@ export function dictValueParserSetConfig(): DictionaryValue<SetConfig> {
     }
 }
 
-export type UpdateMintAuthority = {
-    $$type: 'UpdateMintAuthority';
-    newAuthority: Address;
-}
-
-export function storeUpdateMintAuthority(src: UpdateMintAuthority) {
-    return (builder: Builder) => {
-        const b_0 = builder;
-        b_0.storeUint(2021444180, 32);
-        b_0.storeAddress(src.newAuthority);
-    };
-}
-
-export function loadUpdateMintAuthority(slice: Slice) {
-    const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 2021444180) { throw Error('Invalid prefix'); }
-    const _newAuthority = sc_0.loadAddress();
-    return { $$type: 'UpdateMintAuthority' as const, newAuthority: _newAuthority };
-}
-
-export function loadTupleUpdateMintAuthority(source: TupleReader) {
-    const _newAuthority = source.readAddress();
-    return { $$type: 'UpdateMintAuthority' as const, newAuthority: _newAuthority };
-}
-
-export function loadGetterTupleUpdateMintAuthority(source: TupleReader) {
-    const _newAuthority = source.readAddress();
-    return { $$type: 'UpdateMintAuthority' as const, newAuthority: _newAuthority };
-}
-
-export function storeTupleUpdateMintAuthority(source: UpdateMintAuthority) {
-    const builder = new TupleBuilder();
-    builder.writeAddress(source.newAuthority);
-    return builder.build();
-}
-
-export function dictValueParserUpdateMintAuthority(): DictionaryValue<UpdateMintAuthority> {
-    return {
-        serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeUpdateMintAuthority(src)).endCell());
-        },
-        parse: (src) => {
-            return loadUpdateMintAuthority(src.loadRef().beginParse());
-        }
-    }
-}
-
 export type UpdateConfigParam = {
     $$type: 'UpdateConfigParam';
     parameter: string;
@@ -1607,6 +2251,7 @@ export type ToonGovernance$Data = {
     $$type: 'ToonGovernance$Data';
     registry: Address;
     vault: Address;
+    jettonMaster: Address;
     stakes: Dictionary<Address, bigint>;
     totalStaked: bigint;
     proposals: Dictionary<bigint, GlobalProposal>;
@@ -1622,11 +2267,12 @@ export function storeToonGovernance$Data(src: ToonGovernance$Data) {
         const b_0 = builder;
         b_0.storeAddress(src.registry);
         b_0.storeAddress(src.vault);
+        b_0.storeAddress(src.jettonMaster);
         b_0.storeDict(src.stakes, Dictionary.Keys.Address(), Dictionary.Values.BigInt(257));
         b_0.storeCoins(src.totalStaked);
         b_0.storeDict(src.proposals, Dictionary.Keys.BigInt(257), dictValueParserGlobalProposal());
-        b_0.storeUint(src.nextProposalId, 256);
         const b_1 = new Builder();
+        b_1.storeUint(src.nextProposalId, 256);
         b_1.storeDict(src.addressProposals, Dictionary.Keys.BigInt(257), dictValueParserAddressProposal());
         b_1.storeUint(src.nextAddressProposalId, 256);
         b_1.storeDict(src.hasVoted, Dictionary.Keys.BigInt(257), Dictionary.Values.Bool());
@@ -1639,21 +2285,23 @@ export function loadToonGovernance$Data(slice: Slice) {
     const sc_0 = slice;
     const _registry = sc_0.loadAddress();
     const _vault = sc_0.loadAddress();
+    const _jettonMaster = sc_0.loadAddress();
     const _stakes = Dictionary.load(Dictionary.Keys.Address(), Dictionary.Values.BigInt(257), sc_0);
     const _totalStaked = sc_0.loadCoins();
     const _proposals = Dictionary.load(Dictionary.Keys.BigInt(257), dictValueParserGlobalProposal(), sc_0);
-    const _nextProposalId = sc_0.loadUintBig(256);
     const sc_1 = sc_0.loadRef().beginParse();
+    const _nextProposalId = sc_1.loadUintBig(256);
     const _addressProposals = Dictionary.load(Dictionary.Keys.BigInt(257), dictValueParserAddressProposal(), sc_1);
     const _nextAddressProposalId = sc_1.loadUintBig(256);
     const _hasVoted = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_1);
     const _hasVotedAddress = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), sc_1);
-    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress };
+    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, jettonMaster: _jettonMaster, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress };
 }
 
 export function loadTupleToonGovernance$Data(source: TupleReader) {
     const _registry = source.readAddress();
     const _vault = source.readAddress();
+    const _jettonMaster = source.readAddress();
     const _stakes = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.BigInt(257), source.readCellOpt());
     const _totalStaked = source.readBigNumber();
     const _proposals = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), dictValueParserGlobalProposal(), source.readCellOpt());
@@ -1662,12 +2310,13 @@ export function loadTupleToonGovernance$Data(source: TupleReader) {
     const _nextAddressProposalId = source.readBigNumber();
     const _hasVoted = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
     const _hasVotedAddress = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
-    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress };
+    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, jettonMaster: _jettonMaster, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress };
 }
 
 export function loadGetterTupleToonGovernance$Data(source: TupleReader) {
     const _registry = source.readAddress();
     const _vault = source.readAddress();
+    const _jettonMaster = source.readAddress();
     const _stakes = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.BigInt(257), source.readCellOpt());
     const _totalStaked = source.readBigNumber();
     const _proposals = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), dictValueParserGlobalProposal(), source.readCellOpt());
@@ -1676,13 +2325,14 @@ export function loadGetterTupleToonGovernance$Data(source: TupleReader) {
     const _nextAddressProposalId = source.readBigNumber();
     const _hasVoted = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
     const _hasVotedAddress = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
-    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress };
+    return { $$type: 'ToonGovernance$Data' as const, registry: _registry, vault: _vault, jettonMaster: _jettonMaster, stakes: _stakes, totalStaked: _totalStaked, proposals: _proposals, nextProposalId: _nextProposalId, addressProposals: _addressProposals, nextAddressProposalId: _nextAddressProposalId, hasVoted: _hasVoted, hasVotedAddress: _hasVotedAddress };
 }
 
 export function storeTupleToonGovernance$Data(source: ToonGovernance$Data) {
     const builder = new TupleBuilder();
     builder.writeAddress(source.registry);
     builder.writeAddress(source.vault);
+    builder.writeAddress(source.jettonMaster);
     builder.writeCell(source.stakes.size > 0 ? beginCell().storeDictDirect(source.stakes, Dictionary.Keys.Address(), Dictionary.Values.BigInt(257)).endCell() : null);
     builder.writeNumber(source.totalStaked);
     builder.writeCell(source.proposals.size > 0 ? beginCell().storeDictDirect(source.proposals, Dictionary.Keys.BigInt(257), dictValueParserGlobalProposal()).endCell() : null);
@@ -1709,6 +2359,7 @@ export function dictValueParserToonGovernance$Data(): DictionaryValue<ToonGovern
     $$type: 'ToonGovernance_init_args';
     registry: Address;
     vault: Address;
+    jettonMaster: Address;
 }
 
 function initToonGovernance_init_args(src: ToonGovernance_init_args) {
@@ -1716,14 +2367,15 @@ function initToonGovernance_init_args(src: ToonGovernance_init_args) {
         const b_0 = builder;
         b_0.storeAddress(src.registry);
         b_0.storeAddress(src.vault);
+        b_0.storeAddress(src.jettonMaster);
     };
 }
 
-async function ToonGovernance_init(registry: Address, vault: Address) {
-    const __code = Cell.fromHex('b5ee9c7241023a01000fb5000228ff008e88f4a413f4bcf2c80bed5320e303ed43d90115020271020d020120030501bfb812ced44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1206e92306d99206ef2d0806f286f08e2206e92306dde8040062810101250259f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e2020148060b020158070901bea86fed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1206e92306d99206ef2d0806f286f08e2206e92306dde080062810101270259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e20192aae6ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25519db3c6ca10a0132db3c8101012202714133f40c6fa19401d70030925b6de26eb32b018fb36a3b51343480006388be903e903d013e803500743d0134fffd0134fffd013d010c041a841a441a0419db06a3853e903e901640b4405b5b5b5b5b5c151801815410f8b6cf1b28600c0002260201200e130201c70f110192aa84ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25519db3c6ca1100132db3c8101012302714133f40c6fa19401d70030925b6de26eb32b0192a8d0ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1120180810101270259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e2206e923070e0206ef2d0806f28db3c360193bb7cced44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e25509db3c6ca1814004881010b29028101014133f40a6fa19401d70030925b6de2206eb395206ef2d080923070e203f23001d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e22fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106a1069106810676c1a8e14fa40fa405902d1016d6d6d6d6d70546006055043e20b925f0be009d70d1ff2e0822182104435ea95bae30221820b686687bae3022116181d01b031fa003081010bf84228598101014133f40a6fa19401d70030925b6de2206eb395206ef2d080923070e281010bf8425123a0103912810101216e955b59f4593098c801cf004133f441e25056a01079106810570610354403170054c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5404fe31fa003081010bf84228598101014133f40a6fa19401d70030925b6de28200f72a216eb39821206ef2d08023be9170e2f2f4206ef2d08021a181010bf842103958810101216e955b59f4593098c801cf004133f441e25056a1f842708040885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb08a8ae2191a1b1c002400000000556e7374616b65642024544f4f4e00065bcf81001a58cf8680cf8480f400f400cf810076f400c901fb001079106810570610354403c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed54044a8210bba923e1bae302218210c4dbca40bae302218210e47ed13bbae30221821059d0887cba1e20232601f831d401d001d33fd430d081010bf8422a598101014133f40a6fa19401d70030925b6de28200f8f3216eb39801206ef2d080c200923170e2f2f482008f7e8bb656d697373696f6e4361708524001f90101f901ba917f8e178bc6d696e57616c6c65744167658524001f90101f901bae2f2f425a4810101f8427020f8231f00dc8208127500a010685e3470c8557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c9103615206e953059f45a30944133f415e21079106810571046443512c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5402fc31d3ffd20030258101012359f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e282009ad7216eb3f2f4206ef2d0806f288168e1f82323bbf2f481259621b3f2f481010bf8425611598101014133f40a6fa19401d70030925b6de28200f22c216eb39170e30df2f4292102faf8420a11130a091112090811110807111007106f105e104d103c021114020111150152b0db3c8157be2381010123714133f40c6fa19401d70030925b6de26ef2f412810101017f71216e955b59f45a3098c801cf004133f442e21112991113206ef2d0801ca09b1113206ef2d0801ba00a0be2106f105e104d103c50a22b2200d681010111121ac8557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c910364bb0206e953059f45a30944133f415e2108910681057104650550304c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5401fa31d3ff30248101012259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e282009ad7216eb3f2f4206ef2d0806f288200919cf82323bcf2f481259621b3f2f454776554776527810bb7081111111811111110111711100f11160f0e11150e0d11140d0c11130c2402fa0b11120b0a11180a0911190908111a08db3c01111301f2f47f810101c856100756100706111006105f104e03111403111550e2557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c94c301b206e953059f45a30944133f415e27008804008c85982100e849a555003cb1f01c8cecdcb3fc92349135088362500d05a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb000910481067144330c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5403f88eee31d401d001fa40d430d081010bf8422a598101014133f40a6fa19401d70030925b6de28200f8f3216eb39801206ef2d080c200923170e2f2f48200d28f8bd6d696e74417574686f726974798524001f90101f901baf2f423a4810101f8427020f8238208127500a010685e3470c8e02182107c14af8ebae3022127283300c2557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c91413206e953059f45a30944133f415e2107910681057104610354143c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5402fc31d3ffd20030238101012359f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e282008275216eb3f2f4206ef2d0806f288168e1f82323bbf2f481259621b3f2f481010bf8425611598101014133f40a6fa19401d70030925b6de28200f22c216eb39170e30df2f4292a001021206ef2d080c20002fef8420a11130a091112090811110807111007106f105e104d103c021114020111150152b0db3c8157be2281010123714133f40c6fa19401d70030925b6de26ef2f4810101017f71216e955b59f45a3098c801cf004133f442e21112991113206ef2d0801ca09b1113206ef2d0801ba00a0be2106f105e104d103c50a28101012b32047ac86f00016f8c6d6f8c028e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d012db3c8b13a8db3c01db3c31312c300242fa44c88b111801ce028307a0a9380758cb07cbffc9d020db3c01c8cecec9d0db3c2d2e0094c8ce8b20000801cec9d0709421c701b38e2a01d30783069320c2008e1b03aa005323b091a4de03ab0023840fbc9903840fb0811021b203dee8303101e8318307a90c01c8cb07cb07c9d001a08d10105090d1115191d2125292d3135393d4145494d5155595d61656985898d9195999da1a5a9adb1b5b9bdc1c5c9cdd1d5d9dde1e5e8c0c4c8ccd0d4d8dce0e4b57e0c89522d749c2178ae86c21c9d02f009a02d307d307d30703aa0f02aa0712b101b120ab11803fb0aa02523078d7245004ce23ab0b803fb0aa02523078d72401ce23ab05803fb0aa02523078d72401ce03803fb0aa02522078d7245003ce0144db3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da113100b620d74a21d7499720c20022c200b18e48036f22807f22cf31ab02a105ab025155b60820c2009a20aa0215d71803ce4014de596f025341a1c20099c8016f025044a1aa028e123133c20099d430d020d74a21d749927020e2e2e85f0300cc11121ac8557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c910344bb0206e953059f45a30944133f415e21089106810571046035045c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed540230821081a594dcbae302018210946a98b6bae3025f0bf2c082343901fa31d3ff30228101012259f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e282008275216eb3f2f4206ef2d0806f288200919cf82323bcf2f481259621b3f2f454776554776527810bb7081111111811111110111711100f11160f0e11150e0d11140d0c11130c3503fe0b11120b0a11180a0911190908111a08db3c01111301f2f47f810101c856100756100706111006105f104e03111403111550e2557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c9103d4cb0206e953059f45a30944133f415e28bd6d696e74417574686f7269747981801f90101f901ba9135e30d50491817363738001e5b6c425210bc9427ab01bc923070e2009670804007c8018210787cca5458cb1fcec9230350885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00005c16154330c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5400dad33f30c8018210aff90f5758cb1fcb3fc9108a10791068105710461035443012f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00c87f01ca005590509ace17ce15f4005003fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed54bdff0aa6');
+async function ToonGovernance_init(registry: Address, vault: Address, jettonMaster: Address) {
+    const __code = Cell.fromHex('b5ee9c72410249010013ce000228ff008e88f4a413f4bcf2c80bed5320e303ed43d9011502027102100201200308020120040601cdb4259da89a1a400031c4df481f481f481e809f401a803a1e809a7ffe809a7ffe809e8086020d620d420d220d020ced8371c2ff481f481f480aa4007a2b0dadadadadae0a8c00c0aa087c4aa15b678d96240dd2460db3240dde5a100de50de11c440dd2460dbbd0050062810101250259f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e201a1b78b1da89a1a400031c4df481f481f481e809f401a803a1e809a7ffe809a7ffe809e8086020d620d420d220d020ced8371c2ff481f481f480aa4007a2b0dadadadadae0a8c00c0aa087c4aa15b678d963007004881010b29028101014133f40a6fa19401d70030925b6de2206eb395206ef2d080923070e2020148090e0201580a0c01cca86fed44d0d200018e26fa40fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106b106a1069106810676c1b8e17fa40fa40fa40552003d1586d6d6d6d6d70546006055043e2550adb3c6cb1206e92306d99206ef2d0806f286f08e2206e92306dde0b0062810101270259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e201a0aae6ed44d0d200018e26fa40fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106b106a1069106810676c1b8e17fa40fa40fa40552003d1586d6d6d6d6d70546006055043e2551adb3c6cb10d0132db3c8101012202714133f40c6fa19401d70030925b6de26eb33b019db36a3b51343480006389be903e903e903d013e803500743d0134fffd0134fffd013d010c041ac41a841a441a0419db06e385fe903e903e90154800f4561b5b5b5b5b5c151801815410f8b6cf1b2c600f0002260201c9111301a0aa84ed44d0d200018e26fa40fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106b106a1069106810676c1b8e17fa40fa40fa40552003d1586d6d6d6d6d70546006055043e2551adb3c6cb1120132db3c8101012302714133f40c6fa19401d70030925b6de26eb33b01a0a8d0ed44d0d200018e26fa40fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106b106a1069106810676c1b8e17fa40fa40fa40552003d1586d6d6d6d6d70546006055043e2550adb3c6cb1140180810101270259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e2206e923070e0206ef2d0806f28db3c4502f83001d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e26fa40fa40fa40f404fa00d401d0f404d3fff404d3fff404f40430106b106a1069106810676c1b8e17fa40fa40fa40552003d1586d6d6d6d6d70546006055043e20c925f0ce00ad70d1ff2e0822182107362d09cbae30221820b686687161802ec31d33f31fa00fa403070f8282adb3c705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d08108aff84258c705f2f42781010b228101014133f40a6fa19401d70030925b6de2206eb395206ef2d080923070e281010b5113a01039128101011917009a216e955b59f4593098c801cf004133f441e25056a0108a1079106810570610354430c87f01ca0055a050abce18ce16ce14f40058fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5404eaba8f5f31fa003081010bf84228598101014133f40a6fa19401d70030925b6de28200f72a216eb39821206ef2d08023be9170e2f2f4206ef2d08021a181010bf842103958810101216e955b59f4593098c801cf004133f441e25156a170f82829db3ce0218210bba923e1bae302218210c4dbca40ba192a2c2e011688c855215afa0212cecec91a0228ff008e88f4a413f4bcf2c80bed5320e303ed43d91b200202711c1e0127be28ef6a2687d007d207d202a903609ed9e3618c1d0002210127bcb6076a2687d007d207d202a903609ed9e3618c1f00022203a83001d072d721d200d200fa4021103450666f04f86102f862ed44d0fa00fa40fa4055206c1304925f04e002d70d1ff2e0822182100f8a7ea5bae302218210178d4519bae302018210595f07bcbae3025f04f2c08221232701fe31d33ffa00fa40d72c01916d93fa4001e201f40431fa008138c6f84229c705f2f48200d5575375bef2f45164a15054708040544950528ac855508210178d45195007cb1f15cb3f5003fa02ce01206e9430cf84809201cee201fa02cec9102410231025146d50436d5033c8cf8580ca00cf8440ce01fa028069cf40025c6e012200506eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0002c855205afa0212cecec9ed5404ee31d33ffa00fa40d72c01916d93fa4001e201fa00f8416f2410235f035309c705b38ebc70535adb3c0181114d02705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d012c705f2f49130e25164a021c2009436135f03e30d206eb3915be30d02242526290018f82ac855215afa0212cecec900b271702747135069c8553082107362d09c5005cb1f13cb3f01fa02cecec9274314450010246d50436d03c8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0000a6206ef2d0807080407004c8018210d53276db58cb1fcb3fc91034413010246d50436d03c8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0002f6d33ffa00d72c01916d93fa4001e2318138c6f84226c705f2f48200d5575342bef2f45131a170541325804006c8553082107bdd97de5005cb1f13cb3f01fa02ce01206e9430cf84809201cee2c9250350445a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf818ae2f400c901fb00022829001a58cf8680cf8480f400f400cf810018c855205afa0212cecec9ed5401fc705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d070804021f842f8426d238b081056105fc8556082100f8a7ea55008cb1f16cb3f5004fa0212ce01206e9430cf84809201cee2f40001fa02cec94130195a6d6d40037fc8cf8580ca00cf8440ce01fa0280692b00b0cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00108a107910685e2410355512c87f01ca0055a050abce18ce16ce14f40058fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5401f831d401d001d33fd430d081010bf8422a598101014133f40a6fa19401d70030925b6de28200f8f3216eb39801206ef2d080c200923170e2f2f482008f7e8bb656d697373696f6e4361708524001f90101f901ba917f8e178bc6d696e57616c6c65744167658524001f90101f901bae2f2f425a4810101f8427020f8232d00e48208127500a010685e3470c8557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c9103615206e953059f45a30944133f415e2108a107910681057104644554313c87f01ca0055a050abce18ce16ce14f40058fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed54043ce302218210e47ed13bbae30221821059d0887cbae3022182107c14af8eba2f32353702fc31d3ffd20030258101012359f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e282009ad7216eb3f2f4206ef2d0806f288168e1f82323bbf2f481259621b3f2f481010bf8425611598101014133f40a6fa19401d70030925b6de28200f22c216eb39170e30df2f4393002fcf8420b11140b0a11130a091112090811110807111007106f105e104d103c0211150201111601561401db3c8157be2381010123714133f40c6fa19401d70030925b6de26ef2f412810101017f71216e955b59f45a3098c801cf004133f442e21112991114206ef2d0801ca09b1114206ef2d0801ba00a0be2106f105e104d3b3100e4103c50a281010111131ac8557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c910364cb0206e953059f45a30944133f415e2109a108910681057104650550304c87f01ca0055a050abce18ce16ce14f40058fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5401fe31d3ff30248101012259f40d6fa192306ddf206e92306d8e1bd0d401d001d33fd401d001fa40fa00fa00d31fd20055706c186f08e282009ad7216eb3f2f4206ef2d0806f288200919cf82323bcf2f481259621b3f2f454776554776527810bb7081112111911121111111811111110111711100f11160f0e11150e0d11140d3302e40c11130c0b11190b0a11180a09111a0908111b08db3c01111401f2f47f810101c856100756100706111006105f041115040311140302111602011115011116557007c8ce18cd15cb3f03c8ce13cdce01fa0201fa0212cb1fca00c94c301b206e953059f45a30944133f415e27008804008c8453401aa5982100e849a555003cb1f01c8cecdcb3fc924491350885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0050a91048106755204701dc31d401d001fa40d430d081010bf8422a598101014133f40a6fa19401d70030925b6de28200f8f3216eb39801206ef2d080c200923170e2f2f48200d28f8bd6d696e74417574686f726974798524001f90101f901baf2f423a4810101f8427020f8238208127500a010685e3470c83600ca557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c91413206e953059f45a30944133f415e2108a10791068105710461035443302c87f01ca0055a050abce18ce16ce14f40058fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed540336e30221821081a594dcbae302018210946a98b6bae3025f0cf2c08238434802fc31d3ffd20030238101012359f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e282008275216eb3f2f4206ef2d0806f288168e1f82323bbf2f481259621b3f2f481010bf8425611598101014133f40a6fa19401d70030925b6de28200f22c216eb39170e30df2f4393a001021206ef2d080c20002fef8420b11140b0a11130a091112090811110807111007106f105e104d103c0211150201111601561401db3c8157be2281010123714133f40c6fa19401d70030925b6de26ef2f4810101017f71216e955b59f45a3098c801cf004133f442e21112991114206ef2d0801ca09b1114206ef2d0801ba00a0be2106f105e104d103c3b42047ac86f00016f8c6d6f8c028e22c821c10098802d01cb0701a301de019a7aa90ca630541220c000e63068a592cb07e4da11c9d012db3c8b13a8db3c01db3c41413c400242fa44c88b111801ce028307a0a9380758cb07cbffc9d020db3c01c8cecec9d0db3c3d3e0094c8ce8b20000801cec9d0709421c701b38e2a01d30783069320c2008e1b03aa005323b091a4de03ab0023840fbc9903840fb0811021b203dee8303101e8318307a90c01c8cb07cb07c9d001a08d10105090d1115191d2125292d3135393d4145494d5155595d61656985898d9195999da1a5a9adb1b5b9bdc1c5c9cdd1d5d9dde1e5e8c0c4c8ccd0d4d8dce0e4b57e0c89522d749c2178ae86c21c9d03f009a02d307d307d30703aa0f02aa0712b101b120ab11803fb0aa02523078d7245004ce23ab0b803fb0aa02523078d72401ce23ab05803fb0aa02523078d72401ce03803fb0aa02522078d7245003ce0144db3c6f2201c993216eb396016f2259ccc9e831d09b9320d74a91d5e868f90400da114100b620d74a21d7499720c20022c200b18e48036f22807f22cf31ab02a105ab025155b60820c2009a20aa0215d71803ce4014de596f025341a1c20099c8016f025044a1aa028e123133c20099d430d020d74a21d749927020e2e2e85f0300dc50a281010111131ac8557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c910344cb0206e953059f45a30944133f415e2109a1089106810571046035045c87f01ca0055a050abce18ce16ce14f40058fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5401fe31d3ff30228101012259f40d6fa192306ddf206e92306d8e1bd0d401d001fa40d401d001fa40fa00fa00d31fd20055706c186f08e282008275216eb3f2f4206ef2d0806f288200919cf82323bcf2f481259621b3f2f454776554776527810bb7081112111911121111111811111110111711100f11160f0e11150e0d11140d4402f80c11130c0b11190b0a11180a09111a0908111b08db3c01111401f2f47f810101c856100756100706111006105f041115040311140302111602011115011116557007c8ce18cd15ce03c8ce13cdce01fa0201fa0212cb1fca00c9103e4cb0206e953059f45a30944133f415e28bd6d696e74417574686f726974798184546001e5b6c425210bc9427ab01bc923070e201c001f90101f901ba8e4b70804007c8018210787cca5458cb1fcec9240350885a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb009135e250a910480706055520470056c87f01ca0055a050abce18ce16ce14f40058fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed5400ded33f30c8018210aff90f5758cb1fcb3fc9109b108a107910681057104610354430f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00c87f01ca0055a050abce18ce16ce14f40058fa0201c8f40012cbff12f40012cbff12f40012f400cdc9ed544e6734d8');
     const builder = beginCell();
     builder.storeUint(0, 1);
-    initToonGovernance_init_args({ $$type: 'ToonGovernance_init_args', registry, vault })(builder);
+    initToonGovernance_init_args({ $$type: 'ToonGovernance_init_args', registry, vault, jettonMaster })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };
 }
@@ -1765,15 +2417,21 @@ export const ToonGovernance_errors = {
     135: { message: "Code of a contract was not found" },
     136: { message: "Invalid standard address" },
     138: { message: "Not a basechain address" },
+    2223: { message: "ToonGovernance: unauthorized Jetton notification" },
     2999: { message: "ToonGovernance: quorum not met" },
+    4429: { message: "Invalid sender" },
     9622: { message: "ToonGovernance: already executed" },
+    14534: { message: "Not owner" },
     22462: { message: "ToonGovernance: already voted on this proposal" },
+    25644: { message: "Only ToonVault can mint" },
     26849: { message: "ToonGovernance: voting closed" },
     33397: { message: "ToonGovernance: address proposal does not exist" },
+    34393: { message: "Unauthorized burn notification" },
     36734: { message: "ToonGovernance: unknown numeric parameter" },
     37276: { message: "ToonGovernance: voting still open" },
     39639: { message: "ToonGovernance: proposal does not exist" },
     53903: { message: "ToonGovernance: unknown address parameter" },
+    54615: { message: "Insufficient balance" },
     61996: { message: "ToonGovernance: no voting weight" },
     63274: { message: "ToonGovernance: insufficient stake" },
     63731: { message: "ToonGovernance: must stake to propose" },
@@ -1816,15 +2474,21 @@ export const ToonGovernance_errors_backward = {
     "Code of a contract was not found": 135,
     "Invalid standard address": 136,
     "Not a basechain address": 138,
+    "ToonGovernance: unauthorized Jetton notification": 2223,
     "ToonGovernance: quorum not met": 2999,
+    "Invalid sender": 4429,
     "ToonGovernance: already executed": 9622,
+    "Not owner": 14534,
     "ToonGovernance: already voted on this proposal": 22462,
+    "Only ToonVault can mint": 25644,
     "ToonGovernance: voting closed": 26849,
     "ToonGovernance: address proposal does not exist": 33397,
+    "Unauthorized burn notification": 34393,
     "ToonGovernance: unknown numeric parameter": 36734,
     "ToonGovernance: voting still open": 37276,
     "ToonGovernance: proposal does not exist": 39639,
     "ToonGovernance: unknown address parameter": 53903,
+    "Insufficient balance": 54615,
     "ToonGovernance: no voting weight": 61996,
     "ToonGovernance: insufficient stake": 63274,
     "ToonGovernance: must stake to propose": 63731,
@@ -1844,7 +2508,18 @@ const ToonGovernance_types: ABIType[] = [
     {"name":"Deploy","header":2490013878,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"DeployOk","header":2952335191,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"FactoryDeploy","header":1829761339,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"cashback","type":{"kind":"simple","type":"address","optional":false}}]},
-    {"name":"StakeToon","header":1144384149,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"JettonData","header":null,"fields":[{"name":"totalSupply","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mintable","type":{"kind":"simple","type":"bool","optional":false}},{"name":"adminAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"content","type":{"kind":"simple","type":"cell","optional":false}},{"name":"walletCode","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"TokenTransfer","header":260734629,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"destination","type":{"kind":"simple","type":"address","optional":false}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}},{"name":"customPayload","type":{"kind":"simple","type":"cell","optional":true}},{"name":"forward_ton_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
+    {"name":"TokenMint","header":376746144,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"receiver","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"TokenTransferInternal","header":395134233,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"from","type":{"kind":"simple","type":"address","optional":false}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}},{"name":"forward_ton_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
+    {"name":"TokenNotification","header":1935855772,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"from","type":{"kind":"simple","type":"address","optional":false}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
+    {"name":"TokenBurn","header":1499400124,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}}]},
+    {"name":"TokenBurnNotification","header":2078119902,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}}]},
+    {"name":"TokenExcesses","header":3576854235,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
+    {"name":"UpdateMintAuthority","header":2021444180,"fields":[{"name":"newAuthority","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"UpdateMetadata","header":293200627,"fields":[{"name":"newUri","type":{"kind":"simple","type":"string","optional":false}}]},
+    {"name":"ToonJettonMaster$Data","header":null,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"mintAuthority","type":{"kind":"simple","type":"address","optional":false}},{"name":"totalSupply","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"metadataUri","type":{"kind":"simple","type":"string","optional":false}}]},
+    {"name":"ToonJettonWallet$Data","header":null,"fields":[{"name":"balance","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"master","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"UnstakeGovernance","header":57173639,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
     {"name":"ProposeParameterUpdate","header":3148424161,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}}]},
     {"name":"ProposeAddressUpdate","header":1506838652,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}}]},
@@ -1854,18 +2529,25 @@ const ToonGovernance_types: ABIType[] = [
     {"name":"ExecuteAddressProposal","header":2175112412,"fields":[{"name":"proposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}}]},
     {"name":"Configuration","header":null,"fields":[{"name":"emissionCap","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"minWalletAgeDays","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"targetDailyActivity","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"rewardBaseActiveListener","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseGrowthAgent","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseArtistLaunch","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseTrendsetter","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseEarlyBeliever","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"rewardBaseDropInvestor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"decayFactor","type":{"kind":"simple","type":"uint","optional":false,"format":16}},{"name":"minThreshold","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"antiFarmingCoeff","type":{"kind":"simple","type":"uint","optional":false,"format":16}}]},
     {"name":"SetConfig","header":735098709,"fields":[{"name":"config","type":{"kind":"simple","type":"Configuration","optional":false}}]},
-    {"name":"UpdateMintAuthority","header":2021444180,"fields":[{"name":"newAuthority","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"UpdateConfigParam","header":243571285,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"GlobalProposal","header":null,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newValue","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}},{"name":"proposer","type":{"kind":"simple","type":"address","optional":false}},{"name":"votesFor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"votesAgainst","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"deadline","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"executed","type":{"kind":"simple","type":"bool","optional":false}}]},
     {"name":"AddressProposal","header":null,"fields":[{"name":"parameter","type":{"kind":"simple","type":"string","optional":false}},{"name":"newAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"description","type":{"kind":"simple","type":"string","optional":false}},{"name":"proposer","type":{"kind":"simple","type":"address","optional":false}},{"name":"votesFor","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"votesAgainst","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"deadline","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"executed","type":{"kind":"simple","type":"bool","optional":false}}]},
-    {"name":"ToonGovernance$Data","header":null,"fields":[{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"vault","type":{"kind":"simple","type":"address","optional":false}},{"name":"stakes","type":{"kind":"dict","key":"address","value":"int"}},{"name":"totalStaked","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"proposals","type":{"kind":"dict","key":"int","value":"GlobalProposal","valueFormat":"ref"}},{"name":"nextProposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"addressProposals","type":{"kind":"dict","key":"int","value":"AddressProposal","valueFormat":"ref"}},{"name":"nextAddressProposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"hasVoted","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"hasVotedAddress","type":{"kind":"dict","key":"int","value":"bool"}}]},
+    {"name":"ToonGovernance$Data","header":null,"fields":[{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"vault","type":{"kind":"simple","type":"address","optional":false}},{"name":"jettonMaster","type":{"kind":"simple","type":"address","optional":false}},{"name":"stakes","type":{"kind":"dict","key":"address","value":"int"}},{"name":"totalStaked","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"proposals","type":{"kind":"dict","key":"int","value":"GlobalProposal","valueFormat":"ref"}},{"name":"nextProposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"addressProposals","type":{"kind":"dict","key":"int","value":"AddressProposal","valueFormat":"ref"}},{"name":"nextAddressProposalId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"hasVoted","type":{"kind":"dict","key":"int","value":"bool"}},{"name":"hasVotedAddress","type":{"kind":"dict","key":"int","value":"bool"}}]},
 ]
 
 const ToonGovernance_opcodes = {
     "Deploy": 2490013878,
     "DeployOk": 2952335191,
     "FactoryDeploy": 1829761339,
-    "StakeToon": 1144384149,
+    "TokenTransfer": 260734629,
+    "TokenMint": 376746144,
+    "TokenTransferInternal": 395134233,
+    "TokenNotification": 1935855772,
+    "TokenBurn": 1499400124,
+    "TokenBurnNotification": 2078119902,
+    "TokenExcesses": 3576854235,
+    "UpdateMintAuthority": 2021444180,
+    "UpdateMetadata": 293200627,
     "UnstakeGovernance": 57173639,
     "ProposeParameterUpdate": 3148424161,
     "ProposeAddressUpdate": 1506838652,
@@ -1874,13 +2556,12 @@ const ToonGovernance_opcodes = {
     "ExecuteProposal": 3833516347,
     "ExecuteAddressProposal": 2175112412,
     "SetConfig": 735098709,
-    "UpdateMintAuthority": 2021444180,
     "UpdateConfigParam": 243571285,
 }
 
 const ToonGovernance_getters: ABIGetter[] = [
     {"name":"totalStaked","methodId":89512,"arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
-    {"name":"getStake","methodId":128972,"arguments":[{"name":"voter","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"stake","methodId":80984,"arguments":[{"name":"voter","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"getProposal","methodId":84079,"arguments":[{"name":"proposalId","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"GlobalProposal","optional":true}},
     {"name":"getAddressProposal","methodId":65836,"arguments":[{"name":"proposalId","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"AddressProposal","optional":true}},
     {"name":"hasAddressVoted","methodId":98948,"arguments":[{"name":"proposalId","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"voter","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
@@ -1890,7 +2571,7 @@ const ToonGovernance_getters: ABIGetter[] = [
 
 export const ToonGovernance_getterMapping: { [key: string]: string } = {
     'totalStaked': 'getTotalStaked',
-    'getStake': 'getGetStake',
+    'stake': 'getStake',
     'getProposal': 'getGetProposal',
     'getAddressProposal': 'getGetAddressProposal',
     'hasAddressVoted': 'getHasAddressVoted',
@@ -1899,7 +2580,7 @@ export const ToonGovernance_getterMapping: { [key: string]: string } = {
 }
 
 const ToonGovernance_receivers: ABIReceiver[] = [
-    {"receiver":"internal","message":{"kind":"typed","type":"StakeToon"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"TokenNotification"}},
     {"receiver":"internal","message":{"kind":"typed","type":"UnstakeGovernance"}},
     {"receiver":"internal","message":{"kind":"typed","type":"ProposeParameterUpdate"}},
     {"receiver":"internal","message":{"kind":"typed","type":"VoteOnProposal"}},
@@ -1917,12 +2598,12 @@ export class ToonGovernance implements Contract {
     public static readonly errors = ToonGovernance_errors_backward;
     public static readonly opcodes = ToonGovernance_opcodes;
     
-    static async init(registry: Address, vault: Address) {
-        return await ToonGovernance_init(registry, vault);
+    static async init(registry: Address, vault: Address, jettonMaster: Address) {
+        return await ToonGovernance_init(registry, vault, jettonMaster);
     }
     
-    static async fromInit(registry: Address, vault: Address) {
-        const __gen_init = await ToonGovernance_init(registry, vault);
+    static async fromInit(registry: Address, vault: Address, jettonMaster: Address) {
+        const __gen_init = await ToonGovernance_init(registry, vault, jettonMaster);
         const address = contractAddress(0, __gen_init);
         return new ToonGovernance(address, __gen_init);
     }
@@ -1945,11 +2626,11 @@ export class ToonGovernance implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: StakeToon | UnstakeGovernance | ProposeParameterUpdate | VoteOnProposal | ExecuteProposal | ProposeAddressUpdate | VoteOnAddressProposal | ExecuteAddressProposal | Deploy) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: TokenNotification | UnstakeGovernance | ProposeParameterUpdate | VoteOnProposal | ExecuteProposal | ProposeAddressUpdate | VoteOnAddressProposal | ExecuteAddressProposal | Deploy) {
         
         let body: Cell | null = null;
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'StakeToon') {
-            body = beginCell().store(storeStakeToon(message)).endCell();
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TokenNotification') {
+            body = beginCell().store(storeTokenNotification(message)).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'UnstakeGovernance') {
             body = beginCell().store(storeUnstakeGovernance(message)).endCell();
@@ -1988,10 +2669,10 @@ export class ToonGovernance implements Contract {
         return result;
     }
     
-    async getGetStake(provider: ContractProvider, voter: Address) {
+    async getStake(provider: ContractProvider, voter: Address) {
         const builder = new TupleBuilder();
         builder.writeAddress(voter);
-        const source = (await provider.get('getStake', builder.build())).stack;
+        const source = (await provider.get('stake', builder.build())).stack;
         const result = source.readBigNumber();
         return result;
     }

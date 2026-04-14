@@ -28,6 +28,10 @@ message ConfirmArtistRegistration {
     wallet: Address;
 }
 
+message ArtistRegistrationConfirmed {
+    wallet: Address;
+}
+
 message RollbackArtistRegistration {
     wallet: Address;
 }
@@ -38,7 +42,15 @@ message StageTrackRegistration {
     trackContract:  Address;
 }
 
+message TrackStagingAccepted {
+    trackId: Int as uint256;
+}
+
 message ConfirmTrackRegistration {
+    trackId: Int as uint256;
+}
+
+message TrackRegistrationConfirmed {
     trackId: Int as uint256;
 }
 
@@ -244,6 +256,14 @@ contract ToonRegistry with Deployable {
             artistContract: msg.artistContract,
             timestamp: now()
         });
+
+        // Acknowledge staging to the artist contract
+        send(SendParameters{
+            to: msg.artistContract,
+            value: 0,
+            mode: SendRemainingValue,
+            body: "StagingAccepted".asComment()
+        });
     }
 
     receive(msg: ConfirmArtistRegistration) {
@@ -257,6 +277,14 @@ contract ToonRegistry with Deployable {
         self.artistContracts.set(pending!!.artistContract, pending!!.wallet);
         self.totalArtists = self.totalArtists + 1;
         self.pendingArtists.set(msg.wallet, null);
+
+        // Notify the artist contract of success
+        send(SendParameters{
+            to: pending!!.artistContract,
+            value: 0,
+            mode: SendRemainingValue,
+            body: ArtistRegistrationConfirmed{ wallet: pending!!.wallet }.toCell()
+        });
 
         emit(ArtistRegistered{
             wallet:         pending!!.wallet,
@@ -292,6 +320,14 @@ contract ToonRegistry with Deployable {
             trackContract: msg.trackContract,
             timestamp: now()
         });
+
+        // Acknowledge staging to the artist contract
+        send(SendParameters{
+            to: caller,
+            value: 0,
+            mode: SendRemainingValue,
+            body: TrackStagingAccepted{ trackId: msg.trackId }.toCell()
+        });
     }
 
     receive(msg: ConfirmTrackRegistration) {
@@ -304,6 +340,14 @@ contract ToonRegistry with Deployable {
         self.fingerprints.set(pending!!.fingerprint, true);
         self.totalTracks = self.totalTracks + 1;
         self.pendingTracks.set(msg.trackId, null);
+
+        // Notify the track contract of success
+        send(SendParameters{
+            to: pending!!.trackContract,
+            value: 0,
+            mode: SendRemainingValue,
+            body: TrackRegistrationConfirmed{ trackId: pending!!.trackId }.toCell()
+        });
 
         emit(TrackRegistered{
             trackId:       pending!!.trackId,

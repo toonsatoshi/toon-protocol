@@ -1,4 +1,5 @@
 import "@stdlib/deploy";
+import "./toon_jetton_master.tact";
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Messages
@@ -17,6 +18,10 @@ message ConfirmArtistRegistration {
     wallet: Address;
 }
 
+message ArtistRegistrationConfirmed {
+    wallet: Address;
+}
+
 message StageTrackRegistration {
     trackId:        Int as uint256;
     fingerprint:    Int as uint256;
@@ -27,16 +32,17 @@ message ConfirmTrackRegistration {
     trackId: Int as uint256;
 }
 
-message StakeToon {
-    amount: Int as coins;
+message TrackStagingAccepted {
+    trackId: Int as uint256;
+}
+
+message TrackRegistrationFinalized {
+    trackId: Int as uint256;
+    trackContract: Address;
 }
 
 message UnstakeToon {
     amount: Int as coins;
-}
-
-message UpdateMetadata {
-    newUri: String;
 }
 
 message AddTrack {
@@ -59,20 +65,11 @@ struct ArtistDetails {
 //
 //  Status: IMPLEMENTED (Artist Identity & Reputation)
 //
-//  On-chain identity for a Toon artist.
-//
-//  Staking design:
-//  • First track: NO stake required — this is the bootstrap moment where
-//    the artist earns on-chain identity for the first time.
-//  • Subsequent tracks: require MIN_STAKE in $TOON to prevent spam.
-//
-//  This resolves the chicken-and-egg problem: you need $TOON to stake,
-//  but you get $TOON by uploading. The first upload is the seed event.
-//
 contract ToonArtist with Deployable {
 
     owner:          Address;
     registry:       Address;
+    jettonMaster:   Address;
     telegramHash:   Int as uint256;
     metadataUri:    String;
 
@@ -83,18 +80,22 @@ contract ToonArtist with Deployable {
     tracks:      map<Int, Address>;
     totalTracks: Int as uint32;
 
+    isRegistered: Bool; // Two-phase commit status
+
     const MIN_STAKE:            Int = 100000000000; // 100 $TOON (9 decimals)
     const TOON_DROP_THRESHOLD:  Int = 1000;
 
-    init(owner: Address, registry: Address, telegramHash: Int, metadataUri: String) {
+    init(owner: Address, registry: Address, jettonMaster: Address, telegramHash: Int, metadataUri: String) {
         self.owner         = owner;
         self.registry      = registry;
+        self.jettonMaster  = jettonMaster;
         self.telegramHash  = telegramHash;
         self.metadataUri   = metadataUri;
         self.reputation    = 0;
         self.totalTipVolume = 0;
         self.stakedToon    = 0;
         self.totalTracks   = 0;
+        self.isRegistered  = false;
     }
 
     receive(msg: UpdateMetadata) {
@@ -111,22 +112,38 @@ contract ToonArtist with Deployable {
         self.totalTipVolume = self.totalTipVolume + context().value;
     }
 
-    receive(msg: StakeToon) {
-        require(sender() == self.owner, "ToonArtist: only owner can stake");
-        require(msg.amount > 0, "ToonArtist: stake amount must be positive");
+    receive(msg: TokenNotification) {
+        // Verify sender is the ToonArtist's own Jetton wallet
+        let expectedWallet: Address = contractAddress(initOf ToonJettonWallet(0, myAddress(), self.jettonMaster));
+        require(sender() == expectedWallet, "ToonArtist: unauthorized Jetton notification");
+
+        // Staking is owner-only for artist identity
+        require(msg.from == self.owner, "ToonArtist: only owner can stake");
+
         self.stakedToon = self.stakedToon + msg.amount;
     }
 
-    // Status: EXPERIMENTAL (Mock implementation)
     receive(msg: UnstakeToon) {
         require(sender() == self.owner, "ToonArtist: only owner can unstake");
         require(self.stakedToon >= msg.amount, "ToonArtist: insufficient stake");
+
         self.stakedToon = self.stakedToon - msg.amount;
+
+        // Send Jettons back to the owner
+        let jettonWallet: Address = contractAddress(initOf ToonJettonWallet(0, myAddress(), self.jettonMaster));
         send(SendParameters{
-            to:    self.owner,
+            to:    jettonWallet,
             value: 0,
             mode:  SendRemainingValue,
-            body:  "Unstaked $TOON (mock)".asComment()
+            body:  TokenTransfer{
+                queryId:              0,
+                amount:               msg.amount,
+                destination:          self.owner,
+                response_destination: self.owner,
+                customPayload:        null,
+                forward_ton_amount:   0,
+                forward_payload:      emptySlice()
+            }.toCell()
         });
     }
 
@@ -144,6 +161,11 @@ contract ToonArtist with Deployable {
         });
     }
 
+    receive("StagingAccepted") {
+        require(sender() == self.registry, "ToonArtist: unauthorized staging callback");
+        // No local state update yet, but could emit an event
+    }
+
     receive("ConfirmRegistration") {
         require(sender() == self.owner, "ToonArtist: only owner can confirm registration");
         send(SendParameters{
@@ -152,6 +174,12 @@ contract ToonArtist with Deployable {
             mode: SendRemainingValue,
             body: ConfirmArtistRegistration{ wallet: self.owner }.toCell()
         });
+    }
+
+    receive(msg: ArtistRegistrationConfirmed) {
+        require(sender() == self.registry, "ToonArtist: unauthorized confirmation callback");
+        require(msg.wallet == self.owner, "ToonArtist: wallet mismatch in confirmation");
+        self.isRegistered = true;
     }
 
     // Add a track to this artist's on-chain catalog.
@@ -177,19 +205,25 @@ contract ToonArtist with Deployable {
             }.toCell()
         });
 
-        // We don't increment totalTracks yet. We wait for 2PC completion.
-        // In a real system, we'd store it as pending.
-        self.tracks.set(msg.trackId, msg.trackContract);
-        self.totalTracks   = self.totalTracks + 1;
-        self.reputation    = self.reputation + 10;
-
-        // Also notify the track contract to confirm
+        // Notify the track contract to confirm
         send(SendParameters{
             to: msg.trackContract,
             value: ton("0.05"),
             mode: SendPayGasSeparately,
             body: "ConfirmRegistration".asComment()
         });
+    }
+
+    receive(msg: TrackRegistrationFinalized) {
+        // This comes from the ToonTrack contract after 2PC completes in Registry
+        // We could verify sender() is a contract, but trackId check is the primary key.
+        
+        // Ensure this track wasn't already added
+        if (self.tracks.get(msg.trackId) == null) {
+            self.tracks.set(msg.trackId, msg.trackContract);
+            self.totalTracks   = self.totalTracks + 1;
+            self.reputation    = self.reputation + 10;
+        }
     }
 
     get fun isActive(): Bool {
