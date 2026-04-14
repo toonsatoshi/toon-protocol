@@ -1,6 +1,6 @@
 # Tact compilation report
 Contract: ToonArtist
-BoC Size: 3654 bytes
+BoC Size: 3851 bytes
 
 ## Structures (Structs and Messages)
 Total structures: 37
@@ -150,8 +150,8 @@ TL-B: `_ reputation:uint32 totalTipVolume:coins stakedToon:coins isActive:bool t
 Signature: `ArtistDetails{reputation:uint32,totalTipVolume:coins,stakedToon:coins,isActive:bool,totalTracks:uint32}`
 
 ### ToonArtist$Data
-TL-B: `_ owner:address registry:address jettonMaster:address telegramHash:uint256 metadataUri:^string reputation:uint32 totalTipVolume:coins stakedToon:coins tracks:dict<int, address> totalTracks:uint32 isRegistered:bool = ToonArtist`
-Signature: `ToonArtist{owner:address,registry:address,jettonMaster:address,telegramHash:uint256,metadataUri:^string,reputation:uint32,totalTipVolume:coins,stakedToon:coins,tracks:dict<int, address>,totalTracks:uint32,isRegistered:bool}`
+TL-B: `_ owner:address registry:address jettonMaster:address telegramHash:uint256 metadataUri:^string reputation:uint32 totalTipVolume:coins stakedToon:coins tracks:dict<int, address> totalTracks:uint32 pendingTracks:dict<int, address> isRegistered:bool = ToonArtist`
+Signature: `ToonArtist{owner:address,registry:address,jettonMaster:address,telegramHash:uint256,metadataUri:^string,reputation:uint32,totalTipVolume:coins,stakedToon:coins,tracks:dict<int, address>,totalTracks:uint32,pendingTracks:dict<int, address>,isRegistered:bool}`
 
 ## Get methods
 Total get methods: 8
@@ -218,6 +218,7 @@ No arguments
 * 136: Invalid standard address
 * 138: Not a basechain address
 * 1310: ToonArtist: unauthorized staging callback
+* 1591: ToonArtist: no pending track found for confirmation
 * 4429: Invalid sender
 * 6995: ToonArtist: stake required for additional tracks
 * 14534: Not owner

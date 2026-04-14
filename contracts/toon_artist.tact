@@ -80,6 +80,8 @@ contract ToonArtist with Deployable {
     tracks:      map<Int, Address>;
     totalTracks: Int as uint32;
 
+    pendingTracks: map<Int, Address>; // trackId -> trackContract (for 2PC)
+
     isRegistered: Bool; // Two-phase commit status
 
     const MIN_STAKE:            Int = 100000000000; // 100 $TOON (9 decimals)
@@ -163,7 +165,23 @@ contract ToonArtist with Deployable {
 
     receive("StagingAccepted") {
         require(sender() == self.registry, "ToonArtist: unauthorized staging callback");
-        // No local state update yet, but could emit an event
+    }
+
+    receive(msg: TrackStagingAccepted) {
+        require(sender() == self.registry, "ToonArtist: unauthorized staging callback");
+        let trackContract: Address? = self.pendingTracks.get(msg.trackId);
+        require(trackContract != null, "ToonArtist: no pending track found for confirmation");
+
+        // Now that Registry has staged, tell the Track contract to confirm
+        send(SendParameters{
+            to: trackContract!!,
+            value: 0,
+            mode: SendRemainingValue,
+            body: "ConfirmRegistration".asComment()
+        });
+
+        // Cleanup pending
+        self.pendingTracks.set(msg.trackId, null);
     }
 
     receive("ConfirmRegistration") {
@@ -193,24 +211,19 @@ contract ToonArtist with Deployable {
             require(self.isActive(), "ToonArtist: stake required for additional tracks");
         }
 
-        // Use fixed values for messages to avoid SendRemainingValue conflicts
+        // Store pending track contract to notify later
+        self.pendingTracks.set(msg.trackId, msg.trackContract);
+
+        // Initiate staging in Registry
         send(SendParameters{
             to:    self.registry,
-            value: ton("0.05"),
-            mode:  SendPayGasSeparately,
+            value: 0,
+            mode:  SendRemainingValue,
             body:  StageTrackRegistration{
                 trackId:       msg.trackId,
                 fingerprint:   msg.fingerprint,
                 trackContract: msg.trackContract
             }.toCell()
-        });
-
-        // Notify the track contract to confirm
-        send(SendParameters{
-            to: msg.trackContract,
-            value: ton("0.05"),
-            mode: SendPayGasSeparately,
-            body: "ConfirmRegistration".asComment()
         });
     }
 

@@ -2081,6 +2081,7 @@ export type ToonArtist$Data = {
     stakedToon: bigint;
     tracks: Dictionary<bigint, Address>;
     totalTracks: bigint;
+    pendingTracks: Dictionary<bigint, Address>;
     isRegistered: boolean;
 }
 
@@ -2098,6 +2099,7 @@ export function storeToonArtist$Data(src: ToonArtist$Data) {
         b_1.storeCoins(src.stakedToon);
         b_1.storeDict(src.tracks, Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
         b_1.storeUint(src.totalTracks, 32);
+        b_1.storeDict(src.pendingTracks, Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
         b_1.storeBit(src.isRegistered);
         b_0.storeRef(b_1.endCell());
     };
@@ -2116,8 +2118,9 @@ export function loadToonArtist$Data(slice: Slice) {
     const _stakedToon = sc_1.loadCoins();
     const _tracks = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), sc_1);
     const _totalTracks = sc_1.loadUintBig(32);
+    const _pendingTracks = Dictionary.load(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), sc_1);
     const _isRegistered = sc_1.loadBit();
-    return { $$type: 'ToonArtist$Data' as const, owner: _owner, registry: _registry, jettonMaster: _jettonMaster, telegramHash: _telegramHash, metadataUri: _metadataUri, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, tracks: _tracks, totalTracks: _totalTracks, isRegistered: _isRegistered };
+    return { $$type: 'ToonArtist$Data' as const, owner: _owner, registry: _registry, jettonMaster: _jettonMaster, telegramHash: _telegramHash, metadataUri: _metadataUri, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, tracks: _tracks, totalTracks: _totalTracks, pendingTracks: _pendingTracks, isRegistered: _isRegistered };
 }
 
 export function loadTupleToonArtist$Data(source: TupleReader) {
@@ -2131,8 +2134,9 @@ export function loadTupleToonArtist$Data(source: TupleReader) {
     const _stakedToon = source.readBigNumber();
     const _tracks = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), source.readCellOpt());
     const _totalTracks = source.readBigNumber();
+    const _pendingTracks = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), source.readCellOpt());
     const _isRegistered = source.readBoolean();
-    return { $$type: 'ToonArtist$Data' as const, owner: _owner, registry: _registry, jettonMaster: _jettonMaster, telegramHash: _telegramHash, metadataUri: _metadataUri, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, tracks: _tracks, totalTracks: _totalTracks, isRegistered: _isRegistered };
+    return { $$type: 'ToonArtist$Data' as const, owner: _owner, registry: _registry, jettonMaster: _jettonMaster, telegramHash: _telegramHash, metadataUri: _metadataUri, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, tracks: _tracks, totalTracks: _totalTracks, pendingTracks: _pendingTracks, isRegistered: _isRegistered };
 }
 
 export function loadGetterTupleToonArtist$Data(source: TupleReader) {
@@ -2146,8 +2150,9 @@ export function loadGetterTupleToonArtist$Data(source: TupleReader) {
     const _stakedToon = source.readBigNumber();
     const _tracks = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), source.readCellOpt());
     const _totalTracks = source.readBigNumber();
+    const _pendingTracks = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Address(), source.readCellOpt());
     const _isRegistered = source.readBoolean();
-    return { $$type: 'ToonArtist$Data' as const, owner: _owner, registry: _registry, jettonMaster: _jettonMaster, telegramHash: _telegramHash, metadataUri: _metadataUri, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, tracks: _tracks, totalTracks: _totalTracks, isRegistered: _isRegistered };
+    return { $$type: 'ToonArtist$Data' as const, owner: _owner, registry: _registry, jettonMaster: _jettonMaster, telegramHash: _telegramHash, metadataUri: _metadataUri, reputation: _reputation, totalTipVolume: _totalTipVolume, stakedToon: _stakedToon, tracks: _tracks, totalTracks: _totalTracks, pendingTracks: _pendingTracks, isRegistered: _isRegistered };
 }
 
 export function storeTupleToonArtist$Data(source: ToonArtist$Data) {
@@ -2162,6 +2167,7 @@ export function storeTupleToonArtist$Data(source: ToonArtist$Data) {
     builder.writeNumber(source.stakedToon);
     builder.writeCell(source.tracks.size > 0 ? beginCell().storeDictDirect(source.tracks, Dictionary.Keys.BigInt(257), Dictionary.Values.Address()).endCell() : null);
     builder.writeNumber(source.totalTracks);
+    builder.writeCell(source.pendingTracks.size > 0 ? beginCell().storeDictDirect(source.pendingTracks, Dictionary.Keys.BigInt(257), Dictionary.Values.Address()).endCell() : null);
     builder.writeBoolean(source.isRegistered);
     return builder.build();
 }
@@ -2241,6 +2247,7 @@ export const ToonJettonMaster_errors = {
     136: { message: "Invalid standard address" },
     138: { message: "Not a basechain address" },
     1310: { message: "ToonArtist: unauthorized staging callback" },
+    1591: { message: "ToonArtist: no pending track found for confirmation" },
     4429: { message: "Invalid sender" },
     6995: { message: "ToonArtist: stake required for additional tracks" },
     14534: { message: "Not owner" },
@@ -2299,6 +2306,7 @@ export const ToonJettonMaster_errors_backward = {
     "Invalid standard address": 136,
     "Not a basechain address": 138,
     "ToonArtist: unauthorized staging callback": 1310,
+    "ToonArtist: no pending track found for confirmation": 1591,
     "Invalid sender": 4429,
     "ToonArtist: stake required for additional tracks": 6995,
     "Not owner": 14534,
@@ -2356,7 +2364,7 @@ const ToonJettonMaster_types: ABIType[] = [
     {"name":"UnstakeToon","header":3754241943,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
     {"name":"AddTrack","header":564504477,"fields":[{"name":"trackId","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"fingerprint","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"trackContract","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"ArtistDetails","header":null,"fields":[{"name":"reputation","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"totalTipVolume","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"stakedToon","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"isActive","type":{"kind":"simple","type":"bool","optional":false}},{"name":"totalTracks","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
-    {"name":"ToonArtist$Data","header":null,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"jettonMaster","type":{"kind":"simple","type":"address","optional":false}},{"name":"telegramHash","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"metadataUri","type":{"kind":"simple","type":"string","optional":false}},{"name":"reputation","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"totalTipVolume","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"stakedToon","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"tracks","type":{"kind":"dict","key":"int","value":"address"}},{"name":"totalTracks","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"isRegistered","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"ToonArtist$Data","header":null,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"registry","type":{"kind":"simple","type":"address","optional":false}},{"name":"jettonMaster","type":{"kind":"simple","type":"address","optional":false}},{"name":"telegramHash","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"metadataUri","type":{"kind":"simple","type":"string","optional":false}},{"name":"reputation","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"totalTipVolume","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"stakedToon","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"tracks","type":{"kind":"dict","key":"int","value":"address"}},{"name":"totalTracks","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"pendingTracks","type":{"kind":"dict","key":"int","value":"address"}},{"name":"isRegistered","type":{"kind":"simple","type":"bool","optional":false}}]},
 ]
 
 const ToonJettonMaster_opcodes = {
