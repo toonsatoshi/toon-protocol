@@ -19,6 +19,12 @@ message AuthorizeMint {
     amount:    Int as coins;
 }
 
+message MintConfirmed {
+    recipient: Address;
+    amount:    Int as coins;
+    origin:    Address;
+}
+
 message StageArtistRegistration {
     artistContract: Address;
     wallet: Address;
@@ -145,6 +151,7 @@ message MintAuthorized {
     recipient: Address;
     amount:    Int as coins;
     authorizedAt: Int as uint32;
+    origin:    Address;
 }
 
 message RegisterDrop {
@@ -390,16 +397,18 @@ contract ToonRegistry with Deployable {
             body: MintAuthorized{
                 recipient: msg.recipient,
                 amount: msg.amount,
-                authorizedAt: now()
+                authorizedAt: now(),
+                origin: myAddress() // For direct admin mints, registry is the origin
             }.toCell()
         });
     }
 
     receive(msg: RequestMint) {
+        let caller: Address = sender();
         require(msg.recipient != newAddress(0, 0), "ToonRegistry: invalid recipient address");
         // Only a known ToonTrack contract can request minting
         require(
-            self.trackContracts.get(sender()) != null,
+            self.trackContracts.get(caller) != null,
             "ToonRegistry: caller is not a registered ToonTrack contract"
         );
 
@@ -411,9 +420,24 @@ contract ToonRegistry with Deployable {
             body: MintAuthorized{
                 recipient: msg.recipient,
                 amount: msg.amount,
-                authorizedAt: now()
+                authorizedAt: now(),
+                origin: caller
             }.toCell()
         });
+    }
+
+    receive(msg: MintConfirmed) {
+        require(sender() == self.vault, "ToonRegistry: only vault can confirm mint");
+
+        // Relay confirmation back to the originating track (if it's a track)
+        if (self.trackContracts.get(msg.origin) != null) {
+            send(SendParameters{
+                to: msg.origin,
+                value: 0,
+                mode: SendRemainingValue,
+                body: msg.toCell()
+            });
+        }
     }
 
     /// Rotate the mint authority. Only the current authority can do this.

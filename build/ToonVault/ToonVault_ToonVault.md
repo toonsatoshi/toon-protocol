@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonVault
-BoC Size: 9325 bytes
+BoC Size: 9418 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 25
+Total structures: 26
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -70,8 +70,12 @@ TL-B: `claim_reward#f9d49f8b walletAddress:address rewardId:uint8 telegramId:uin
 Signature: `ClaimReward{walletAddress:address,rewardId:uint8,telegramId:uint64,walletAgeDays:uint32,hasVibeStreak:bool,tipAmount:coins,claimId:uint64,expiry:uint32,sigHigh:uint256,sigLow:uint256,referrerId:uint64}`
 
 ### MintAuthorized
-TL-B: `mint_authorized#fa1d125c recipient:address amount:coins authorizedAt:uint32 = MintAuthorized`
-Signature: `MintAuthorized{recipient:address,amount:coins,authorizedAt:uint32}`
+TL-B: `mint_authorized#b355fe2e recipient:address amount:coins authorizedAt:uint32 origin:address = MintAuthorized`
+Signature: `MintAuthorized{recipient:address,amount:coins,authorizedAt:uint32,origin:address}`
+
+### MintConfirmed
+TL-B: `mint_confirmed#1bf9e8a5 recipient:address amount:coins origin:address = MintConfirmed`
+Signature: `MintConfirmed{recipient:address,amount:coins,origin:address}`
 
 ### RewardClaimed
 TL-B: `reward_claimed#81a35543 rewardId:uint8 recipient:address amount:coins = RewardClaimed`

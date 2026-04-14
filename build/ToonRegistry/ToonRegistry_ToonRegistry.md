@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonRegistry
-BoC Size: 7015 bytes
+BoC Size: 7245 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 43
+Total structures: 44
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -68,6 +68,10 @@ Signature: `RegisterTrack{trackId:uint256,fingerprint:uint256,trackContract:addr
 ### AuthorizeMint
 TL-B: `authorize_mint#de13870d recipient:address amount:coins = AuthorizeMint`
 Signature: `AuthorizeMint{recipient:address,amount:coins}`
+
+### MintConfirmed
+TL-B: `mint_confirmed#1bf9e8a5 recipient:address amount:coins origin:address = MintConfirmed`
+Signature: `MintConfirmed{recipient:address,amount:coins,origin:address}`
 
 ### StageArtistRegistration
 TL-B: `stage_artist_registration#cc4fedf7 artistContract:address wallet:address = StageArtistRegistration`
@@ -158,8 +162,8 @@ TL-B: `track_registered#74e4a736 trackId:uint256 fingerprint:uint256 trackContra
 Signature: `TrackRegistered{trackId:uint256,fingerprint:uint256,trackContract:address,registeredAt:uint32}`
 
 ### MintAuthorized
-TL-B: `mint_authorized#fa1d125c recipient:address amount:coins authorizedAt:uint32 = MintAuthorized`
-Signature: `MintAuthorized{recipient:address,amount:coins,authorizedAt:uint32}`
+TL-B: `mint_authorized#b355fe2e recipient:address amount:coins authorizedAt:uint32 origin:address = MintAuthorized`
+Signature: `MintAuthorized{recipient:address,amount:coins,authorizedAt:uint32,origin:address}`
 
 ### RegisterDrop
 TL-B: `register_drop#a99ec9f7 trackId:uint256 dropContract:address = RegisterDrop`
@@ -264,6 +268,7 @@ Argument: artist
 * 31774: ToonRegistry: invalid new authority address
 * 38383: ToonRegistry: only mint authority can update config
 * 38991: ToonRegistry: invalid recipient address
+* 40623: ToonRegistry: only vault can confirm mint
 * 44318: ToonRegistry: drop already exists for this track
 * 47432: ToonRegistry: invalid drop contract address
 * 48236: ToonRegistry: only mint authority can update version

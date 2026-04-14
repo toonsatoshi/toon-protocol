@@ -71,6 +71,12 @@ builder $Configuration$_store(builder build_0, (int, int, int, int, int, int, in
 ;; $Configuration$_load
 (slice, ((int, int, int, int, int, int, int, int, int, int, int, int))) $Configuration$_load(slice sc_0) inline_ref;
 
+;; $MintConfirmed$_store
+builder $MintConfirmed$_store(builder build_0, (slice, int, slice) v) inline;
+
+;; $MintConfirmed$_store_cell
+cell $MintConfirmed$_store_cell((slice, int, slice) v, builder b) inline;
+
 ;; $RewardClaimed$_store
 builder $RewardClaimed$_store(builder build_0, (int, slice, int) v) inline;
 
@@ -202,6 +208,9 @@ slice $Cell$_fun_asSlice(cell $self) impure inline;
 
 ;; $SendParameters$_constructor_to_value_mode_body
 ((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline;
+
+;; $MintConfirmed$_constructor_recipient_amount_origin
+((slice, int, slice)) $MintConfirmed$_constructor_recipient_amount_origin(slice $recipient, int $amount, slice $origin) inline;
 
 ;; $DeployOk$_constructor_queryId
 ((int)) $DeployOk$_constructor_queryId(int $queryId) inline;
@@ -808,6 +817,29 @@ builder $Configuration$_store(builder build_0, (int, int, int, int, int, int, in
 ;;
 
 ((slice, int, int, int, int, int, int, int, int, int, int)) $ClaimReward$_tensor_cast((slice, int, int, int, int, int, int, int, int, int, int) v) asm "NOP";
+
+;;
+;; Type: MintConfirmed
+;; Header: 0x1bf9e8a5
+;; TLB: mint_confirmed#1bf9e8a5 recipient:address amount:coins origin:address = MintConfirmed
+;;
+
+builder $MintConfirmed$_store(builder build_0, (slice, int, slice) v) inline {
+    var (v'recipient, v'amount, v'origin) = v;
+    build_0 = store_uint(build_0, 469362853, 32);
+    build_0 = build_0.store_slice(v'recipient);
+    build_0 = build_0.store_varuint16(v'amount);
+    build_0 = build_0.store_slice(v'origin);
+    return build_0;
+}
+
+cell $MintConfirmed$_store_cell((slice, int, slice) v, builder b) inline {
+    return $MintConfirmed$_store(b, v).end_cell();
+}
+
+((slice, int, slice)) $MintConfirmed$_constructor_recipient_amount_origin(slice $recipient, int $amount, slice $origin) inline {
+    return ($recipient, $amount, $origin);
+}
 
 ;;
 ;; Type: RewardClaimed
@@ -1469,14 +1501,16 @@ _ %isClaimIdUsed(int $claimId) method_id(103612) {
     }
     
     ;; Receive MintAuthorized message
-    if (op == 4196209244) {
+    if (op == 3008757294) {
         var $msg'recipient = in_msg~load_msg_addr();
         var $msg'amount = in_msg~load_varuint16();
         var $msg'authorizedAt = in_msg~load_uint(32);
+        var $msg'origin = in_msg~load_msg_addr();
         throw_unless(4630, ( equal_slices_bits(__tact_context_get_sender(), $self'registry) ));
         throw_unless(36280, ($self'totalReserve >= $msg'amount));
         $self'totalReserve = ($self'totalReserve - $msg'amount);
         $global_send($SendParameters$_constructor_to_value_mode_body($msg'recipient, $msg'amount, 2, __gen_cell_cell_badae18b8d6fc66a7238b88920b1e3e1b5a90e464f49ddd0e3e305f308acf40d()));
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'registry, 0, 64, $MintConfirmed$_store_cell($MintConfirmed$_constructor_recipient_amount_origin($msg'recipient, $msg'amount, $msg'origin), begin_cell())));
         $ToonVault$_contract_store(($self'owner, $self'registry, $self'governance, $self'oraclePublicKey, $self'totalReserve, $self'dailyEmitted, $self'lastResetDay, $self'halved, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'dailyClaimCount, $self'usedClaimIds, $self'lastClaimTimestamp, $self'claimCounts, $self'pairingCounts, $self'participantEntropy, $self'lastRewardTimestamp, $self'identityWeights, $self'dailyIdentityRewards, $self'dailyClusterRewards, $self'lifetimeClaimed));
         return ();
     }

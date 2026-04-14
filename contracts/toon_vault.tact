@@ -78,6 +78,13 @@ message MintAuthorized {
     recipient:    Address;
     amount:       Int as coins;
     authorizedAt: Int as uint32;
+    origin:       Address;
+}
+
+message MintConfirmed {
+    recipient: Address;
+    amount:    Int as coins;
+    origin:    Address;
 }
 
 message RewardClaimed {
@@ -533,11 +540,25 @@ contract ToonVault with Deployable {
         require(self.totalReserve >= msg.amount, "ToonVault: insufficient reserve");
 
         self.totalReserve = self.totalReserve - msg.amount;
+
+        // Send to recipient
         send(SendParameters{
             to:    msg.recipient,
             value: msg.amount,
             mode:  SendIgnoreErrors,
             body:  "mint_authorized".asComment()
+        });
+
+        // Notify Registry of successful mint (confirmation callback)
+        send(SendParameters{
+            to: self.registry,
+            value: 0,
+            mode: SendRemainingValue,
+            body: MintConfirmed{
+                recipient: msg.recipient,
+                amount: msg.amount,
+                origin: msg.origin
+            }.toCell()
         });
     }
 

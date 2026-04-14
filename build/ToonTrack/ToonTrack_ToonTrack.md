@@ -1,9 +1,9 @@
 # Tact compilation report
 Contract: ToonTrack
-BoC Size: 1557 bytes
+BoC Size: 1730 bytes
 
 ## Structures (Structs and Messages)
-Total structures: 19
+Total structures: 20
 
 ### DataSize
 TL-B: `_ cells:int257 bits:int257 refs:int257 = DataSize`
@@ -65,6 +65,10 @@ Signature: `AuthorizeMint{recipient:address,amount:coins}`
 TL-B: `request_mint#10859351 recipient:address amount:coins = RequestMint`
 Signature: `RequestMint{recipient:address,amount:coins}`
 
+### MintConfirmed
+TL-B: `mint_confirmed#1bf9e8a5 recipient:address amount:coins origin:address = MintConfirmed`
+Signature: `MintConfirmed{recipient:address,amount:coins,origin:address}`
+
 ### ConfirmTrackRegistration
 TL-B: `confirm_track_registration#a47a6dee trackId:uint256 = ConfirmTrackRegistration`
 Signature: `ConfirmTrackRegistration{trackId:uint256}`
@@ -82,7 +86,7 @@ TL-B: `_ artist:address registry:address trackId:uint256 metadataUri:^string fin
 Signature: `ToonTrack{artist:address,registry:address,trackId:uint256,metadataUri:^string,fingerprint:uint256,mintFee:coins,reputation:uint32,isRegistered:bool}`
 
 ## Get methods
-Total get methods: 5
+Total get methods: 6
 
 ## reputation
 No arguments
@@ -97,6 +101,9 @@ No arguments
 No arguments
 
 ## mintFee
+No arguments
+
+## isRegistered
 No arguments
 
 ## Exit codes
@@ -141,6 +148,7 @@ No arguments
 * 37961: ToonTrack: track not yet registered
 * 43013: ToonTrack: tip below minimum floor (including gas)
 * 57664: ToonTrack: only artist can confirm registration
+* 61614: ToonTrack: only registry can confirm mint
 
 ## Trait inheritance diagram
 
