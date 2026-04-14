@@ -1,4 +1,4 @@
-// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/toon-protocol-main/build/ToonTrack/ToonTrack_ToonTrack.fc` 
+// automatically generated from `@stdlib/std/stdlib.fc` `/app/build/ToonTrack/ToonTrack_ToonTrack.fc`
 PROGRAM{
   DECLPROC __tact_context_get
   DECLPROC __tact_context_get_sender
@@ -22,6 +22,7 @@ PROGRAM{
   DECLPROC $ToonTrack$_fun_metadataUri
   DECLPROC $ToonTrack$_fun_fingerprint
   DECLPROC $ToonTrack$_fun_mintFee
+  DECLPROC $ToonTrack$_fun_isRegistered
   DECLPROC $MessageParameters$_constructor_bounce_to_value_mode_body
   DECLPROC $ToonTrack$_fun_notify
   DECLPROC $SendParameters$_constructor_to_value_mode_body
@@ -34,6 +35,7 @@ PROGRAM{
   82975 DECLMETHOD %metadataUri
   71046 DECLMETHOD %fingerprint
   96203 DECLMETHOD %mintFee
+  104754 DECLMETHOD %isRegistered
   DECLPROC recv_internal
   65535 DECLMETHOD __tact_selector_hack
   DECLGLOBVAR __tact_context
@@ -208,6 +210,9 @@ PROGRAM{
   $ToonTrack$_fun_mintFee PROCREF:<{
     s2 PUSH
   }>
+  $ToonTrack$_fun_isRegistered PROCREF:<{
+    DUP
+  }>
   $MessageParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
     s3 s3 XCHG2
     s0 s4 XCHG
@@ -276,6 +281,11 @@ PROGRAM{
   %mintFee PROC:<{
     $ToonTrack$_contract_load INLINECALLDICT
     $ToonTrack$_fun_mintFee INLINECALLDICT
+    8 1 BLKDROP2
+  }>
+  %isRegistered PROC:<{
+    $ToonTrack$_contract_load INLINECALLDICT
+    $ToonTrack$_fun_isRegistered INLINECALLDICT
     8 1 BLKDROP2
   }>
   recv_internal PROC:<{
@@ -413,6 +423,26 @@ PROGRAM{
         RETALT
       }>
       OVER
+      469362853 PUSHINT
+      EQUAL
+      IFJMP:<{
+        2DROP
+        s7 POP
+        61614 PUSHINT
+        __tact_context_get_sender INLINECALLDICT
+        s6 PUSH
+        SDEQ
+        THROWANYIFNOT
+        s0 s6 XCHG
+        INC
+        s5 s7 XCHG
+        s4 s6 XCHG
+        s3 s5 XCHG
+        s4 s0 s3 XCHG3
+        $ToonTrack$_contract_store INLINECALLDICT
+        RETALT
+      }>
+      OVER
       2490013878 PUSHINT
       EQUAL
       IFJMP:<{
@@ -450,17 +480,15 @@ PROGRAM{
       DROP
       s2 POP
       s2 PUSH
-      80000000 PUSHINT
+      200000000 PUSHINT
       ADD
       s2 PUSH
       43013 PUSHINT
       s0 s2 XCHG
       GEQ
       THROWANYIFNOT
-      s0 s8 XCHG
-      INC
       SWAP
-      50000000 PUSHINT
+      160000000 PUSHINT
       SUB
       0 PUSHINT
           B{b5ee9c7241010101001200002000000000546970207265636569766564d6a94f2b} B>boc PUSHREF
@@ -533,16 +561,15 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
-      20000000 PUSHINT
+      140000000 PUSHINT
       0 PUSHINT
-      s0 s9 XCHG
+      s0 s2 XCHG
       1000000000 PUSHINT
       $RequestMint$_constructor_recipient_amount INLINECALLDICT
       NEWC
       $RequestMint$_store_cell INLINECALLDICT
       s7 PUSH
-      s0 s3 XCHG
-      s10 s10 XCHG2
+      s3 s3 XCHG2
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
           b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
@@ -715,17 +742,15 @@ PROGRAM{
       DROP
       s2 POP
       s2 PUSH
-      80000000 PUSHINT
+      200000000 PUSHINT
       ADD
       s2 PUSH
       43013 PUSHINT
       s0 s2 XCHG
       GEQ
       THROWANYIFNOT
-      s0 s8 XCHG
-      INC
       SWAP
-      50000000 PUSHINT
+      160000000 PUSHINT
       SUB
       0 PUSHINT
           B{b5ee9c7241010101001200002000000000546970207265636569766564d6a94f2b} B>boc PUSHREF
@@ -798,16 +823,15 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
-      20000000 PUSHINT
+      140000000 PUSHINT
       0 PUSHINT
-      s0 s9 XCHG
+      s0 s2 XCHG
       1000000000 PUSHINT
       $RequestMint$_constructor_recipient_amount INLINECALLDICT
       NEWC
       $RequestMint$_store_cell INLINECALLDICT
       s7 PUSH
-      s0 s3 XCHG
-      s10 s10 XCHG2
+      s3 s3 XCHG2
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
           b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true

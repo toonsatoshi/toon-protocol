@@ -442,14 +442,14 @@ builder $ToonJettonWallet$init$_store(builder build_0, (int, slice, slice) v) in
 
 ((int, slice, slice), int) $ToonJettonWallet$_fun_balance((int, slice, slice) $self) impure inline_ref {
     var (($self'balance, $self'owner, $self'master)) = $self;
-    var $fresh$ret_144 = $self'balance;
-    return (($self'balance, $self'owner, $self'master), $fresh$ret_144);
+    var $fresh$ret_145 = $self'balance;
+    return (($self'balance, $self'owner, $self'master), $fresh$ret_145);
 }
 
 ((int, slice, slice), slice) $ToonJettonWallet$_fun_owner((int, slice, slice) $self) impure inline_ref {
     var (($self'balance, $self'owner, $self'master)) = $self;
-    var $fresh$ret_145 = $self'owner;
-    return (($self'balance, $self'owner, $self'master), $fresh$ret_145);
+    var $fresh$ret_146 = $self'owner;
+    return (($self'balance, $self'owner, $self'master), $fresh$ret_146);
 }
 
 ;;

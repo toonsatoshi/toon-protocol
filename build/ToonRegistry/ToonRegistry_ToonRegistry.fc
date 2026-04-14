@@ -62,6 +62,12 @@ builder $DeployOk$_store(builder build_0, (int) v) inline;
 ;; $DeployOk$_store_cell
 cell $DeployOk$_store_cell((int) v, builder b) inline;
 
+;; $MintConfirmed$_store
+builder $MintConfirmed$_store(builder build_0, (slice, int, slice) v) inline;
+
+;; $MintConfirmed$_store_cell
+cell $MintConfirmed$_store_cell((slice, int, slice) v, builder b) inline;
+
 ;; $ArtistRegistrationConfirmed$_store
 builder $ArtistRegistrationConfirmed$_store(builder build_0, (slice) v) inline;
 
@@ -147,10 +153,10 @@ builder $TrackRegistered$_store(builder build_0, (int, int, slice, int) v) inlin
 cell $TrackRegistered$_store_cell((int, int, slice, int) v, builder b) inline;
 
 ;; $MintAuthorized$_store
-builder $MintAuthorized$_store(builder build_0, (slice, int, int) v) inline;
+builder $MintAuthorized$_store(builder build_0, (slice, int, int, slice) v) inline;
 
 ;; $MintAuthorized$_store_cell
-cell $MintAuthorized$_store_cell((slice, int, int) v, builder b) inline;
+cell $MintAuthorized$_store_cell((slice, int, int, slice) v, builder b) inline;
 
 ;; $DropRegistered$_store
 builder $DropRegistered$_store(builder build_0, (int, slice, int) v) inline;
@@ -275,8 +281,8 @@ _ $PendingTrack$_get_timestamp((int, int, slice, int) v) inline;
 ;; $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt
 ((int, int, slice, int)) $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt(int $trackId, int $fingerprint, slice $trackContract, int $registeredAt) inline;
 
-;; $MintAuthorized$_constructor_recipient_amount_authorizedAt
-((slice, int, int)) $MintAuthorized$_constructor_recipient_amount_authorizedAt(slice $recipient, int $amount, int $authorizedAt) inline;
+;; $MintAuthorized$_constructor_recipient_amount_authorizedAt_origin
+((slice, int, int, slice)) $MintAuthorized$_constructor_recipient_amount_authorizedAt_origin(slice $recipient, int $amount, int $authorizedAt, slice $origin) inline;
 
 ;; $DropRegistered$_constructor_trackId_dropContract_registeredAt
 ((int, slice, int)) $DropRegistered$_constructor_trackId_dropContract_registeredAt(int $trackId, slice $dropContract, int $registeredAt) inline;
@@ -452,6 +458,10 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) inline {
 
 builder $global_beginCell() impure asm """
     NEWC
+""";
+
+slice $global_myAddress() impure asm """
+    MYADDR
 """;
 
 int $global_myBalance() impure asm """
@@ -684,6 +694,25 @@ cell $DeployOk$_store_cell((int) v, builder b) inline {
 
 ((int)) $DeployOk$_constructor_queryId(int $queryId) inline {
     return ($queryId);
+}
+
+;;
+;; Type: MintConfirmed
+;; Header: 0x1bf9e8a5
+;; TLB: mint_confirmed#1bf9e8a5 recipient:address amount:coins origin:address = MintConfirmed
+;;
+
+builder $MintConfirmed$_store(builder build_0, (slice, int, slice) v) inline {
+    var (v'recipient, v'amount, v'origin) = v;
+    build_0 = store_uint(build_0, 469362853, 32);
+    build_0 = build_0.store_slice(v'recipient);
+    build_0 = build_0.store_varuint16(v'amount);
+    build_0 = build_0.store_slice(v'origin);
+    return build_0;
+}
+
+cell $MintConfirmed$_store_cell((slice, int, slice) v, builder b) inline {
+    return $MintConfirmed$_store(b, v).end_cell();
 }
 
 ;;
@@ -1014,25 +1043,26 @@ cell $TrackRegistered$_store_cell((int, int, slice, int) v, builder b) inline {
 
 ;;
 ;; Type: MintAuthorized
-;; Header: 0xfa1d125c
-;; TLB: mint_authorized#fa1d125c recipient:address amount:coins authorizedAt:uint32 = MintAuthorized
+;; Header: 0xb355fe2e
+;; TLB: mint_authorized#b355fe2e recipient:address amount:coins authorizedAt:uint32 origin:address = MintAuthorized
 ;;
 
-builder $MintAuthorized$_store(builder build_0, (slice, int, int) v) inline {
-    var (v'recipient, v'amount, v'authorizedAt) = v;
-    build_0 = store_uint(build_0, 4196209244, 32);
+builder $MintAuthorized$_store(builder build_0, (slice, int, int, slice) v) inline {
+    var (v'recipient, v'amount, v'authorizedAt, v'origin) = v;
+    build_0 = store_uint(build_0, 3008757294, 32);
     build_0 = build_0.store_slice(v'recipient);
     build_0 = build_0.store_varuint16(v'amount);
     build_0 = build_0.store_uint(v'authorizedAt, 32);
+    build_0 = build_0.store_slice(v'origin);
     return build_0;
 }
 
-cell $MintAuthorized$_store_cell((slice, int, int) v, builder b) inline {
+cell $MintAuthorized$_store_cell((slice, int, int, slice) v, builder b) inline {
     return $MintAuthorized$_store(b, v).end_cell();
 }
 
-((slice, int, int)) $MintAuthorized$_constructor_recipient_amount_authorizedAt(slice $recipient, int $amount, int $authorizedAt) inline {
-    return ($recipient, $amount, $authorizedAt);
+((slice, int, int, slice)) $MintAuthorized$_constructor_recipient_amount_authorizedAt_origin(slice $recipient, int $amount, int $authorizedAt, slice $origin) inline {
+    return ($recipient, $amount, $authorizedAt, $origin);
 }
 
 ;;
@@ -1431,7 +1461,7 @@ _ %isArtistRewardEligible(slice $artist) method_id(105328) {
         throw_unless(38991, ( ~ equal_slices_bits($msg'recipient, __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c()) ));
         throw_unless(27890, ( equal_slices_bits(__tact_context_get_sender(), $self'mintAuthority) ));
         throw_unless(9580, ($msg'amount > 0));
-        $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 0, 64, $MintAuthorized$_store_cell($MintAuthorized$_constructor_recipient_amount_authorizedAt($msg'recipient, $msg'amount, $global_now()), begin_cell())));
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 0, 64, $MintAuthorized$_store_cell($MintAuthorized$_constructor_recipient_amount_authorizedAt_origin($msg'recipient, $msg'amount, $global_now(), $global_myAddress()), begin_cell())));
         $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks));
         return ();
     }
@@ -1440,9 +1470,23 @@ _ %isArtistRewardEligible(slice $artist) method_id(105328) {
     if (op == 277189457) {
         var $msg'recipient = in_msg~load_msg_addr();
         var $msg'amount = in_msg~load_varuint16();
+        slice $caller = __tact_context_get_sender();
         throw_unless(38991, ( ~ equal_slices_bits($msg'recipient, __gen_slice_address_61ab4641fa30d9310391025086eec65d200d79268e1b7cd402565e01ba64be3c()) ));
-        throw_unless(50582, (~ null?(__tact_dict_get_slice_int($self'trackContracts, 267, __tact_context_get_sender(), 257))));
-        $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 0, 64, $MintAuthorized$_store_cell($MintAuthorized$_constructor_recipient_amount_authorizedAt($msg'recipient, $msg'amount, $global_now()), begin_cell())));
+        throw_unless(50582, (~ null?(__tact_dict_get_slice_int($self'trackContracts, 267, $caller, 257))));
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'vault, 0, 64, $MintAuthorized$_store_cell($MintAuthorized$_constructor_recipient_amount_authorizedAt_origin($msg'recipient, $msg'amount, $global_now(), $caller), begin_cell())));
+        $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks));
+        return ();
+    }
+
+    ;; Receive MintConfirmed message
+    if (op == 469362853) {
+        var $msg'recipient = in_msg~load_msg_addr();
+        var $msg'amount = in_msg~load_varuint16();
+        var $msg'origin = in_msg~load_msg_addr();
+        throw_unless(40623, ( equal_slices_bits(__tact_context_get_sender(), $self'vault) ));
+        if ((~ null?(__tact_dict_get_slice_int($self'trackContracts, 267, $msg'origin, 257)))) {
+            $global_send($SendParameters$_constructor_to_value_mode_body($msg'origin, 0, 64, $MintConfirmed$_store_cell(($msg'recipient, $msg'amount, $msg'origin), begin_cell())));
+        }
         $ToonRegistry$_contract_store(($self'artists, $self'artistContracts, $self'tracks, $self'trackContracts, $self'drops, $self'fingerprints, $self'mintAuthority, $self'vault, $self'isPaused, ($self'config'emissionCap, $self'config'minWalletAgeDays, $self'config'targetDailyActivity, $self'config'rewardBaseActiveListener, $self'config'rewardBaseGrowthAgent, $self'config'rewardBaseArtistLaunch, $self'config'rewardBaseTrendsetter, $self'config'rewardBaseEarlyBeliever, $self'config'rewardBaseDropInvestor, $self'config'decayFactor, $self'config'minThreshold, $self'config'antiFarmingCoeff), $self'version, $self'trackRewardEligible, $self'artistRewardEligible, $self'pendingArtists, $self'pendingTracks, $self'totalArtists, $self'totalTracks));
         return ();
     }

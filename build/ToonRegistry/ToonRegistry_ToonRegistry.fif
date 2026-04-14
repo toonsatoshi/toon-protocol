@@ -1,4 +1,4 @@
-// automatically generated from `@stdlib/std/stdlib.fc` `/data/data/com.termux/files/home/toon-protocol-main/build/ToonRegistry/ToonRegistry_ToonRegistry.fc` 
+// automatically generated from `@stdlib/std/stdlib.fc` `/app/build/ToonRegistry/ToonRegistry_ToonRegistry.fc`
 PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get
@@ -18,6 +18,8 @@ PROGRAM{
   DECLPROC __tact_dict_set_int_cell
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
+  DECLPROC $MintConfirmed$_store
+  DECLPROC $MintConfirmed$_store_cell
   DECLPROC $ArtistRegistrationConfirmed$_store
   DECLPROC $ArtistRegistrationConfirmed$_store_cell
   DECLPROC $TrackStagingAccepted$_store
@@ -89,7 +91,7 @@ PROGRAM{
   DECLPROC $TrackStagingAccepted$_constructor_trackId
   DECLPROC $TrackRegistrationConfirmed$_constructor_trackId
   DECLPROC $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt
-  DECLPROC $MintAuthorized$_constructor_recipient_amount_authorizedAt
+  DECLPROC $MintAuthorized$_constructor_recipient_amount_authorizedAt_origin
   DECLPROC $DropRegistered$_constructor_trackId_dropContract_registeredAt
   DECLPROC $SetConfig$_constructor_config
   DECLPROC $DeployOk$_constructor_queryId
@@ -287,6 +289,21 @@ PROGRAM{
   $DeployOk$_store_cell PROCINLINE:<{
     SWAP
     $DeployOk$_store INLINECALLDICT
+    ENDC
+  }>
+  $MintConfirmed$_store PROCINLINE:<{
+    469362853 PUSHINT
+    s0 s4 XCHG2
+    32 STU
+    s1 s2 XCHG
+    STSLICE
+    SWAP
+    STVARUINT16
+    STSLICE
+  }>
+  $MintConfirmed$_store_cell PROCINLINE:<{
+    3 -ROLL
+    $MintConfirmed$_store INLINECALLDICT
     ENDC
   }>
   $ArtistRegistrationConfirmed$_store PROCINLINE:<{
@@ -524,17 +541,18 @@ PROGRAM{
     ENDC
   }>
   $MintAuthorized$_store PROCINLINE:<{
-    4196209244 PUSHINT
-    s0 s4 XCHG2
+    3008757294 PUSHINT
+    s0 s5 XCHG2
     32 STU
-    s1 s2 XCHG
+    s1 s3 XCHG
     STSLICE
     SWAP
     STVARUINT16
     32 STU
+    STSLICE
   }>
   $MintAuthorized$_store_cell PROCINLINE:<{
-    3 -ROLL
+    4 -ROLL
     $MintAuthorized$_store INLINECALLDICT
     ENDC
   }>
@@ -947,7 +965,7 @@ PROGRAM{
   }>
   $TrackRegistered$_constructor_trackId_fingerprint_trackContract_registeredAt PROCINLINE:<{
   }>
-  $MintAuthorized$_constructor_recipient_amount_authorizedAt PROCINLINE:<{
+  $MintAuthorized$_constructor_recipient_amount_authorizedAt_origin PROCINLINE:<{
   }>
   $DropRegistered$_constructor_trackId_dropContract_registeredAt PROCINLINE:<{
   }>
@@ -1980,8 +1998,10 @@ PROGRAM{
       0 PUSHINT
       64 PUSHINT
           NOW
-      s4 s3 s0 XCHG3
-      $MintAuthorized$_constructor_recipient_amount_authorizedAt INLINECALLDICT
+          MYADDR
+      s3 s5 XCHG
+      s2 s4 XCHG
+      $MintAuthorized$_constructor_recipient_amount_authorizedAt_origin INLINECALLDICT
       NEWC
       $MintAuthorized$_store_cell INLINECALLDICT
       21 s() PUSH
@@ -2077,17 +2097,17 @@ PROGRAM{
       LDMSGADDR
       LDVARUINT16
       DROP
+      __tact_context_get_sender INLINECALLDICT
       38991 PUSHINT
           B{b5ee9c72410101010024000043800000000000000000000000000000000000000000000000000000000000000000104aec829d} B>boc <s PUSHSLICE
-      s3 s(-1) PUXC
+      s4 s(-1) PUXC
       SDEQ
       NOT
       THROWANYIFNOT
       50582 PUSHINT
+      26 s() PUSH
       267 PUSHINT
-      __tact_context_get_sender INLINECALLDICT
-      27 s() PUSH
-      -ROT
+      s3 PUSH
       257 PUSHINT
       __tact_dict_get_slice_int INLINECALLDICT
       ISNULL
@@ -2096,12 +2116,13 @@ PROGRAM{
       0 PUSHINT
       64 PUSHINT
           NOW
-      s4 s3 s0 XCHG3
-      $MintAuthorized$_constructor_recipient_amount_authorizedAt INLINECALLDICT
+      s3 s5 XCHG
+      s4 s0 s5 XCHG3
+      $MintAuthorized$_constructor_recipient_amount_authorizedAt_origin INLINECALLDICT
       NEWC
       $MintAuthorized$_store_cell INLINECALLDICT
       21 s() PUSH
-      3 -ROLL
+      s3 s3 XCHG2
       $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
           NEWC
           b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
@@ -2169,6 +2190,120 @@ PROGRAM{
           // Group 5: Sending the message, with `mode` on top
           SWAP
           SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      25 s() 27 s() XCHG
+      24 s() 26 s() XCHG
+      23 s() 25 s() XCHG
+      22 s() 24 s() XCHG
+      21 s() 23 s() XCHG
+      20 s() 22 s() XCHG
+      19 s() 21 s() XCHG
+      18 s() 20 s() XCHG
+      17 s() 19 s() XCHG
+      16 s() 18 s() XCHG
+      s15 17 s() XCHG
+      s14 16 s() XCHG
+      s13 s15 XCHG
+      2 13 BLKSWAP
+      $ToonRegistry$_contract_store INLINECALLDICT
+    }>
+    OVER
+    469362853 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      LDMSGADDR
+      LDVARUINT16
+      LDMSGADDR
+      DROP
+      40623 PUSHINT
+      __tact_context_get_sender INLINECALLDICT
+      23 s() PUSH
+      SDEQ
+      THROWANYIFNOT
+      25 s() PUSH
+      267 PUSHINT
+      s2 PUSH
+      257 PUSHINT
+      __tact_dict_get_slice_int INLINECALLDICT
+      ISNULL
+      NOT
+      IF:<{
+        0 PUSHINT
+        64 PUSHINT
+        s4 s3 s2 XC2PU
+        NEWC
+        $MintConfirmed$_store_cell INLINECALLDICT
+        s3 s3 s0 XCHG3
+        $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
+            NEWC
+            b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+            1 STI               // store `bounce`
+            b{000} STSLICECONST // store bounced = false and src = addr_none
+            STSLICE             // store `to`
+            SWAP
+            STGRAMS             // store `value`
+            105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+            STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+            // → Stack state
+            // s0: Builder
+            // s1: `data`
+            // s2: `code`
+            // s3: `body`
+            // s4: `mode`
+            // Group 2: Placing the Builder after code and data, then checking those for nullability
+            s2 XCHG0
+            DUP2
+            ISNULL
+            SWAP
+            ISNULL
+            AND
+            // → Stack state
+            // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+            // s1: `code`
+            // s2: `data`
+            // s3: Builder
+            // s4: `body`
+            // s5: `mode`
+            // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+            <{
+                DROP2 // drop `data` and `code`, since either of those is null
+                b{0} STSLICECONST
+            }> PUSHCONT
+            // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+            <{
+                // _ split_depth:(Maybe (## 5))
+                //   special:(Maybe TickTock)
+                //   code:(Maybe ^Cell)
+                //   data:(Maybe ^Cell)
+                //   library:(Maybe ^Cell)
+                // = StateInit;
+                ROT                // place message Builder on top
+                b{10} STSLICECONST // store Maybe = true, Either = false
+                // Start composing inlined StateInit
+                b{00} STSLICECONST // store split_depth and special first
+                STDICT             // store code
+                STDICT             // store data
+                b{0} STSLICECONST  // store library
+            }> PUSHCONT
+            // Group 3: IFELSE that does the branching shown above
+            IFELSE
+            // → Stack state
+            // s0: Builder
+            // s1: null or StateInit
+            // s2: `body`
+            // s3: `mode`
+            // Group 4: Finalizing the message
+            STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+            ENDC
+            // → Stack state
+            // s0: Cell
+            // s1: `mode`
+            // Group 5: Sending the message, with `mode` on top
+            SWAP
+            SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      }>ELSE<{
+        3 BLKDROP
+      }>
       25 s() 27 s() XCHG
       24 s() 26 s() XCHG
       23 s() 25 s() XCHG
