@@ -3,10 +3,9 @@ const logger = require('../../../logger');
 
 class GuardrailService {
     /**
-     * Check if the system is currently paused.
-     * @returns {Promise<boolean>}
+     * @returns {Promise<Object>} Full status object
      */
-    async isPaused() {
+    async getStatus() {
         try {
             const { data, error } = await supabase
                 .from('system_config')
@@ -16,29 +15,40 @@ class GuardrailService {
             
             if (error) {
                 logger.error('Failed to fetch emergency pause state', error);
-                return true; // Safe default: pause if check fails
+                return { active: true, inCooldown: false, error: true };
             }
 
             const active = data.value.active === true;
             const cooldownUntil = data.value.resume_cooldown_until ? new Date(data.value.resume_cooldown_until) : null;
             const inCooldown = cooldownUntil && cooldownUntil > new Date();
 
-            return active || inCooldown;
+            return { active, inCooldown, cooldownUntil };
         } catch (e) {
-            logger.error('Guardrail check error', e);
-            return true;
+            logger.error('Guardrail status check error', e);
+            return { active: true, inCooldown: false, error: true };
         }
     }
 
     /**
-     * Trigger an emergency pause.
-     * @param {string} reason 
-     * @param {Object} metadata 
+     * Absolute block check (Bug 3 Fix)
+     * Returns true ONLY if the system is explicitly paused.
      */
+    async isPaused() {
+        const status = await this.getStatus();
+        return status.active === true;
+    }
+
+    /**
+     * Returns true if system is in resume cooldown (Bug 3 Fix)
+     */
+    async isCooldown() {
+        const status = await this.getStatus();
+        return status.inCooldown === true;
+    }
+
     async triggerPause(reason, metadata = {}) {
         try {
             logger.warn(`🛑 EMERGENCY PAUSE TRIGGERED: ${reason}`, metadata);
-
             await Promise.all([
                 supabase.from('system_config').upsert({
                     key: 'emergency_pause',
@@ -56,16 +66,10 @@ class GuardrailService {
         }
     }
 
-    /**
-     * Resume system operations with a cooldown window.
-     * @param {string} reason 
-     * @param {number} cooldownMinutes 
-     */
     async resume(reason = 'Manual resolution', cooldownMinutes = 5) {
         try {
             const cooldownUntil = new Date(Date.now() + cooldownMinutes * 60000).toISOString();
             logger.info(`✅ SYSTEM RESUMED: ${reason}. Cooldown until ${cooldownUntil}`);
-
             await Promise.all([
                 supabase.from('system_config').upsert({
                     key: 'emergency_pause',

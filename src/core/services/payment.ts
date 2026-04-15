@@ -26,6 +26,9 @@ class PaymentService {
             });
 
             if (error) {
+                if (error.message.includes('SYSTEM_PAUSED')) return { success: false, error: 'SYSTEM_PAUSED' };
+                if (error.message.includes('RESUME_COOLDOWN')) return { success: false, error: 'RESUME_COOLDOWN' };
+                
                 logger.error('Failed to create payment intent', { error, userId, source });
                 return { success: false, error: 'DB_ERROR' };
             }

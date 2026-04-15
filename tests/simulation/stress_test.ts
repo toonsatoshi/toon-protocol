@@ -17,7 +17,12 @@ async function runStressTest() {
     
     logger.info('🧪 Starting Stress Test: Guardrail Targeted Attack...');
 
-    try {
+    // ISSUE 7 FIX: Production Safety Check
+    if (process.env.SUPABASE_URL && process.env.SUPABASE_URL.includes('supabase.co')) {
+        logger.error('❌ ABORTING: Stress test detected production-like Supabase URL.');
+        logger.error('To run this test, use a local/test project or set ALLOW_STRESS_TEST=true');
+        if (process.env.ALLOW_STRESS_TEST !== 'true') return;
+    }
         // --- SETUP ---
         // 1. Reset user and treasury
         await supabase.from('users').upsert({

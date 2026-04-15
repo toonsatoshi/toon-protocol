@@ -48,6 +48,9 @@ class TipService {
             });
 
             if (error) {
+                if (error.message.includes('SYSTEM_PAUSED')) return { success: false, error: 'SYSTEM_PAUSED' };
+                if (error.message.includes('RESUME_COOLDOWN')) return { success: false, error: 'RESUME_COOLDOWN' };
+                
                 metrics.recordFailure('tip_db_error', error.message);
                 logger.error('Failed to create tip intent', { error, tipperId, trackId });
                 return { success: false, error: 'DB_ERROR' };

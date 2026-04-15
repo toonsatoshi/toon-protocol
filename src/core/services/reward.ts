@@ -1,7 +1,6 @@
 const supabase = require('../../../supabase');
 const logger = require('../../../logger');
 const guardrail = require('./guardrail');
-const treasury = require('./treasury');
 
 class RewardService {
     /**
