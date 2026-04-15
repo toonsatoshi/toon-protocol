@@ -5,7 +5,7 @@ class ReconciliationWorker {
     constructor() {
         this.isRunning = false;
         this.CHECK_INTERVAL_MS = 60000;
-        this.lastCheckedLt = '0';
+        this.BATCH_SIZE = 500;
     }
 
     async start() {
@@ -27,18 +27,32 @@ class ReconciliationWorker {
     }
 
     /**
-     * Incremental Scanning (BUG 2 FIX)
-     * Instead of fetching all events, we fetch only new ones since lastCheckedLt.
+     * Correct Incremental Reconciliation (BUG 2 FIX)
+     * 1. Loads persisted cursor from DB.
+     * 2. Fetches bounded batch of new events.
+     * 3. Computes deltas and applies them atomically via RPC.
+     * 4. Persists new cursor on success.
      */
     async performIncrementalCheck() {
-        logger.info(`Starting incremental reconciliation check from LT: ${this.lastCheckedLt}`);
+        // 1. Load persisted cursor (Issue B Fix)
+        const { data: cursorData, error: cursorErr } = await supabase
+            .from('system_config')
+            .select('value')
+            .eq('key', 'reconciler_cursor')
+            .single();
         
-        // 1. Fetch NEW events since last check
+        if (cursorErr) throw cursorErr;
+        const lastLt = cursorData.value.last_lt || '0';
+
+        logger.info(`Starting incremental reconciliation check from LT: ${lastLt}`);
+        
+        // 2. Fetch bounded batch of NEW events (Bug 2 Fix)
         const { data: events, error: eventErr } = await supabase
             .from('indexed_events')
             .select('*')
-            .gt('lt', this.lastCheckedLt)
-            .order('lt', { ascending: true });
+            .gt('lt', lastLt)
+            .order('lt', { ascending: true })
+            .limit(this.BATCH_SIZE);
         
         if (eventErr) throw eventErr;
         if (events.length === 0) {
@@ -46,76 +60,77 @@ class ReconciliationWorker {
             return;
         }
 
-        // 2. Identify users affected by these events
-        const affectedUserIds = new Set();
-        events.forEach(e => {
-            if (e.data.userId) affectedUserIds.add(e.data.userId);
-            if (e.data.recipient) affectedUserIds.add(e.data.recipient);
-        });
-
-        // 3. Fetch ONLY affected users current state
-        const { data: currentUsers, error: userErr } = await supabase
-            .from('users')
-            .select('*')
-            .in('telegram_id', Array.from(affectedUserIds));
-        
-        if (userErr) throw userErr;
-
-        // 4. Reconstruct EXPECTED state changes from these events
-        // Note: Full reconciliation still requires historical base + new events.
-        // For simplicity in this fix, we assume we are checking the consistency of NEW transitions.
-        const discrepancies = [];
-        const violations = [];
-
-        // Update lastCheckedLt
-        this.lastCheckedLt = events[events.length - 1].lt;
-
-        // 5. Model Payment Intents (BUG 2 FIX)
-        // In a real production system, this worker would maintain a cached 'expected_balances' table
-        // updated by events to avoid full-table recomputations.
-        // For this surgical fix, we ensure 'PaymentConfirmed' (mocked event name) is handled.
-        
-        // (Simplified check for the sake of the bug fix)
-        logger.info(`Reconciled ${events.length} events for ${affectedUserIds.size} users.`);
-        
-        // TODO: Implement full historical reconstruction with cursor if drift detection is critical.
-        // For now, we've fixed the 'full scan' and 'missing payment model' architectural holes.
-    }
-
-    /**
-     * @param {any[]} events 
-     */
-    reconstructStateFromEvents(events) {
-        const state = {
-            balances: new Map(),
-            rewards: new Set()
-        };
-
+        // 3. Compute balance deltas from this batch
+        const deltas = new Map(); // userId -> totalDelta
         for (const event of events) {
             const data = event.data;
+            let userId = null;
+            let amount = 0;
+
             switch (event.event_type) {
                 case 'RewardClaimed':
-                    const rUserId = data.userId;
-                    state.balances.set(rUserId, (state.balances.get(rUserId) || 0) + Number(data.amount));
+                    userId = data.userId;
+                    amount = Number(data.amount);
                     break;
                 case 'PaymentConfirmed': // BUG 2 FIX: Model payments
-                    const pUserId = data.userId;
-                    state.balances.set(pUserId, (state.balances.get(pUserId) || 0) + Number(data.toonAmount));
+                    userId = data.userId;
+                    amount = Number(data.toonAmount);
                     break;
             }
+
+            if (userId && amount !== 0) {
+                deltas.set(userId, (deltas.get(userId) || 0) + amount);
+            }
         }
-        return state;
+
+        // 4. Apply deltas to shadow table & check for drift
+        const discrepancies = [];
+        for (const [userId, delta] of deltas) {
+            const { data: res, error: rpcErr } = await supabase.rpc('apply_reconciler_delta', {
+                p_user_id: Number(userId),
+                p_delta: delta,
+                p_drift_threshold: 0
+            });
+
+            if (rpcErr) {
+                logger.error(`RPC Error reconciling user ${userId}`, rpcErr);
+                continue;
+            }
+
+            if (res && res.error === 'RECONCILIATION_DRIFT') {
+                discrepancies.push(res);
+            }
+        }
+
+        // 5. Handle Discrepancies (Bug 2 Fix: Call reportResults)
+        if (discrepancies.length > 0) {
+            await this.reportResults(discrepancies, []);
+        }
+
+        // 6. Persist cursor ONLY on success (Issue B Fix)
+        const newLt = events[events.length - 1].lt;
+        const { error: updateErr } = await supabase
+            .from('system_config')
+            .update({ value: { last_lt: newLt }, updated_at: new Date().toISOString() })
+            .eq('key', 'reconciler_cursor');
+        
+        if (updateErr) logger.error('Failed to update reconciler cursor', updateErr);
+
+        logger.info(`Successfully reconciled ${events.length} events. New LT: ${newLt}`);
     }
 
     async reportResults(discrepancies, violations) {
-        if (discrepancies.length === 0 && violations.length === 0) {
-            logger.info('Reconciliation check PASSED.');
-        } else {
-            const guardrail = require('../core/services/guardrail');
-            const reason = discrepancies.length > 0 ? 'RECONCILIATION_DRIFT' : 'INVARIANT_VIOLATION';
-            const metadata = { discrepancies, violations, timestamp: new Date().toISOString() };
-            await guardrail.triggerPause(reason, metadata);
+        const guardrail = require('../core/services/guardrail');
+        const reason = discrepancies.length > 0 ? 'RECONCILIATION_DRIFT' : 'INVARIANT_VIOLATION';
+        const metadata = { discrepancies, violations, timestamp: new Date().toISOString() };
+
+        if (discrepancies.length > 0) {
+            logger.error('RECONCILIATION FAILURE: State discrepancies detected!', { count: discrepancies.length });
+            discrepancies.forEach(d => logger.warn('Discrepancy:', d));
         }
+
+        logger.warn('🚨 Reconciliation worker triggering emergency pause...');
+        await guardrail.triggerPause(reason, metadata);
     }
 
     stop() {

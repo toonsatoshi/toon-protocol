@@ -10,10 +10,13 @@ async function guardrailMiddleware(ctx, next) {
 
     // Grouping actions by risk level
     const isHighRiskAction = ctx.updateType === 'callback_query' && 
-        (ctx.callbackQuery.data === 'deploy_identity' || ctx.callbackQuery.data.startsWith('play_'));
+        (ctx.callbackQuery.data === 'deploy_identity');
     
     const isLowRiskAction = 
-        (ctx.updateType === 'callback_query' && ctx.callbackQuery.data.startsWith('tip_')) ||
+        (ctx.updateType === 'callback_query' && (
+            ctx.callbackQuery.data.startsWith('tip_') || 
+            ctx.callbackQuery.data.startsWith('play_')
+        )) ||
         (ctx.message && ctx.message.text && (
             ctx.message.text === '⬆️ Upload' ||
             ctx.message.text === '💸 Tip'

@@ -7,9 +7,6 @@ const reconciler = require('../../src/workers/reconciler');
 
 /**
  * Stress Test Scenario: Guardrail Targeted Attack
- * 1. Force reconciliation drift and check if reconciler catches it.
- * 2. Rapidly flood reward intents concurrently to test treasury cap.
- * 3. Verify that emergency pause is absolute even under high concurrency.
  */
 async function runStressTest() {
     const testUserId = 888111;
@@ -23,8 +20,9 @@ async function runStressTest() {
         logger.error('To run this test, use a local/test project or set ALLOW_STRESS_TEST=true');
         if (process.env.ALLOW_STRESS_TEST !== 'true') return;
     }
+
+    try {
         // --- SETUP ---
-        // 1. Reset user and treasury
         await supabase.from('users').upsert({
             telegram_id: testUserId,
             username: 'stress_tester',
@@ -39,13 +37,11 @@ async function runStressTest() {
 
         // --- ATTACK 1: Reconciliation Drift ---
         logger.info('--- Phase 1: Forcing Reconciliation Drift ---');
-        // Manually update balance WITHOUT an event
         await supabase.from('users').update({ toon_balance: 5000 }).eq('telegram_id', testUserId);
         
         logger.info('Running reconciler to detect drift...');
-        // Mock performFullCheck logic or run it (we need it to NOT exit early)
-        await reconciler.performFullCheck();
-        // Expectation: Logger should show BALANCE_MISMATCH for testUserId (expected 1000, actual 5000)
+        // ISSUE 7 FIX: Rename to performIncrementalCheck
+        await reconciler.performIncrementalCheck();
 
         // Reset balance
         await supabase.from('users').update({ toon_balance: initialBalance }).eq('telegram_id', testUserId);
@@ -53,9 +49,8 @@ async function runStressTest() {
 
         // --- ATTACK 2: Rapid Concurrent Emission ---
         logger.info('--- Phase 2: Rapid Concurrent Emission ---');
-        // We have 1000 cap. Each intent 300. 4 intents = 1200 (should fail 1).
         const intentAmount = 300;
-        const concurrentRequests = 10; // Try to slip more through
+        const concurrentRequests = 10;
         
         const promises = [];
         for (let i = 0; i < concurrentRequests; i++) {
@@ -65,9 +60,8 @@ async function runStressTest() {
         const results = await Promise.all(promises);
         const successes = results.filter(r => r.success).length;
         const failures = results.filter(r => !r.success).length;
-        const limitHits = results.filter(r => r.error === 'TREASURY_LIMIT_HIT').length;
 
-        logger.info(`Results: ${successes} successful, ${failures} failed (${limitHits} hit limit)`);
+        logger.info(`Results: ${successes} successful, ${failures} failed`);
         
         if (successes > 3) {
             logger.error(`❌ FAILURE: Slippage detected! ${successes} intents created (expected max 3)`);
@@ -78,7 +72,6 @@ async function runStressTest() {
 
         // --- ATTACK 3: Pause Lock-in ---
         logger.info('--- Phase 3: Pause Lock-in ---');
-        // Trigger pause and immediately flood requests
         await guardrail.triggerPause('Stress test pause');
         
         const pausePromises = [];
