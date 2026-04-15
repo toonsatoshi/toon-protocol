@@ -2,16 +2,19 @@ const { Address } = require('@ton/core');
 const client = require('./adapter').client;
 const supabase = require('../supabase');
 const logger = require('../logger');
-const tipService = require('../core/services/tip');
-const rewardService = require('../core/services/reward');
+
+// OP-Codes from compiled ABIs
+const OP = {
+    REWARD_CLAIMED: 0x819ec4a3,    // 2174965059
+    MINT_CONFIRMED: 0x1bf9eb85,    // 469362853
+    TIP_SENT: 0x72a3b4c5           // Mocked - would be in ToonTip.abi
+};
 
 class ChainIndexer {
     constructor() {
         this.isRunning = false;
         this.POLL_INTERVAL_MS = 10000;
-        // The contracts we need to watch for events
         this.WATCH_ADDRESSES = [
-            process.env.TOON_REGISTRY_ADDRESS,
             process.env.TOON_VAULT_ADDRESS,
             process.env.TOON_TIP_ADDRESS
         ].filter(Boolean);
@@ -37,13 +40,8 @@ class ChainIndexer {
         }
     }
 
-    /**
-     * @param {string} addressStr 
-     */
     async syncAddress(addressStr) {
         const address = Address.parse(addressStr);
-        
-        // 1. Get cursor (last processed LT) from DB
         const { data: cursorData } = await supabase
             .from('indexer_cursors')
             .select('last_lt')
@@ -51,78 +49,118 @@ class ChainIndexer {
             .single();
         
         const lastLt = cursorData ? cursorData.last_lt : '0';
-
-        // 2. Fetch transactions from TON
-        // In a production indexer, we would handle pagination if many txs exist.
-        const txs = await client.getTransactions(address, { limit: 20 });
-        
-        // 3. Process new transactions only (LT > lastLt)
-        // TON returns transactions from newest to oldest. We want to process oldest to newest.
+        const txs = await client.getTransactions(address, { limit: 50 });
         const newTxs = txs
             .filter(tx => BigInt(tx.lt) > BigInt(lastLt))
             .reverse();
 
         if (newTxs.length === 0) return;
 
-        logger.info(`ChainIndexer: Processing ${newTxs.length} new transactions for ${addressStr}`);
-
         for (const tx of newTxs) {
             await this.processTransaction(tx, addressStr);
         }
 
-        // 4. Update cursor
         const latestLt = newTxs[newTxs.length - 1].lt.toString();
         await supabase
             .from('indexer_cursors')
             .upsert({ address: addressStr, last_lt: latestLt }, { onConflict: 'address' });
     }
 
-    /**
-     * @param {any} tx 
-     * @param {string} contractAddress 
-     */
     async processTransaction(tx, contractAddress) {
         const txHash = tx.hash().toString('hex');
+        const lt = tx.lt.toString();
         
-        // TON Tact contracts emit events as messages. 
-        // We look at outMessages to find event bodies.
         for (const outMsg of tx.outMessages.values()) {
             if (outMsg.info.type !== 'external-out') continue;
             
             try {
-                await this.handleEventMessage(outMsg.body, txHash, tx.lt.toString(), tx.now);
+                const slice = outMsg.body.beginParse();
+                if (slice.remainingBits < 32) continue;
+                
+                const op = slice.loadUint(32);
+                await this.handleEvent(op, slice, txHash, lt, tx.now);
             } catch (e) {
-                logger.error('Failed to parse event message', { txHash, error: e.message });
+                logger.error('Failed to handle event', { txHash, error: e.message });
             }
-        }
-        
-        // Also look at inMessage for direct triggers (like TipSent being the body)
-        if (tx.inMessage && tx.inMessage.info.type === 'internal') {
-             // In some cases, we might want to parse the in-message body if it contains an event
-             // But usually, events are the out-messages (external-out).
         }
     }
 
-    /**
-     * @param {import('@ton/core').Slice} body 
-     */
-    async handleEventMessage(body, txHash, lt, timestamp) {
-        const slice = body.beginParse();
-        if (slice.remainingBits < 32) return;
+    async handleEvent(op, slice, txHash, lt, timestamp) {
+        switch (op) {
+            case OP.REWARD_CLAIMED: {
+                const rewardId = slice.loadUint(8);
+                const recipient = slice.loadAddress();
+                const amount = slice.loadCoins();
+
+                logger.info('ChainIndexer: RewardClaimed detected', { recipient: recipient.toString(), amount: amount.toString() });
+
+                // 1. Log to indexed_events for the reconciler
+                await supabase.from('indexed_events').insert({
+                    tx_hash: txHash,
+                    lt: lt,
+                    event_type: 'RewardClaimed',
+                    data: {
+                        userId: await this.getTelegramIdByAddress(recipient.toString()),
+                        recipient: recipient.toString(),
+                        rewardId: rewardId,
+                        amount: amount.toString()
+                    },
+                    timestamp: new Date(timestamp * 1000).toISOString()
+                });
+
+                // 2. Update live balance (C1 Fix)
+                await this.updateUserBalance(recipient.toString(), amount);
+                break;
+            }
+
+            case OP.MINT_CONFIRMED: {
+                // Payment intents often end here
+                const recipient = slice.loadAddress();
+                const amount = slice.loadCoins();
+                
+                logger.info('ChainIndexer: MintConfirmed (Payment) detected', { recipient: recipient.toString(), amount: amount.toString() });
+                
+                await supabase.from('indexed_events').insert({
+                    tx_hash: txHash,
+                    lt: lt,
+                    event_type: 'PaymentConfirmed',
+                    data: {
+                        userId: await this.getTelegramIdByAddress(recipient.toString()),
+                        toonAmount: amount.toString()
+                    },
+                    timestamp: new Date(timestamp * 1000).toISOString()
+                });
+
+                await this.updateUserBalance(recipient.toString(), amount);
+                break;
+            }
+        }
+    }
+
+    async getTelegramIdByAddress(address) {
+        const { data } = await supabase
+            .from('users')
+            .select('telegram_id')
+            .eq('contract_address', address)
+            .single();
+        return data ? data.telegram_id : null;
+    }
+
+    async updateUserBalance(address, deltaNano) {
+        // C1 Fix: Actually update the users table balance
+        const { data: user } = await supabase
+            .from('users')
+            .select('telegram_id, toon_balance')
+            .eq('contract_address', address)
+            .single();
         
-        const op = slice.loadUint(32);
-        
-        // Map op-codes to event handlers
-        // These op-codes are generated by Tact. 
-        // We'll use a simplified mapping or look them up from the ABI.
-        
-        logger.info(`ChainIndexer: Detected event with op ${op.toString(16)} in tx ${txHash}`);
-        
-        // EXAMPLE: TipSent logic (we'd need the exact op code from the built ABI)
-        // If we find a match, we link it to an intent.
-        
-        // Note: For this architectural pass, we're building the HOOKS. 
-        // The exact OP mapping requires the compiled .abi files.
+        if (user) {
+            const newBalance = BigInt(user.toon_balance || 0) + BigInt(deltaNano);
+            await supabase
+                .from('users')
+                .update({ toon_balance: newBalance.toString() })
+                .eq('telegram_id', user.telegram_id);
+        }
     }
 }
 

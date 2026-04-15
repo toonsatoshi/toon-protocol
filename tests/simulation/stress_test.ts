@@ -37,10 +37,21 @@ async function runStressTest() {
 
         // --- ATTACK 1: Reconciliation Drift ---
         logger.info('--- Phase 1: Forcing Reconciliation Drift ---');
-        await supabase.from('users').update({ toon_balance: 5000 }).eq('telegram_id', testUserId);
+        // Insert a synthetic event that doesn't match the live balance update
+        const syntheticLt = Date.now().toString();
+        await supabase.from('indexed_events').insert({
+            tx_hash: 'stress_test_synthetic_' + syntheticLt,
+            lt: syntheticLt,
+            event_type: 'RewardClaimed',
+            contract_addr: 'stress_test',
+            data: { userId: testUserId, amount: "9999000000" }, // 9999 TOON in nanotons
+            timestamp: new Date().toISOString()
+        });
+
+        // We DO NOT update users.toon_balance here. 
+        // Reconciler should see the event, increment shadow balance, and find drift vs the initial 1000.
         
         logger.info('Running reconciler to detect drift...');
-        // ISSUE 7 FIX: Rename to performIncrementalCheck
         await reconciler.performIncrementalCheck();
 
         // Reset balance
