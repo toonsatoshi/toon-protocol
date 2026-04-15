@@ -1,6 +1,7 @@
 const store = require('../../../store');
 const supabase = require('../../../supabase');
 const logger = require('../../../logger');
+const metrics = require('../monitoring/metrics');
 
 /**
  * @typedef {Object} TipIntent
@@ -23,6 +24,7 @@ class TipService {
      * @returns {Promise<{success: boolean, data?: string, error?: string}>}
      */
     async createIntent(tipperId, trackId, amountTon, method) {
+        metrics.recordIntent('tip');
         try {
             // 1. Validate Track & Artist
             const trackRes = await store.getTrack(trackId);
@@ -46,12 +48,14 @@ class TipService {
             });
 
             if (error) {
+                metrics.recordFailure('tip_db_error', error.message);
                 logger.error('Failed to create tip intent', { error, tipperId, trackId });
                 return { success: false, error: 'DB_ERROR' };
             }
 
             return { success: true, data: intentId };
         } catch (e) {
+            metrics.recordFailure('tip_internal_error', e.message);
             logger.error('TipService.createIntent error', e);
             return { success: false, error: 'INTERNAL_ERROR' };
         }

@@ -10,6 +10,11 @@ message SyncParticipation {
     investmentVolume: Int as coins;
 }
 
+message Mint {
+    recipient: Address;
+    amount: Int as coins;
+}
+
 message VoteOnProposal {
     proposalId: Int as uint256;
     support:    Bool;
@@ -76,10 +81,13 @@ contract ToonFan with Deployable {
 
         // In production: trigger $TOON-ARTIST mint for the fan
         send(SendParameters{
-            to: msg.fan,
+            to: self.artist, // Artist contract or owner
             value: 0,
             mode: SendRemainingValue,
-            body: "Fan Tokens Minted (mock)".asComment()
+            body: Mint{
+                recipient: msg.fan,
+                amount: newPower * 10 // Ratio for minting
+            }.toCell()
         });
     }
 

@@ -1,8 +1,8 @@
 const tipService = require('../core/services/tip');
 const chainAdapter = require('../chain/adapter');
-const supabase = require('../supabase');
-const store = require('../store');
-const logger = require('../logger');
+const supabase = require('../../supabase');
+const store = require('../../store');
+const logger = require('../../logger');
 
 class ChainObserver {
     constructor() {

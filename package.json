@@ -10,7 +10,8 @@
     "deploy:registry": "blueprint run deployToonRegistry --testnet",
     "deploy:protocol": "blueprint run deployToonProtocol --testnet",
     "deploy:artist": "blueprint run deployToonArtist --testnet",
-    "start": "node index.js"
+    "chaos-test": "ts-node tests/simulation/chaos_test.ts",
+    "start": "ts-node src/bot/index.ts"
   },
   "engines": {
     "node": ">=20.0.0"

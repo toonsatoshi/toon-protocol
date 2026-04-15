@@ -1,5 +1,7 @@
 const supabase = require('../../../supabase');
 const logger = require('../../../logger');
+const guardrail = require('./guardrail');
+const treasury = require('./treasury');
 
 class RewardService {
     /**
@@ -12,26 +14,31 @@ class RewardService {
      */
     async createIntent(userId, type, referenceId, amountToon, achievementKey) {
         try {
-            // Idempotency Key: {type}:{userId}:{referenceId}
             const idempotencyKey = `${type}:${userId}:${referenceId}`;
+            const debugTrace = { initiated_at: new Date().toISOString() };
 
-            const { data: intentId, error } = await supabase.rpc('create_reward_intent', {
+            // Single atomic call for: Guardrail Check + Treasury Check + Achievement Check + Intent Creation
+            const { data: intentId, error } = await supabase.rpc('create_reward_intent_atomic', {
                 p_user_id: Number(userId),
                 p_reward_type: type,
                 p_reference_id: referenceId,
                 p_amount_toon: amountToon,
                 p_idempotency_key: idempotencyKey,
-                p_achievement_key: achievementKey
+                p_achievement_key: achievementKey,
+                p_debug_trace: debugTrace
             });
 
             if (error) {
-                logger.error('Failed to create reward intent', { error, userId, type, referenceId });
+                // Map DB errors to application error codes
+                if (error.message.includes('SYSTEM_PAUSED')) return { success: false, error: 'SYSTEM_PAUSED' };
+                if (error.message.includes('RESUME_COOLDOWN')) return { success: false, error: 'RESUME_COOLDOWN' };
+                if (error.message.includes('TREASURY_LIMIT_HIT')) return { success: false, error: 'TREASURY_LIMIT_HIT' };
+                
+                logger.error('Failed to create atomic reward intent', { error, userId, type });
                 return { success: false, error: 'DB_ERROR' };
             }
 
-            if (!intentId) {
-                return { success: false, error: 'ACHIEVEMENT_ALREADY_REWARDED' };
-            }
+            if (!intentId) return { success: false, error: 'ACHIEVEMENT_ALREADY_REWARDED' };
 
             return { success: true, data: intentId };
         } catch (e) {

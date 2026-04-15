@@ -10,14 +10,32 @@ message SplitTip {
     count:   Int as uint8;
 }
 
+message TipSent {
+    sender:  Address;
+    target:  Address;
+    amount:  Int as coins;
+}
+
 message CreatePool {
     trackAddress: Address;
     threshold:    Int as coins;
     deadline:     Int as uint32;
 }
 
+message PoolCreated {
+    poolId:   Int as uint256;
+    track:    Address;
+    target:   Int as coins;
+}
+
 message ContributeToPool {
     poolId: Int as uint256;
+}
+
+message ContributionReceived {
+    poolId:   Int as uint256;
+    sender:   Address;
+    amount:   Int as coins;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -76,7 +94,11 @@ contract ToonTip with Deployable {
                         to: target!!,
                         value: share,
                         mode: SendPayGasSeparately,
-                        body: "tip".asComment()
+                        body: TipSent{
+                            sender: sender(),
+                            target: target!!,
+                            amount: share
+                        }.toCell()
                     });
                 }
             }
@@ -102,6 +124,18 @@ contract ToonTip with Deployable {
         };
 
         self.pools.set(poolId, newPool);
+
+        // Emit event
+        send(SendParameters{
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue,
+            body: PoolCreated{
+                poolId: poolId,
+                track: msg.trackAddress,
+                target: msg.threshold
+            }.toCell()
+        });
     }
 
     /// Fans contribute TON to a pool.
@@ -123,6 +157,18 @@ contract ToonTip with Deployable {
         p.contributors.set(p.contributorCount, sender());
         p.contributorCount = p.contributorCount + 1;
 
+        // Emit event
+        send(SendParameters{
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue,
+            body: ContributionReceived{
+                poolId: msg.poolId,
+                sender: sender(),
+                amount: contribution
+            }.toCell()
+        });
+
         if (p.currentAmount >= p.targetAmount) {
             p.completed = true;
             
@@ -131,7 +177,11 @@ contract ToonTip with Deployable {
                 to: p.trackAddress,
                 value: p.currentAmount,
                 mode: SendPayGasSeparately,
-                body: "tip".asComment()
+                body: TipSent{
+                    sender: myAddress(),
+                    target: p.trackAddress,
+                    amount: p.currentAmount
+                }.toCell()
             });
             p.currentAmount = 0;
         }
