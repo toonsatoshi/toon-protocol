@@ -26,7 +26,11 @@ class ReconciliationWorker {
         }
     }
 
+    /**
+     * Correct Incremental Reconciliation with Adversarial Hardening
+     */
     async performIncrementalCheck() {
+        // 1. Load persisted cursor
         const { data: cursorData, error: cursorErr } = await supabase
             .from('system_config')
             .select('value')
@@ -36,8 +40,7 @@ class ReconciliationWorker {
         if (cursorErr) throw cursorErr;
         const lastLt = cursorData.value.last_lt || '0';
 
-        logger.info(`Starting incremental reconciliation check from LT: ${lastLt}`);
-        
+        // 2. Fetch bounded batch of NEW events
         const { data: events, error: eventErr } = await supabase
             .from('indexed_events')
             .select('*')
@@ -46,15 +49,15 @@ class ReconciliationWorker {
             .limit(this.BATCH_SIZE);
         
         if (eventErr) throw eventErr;
+        if (!events || events.length === 0) return;
 
-        // H2 Fix: Null guard on events
-        if (!events || events.length === 0) {
-            logger.info('No new events to reconcile.');
-            return;
-        }
+        logger.info(`Processing ${events.length} events from LT ${lastLt}`);
 
-        // 3. Compute balance deltas (H4 Fix: Use BigInt for precision)
-        const deltas = new Map(); 
+        // 3. Process Events (Per-Event strategy for idempotency & skipping)
+        const discrepancies = [];
+        let batchFailed = false;
+        let lastSuccessfulLt = lastLt;
+
         for (const event of events) {
             const data = event.data;
             let userId = null;
@@ -70,57 +73,62 @@ class ReconciliationWorker {
                     amount = BigInt(data.toonAmount);
                     break;
                 default:
-                    // L1 Fix: Log unknown event types
-                    logger.warn(`Reconciler: Unknown event type encountered: ${event.event_type}`, { txHash: event.tx_hash });
+                    logger.warn(`Unknown event type: ${event.event_type}`);
             }
 
-            if (userId && amount !== 0n) {
-                const current = deltas.get(userId) || 0n;
-                deltas.set(userId, current + amount);
+            if (!userId || amount === 0n) {
+                lastSuccessfulLt = event.lt;
+                continue;
+            }
+
+            try {
+                // Apply delta with tx_hash for DB-level idempotency
+                const { data: res, error: rpcErr } = await supabase.rpc('apply_reconciler_delta', {
+                    p_user_id: Number(userId),
+                    p_delta: amount.toString(),
+                    p_tx_hash: event.tx_hash,
+                    p_drift_threshold: "0"
+                });
+
+                if (rpcErr) {
+                    logger.error(`RPC Error for event ${event.tx_hash}`, rpcErr);
+                    
+                    // SKIP-AND-ALERT: Log failure but keep moving to prevent pipeline stall
+                    await supabase.from('guardrail_events').insert({
+                        type: 'RECONCILIATION_SKIP',
+                        reason: `RPC Failure for tx_hash ${event.tx_hash}`,
+                        metadata: { userId, amount: amount.toString(), error: rpcErr }
+                    });
+                    
+                    lastSuccessfulLt = event.lt;
+                    continue;
+                }
+
+                if (res && res.error === 'RECONCILIATION_DRIFT') {
+                    discrepancies.push(res);
+                }
+
+                lastSuccessfulLt = event.lt;
+            } catch (e) {
+                logger.error(`Critical exception for event ${event.tx_hash}`, e);
+                batchFailed = true; // Stop batch on actual code crashes
+                break;
             }
         }
 
-        // 4. Apply deltas atomically
-        const discrepancies = [];
-        let batchFailed = false;
-
-        for (const [userId, delta] of deltas) {
-            const { data: res, error: rpcErr } = await supabase.rpc('apply_reconciler_delta', {
-                p_user_id: Number(userId),
-                p_delta: delta.toString(), // Pass as string to avoid JSON number precision issues
-                p_drift_threshold: 0
-            });
-
-            if (rpcErr) {
-                // H1 Fix: A failed user RPC MUST block the cursor advancement
-                logger.error(`RPC Error reconciling user ${userId}. Batch cursor advancement aborted.`, rpcErr);
-                batchFailed = true;
-                break; 
-            }
-
-            if (res && res.error === 'RECONCILIATION_DRIFT') {
-                discrepancies.push(res);
-            }
-        }
-
-        // 5. Handle Discrepancies
+        // 4. Handle Discrepancies
         if (discrepancies.length > 0) {
             await this.reportResults(discrepancies, []);
         }
 
-        // 6. Persist cursor ONLY if the entire batch was successful (H1 Fix)
-        if (!batchFailed) {
-            const newLt = events[events.length - 1].lt;
-            const { error: updateErr } = await supabase
+        // 5. Persist cursor based on lastSuccessfulLt
+        if (lastSuccessfulLt !== lastLt) {
+            await supabase
                 .from('system_config')
-                .update({ value: { last_lt: newLt }, updated_at: new Date().toISOString() })
+                .update({ value: { last_lt: lastSuccessfulLt }, updated_at: new Date().toISOString() })
                 .eq('key', 'reconciler_cursor');
             
-            if (updateErr) {
-                logger.error('Failed to update reconciler cursor', updateErr);
-            } else {
-                logger.info(`Successfully reconciled ${events.length} events. New LT: ${newLt}`);
-            }
+            logger.info(`Reconciliation batch complete. New LT: ${lastSuccessfulLt}`);
         }
     }
 
@@ -129,12 +137,7 @@ class ReconciliationWorker {
         const reason = discrepancies.length > 0 ? 'RECONCILIATION_DRIFT' : 'INVARIANT_VIOLATION';
         const metadata = { discrepancies, violations, timestamp: new Date().toISOString() };
 
-        if (discrepancies.length > 0) {
-            logger.error('RECONCILIATION FAILURE: State discrepancies detected!', { count: discrepancies.length });
-            discrepancies.forEach(d => logger.warn('Discrepancy:', d));
-        }
-
-        logger.warn('🚨 Reconciliation worker triggering emergency pause...');
+        logger.error('RECONCILIATION FAILURE detected!', { count: discrepancies.length });
         await guardrail.triggerPause(reason, metadata);
     }
 

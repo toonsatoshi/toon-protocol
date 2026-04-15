@@ -54,6 +54,24 @@ async function runStressTest() {
         logger.info('Running reconciler to detect drift...');
         await reconciler.performIncrementalCheck();
 
+        // --- ATTACK 1b: Duplicate Event (Adversarial) ---
+        logger.info('--- Phase 1b: Duplicate Event Attack ---');
+        // If the same event (same LT, same tx_hash) exists, reconciler cursor should skip it.
+        // If different LT but same underlying business intent, shadow balance logic must handle.
+        const duplicateLt = (BigInt(syntheticLt) + 1n).toString();
+        await supabase.from('indexed_events').insert({
+            tx_hash: 'stress_test_synthetic_' + syntheticLt, // Reuse tx_hash
+            lt: duplicateLt,
+            event_type: 'RewardClaimed',
+            contract_addr: 'stress_test',
+            data: { userId: testUserId, amount: "9999000000" },
+            timestamp: new Date().toISOString()
+        });
+
+        logger.info('Running reconciler to check duplicate handling...');
+        await reconciler.performIncrementalCheck();
+        // Expectation: If the RPC is idempotent on tx_hash, expected_toon_balance shouldn't double-count.
+
         // Reset balance
         await supabase.from('users').update({ toon_balance: initialBalance }).eq('telegram_id', testUserId);
 

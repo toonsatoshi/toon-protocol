@@ -8,20 +8,34 @@ ON CONFLICT (key) DO NOTHING;
 
 -- 2. Shadow Balance to track "Expected" vs "Actual"
 -- This allows us to detect drift incrementally without full-table scans.
-ALTER TABLE users ADD COLUMN IF NOT EXISTS expected_toon_balance INT DEFAULT 0;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS expected_toon_balance BIGINT DEFAULT 0;
+
+-- 2b. Event Deduplication Table (Adversarial Fix)
+CREATE TABLE IF NOT EXISTS processed_events (
+    tx_hash     TEXT PRIMARY KEY,
+    processed_at TIMESTAMPTZ DEFAULT NOW()
+);
 
 -- 3. Atomic Delta Application & Drift Detection
 CREATE OR REPLACE FUNCTION apply_reconciler_delta(
     p_user_id BIGINT,
-    p_delta INT,
-    p_drift_threshold INT DEFAULT 0
+    p_delta BIGINT,
+    p_tx_hash TEXT,
+    p_drift_threshold BIGINT DEFAULT 0
 ) RETURNS JSONB AS $$
 DECLARE
-    v_actual INT;
-    v_expected INT;
-    v_new_expected INT;
-    v_drift INT;
+    v_actual BIGINT;
+    v_expected BIGINT;
+    v_new_expected BIGINT;
+    v_drift BIGINT;
+    v_already_processed BOOLEAN;
 BEGIN
+    -- 0. Idempotency Check (Adversarial Fix)
+    SELECT EXISTS(SELECT 1 FROM processed_events WHERE tx_hash = p_tx_hash) INTO v_already_processed;
+    IF v_already_processed THEN
+        RETURN jsonb_build_object('success', true, 'skipped', true, 'reason', 'ALREADY_PROCESSED');
+    END IF;
+
     -- 1. Lock user row
     SELECT toon_balance, expected_toon_balance 
     INTO v_actual, v_expected 
@@ -39,6 +53,9 @@ BEGIN
     UPDATE users 
     SET expected_toon_balance = v_new_expected 
     WHERE telegram_id = p_user_id;
+
+    -- 2b. Mark event as processed
+    INSERT INTO processed_events (tx_hash) VALUES (p_tx_hash);
 
     -- 3. Compare with actual
     v_drift := ABS(v_actual - v_new_expected);

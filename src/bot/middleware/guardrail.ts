@@ -48,6 +48,12 @@ async function guardrailMiddleware(ctx, next) {
 
     // 5. COOLDOWN: Block only HIGH RISK (Rewards/Admin)
     if (status.inCooldown && isHighRiskAction) {
+        logger.warn('🛡️ Guardrail: High-risk action intercepted during cooldown', {
+            userId: ctx.from.id,
+            action: ctx.callbackQuery ? ctx.callbackQuery.data : 'message',
+            text: ctx.message ? ctx.message.text : null
+        });
+
         const remaining = Math.ceil((status.cooldownUntil.getTime() - Date.now()) / 60000);
         return ctx.reply(
 `⏳ <b>Resume Cooldown</b>\n\nRewards are currently paused for system stabilization. High-risk operations will resume in <b>${remaining} min</b>.\n\n✅ <i>Tips and Uploads are available.</i>`,
