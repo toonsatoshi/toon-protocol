@@ -18,8 +18,8 @@ class SupplyAudit {
                 supabase.from('tip_intents').select('id').eq('method', 'stars').eq('status', 'confirmed')
             ]);
 
-            const totalFromPayments = (payments.data || []).reduce((acc, p) => acc + p.toon_amount, 0);
-            const totalFromRewards = (rewards.data || []).reduce((acc, r) => acc + r.amount_toon, 0);
+            const totalFromPayments = (payments.data || []).reduce((acc: number, p: any) => acc + p.toon_amount, 0);
+            const totalFromRewards = (rewards.data || []).reduce((acc: number, r: any) => acc + r.amount_toon, 0);
             const totalFromStarTips = (starTips.data || []).length * 50; // Each Star tip = 50 TOON
 
             const totalEmitted = totalFromPayments + totalFromRewards + totalFromStarTips;
@@ -30,7 +30,7 @@ class SupplyAudit {
                 .select('toon_balance');
             
             if (userError) throw userError;
-            const sumBalances = users.reduce((acc, u) => acc + (u.toon_balance || 0), 0);
+            const sumBalances = users.reduce((acc: number, u: any) => acc + (u.toon_balance || 0), 0);
 
             // 3. Compare and Report
             const drift = totalEmitted - sumBalances;

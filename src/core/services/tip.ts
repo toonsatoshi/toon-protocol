@@ -23,7 +23,7 @@ class TipService {
      * @param {string} method
      * @returns {Promise<{success: boolean, data?: string, error?: string}>}
      */
-    async createIntent(tipperId, trackId, amountTon, method) {
+    async createIntent(tipperId: number, trackId: string, amountTon: number, method: string) {
         metrics.recordIntent('tip');
         try {
             // 1. Validate Track & Artist
@@ -69,7 +69,7 @@ class TipService {
      * @param {string} txHash
      * @returns {Promise<{success: boolean, error?: string}>}
      */
-    async finalize(intentId, txHash) {
+    async finalize(intentId: string, txHash: string) {
         try {
             const { data: success, error } = await supabase.rpc('finalize_tip', {
                 p_intent_id: intentId,
@@ -96,7 +96,7 @@ class TipService {
      * @param {string} intentId
      * @returns {Promise<{success: boolean, data?: any, error?: string}>}
      */
-    async getIntent(intentId) {
+    async getIntent(intentId: string) {
         try {
             const { data, error } = await supabase
                 .from('tip_intents')

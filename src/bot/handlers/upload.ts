@@ -1,10 +1,11 @@
+import type { Context } from 'telegraf';
 const { Markup } = require('telegraf');
 const uploadService = require('../../core/services/upload');
 const logger = require('../../../logger');
 const { MusicNft } = require('../../../build/MusicNft/MusicNft_MusicNft');
 const { Address, toNano } = require('@ton/core');
 
-async function handleStartUpload(ctx) {
+async function handleStartUpload(ctx: Context) {
     const userId = ctx.from.id;
     const user = ctx.state.user;
 
@@ -19,7 +20,7 @@ async function handleStartUpload(ctx) {
     return resumeFlow(ctx, flow);
 }
 
-async function handleResume(ctx) {
+async function handleResume(ctx: Context) {
     const userId = ctx.from.id;
     const flowRes = await uploadService.getOrCreateFlow(userId);
     if (!flowRes.success) return ctx.reply('❌ No active upload to resume.');
@@ -27,7 +28,7 @@ async function handleResume(ctx) {
     return resumeFlow(ctx, flowRes.data);
 }
 
-async function resumeFlow(ctx, flow) {
+async function resumeFlow(ctx: Context, flow: any) {
     switch (flow.status) {
         case 'initiated':
             return ctx.reply('🎵 <b>What is the title of your track?</b>', { parse_mode: 'HTML' });
@@ -47,7 +48,7 @@ async function resumeFlow(ctx, flow) {
     }
 }
 
-async function handleUploadMessage(ctx) {
+async function handleUploadMessage(ctx: Context) {
     const userId = ctx.from.id;
     const text = ctx.message.text;
     const flowRes = await uploadService.getOrCreateFlow(userId);
@@ -67,7 +68,7 @@ async function handleUploadMessage(ctx) {
     }
 }
 
-async function handleAudioUpload(ctx) {
+async function handleAudioUpload(ctx: Context) {
     const userId = ctx.from.id;
     const audio = ctx.message.audio;
     const flowRes = await uploadService.getOrCreateFlow(userId);
@@ -90,7 +91,7 @@ async function handleAudioUpload(ctx) {
 const { client, retry } = require('../../../src/chain/client');
 const { getDeployer } = require('../../../src/chain/deployer');
 
-async function processFileUpload(ctx, flow) {
+async function processFileUpload(ctx: Context, flow: any) {
     const userId = ctx.from.id;
     const user = ctx.state.user;
 
@@ -132,7 +133,7 @@ async function processFileUpload(ctx, flow) {
         await ctx.reply(`⏳ <b>NFT Deployment Initiated</b>\n\nContract: <code>${nftAddr.toString()}</code>\nWaiting for confirmation...`, { parse_mode: 'HTML' });
         
         // Finalize asynchronously (Verification)
-        verifyAndFinalize(flow.id, nftAddr, lastLt).catch(e => logger.error('Verification failed', e));
+        verifyAndFinalize(flow.id, nftAddr, lastLt).catch((e: any) => logger.error('Verification failed', e));
 
     } catch (e) {
         logger.error('processFileUpload failed', e);
@@ -140,7 +141,7 @@ async function processFileUpload(ctx, flow) {
     }
 }
 
-async function verifyAndFinalize(flowId, address, lastLt) {
+async function verifyAndFinalize(flowId: any, address: any, lastLt: string) {
     for (let i = 0; i < 15; i++) {
         const state = await client.getContractState(address);
         if (state.lastTransaction && BigInt(state.lastTransaction.lt) > BigInt(lastLt)) {

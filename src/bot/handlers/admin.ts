@@ -1,9 +1,10 @@
+import type { Context } from 'telegraf';
 const { Markup } = require('telegraf');
 const supabase = require('../../../supabase');
 const logger = require('../../../logger');
 const metrics = require('../../core/monitoring/metrics');
 
-async function handleSystemStatus(ctx) {
+async function handleSystemStatus(ctx: Context) {
     // Basic Admin Check (can be refined)
     if (ctx.from.id.toString() !== process.env.ADMIN_CHAT_ID) {
         return ctx.reply('⚙️ This command is for administrators only.');
@@ -18,8 +19,8 @@ async function handleSystemStatus(ctx) {
             supabase.from('system_config').select('*'),
             auditService.getAuditSummary()
         ]);
-        const pauseState = config.find(c => c.key === 'emergency_pause')?.value || {};
-        const treasuryLimits = config.find(c => c.key === 'treasury_limits')?.value || {};
+        const pauseState = config.find((c: any) => c.key === 'emergency_pause')?.value || {};
+        const treasuryLimits = config.find((c: any) => c.key === 'treasury_limits')?.value || {};
 
         // 2. Fetch Active Intents Count
         const [rewardIntents, tipIntents, paymentIntents] = await Promise.all([
@@ -80,7 +81,7 @@ async function handleSystemStatus(ctx) {
     }
 }
 
-async function handleAdminPause(ctx) {
+async function handleAdminPause(ctx: Context) {
     if (ctx.from.id.toString() !== process.env.ADMIN_CHAT_ID) return ctx.answerCbQuery();
     const guardrail = require('../../core/services/guardrail');
     await guardrail.triggerPause('Manual admin action');
@@ -88,7 +89,7 @@ async function handleAdminPause(ctx) {
     return handleSystemStatus(ctx);
 }
 
-async function handleAdminResume(ctx) {
+async function handleAdminResume(ctx: Context) {
     if (ctx.from.id.toString() !== process.env.ADMIN_CHAT_ID) return ctx.answerCbQuery();
     const guardrail = require('../../core/services/guardrail');
     await guardrail.resume('Manual admin resolution');

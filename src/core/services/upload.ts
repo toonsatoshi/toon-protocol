@@ -16,7 +16,7 @@ class UploadService {
     /**
      * Start or resume an upload flow
      */
-    async getOrCreateFlow(userId) {
+    async getOrCreateFlow(userId: number) {
         try {
             const { data, error } = await supabase
                 .from('upload_flows')
@@ -51,7 +51,7 @@ class UploadService {
         }
     }
 
-    async updateMetadata(flowId, metadata) {
+    async updateMetadata(flowId: string, metadata: any) {
         try {
             const { data, error } = await supabase
                 .from('upload_flows')
@@ -72,7 +72,7 @@ class UploadService {
         }
     }
 
-    async markFileUploaded(flowId, fileId) {
+    async markFileUploaded(flowId: string, fileId: string) {
         try {
             const { data, error } = await supabase
                 .from('upload_flows')
@@ -93,7 +93,7 @@ class UploadService {
         }
     }
 
-    async createIntent(flowId) {
+    async createIntent(flowId: string) {
         try {
             // Atomic transition to intent_created
             const { data, error } = await supabase.rpc('create_upload_intent', {
@@ -108,7 +108,7 @@ class UploadService {
         }
     }
 
-    async markSubmitted(flowId, txHash, contractAddress) {
+    async markSubmitted(flowId: string, txHash: string, contractAddress: string) {
         try {
             const { data, error } = await supabase
                 .from('upload_flows')
@@ -130,7 +130,7 @@ class UploadService {
         }
     }
 
-    async finalize(flowId) {
+    async finalize(flowId: string) {
         try {
             const { data, error } = await supabase.rpc('finalize_upload', {
                 p_flow_id: flowId

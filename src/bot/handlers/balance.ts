@@ -1,3 +1,4 @@
+import type { Context } from 'telegraf';
 const { Markup } = require('telegraf');
 const supabase = require('../../../supabase');
 const logger = require('../../../logger');
@@ -5,7 +6,7 @@ const logger = require('../../../logger');
 /**
  * Handler for 'Explain My Balance' - provides a breakdown of all transactions.
  */
-async function handleExplainBalance(ctx) {
+async function handleExplainBalance(ctx: Context) {
     const userId = ctx.from.id;
     const user = ctx.state.user;
 
@@ -31,7 +32,7 @@ async function handleExplainBalance(ctx) {
         // -- Payments (In)
         if (payments.data?.length) {
             explanation += `💳 <b>Purchases:</b>\n`;
-            payments.data.forEach(p => {
+            payments.data.forEach((p: any) => {
                 explanation += `+${p.toon_amount} $TOON (${p.source})\n`;
                 totalIn += p.toon_amount;
             });
@@ -41,7 +42,7 @@ async function handleExplainBalance(ctx) {
         // -- Rewards (In)
         if (rewards.data?.length) {
             explanation += `🎁 <b>Rewards:</b>\n`;
-            rewards.data.forEach(r => {
+            rewards.data.forEach((r: any) => {
                 explanation += `+${r.amount_toon} $TOON (${r.reward_type})\n`;
                 totalIn += r.amount_toon;
             });
@@ -51,10 +52,10 @@ async function handleExplainBalance(ctx) {
         // -- Tips Received (In)
         // Note: Currently Star tips add to TOON balance, TON tips go direct to wallet.
         // We only count what affects the internal $TOON balance.
-        const starTipsIn = (tipsReceived.data || []).filter(t => t.method === 'stars');
+        const starTipsIn = (tipsReceived.data || []).filter((t: any) => t.method === 'stars');
         if (starTipsIn.length) {
             explanation += `📈 <b>Tips Received (Stars):</b>\n`;
-            starTipsIn.forEach(t => {
+            starTipsIn.forEach((t: any) => {
                 explanation += `+50 $TOON (from ${t.tipper_id})\n`;
                 totalIn += 50;
             });
@@ -63,10 +64,10 @@ async function handleExplainBalance(ctx) {
 
         // -- Tips Sent (Out)
         // If we ever allow tipping via $TOON balance:
-        const toonTipsOut = (tipsSent.data || []).filter(t => t.method === 'toon');
+        const toonTipsOut = (tipsSent.data || []).filter((t: any) => t.method === 'toon');
         if (toonTipsOut.length) {
             explanation += `💸 <b>Tips Sent ($TOON):</b>\n`;
-            toonTipsOut.forEach(t => {
+            toonTipsOut.forEach((t: any) => {
                 explanation += `-${t.amount_toon} $TOON\n`;
                 totalOut += t.amount_toon;
             });

@@ -25,7 +25,7 @@ class ChainObserver {
             } catch (e) {
                 logger.error('ChainObserver loop error', e);
             }
-            await new Promise(r => setTimeout(r, this.POLL_INTERVAL_MS));
+            await new Promise((r: any) => setTimeout(r, this.POLL_INTERVAL_MS));
         }
     }
 
@@ -53,7 +53,7 @@ class ChainObserver {
         }
     }
 
-    async reconcileIntent(intent) {
+    async reconcileIntent(intent: any) {
         const intentId = intent.id;
         
         try {
@@ -87,7 +87,7 @@ class ChainObserver {
         }
     }
 
-    async updateIntentMetadata(intentId, attemptCount, lastError) {
+    async updateIntentMetadata(intentId: string, attemptCount: number, lastError: string) {
         await supabase
             .from('tip_intents')
             .update({

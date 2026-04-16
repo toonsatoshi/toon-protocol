@@ -15,7 +15,7 @@ class ChainAdapter {
      * @param {string} intentId
      * @returns {Object} TON Payload
      */
-    buildTipPayload(recipientAddress, amountTon, intentId) {
+    buildTipPayload(recipientAddress: string, amountTon: number, intentId: string) {
         // We include the intentId in the comment (memo) for tracking.
         // On-chain verification will check this memo.
         return {
@@ -33,7 +33,7 @@ class ChainAdapter {
      * @param {number} limit
      * @returns {Promise<any[]>}
      */
-    async getTransactions(address, limit = 20) {
+    async getTransactions(address: string, limit: number = 20) {
         try {
             const addr = Address.parse(address);
             return await client.getTransactions(addr, { limit });
@@ -49,7 +49,7 @@ class ChainAdapter {
      * @param {number} expectedAmountTon
      * @returns {Promise<{success: boolean, txHash?: string, error?: string}>}
      */
-    async searchForIntent(recipientAddress, intentId, expectedAmountTon) {
+    async searchForIntent(recipientAddress: string, intentId: string, expectedAmountTon: number) {
         try {
             const txs = await this.getTransactions(recipientAddress);
             const targetMemo = `tip:${intentId}`;
@@ -101,7 +101,7 @@ class ChainAdapter {
      * @param {string} txHash
      * @returns {Promise<{success: boolean, data?: any, error?: string}>}
      */
-    async verifyTransaction(txHash) {
+    async verifyTransaction(txHash: string) {
         try {
             // In a real environment, we'd fetch the transaction by hash 
             // and verify the amount, recipient, and the memo.

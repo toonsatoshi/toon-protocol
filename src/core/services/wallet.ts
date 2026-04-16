@@ -11,7 +11,7 @@ const { Address } = require('@ton/core');
  */
 
 class WalletService {
-    async getOrCreateFlow(userId) {
+    async getOrCreateFlow(userId: number) {
         try {
             const { data, error } = await supabase
                 .from('wallet_flows')
@@ -43,14 +43,14 @@ class WalletService {
         }
     }
 
-    async setChallenge(flowId, challenge) {
+    async setChallenge(flowId: string, challenge: string) {
         return await supabase
             .from('wallet_flows')
             .update({ challenge, status: 'challenge_sent', updated_at: new Date().toISOString() })
             .eq('id', flowId);
     }
 
-    async markConnected(flowId, address) {
+    async markConnected(flowId: string, address: string) {
         return await supabase
             .from('wallet_flows')
             .update({ 
@@ -61,7 +61,7 @@ class WalletService {
             .eq('id', flowId);
     }
 
-    async verify(flowId, signature, publicKey) {
+    async verify(flowId: string, signature: string, publicKey: string) {
         try {
             // Cryptographic verification logic here...
             // If valid:

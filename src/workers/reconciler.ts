@@ -22,7 +22,7 @@ class ReconciliationWorker {
             } catch (e) {
                 logger.error('ReconciliationWorker loop error', e);
             }
-            await new Promise(r => setTimeout(r, this.CHECK_INTERVAL_MS));
+            await new Promise((r: any) => setTimeout(r, this.CHECK_INTERVAL_MS));
         }
     }
 
@@ -132,7 +132,7 @@ class ReconciliationWorker {
         }
     }
 
-    async reportResults(discrepancies, violations) {
+    async reportResults(discrepancies: any, violations: any) {
         const guardrail = require('../core/services/guardrail');
         const reason = discrepancies.length > 0 ? 'RECONCILIATION_DRIFT' : 'INVARIANT_VIOLATION';
         const metadata = { discrepancies, violations, timestamp: new Date().toISOString() };

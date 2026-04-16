@@ -1,9 +1,10 @@
+import type { Context } from 'telegraf';
 const { Markup } = require('telegraf');
 const walletService = require('../../core/services/wallet');
 const logger = require('../../../logger');
 const { Address } = require('@ton/core');
 
-async function handleStartWalletLink(ctx) {
+async function handleStartWalletLink(ctx: Context) {
     const userId = ctx.from.id;
     const flowRes = await walletService.getOrCreateFlow(userId);
     if (!flowRes.success) return ctx.reply('❌ Error starting wallet link.');
@@ -36,7 +37,7 @@ async function handleStartWalletLink(ctx) {
     );
 }
 
-async function handleConnectCallback(ctx) {
+async function handleConnectCallback(ctx: Context) {
     const flowId = ctx.match[1];
     
     // Simulate connection from TonConnect
@@ -51,7 +52,7 @@ async function handleConnectCallback(ctx) {
     });
 }
 
-async function handleVerifyCallback(ctx) {
+async function handleVerifyCallback(ctx: Context) {
     const flowId = ctx.match[1];
     
     // Simulate signature verification

@@ -1,9 +1,10 @@
+import type { Context } from 'telegraf';
 const { Markup } = require('telegraf');
 const store = require('../../../store');
 const logger = require('../../../logger');
 const rewardService = require('../../core/services/reward');
 
-async function handleStart(ctx) {
+async function handleStart(ctx: Context) {
     const telegramId = ctx.from.id;
     const user = ctx.state.user;
     const param = ctx.startPayload;
@@ -40,7 +41,7 @@ What should we call you on Toon? 🎤
     // For now, the 'text' handler in index.ts will catch the next message if user doesn't exist.
 }
 
-async function handleProfile(ctx) {
+async function handleProfile(ctx: Context) {
     const user = ctx.state.user;
     if (!user) return ctx.reply('❌ Please /start first.');
 
@@ -48,7 +49,7 @@ async function handleProfile(ctx) {
     const refs = refsRes.success ? refsRes.data : [];
     
     const trackList = user.uploadedTracks.length > 0
-        ? user.uploadedTracks.map((t, i) =>
+        ? user.uploadedTracks.map((t: any, i: number) =>
             `${i + 1}. ${t.title} (▶️ ${t.plays || 0})`
           ).join('\n')
         : 'No tracks yet';
@@ -78,13 +79,13 @@ ${trackList}
     });
 }
 
-async function handleReferInfo(ctx) {
+async function handleReferInfo(ctx: Context) {
     const user = ctx.state.user;
     if (!user) return ctx.reply('❌ Please /start first.');
 
     const refsRes = await store.getReferrals(user.telegramId);
     const refs = refsRes.success ? refsRes.data : [];
-    const uploaded = refs.filter(r => r.uploadedAt).length;
+    const uploaded = refs.filter((r: any) => r.uploadedAt).length;
 
     await ctx.reply(
 `🔗 <b>Your Referral Link</b>
@@ -111,7 +112,7 @@ Share this with friends to earn $TOON!
     );
 }
 
-async function showMenu(ctx) {
+async function showMenu(ctx: Context) {
     await ctx.reply(
 `Welcome back, <b>${ctx.state.user.artistName}</b>! 🎵`,
         {

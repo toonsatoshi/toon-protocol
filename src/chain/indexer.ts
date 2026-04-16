@@ -36,11 +36,11 @@ class ChainIndexer {
             } catch (e) {
                 logger.error('ChainIndexer loop error', e);
             }
-            await new Promise(r => setTimeout(r, this.POLL_INTERVAL_MS));
+            await new Promise((r: any) => setTimeout(r, this.POLL_INTERVAL_MS));
         }
     }
 
-    async syncAddress(addressStr) {
+    async syncAddress(addressStr: string) {
         const address = Address.parse(addressStr);
         const { data: cursorData } = await supabase
             .from('indexer_cursors')
@@ -51,7 +51,7 @@ class ChainIndexer {
         const lastLt = cursorData ? cursorData.last_lt : '0';
         const txs = await client.getTransactions(address, { limit: 50 });
         const newTxs = txs
-            .filter(tx => BigInt(tx.lt) > BigInt(lastLt))
+            .filter((tx: any) => BigInt(tx.lt) > BigInt(lastLt))
             .reverse();
 
         if (newTxs.length === 0) return;
@@ -66,7 +66,7 @@ class ChainIndexer {
             .upsert({ address: addressStr, last_lt: latestLt }, { onConflict: 'address' });
     }
 
-    async processTransaction(tx, contractAddress) {
+    async processTransaction(tx: any, contractAddress: string) {
         const txHash = tx.hash().toString('hex');
         const lt = tx.lt.toString();
         
@@ -85,7 +85,7 @@ class ChainIndexer {
         }
     }
 
-    async handleEvent(op, slice, txHash, lt, timestamp) {
+    async handleEvent(op: number, slice: any, txHash: string, lt: string, timestamp: number) {
         switch (op) {
             case OP.REWARD_CLAIMED: {
                 const rewardId = slice.loadUint(8);
@@ -137,7 +137,7 @@ class ChainIndexer {
         }
     }
 
-    async getTelegramIdByAddress(address) {
+    async getTelegramIdByAddress(address: string) {
         const { data } = await supabase
             .from('users')
             .select('telegram_id')
@@ -146,7 +146,7 @@ class ChainIndexer {
         return data ? data.telegram_id : null;
     }
 
-    async updateUserBalance(address, deltaNano) {
+    async updateUserBalance(address: string, deltaNano: any) {
         // C1 Fix: Actually update the users table balance
         const { data: user } = await supabase
             .from('users')

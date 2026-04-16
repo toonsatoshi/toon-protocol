@@ -11,21 +11,21 @@ class MetricsService {
         this.timers = new Map();
     }
 
-    recordIntent(type) {
+    recordIntent(type: string) {
         this.counters.intents_total++;
         logger.debug(`[Metric] Intent Created: ${type}`);
     }
 
-    recordFailure(type, error) {
+    recordFailure(type: string, error: any) {
         this.counters.failures_total++;
         logger.error(`[Metric] Failure: ${type}`, { error });
     }
 
-    setDrift(drift) {
+    setDrift(drift: number) {
         this.counters.reconciliation_drift = drift;
     }
 
-    setIndexerLag(ms) {
+    setIndexerLag(ms: number) {
         this.counters.indexer_lag_ms = ms;
     }
 

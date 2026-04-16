@@ -18,9 +18,9 @@ const client = new TonClient({
     apiKey: apiKey
 });
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-async function retry(fn, retries = 3, delay = 2000) {
+async function retry(fn: any, retries: number = 3, delay: number = 2000) {
     for (let i = 0; i < retries; i++) {
         try {
             return await fn();

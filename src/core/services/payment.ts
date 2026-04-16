@@ -9,7 +9,7 @@ class PaymentService {
      * @param {number} toonAmount Amount of $TOON to credit
      * @returns {Promise<{success: boolean, data?: string, error?: string}>}
      */
-    async createIntent(userId, source, amountCurrency, toonAmount) {
+    async createIntent(userId: number, source: string, amountCurrency: number, toonAmount: number) {
         try {
             // Idempotency: source:userId:amount:timestamp_bucket
             // Using 1-minute bucket to allow multiple purchases but prevent accidental double-clicks
@@ -46,7 +46,7 @@ class PaymentService {
      * @param {Object} metadata
      * @returns {Promise<{success: boolean, error?: string}>}
      */
-    async confirm(intentId, externalId, metadata = {}) {
+    async confirm(intentId: string, externalId: string, metadata: any = {}) {
         try {
             const { data: success, error } = await supabase.rpc('finalize_payment', {
                 p_intent_id: intentId,
@@ -74,7 +74,7 @@ class PaymentService {
      * @param {string} intentId
      * @returns {Promise<{success: boolean, data?: any, error?: string}>}
      */
-    async getIntent(intentId) {
+    async getIntent(intentId: string) {
         try {
             const { data, error } = await supabase
                 .from('payment_intents')

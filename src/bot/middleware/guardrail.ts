@@ -1,11 +1,14 @@
-const guardrail = require('../core/services/guardrail');
+import type { Context } from 'telegraf';
+type NextFunction = () => Promise<void>;
+const guardrail = require('../../core/services/guardrail');
 const { Markup } = require('telegraf');
+const logger = require('../../logger');
 
 /**
  * Middleware to check for emergency pause and cooldown.
  * M1 Fix: Invert classification to whitelist low-risk, block everything else as high-risk.
  */
-async function guardrailMiddleware(ctx, next) {
+async function guardrailMiddleware(ctx: Context, next: NextFunction) {
     if (!ctx.from) return next();
 
     // 1. Identify if this is a "Write" action (Intent to change state)
