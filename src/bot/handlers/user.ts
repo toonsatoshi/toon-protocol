@@ -5,9 +5,11 @@ const logger = require('../../../logger');
 const rewardService = require('../../core/services/reward');
 
 async function handleStart(ctx: Context) {
+    if (!ctx.from) return;
+
     const telegramId = ctx.from.id;
     const user = ctx.state.user;
-    const param = ctx.startPayload;
+    const param = ctx.message?.text?.split(' ')[1];
 
     if (user) {
         return showMenu(ctx);
@@ -42,6 +44,8 @@ What should we call you on Toon? 🎤
 }
 
 async function handleProfile(ctx: Context) {
+    if (!ctx.from) return;
+
     const user = ctx.state.user;
     if (!user) return ctx.reply('❌ Please /start first.');
 
