@@ -91,8 +91,11 @@ bot.on('audio', uploadHandler.handleAudioUpload);
 
 // ── Text Handler ──────────────────────────────────────
 
-bot.on('text', async (ctx: Context) => {
-    if (!ctx.from || !ctx.message?.text) return;
+bot.on('message:text', async (ctx: Context) => {
+    if (!ctx.from) return;
+
+    // Type guard: ensure message has text property
+    if (!('text' in ctx.message) || !ctx.message.text) return;
 
     const text = ctx.message.text;
     if (!text.startsWith('/')) {
