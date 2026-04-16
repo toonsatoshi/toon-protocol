@@ -1,5 +1,7 @@
+import type { Context } from 'telegraf';
+
 require('dotenv').config();
-const { Telegraf, Markup, Context } = require('telegraf');
+const { Telegraf, Markup } = require('telegraf');
 const logger = require('../logger');
 const store = require('../../store');
 
