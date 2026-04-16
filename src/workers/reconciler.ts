@@ -92,16 +92,18 @@ class ReconciliationWorker {
 
                 if (rpcErr) {
                     logger.error(`RPC Error for event ${event.tx_hash}`, rpcErr);
-                    
-                    // SKIP-AND-ALERT: Log failure but keep moving to prevent pipeline stall
+
+                    // Log the failure for monitoring, but do NOT advance cursor
+                    // Failed events must be retried on the next reconciliation pass
                     await supabase.from('guardrail_events').insert({
-                        type: 'RECONCILIATION_SKIP',
+                        type: 'RECONCILIATION_RPC_ERROR',
                         reason: `RPC Failure for tx_hash ${event.tx_hash}`,
                         metadata: { userId, amount: amount.toString(), error: rpcErr }
                     });
-                    
-                    lastSuccessfulLt = event.lt;
-                    continue;
+
+                    // Stop processing this batch on RPC error to preserve cursor at failed event
+                    batchFailed = true;
+                    break;
                 }
 
                 if (res && res.error === 'RECONCILIATION_DRIFT') {

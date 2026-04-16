@@ -147,19 +147,15 @@ class ChainIndexer {
     }
 
     async updateUserBalance(address: string, deltaNano: any) {
-        // C1 Fix: Actually update the users table balance
-        const { data: user } = await supabase
-            .from('users')
-            .select('telegram_id, toon_balance')
-            .eq('contract_address', address)
-            .single();
-        
-        if (user) {
-            const newBalance = BigInt(user.toon_balance || 0) + BigInt(deltaNano);
-            await supabase
-                .from('users')
-                .update({ toon_balance: newBalance.toString() })
-                .eq('telegram_id', user.telegram_id);
+        // Atomic update: avoid race condition by using SQL's built-in addition
+        // This ensures concurrent events don't clobber each other's updates
+        const { error } = await supabase.rpc('increment_user_balance', {
+            p_contract_address: address,
+            p_delta: deltaNano.toString()
+        });
+
+        if (error) {
+            logger.error('Failed to update user balance', { address, error });
         }
     }
 }
