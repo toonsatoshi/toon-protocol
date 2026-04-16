@@ -11,7 +11,7 @@ class RewardService {
      * @param {string} achievementKey unique identifier for the achievement
      * @returns {Promise<{success: boolean, data?: string, error?: string}>}
      */
-    async createIntent(userId, type, referenceId, amountToon, achievementKey) {
+    async createIntent(userId: number, type: string, referenceId: string, amountToon: number, achievementKey: string) {
         try {
             const idempotencyKey = `${type}:${userId}:${referenceId}`;
             const debugTrace = { initiated_at: new Date().toISOString() };
@@ -50,7 +50,7 @@ class RewardService {
      * @param {string} intentId
      * @returns {Promise<{success: boolean, error?: string}>}
      */
-    async finalize(intentId) {
+    async finalize(intentId: string) {
         try {
             const { data: success, error } = await supabase.rpc('finalize_reward', {
                 p_intent_id: intentId
@@ -72,7 +72,7 @@ class RewardService {
      * Utility to process a reward end-to-end (create + finalize)
      * For off-chain rewards, this is the standard flow.
      */
-    async processReward(userId, type, referenceId, amountToon, achievementKey) {
+    async processReward(userId: number, type: string, referenceId: string, amountToon: number, achievementKey: string) {
         const intentRes = await this.createIntent(userId, type, referenceId, amountToon, achievementKey);
         if (!intentRes.success) return intentRes;
 

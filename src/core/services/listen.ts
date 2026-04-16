@@ -9,7 +9,7 @@ class ListenService {
      * @param {number} listenerId
      * @returns {Promise<{success: boolean, data?: any, error?: string}>}
      */
-    async recordPlay(trackId, listenerId) {
+    async recordPlay(trackId: string, listenerId: number) {
         try {
             // 1. Atomic DB increment and milestone check
             const { data, error } = await supabase.rpc('record_play_and_check_milestone', {

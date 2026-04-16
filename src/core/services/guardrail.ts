@@ -46,7 +46,7 @@ class GuardrailService {
         return status.inCooldown === true;
     }
 
-    async triggerPause(reason, metadata = {}) {
+    async triggerPause(reason: string, metadata: any = {}) {
         try {
             logger.warn(`🛑 EMERGENCY PAUSE TRIGGERED: ${reason}`, metadata);
             await Promise.all([
@@ -66,7 +66,7 @@ class GuardrailService {
         }
     }
 
-    async resume(reason = 'Manual resolution', cooldownMinutes = 5) {
+    async resume(reason: string = 'Manual resolution', cooldownMinutes: number = 5) {
         try {
             const cooldownUntil = new Date(Date.now() + cooldownMinutes * 60000).toISOString();
             logger.info(`✅ SYSTEM RESUMED: ${reason}. Cooldown until ${cooldownUntil}`);

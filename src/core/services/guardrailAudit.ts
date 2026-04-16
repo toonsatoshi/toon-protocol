@@ -17,9 +17,9 @@ class GuardrailAuditService {
             if (error) throw error;
 
             const summary = {
-                total_pauses: events.filter(e => e.type === 'PAUSE').length,
-                total_resumes: events.filter(e => e.type === 'RESUME').length,
-                latest_trigger: events.find(e => e.type === 'PAUSE')?.reason || 'None',
+                total_pauses: events.filter((e: any) => e.type === 'PAUSE').length,
+                total_resumes: events.filter((e: any) => e.type === 'RESUME').length,
+                latest_trigger: events.find((e: any) => e.type === 'PAUSE')?.reason || 'None',
                 near_failures: await this.checkNearFailures()
             };
 

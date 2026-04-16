@@ -1,9 +1,10 @@
+import type { Context } from 'telegraf';
 const { Markup } = require('telegraf');
 const store = require('../../../store');
 const listenService = require('../../core/services/listen');
 const logger = require('../../../logger');
 
-async function handleStartListen(ctx) {
+async function handleStartListen(ctx: Context) {
     const res = await store.getAllArtists();
     const artists = res.success ? res.data : [];
     
@@ -14,7 +15,7 @@ async function handleStartListen(ctx) {
     await ctx.reply(`🎧 <b>Who do you want to listen to?</b>`, {
         parse_mode: 'HTML',
         ...Markup.inlineKeyboard(
-            artists.map(a => [
+            artists.map((a: any) => [
                 Markup.button.callback(
                     `👤 ${a.artistName} (${a.uploadedTracks.length} track${a.uploadedTracks.length !== 1 ? 's' : ''})`,
                     `artist_${a.telegramId}`
@@ -24,7 +25,7 @@ async function handleStartListen(ctx) {
     });
 }
 
-async function handleArtistSelected(ctx) {
+async function handleArtistSelected(ctx: Context) {
     const artistId = ctx.match[1];
     const res = await store.getUser(artistId);
     
@@ -39,7 +40,7 @@ async function handleArtistSelected(ctx) {
     await ctx.reply(`👤 <b>${artist.artistName}'s Tracks</b>`, {
         parse_mode: 'HTML',
         ...Markup.inlineKeyboard(
-            artist.uploadedTracks.map(t => [
+            artist.uploadedTracks.map((t: any) => [
                 Markup.button.callback(
                     `🎵 ${t.title} (▶️ ${t.plays || 0})`,
                     `play_${t.id}`
@@ -49,7 +50,7 @@ async function handleArtistSelected(ctx) {
     });
 }
 
-async function handlePlayTrack(ctx) {
+async function handlePlayTrack(ctx: Context) {
     const trackId = ctx.match[1];
     const listenerId = ctx.from.id;
     const trackRes = await store.getTrack(trackId);

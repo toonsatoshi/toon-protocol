@@ -1,3 +1,4 @@
+import type { Context } from 'telegraf';
 const { Markup } = require('telegraf');
 const tipService = require('../../core/services/tip');
 const chainAdapter = require('../../chain/adapter');
@@ -7,7 +8,7 @@ const logger = require('../../../logger');
 /**
  * Handler for the initial tip button click
  */
-async function handleTipInitiated(ctx) {
+async function handleTipInitiated(ctx: Context) {
     const trackId = ctx.match[1];
     const telegramId = ctx.from.id;
 
@@ -33,7 +34,7 @@ async function handleTipInitiated(ctx) {
 /**
  * Handler for TON tipping amount selection
  */
-async function handleTipTonChoice(ctx) {
+async function handleTipTonChoice(ctx: Context) {
     const trackId = ctx.match[1];
     const trackRes = await store.getTrack(trackId);
     if (!trackRes.success) return ctx.reply('❌ Track not found.');
@@ -53,7 +54,7 @@ async function handleTipTonChoice(ctx) {
 /**
  * Handler for executing a TON tip
  */
-async function handleDoTipTon(ctx) {
+async function handleDoTipTon(ctx: Context) {
     const [_, trackId, amountStr] = ctx.match;
     const amount = parseInt(amountStr);
     const tipperId = ctx.from.id;
@@ -105,7 +106,7 @@ async function handleDoTipTon(ctx) {
 /**
  * Handler for manual verification after payment
  */
-async function handleVerifyTip(ctx) {
+async function handleVerifyTip(ctx: Context) {
     const intentId = ctx.match[1];
     
     try {

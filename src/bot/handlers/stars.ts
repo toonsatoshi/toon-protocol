@@ -1,3 +1,4 @@
+import type { Context } from 'telegraf';
 const { Markup } = require('telegraf');
 const paymentService = require('../../core/services/payment');
 const logger = require('../../../logger');
@@ -5,7 +6,7 @@ const logger = require('../../../logger');
 /**
  * Handler for initiating a purchase with Stars
  */
-async function handleBuyStars(ctx) {
+async function handleBuyStars(ctx: Context) {
     const userId = ctx.from.id;
     // For this prototype, we'll hardcode one package: 50 Stars for 100 TOON
     const starsAmount = 50;
@@ -40,7 +41,7 @@ async function handleBuyStars(ctx) {
 /**
  * Handler for pre_checkout_query (Telegram's first stage of payment confirmation)
  */
-async function handlePreCheckout(ctx) {
+async function handlePreCheckout(ctx: Context) {
     const payload = ctx.preCheckoutQuery.invoice_payload;
     
     // 1. Basic Validation: Payload must start with our buy_toon prefix
@@ -69,7 +70,7 @@ async function handlePreCheckout(ctx) {
  * Handler for successful_payment (Telegram's final confirmation)
  * This is our "trust boundary" handler.
  */
-async function handleSuccessfulPayment(ctx) {
+async function handleSuccessfulPayment(ctx: Context) {
     const payment = ctx.message.successful_payment;
     const payload = payment.invoice_payload;
     const chargeId = payment.telegram_payment_charge_id;
