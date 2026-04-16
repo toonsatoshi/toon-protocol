@@ -321,6 +321,11 @@ contract ToonVault with Deployable {
         return sha256(sb.toString());
     }
 
+    fun _recalcHalved() {
+        let reservePct: Int = (self.totalReserve * 100) / ton("1000000");
+        if (reservePct <= RESERVE_HALVE_THRESHOLD)   { self.halved = true;  }
+        if (reservePct >= RESERVE_RECOVER_THRESHOLD) { self.halved = false; }
+    }
     fun halvedBaseCap(): Int {
         let cap: Int = self.config.emissionCap;
         let reservePct: Int = (self.totalReserve * 100) / ton("1000000");
