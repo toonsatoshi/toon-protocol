@@ -1,5 +1,4 @@
 import type { Context } from 'telegraf';
-const { message } = require('telegraf/filters');
 
 require('dotenv').config();
 const { Telegraf, Markup } = require('telegraf');
@@ -92,7 +91,7 @@ bot.on('audio', uploadHandler.handleAudioUpload);
 
 // ── Text Handler ──────────────────────────────────────
 
-bot.on(message('text'), async (ctx: Context) => {
+bot.on('text', async (ctx: Context) => {
     if (!ctx.from) return;
 
     const text = ctx.message.text;
