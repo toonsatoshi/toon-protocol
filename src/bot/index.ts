@@ -92,7 +92,7 @@ bot.on('audio', uploadHandler.handleAudioUpload);
 // ── Text Handler ──────────────────────────────────────
 
 bot.on('text', async (ctx: Context) => {
-    if (!ctx.from) return;
+    if (!ctx.from || !ctx.message?.text) return;
 
     const text = ctx.message.text;
     if (!text.startsWith('/')) {
