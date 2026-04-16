@@ -92,11 +92,13 @@ bot.on('audio', uploadHandler.handleAudioUpload);
 // ── Text Handler ──────────────────────────────────────
 
 bot.on('text', async (ctx: Context) => {
+    if (!ctx.message || !ctx.from) return;
+
     const text = ctx.message.text;
-    if (text.startsWith('/')) return;
-    
+    if (!text || text.startsWith('/')) return;
+
     const user = ctx.state.user;
-    
+
     // Onboarding fallback
     if (!user) {
         const createRes = await store.createPendingUser(ctx.from.id, text.trim());
@@ -105,7 +107,7 @@ bot.on('text', async (ctx: Context) => {
             return userHandler.showMenu(ctx);
         }
     }
-    
+
     // Delegate text to active flows (Upload has precedence)
     await uploadHandler.handleUploadMessage(ctx);
 });
