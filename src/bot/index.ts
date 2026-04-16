@@ -1,4 +1,5 @@
 import type { Context } from 'telegraf';
+const { message } = require('telegraf/filters');
 
 require('dotenv').config();
 const { Telegraf, Markup } = require('telegraf');
@@ -91,25 +92,25 @@ bot.on('audio', uploadHandler.handleAudioUpload);
 
 // ── Text Handler ──────────────────────────────────────
 
-bot.on('text', async (ctx: Context) => {
-    if (!ctx.message || !ctx.from) return;
+bot.on(message('text'), async (ctx: Context) => {
+    if (!ctx.from) return;
 
-    const text = (ctx.message as { text?: string }).text;
-    if (!text || text.startsWith('/')) return;
+    const text = ctx.message.text;
+    if (!text.startsWith('/')) {
+        const user = ctx.state.user;
 
-    const user = ctx.state.user;
-
-    // Onboarding fallback
-    if (!user) {
-        const createRes = await store.createPendingUser(ctx.from.id, text.trim());
-        if (createRes.success) {
-            await ctx.reply(`🎉 Welcome to Toon, <b>${text}</b>!`, { parse_mode: 'HTML' });
-            return userHandler.showMenu(ctx);
+        // Onboarding fallback
+        if (!user) {
+            const createRes = await store.createPendingUser(ctx.from.id, text.trim());
+            if (createRes.success) {
+                await ctx.reply(`🎉 Welcome to Toon, <b>${text}</b>!`, { parse_mode: 'HTML' });
+                return userHandler.showMenu(ctx);
+            }
         }
-    }
 
-    // Delegate text to active flows (Upload has precedence)
-    await uploadHandler.handleUploadMessage(ctx);
+        // Delegate text to active flows (Upload has precedence)
+        await uploadHandler.handleUploadMessage(ctx);
+    }
 });
 
 // ── System Export ─────────────────────────────────────
