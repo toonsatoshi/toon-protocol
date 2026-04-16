@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Telegraf, Markup } = require('telegraf');
+const { Telegraf, Markup, Context } = require('telegraf');
 const logger = require('../logger');
 const store = require('../../store');
 
@@ -18,7 +18,7 @@ const guardrailMiddleware = require('./middleware/guardrail');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // ── Middleware: Stateless Context & Safety ───────────
-bot.use(async (ctx, next) => {
+bot.use(async (ctx: Context, next: Function) => {
     if (!ctx.from) return next();
 
     try {
@@ -45,7 +45,7 @@ bot.hears('⬆️ Upload', uploadHandler.handleStartUpload);
 bot.command('link', walletHandler.handleStartWalletLink);
 bot.hears('💎 Link Wallet', walletHandler.handleStartWalletLink);
 
-bot.command('resume', async (ctx) => {
+bot.command('resume', async (ctx: Context) => {
     // Attempt to resume any active flow (Upload first)
     await uploadHandler.handleResume(ctx);
 });
@@ -89,7 +89,7 @@ bot.on('audio', uploadHandler.handleAudioUpload);
 
 // ── Text Handler ──────────────────────────────────────
 
-bot.on('text', async (ctx) => {
+bot.on('text', async (ctx: Context) => {
     const text = ctx.message.text;
     if (text.startsWith('/')) return;
     
