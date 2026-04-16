@@ -36,7 +36,6 @@ bot.use(async (ctx: Context, next: Function) => {
 bot.use(guardrailMiddleware);
 
 // ── Commands ──────────────────────────────────────────
-
 bot.start(userHandler.handleStart);
 bot.command('profile', userHandler.handleProfile);
 bot.hears('👤 Profile', userHandler.handleProfile);
@@ -63,7 +62,6 @@ bot.action('admin_resume', adminHandler.handleAdminResume);
 bot.action('explain_balance', balanceHandler.handleExplainBalance);
 
 // ── Actions & Callbacks ───────────────────────────────
-
 bot.action(/artist_(.+)/, trackHandler.handleArtistSelected);
 bot.action(/play_(.+)/, trackHandler.handlePlayTrack);
 
@@ -86,16 +84,14 @@ bot.on('pre_checkout_query', starsHandler.handlePreCheckout);
 bot.on('successful_payment', starsHandler.handleSuccessfulPayment);
 
 // ── Media Handlers ────────────────────────────────────
-
 bot.on('audio', uploadHandler.handleAudioUpload);
 
 // ── Text Handler ──────────────────────────────────────
-
 bot.on('message:text', async (ctx: Context) => {
     if (!ctx.from) return;
 
     // Type guard: ensure message has text property
-    if (!('text' in ctx.message) || !ctx.message.text) return;
+    if (!ctx.message?.text) return;
 
     const text = ctx.message.text;
     if (!text.startsWith('/')) {
