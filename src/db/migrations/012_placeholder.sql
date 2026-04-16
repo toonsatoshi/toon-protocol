@@ -1,0 +1,9 @@
+-- Migration 012: Placeholder
+-- This migration was intentionally reserved as a placeholder to maintain
+-- sequential numbering and avoid gaps that can cause issues with migration
+-- runners that enforce numeric integrity.
+--
+-- Previous: 011_hardened_guardrails_v2.sql
+-- Next:     013_reconciler_shadow_balance.sql
+--
+-- No schema changes in this migration.

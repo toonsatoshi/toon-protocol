@@ -257,6 +257,12 @@ contract ToonVault with Deployable {
         sb.append(wallet.toString());
         return sha256(sb.toString());
     }
+    fun claimIdKey(claimId: Int, day: Int): Int {
+        let sb: StringBuilder = beginString();
+        sb.append("claimid:"); sb.append(claimId.toString()); sb.append(":");
+        sb.append(day.toString());
+        return sha256(sb.toString());
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     //  Oracle signature verification
@@ -338,7 +344,7 @@ contract ToonVault with Deployable {
 
     fun applyMultiplier(amount: Int, hasStreak: Bool): Int {
         let res: Int = amount;
-        if (hasStreak) { res = (res * VIBE_MULTIPLIER_BPS) / 100; }
+        if (hasStreak) { res = (res * VIBE_MULTIPLIER_BPS) / 10000; }
         
         // Apply feedback multiplier (bps)
         let feedback: Int = self.activityMultiplier();
@@ -419,8 +425,9 @@ contract ToonVault with Deployable {
         require(msg.expiry >= now(), "ToonVault: signed payload has expired");
 
         // ── 3. ClaimId replay guard ───────────────────────────────────────
-        require(self.usedClaimIds.get(msg.claimId) == null, "ToonVault: claimId already used");
-        self.usedClaimIds.set(msg.claimId, true);
+        let dayKey: Int = self.claimIdKey(msg.claimId, today);
+        require(self.usedClaimIds.get(dayKey) == null, "ToonVault: claimId already used");
+        self.usedClaimIds.set(dayKey, true);
 
         // ── 4. Wallet eligibility ─────────────────────────────────────────
         require(msg.walletAgeDays >= self.config.minWalletAgeDays, "ToonVault: wallet too new");
@@ -616,7 +623,7 @@ contract ToonVault with Deployable {
         send(SendParameters{
             to:    msg.recipient,
             value: msg.amount,
-            mode:  SendIgnoreErrors,
+            mode:  0,  // Bounce-able: reverts state if send fails
             body:  "withdrawal".asComment()
         });
     }
@@ -649,6 +656,7 @@ contract ToonVault with Deployable {
     }
 
     get fun isClaimIdUsed(claimId: Int): Bool {
-        return self.usedClaimIds.get(claimId) != null;
+        let dayKey: Int = self.claimIdKey(claimId, now() / 86400);
+        return self.usedClaimIds.get(dayKey) != null;
     }
 }

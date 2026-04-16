@@ -105,27 +105,19 @@ async function handleDoTipTon(ctx: Context) {
 
 /**
  * Handler for manual verification after payment
+ * Note: Actual confirmation is delegated to the chainIndexer service.
+ * The bot polls on-chain to detect the transaction based on intentId in the memo.
  */
 async function handleVerifyTip(ctx: Context) {
     const intentId = ctx.match[1];
-    
+
     try {
-        // In a real system, we would poll the chain for this intentId in the memo.
-        // For this refactor, we simulate the 'confirm' step.
-        // Ideally, an observer service does this in the background.
-        
         const intentRes = await tipService.getIntent(intentId);
         if (!intentRes.success) return ctx.reply('❌ Tip record not found.');
-        
-        // Mocking a successful on-chain find
-        const mockTxHash = `mock_hash_${Date.now()}`;
-        
-        const finalizeRes = await tipService.finalize(intentId, mockTxHash);
-        if (finalizeRes.success) {
-            await ctx.reply('🎉 <b>Tip Confirmed!</b>\n\nYour support has been recorded on-chain and the artist has been notified.', { parse_mode: 'HTML' });
-        } else {
-            await ctx.reply('⏳ We haven\'t detected your transaction yet. Please wait a few moments and try again.');
-        }
+
+        // The chain observer (chainIndexer) continuously monitors for this intentId
+        // on-chain. We do not fabricate a confirmation here.
+        await ctx.reply('⏳ <b>Tip Verification in Progress</b>\n\nWe\'re monitoring the blockchain for your transaction. This may take a few moments. You\'ll be notified once confirmed.', { parse_mode: 'HTML' });
         await ctx.answerCbQuery();
     } catch (e) {
         logger.error('handleVerifyTip error', e);
