@@ -1,0 +1,42 @@
+{
+  "name": "toon-protocol-main",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/bot/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "node src/bot/index.js",
+    "dev": "nodemon src/bot/index.js",
+    "build:contracts": "npx tact --config tact.config.json",
+    "test": "npx jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.1",
+    "@ton/blueprint": "^0.44.2",
+    "@ton/core": "^0.63.1",
+    "@ton/crypto": "^3.3.0",
+    "@ton/sandbox": "^0.41.0",
+    "@ton/ton": "^16.2.4",
+    "@tonconnect/sdk": "^3.4.1",
+    "@types/node": "^25.6.0",
+    "axios": "^1.15.2",
+    "dotenv": "^17.4.2",
+    "node-id3": "^0.2.9",
+    "telegraf": "^4.16.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "@ton/test-utils": "^0.12.0",
+    "@types/jest": "^30.0.0",
+    "jest": "^29.7.0",
+    "jest-circus": "^30.3.0",
+    "ts-jest": "^29.4.9"
+  }
+}

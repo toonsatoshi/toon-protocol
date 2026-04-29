@@ -1,0 +1,39 @@
+{
+    "projects": [
+        {
+            "name": "ToonRegistry",
+            "path": "./contracts/toon_registry.tact",
+            "output": "./build/ToonRegistry"
+        },
+        {
+            "name": "ToonVault",
+            "path": "./contracts/toon_vault.tact",
+            "output": "./build/ToonVault"
+        },
+        {
+            "name": "ToonArtist",
+            "path": "./contracts/toon_artist.tact",
+            "output": "./build/ToonArtist"
+        },
+        {
+            "name": "MusicNft",
+            "path": "./contracts/music_nft.tact",
+            "output": "./build/MusicNft"
+        },
+        {
+            "name": "ToonDrop",
+            "path": "./contracts/toon_drop.tact",
+            "output": "./build/ToonDrop"
+        },
+        {
+            "name": "ToonTip",
+            "path": "./contracts/toon_tip.tact",
+            "output": "./build/ToonTip"
+        },
+        {
+            "name": "ToonGovernance",
+            "path": "./contracts/toon_governance.tact",
+            "output": "./build/ToonGovernance"
+        }
+    ]
+}

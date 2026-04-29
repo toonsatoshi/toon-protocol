@@ -1,0 +1,6 @@
+# ToonBot Python dependencies (Termux-optimized)
+pyTelegramBotAPI>=4.15
+aiohttp>=3.9,<4
+pytoniq>=0.1.10
+python-dotenv>=1.0
+requests>=2.31
