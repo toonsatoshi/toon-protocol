@@ -1635,8 +1635,16 @@ async function runHealthCheck() {
             const vault = client.open(ToonVault.fromAddress(vaultAddr));
 
             // Just check if we can fetch something to verify reachability
-            const reserve = await vault.getTotalReserve();
-            logger.info('Vault reachability verified ✅', { reserve: reserve.toString() });
+            try {
+                const reserve = await vault.getTotalReserve();
+                logger.info('Vault reachability verified ✅', { reserve: reserve.toString() });
+            } catch (e) {
+                if (e.message.includes('exit_code: 11')) {
+                    logger.warn('Vault reachable but NOT DEPLOYED yet (exit_code 11).');
+                } else {
+                    throw e;
+                }
+            }
         }    } catch (e) {
         logger.warn('Startup health check failed', { error: e.message });
     }
