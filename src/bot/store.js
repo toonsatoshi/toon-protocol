@@ -1,5 +1,8 @@
 const supabase = require('./supabase');
 
+
+const normalizeTelegramId = (telegramId) => Number(telegramId);
+
 const generateReferralCode = (telegramId) => {
     return 'TOON' + telegramId.toString(36).toUpperCase().slice(-4) +
         Math.random().toString(36).slice(2, 5).toUpperCase();
@@ -7,7 +10,7 @@ const generateReferralCode = (telegramId) => {
 
 module.exports = {
     getUser: async (telegramId) => {
-        const tid = Number(telegramId);
+        const tid = normalizeTelegramId(telegramId);
         const { data, error } = await supabase
             .from('users')
             .select('*, tracks(*)')
@@ -51,9 +54,10 @@ module.exports = {
     },
 
     createPendingUser: async (telegramId, artistName, referredBy = null) => {
-        const referralCode = generateReferralCode(telegramId);
+        const tid = normalizeTelegramId(telegramId);
+        const referralCode = generateReferralCode(tid);
         const newUser = {
-            telegram_id: telegramId,
+            telegram_id: tid,
             artist_name: artistName,
             referral_code: referralCode,
             referred_by: referredBy,
@@ -73,7 +77,7 @@ module.exports = {
         if (referredBy) {
             const { error: refError } = await supabase.from('referrals').upsert({
                 referrer_id: referredBy,
-                telegram_id: telegramId,
+                telegram_id: tid,
                 signup_at: Date.now(),
                 signup_paid: false,
                 upload_paid: false,
@@ -82,7 +86,7 @@ module.exports = {
             if (refError) console.error('Failed to create/update referral record', refError);
         }
 
-        return module.exports.getUser(telegramId);
+        return module.exports.getUser(tid);
     },
 
     updateUser: async (telegramId, updates) => {
@@ -102,13 +106,14 @@ module.exports = {
         if (updates.track !== undefined) dbUpdates.track = updates.track;
         if (updates.pendingIdentityTx !== undefined) dbUpdates.pending_identity_tx = updates.pendingIdentityTx;
 
+        const tid = normalizeTelegramId(telegramId);
         const { error } = await supabase
             .from('users')
             .update(dbUpdates)
-            .eq('telegram_id', telegramId);
+            .eq('telegram_id', tid);
         
         if (error) throw error;
-        return module.exports.getUser(telegramId);
+        return module.exports.getUser(tid);
     },
 
     setWalletAddress: async (telegramId, walletAddress) => {
@@ -132,7 +137,7 @@ module.exports = {
         const { data: user } = await supabase
             .from('users')
             .select('referred_by')
-            .eq('telegram_id', telegramId)
+            .eq('telegram_id', normalizeTelegramId(telegramId))
             .single();
 
         if (user && user.referred_by) {
@@ -143,7 +148,7 @@ module.exports = {
                     upload_paid: true 
                 })
                 .eq('referrer_id', user.referred_by)
-                .eq('telegram_id', telegramId);
+                .eq('telegram_id', normalizeTelegramId(telegramId));
         }
     },
 
@@ -215,12 +220,13 @@ module.exports = {
     },
 
     addTrack: async (telegramId, track) => {
+        const tid = normalizeTelegramId(telegramId);
         const { error } = await supabase.from('tracks').insert({
             id: track.id,
             title: track.title,
             genre: track.genre,
             artist_name: track.artistName,
-            artist_id: telegramId,
+            artist_id: tid,
             file_id: track.fileId,
             duration: track.duration,
             contract_address: track.contractAddress,
@@ -232,15 +238,15 @@ module.exports = {
         const { data: user } = await supabase
             .from('users')
             .select('tracks_uploaded')
-            .eq('telegram_id', telegramId)
+            .eq('telegram_id', tid)
             .single();
         
         await supabase
             .from('users')
             .update({ tracks_uploaded: (user?.tracks_uploaded || 0) + 1 })
-            .eq('telegram_id', telegramId);
+            .eq('telegram_id', tid);
             
-        return module.exports.getUser(telegramId);
+        return module.exports.getUser(tid);
     },
 
     getTrack: async (trackId) => {
@@ -372,30 +378,31 @@ module.exports = {
     },
 
     deleteTrack: async (telegramId, trackId) => {
+        const tid = normalizeTelegramId(telegramId);
         const { error } = await supabase
             .from('tracks')
             .delete()
             .eq('id', trackId)
-            .eq('artist_id', telegramId);
+            .eq('artist_id', tid);
         
         if (error) return false;
 
         const { data: user } = await supabase
             .from('users')
             .select('tracks_uploaded')
-            .eq('telegram_id', telegramId)
+            .eq('telegram_id', tid)
             .single();
         
         await supabase
             .from('users')
             .update({ tracks_uploaded: Math.max(0, (user?.tracks_uploaded || 0) - 1) })
-            .eq('telegram_id', telegramId);
+            .eq('telegram_id', tid);
 
         return true;
     },
 
     deleteUser: async (telegramId) => {
-        const tid = Number(telegramId);
+        const tid = normalizeTelegramId(telegramId);
         // Delete referrals first to avoid foreign key issues
         await supabase.from('referrals').delete().eq('telegram_id', tid);
         await supabase.from('referrals').delete().eq('referrer_id', tid);
