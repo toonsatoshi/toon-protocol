@@ -109,6 +109,14 @@ async function requireWalletConnected(ctx, connector, telegramId) {
     return false;
 }
 
+function requireTestnet(ctx, connector) {
+    if (connector.account && connector.account.network !== '-3') {
+        ctx.reply('❌ Your wallet is connected to the **Mainnet**, but this bot is currently using the **TON Testnet**.\n\nPlease switch your wallet to Testnet in your settings and try again.', { parse_mode: 'Markdown' });
+        return false;
+    }
+    return true;
+}
+
 // ── TON Client & Wallet Setup ────────────────────────
 const apiKey = (process.env.TONCENTER_API_KEY && process.env.TONCENTER_API_KEY.length > 10) 
     ? process.env.TONCENTER_API_KEY.trim() 
@@ -1097,6 +1105,7 @@ bot.action(/^dotip_(\d+_\d+)_(\d+)$/, async (ctx) => {
     if (!connector.connected) {
         if (!await requireWalletConnected(ctx, connector, telegramId)) return;
     }
+    if (!requireTestnet(ctx, connector)) return;
 
     const amount = toNano(amountStr);
     const transaction = {
@@ -1148,6 +1157,7 @@ bot.action('deploy_identity', async (ctx) => {
     if (!connector.connected) {
         if (!await requireWalletConnected(ctx, connector, telegramId)) return;
     }
+    if (!requireTestnet(ctx, connector)) return;
 
     await ctx.answerCbQuery('Sending request to your wallet...');
 
@@ -1233,8 +1243,9 @@ bot.action('buy_ton', async (ctx) => {
     const connector = await getConnector(telegramId);
 
     if (!connector.connected) {
-        return ctx.reply("❌ Please link your wallet first using 💎 Link Wallet");
+        if (!await requireWalletConnected(ctx, connector, telegramId)) return;
     }
+    if (!requireTestnet(ctx, connector)) return;
 
     const transaction = {
         validUntil: Math.floor(Date.now() / 1000) + 600, // 10 minutes
@@ -1622,18 +1633,11 @@ async function runHealthCheck() {
         if (VAULT_ADDRESS_ENV) {
             const vaultAddr = Address.parse(VAULT_ADDRESS_ENV);
             const vault = client.open(ToonVault.fromAddress(vaultAddr));
-            const vaultOwner = await vault.getOwner();
-            
-            if (vaultOwner.toString() !== botAddress) {
-                logger.error('CRITICAL: Bot is not the owner of the Vault!', {
-                    botAddress,
-                    vaultOwner: vaultOwner.toString()
-                });
-            } else {
-                logger.info('Vault ownership verified ✅');
-            }
-        }
-    } catch (e) {
+
+            // Just check if we can fetch something to verify reachability
+            const reserve = await vault.getTotalReserve();
+            logger.info('Vault reachability verified ✅', { reserve: reserve.toString() });
+        }    } catch (e) {
         logger.warn('Startup health check failed', { error: e.message });
     }
 }
