@@ -17,11 +17,15 @@ This repository contains the smart contracts and bot logic for the Toon Protocol
    ```
 2. Compile contracts:
    ```bash
-   npx tact config.json
+   npx tact --config tact.config.json
    ```
 3. Run tests:
    ```bash
    npm test
+   ```
+4. Run mainnet readiness checks:
+   ```bash
+   npm run check:mainnet
    ```
 
 ## License
