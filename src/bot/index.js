@@ -9,10 +9,10 @@ const NodeID3 = require('node-id3');
 const fs = require('fs');
 
 // Point to the .ts build artifact
-const { ToonArtist } = require('./build/ToonArtist/ToonArtist_ToonArtist');
-const { ToonVault } = require('./build/ToonVault/ToonVault_ToonVault');
-const { ToonRegistry } = require('./build/ToonRegistry/ToonRegistry_ToonRegistry');
-const { MusicNft } = require('./build/MusicNft/MusicNft_MusicNft');
+const { ToonArtist } = require('../../build/ToonArtist/ToonArtist_ToonArtist');
+const { ToonVault } = require('../../build/ToonVault/ToonVault_ToonVault');
+const { ToonRegistry } = require('../../build/ToonRegistry/ToonRegistry_ToonRegistry');
+const { MusicNft } = require('../../build/MusicNft/MusicNft_MusicNft');
 const { TonClient, WalletContractV4, internal } = require('@ton/ton');
 const { mnemonicToPrivateKey } = require('@ton/crypto');
 const TonConnect = require('@tonconnect/sdk');
@@ -58,7 +58,20 @@ async function getConnector(telegramId) {
     const connector = new TonConnect.TonConnect({
         manifestUrl: 'https://raw.githubusercontent.com/toonsatoshi/toon-protocol/main/tonconnect-manifest.json',
         storage: new TonConnectStorage(telegramId),
-        disableAnalytics: true
+        disableAnalytics: true,
+        logger: {
+            debug: (...args) => {}, // Silence debug logs
+            info: (...args) => {},  // Silence info logs
+            warn: (...args) => logger.warn('TonConnect SDK warning', ...args),
+            error: (...args) => {
+                // Only log if it's not the annoying analytics or empty storage error
+                const msg = args.join(' ');
+                if (msg.includes('Analytics API error') || msg.includes('nothing is stored')) {
+                    return;
+                }
+                logger.error('TonConnect SDK error', ...args);
+            }
+        }
     });
     
     // Set in map immediately to prevent race conditions during async restore
@@ -71,6 +84,29 @@ async function getConnector(telegramId) {
     }
     
     return connector;
+}
+
+
+async function requireWalletConnected(ctx, connector, telegramId) {
+    if (connector.connected) return true;
+    const getWallets = (TonConnect.getWallets || TonConnect.TonConnect.getWallets).bind(TonConnect.TonConnect);
+    let telegramWallet;
+    try {
+        const walletList = await getWallets();
+        telegramWallet = walletList.find(w => w.appName === 'telegram-wallet' || w.name === 'Wallet' || w.bridgeUrl?.includes('bridge.ton.org'));
+    } catch (e) {}
+    if (!telegramWallet) {
+        telegramWallet = { bridgeUrl: 'https://bridge.ton.org/bridge', universalLink: 'https://t.me/wallet/start' };
+    }
+    let connectUrl = connector.connect({ universalLink: telegramWallet.universalLink, bridgeUrl: telegramWallet.bridgeUrl });
+    const botUsername = ctx.botInfo?.username || process.env.BOT_USERNAME || 'toon_music_bot';
+    const returnUrl = `https://t.me/${botUsername}?start=wallet_connected`;
+    if (connectUrl.startsWith('https://t.me/') && !connectUrl.includes('ret=')) connectUrl += `&ret=${botUsername}`;
+    if (!connectUrl.includes('return_url=')) connectUrl += `&return_url=${encodeURIComponent(returnUrl)}`;
+    await ctx.reply('👛 Connect your Telegram Wallet to continue.',
+        Markup.inlineKeyboard([[Markup.button.url('👛 Connect Telegram Wallet', connectUrl)]])
+    );
+    return false;
 }
 
 // ── TON Client & Wallet Setup ────────────────────────
@@ -376,12 +412,17 @@ bot.start(async (ctx) => {
         logger.info('Deep link to track detected', { telegramId, trackId });
         const track = await store.getTrack(trackId);
         if (track) {
-            await store.incrementPlayCount(trackId);
+            await store.incrementPlayCount(trackId, telegramId);
             const milestone = await store.checkPlayMilestone(trackId);
             if (milestone) {
-                bot.telegram.sendMessage(milestone.referrerId, 
-                    `🎉 ${milestone.artistName}'s track hit 5 plays! +50 $TOON earned! (TESTNET)`)
+                await bot.telegram.sendMessage(milestone.referrerId, 
+                    `🎉 ${milestone.artistName}'s track hit 5 unique listeners! +50 $TOON earned! (TESTNET)`)
                     .catch(e => logger.error('Milestone notification failed', { referrerId: milestone.referrerId, error: e.message }));
+                
+                if (milestone.referrerWallet) {
+                    claimOnChainReward(milestone.referrerId, milestone.referrerWallet, 2)
+                        .catch(e => logger.error('Milestone on-chain reward failed', e));
+                }
             }
             const isOwner = track.artistId == telegramId;
             await ctx.reply(
@@ -506,13 +547,22 @@ bot.hears('💎 Link Wallet', async (ctx) => {
                 await store.updateUser(telegramId, { walletAddress: addr });
                 logger.info('Wallet linked via onStatusChange', { telegramId, addr });
                 
+                // Trigger on-chain welcome reward (REWARD_EARLY_BELIEVER = 6).
+                claimOnChainReward(telegramId, addr, 6)
+                    .catch(e => logger.error('Early Believer reward failed', e));
+
                 await bot.telegram.sendMessage(telegramId, 
     `✅ Wallet Connected!
 
+You've earned a one-time **Early Believer** reward! 🎁
+
 Your wallet has been linked to Toon. You're ready to tip artists, buy $TOON, and deploy your on-chain identity.`,
-                    Markup.inlineKeyboard([
-                        [Markup.button.callback('👤 View Profile', 'show_profile')]
-                    ])
+                    { 
+                        parse_mode: 'Markdown',
+                        ...Markup.inlineKeyboard([
+                            [Markup.button.callback('👤 View Profile', 'show_profile')]
+                        ])
+                    }
                 );
                 
                 unsubscribe();
@@ -905,21 +955,41 @@ bot.action(/play_(.+)/, async (ctx) => {
 
             const d = new Date();
             const today = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+            
+            const yd = new Date();
+            yd.setDate(yd.getDate() - 1);
+            const yesterday = yd.getFullYear() * 10000 + (yd.getMonth() + 1) * 100 + yd.getDate();
+
+            let newStreak = user.listeningStreak || 0;
             const alreadyEarned = user.lastListenDay === today;
+            
+            if (!alreadyEarned) {
+                if (user.lastListenDay === yesterday) {
+                    newStreak += 1;
+                } else {
+                    newStreak = 1;
+                }
+
+                // Trigger on-chain reward for the first listen of the day (REWARD_ACTIVE_LISTENER = 1).
+                if (user.walletAddress) {
+                    claimOnChainReward(ctx.from.id, user.walletAddress, 1)
+                        .catch(e => logger.error('Daily listen on-chain reward failed', e));
+                }
+            }
 
             await store.updateUser(ctx.from.id, {
                 reputation: user.reputation + 1,
-                listeningStreak: alreadyEarned ? user.listeningStreak : user.listeningStreak + 1,
+                listeningStreak: newStreak,
                 lastListenDay: today
             });
 
-            logger.info('Listen counted', { telegramId: ctx.from.id, trackId, streak: alreadyEarned ? user.listeningStreak : user.listeningStreak + 1 });
+            logger.info('Listen counted', { telegramId: ctx.from.id, trackId, streak: newStreak });
 
             await ctx.reply(
 `✅ Listen counted!
 
 ⭐ Reputation +1
-🔥 Streak: ${alreadyEarned ? user.listeningStreak : user.listeningStreak + 1} days`,
+🔥 Streak: ${newStreak} days`,
                 Markup.inlineKeyboard([
                     [Markup.button.callback('▶️ Play Another', `artist_${track.artistId}`)],
                     [Markup.button.callback('💸 Tip This Artist', `tip_${trackId}`)],
@@ -1025,12 +1095,13 @@ bot.action(/^dotip_(\d+_\d+)_(\d+)$/, async (ctx) => {
     const connector = await getConnector(telegramId);
 
     if (!connector.connected) {
-        return ctx.reply('❌ Wallet not connected. Please /link first.');
+        if (!await requireWalletConnected(ctx, connector, telegramId)) return;
     }
 
     const amount = toNano(amountStr);
     const transaction = {
         validUntil: Math.floor(Date.now() / 1000) + 600,
+        network: '-3',
         messages: [{
             address: track.contractAddress,
             amount: amount.toString()
@@ -1041,8 +1112,16 @@ bot.action(/^dotip_(\d+_\d+)_(\d+)$/, async (ctx) => {
         await ctx.answerCbQuery('Sending request to Wallet...');
         await connector.sendTransaction(transaction);
         await ctx.reply(`✅ Transaction sent for ${amountStr} TON tip to ${track.artistName}!`);
+        
         const currentUser = await store.getUser(telegramId);
         await store.updateUser(telegramId, { tipsSent: (currentUser.tipsSent || 0) + 1 });
+
+        // Trigger on-chain reward (REWARD_SUPERFAN = 5).
+        // Note: Contract requires 100 TON for rebate; we send every tip to record activity.
+        if (currentUser.walletAddress) {
+            claimOnChainReward(telegramId, currentUser.walletAddress, 5, { tipAmount: amount.toString() })
+                .catch(e => logger.warn('Superfan reward dispatch failed', { telegramId, error: e.message }));
+        }
     } catch (e) {
         logger.error('Tip transaction failed', e);
         await ctx.reply('Tip cancelled or failed.');
@@ -1067,7 +1146,7 @@ bot.action('deploy_identity', async (ctx) => {
 
     const connector = await getConnector(telegramId);
     if (!connector.connected) {
-        return ctx.answerCbQuery('Wallet not connected. Please /link first.', { show_alert: true });
+        if (!await requireWalletConnected(ctx, connector, telegramId)) return;
     }
 
     await ctx.answerCbQuery('Sending request to your wallet...');
@@ -1086,7 +1165,8 @@ bot.action('deploy_identity', async (ctx) => {
 
     // Bug A & B Fix: Destructure to remove extra props and refresh validUntil (30 min window)
     const request = {
-        validUntil: Math.floor(Date.now() / 1000) + 1800,
+        validUntil: Math.floor(Date.now() / 1000) + 600,
+        network: '-3',
         messages: tx.messages
     };
 
@@ -1096,6 +1176,16 @@ bot.action('deploy_identity', async (ctx) => {
             await store.markOnChain(telegramId, artistAddress);
             await store.updateUser(telegramId, { pendingIdentityTx: null });
             await ctx.reply('Artist Identity deployment sent to the blockchain!');
+
+            // Trigger on-chain reward for the referrer (REWARD_GROWTH_AGENT = 2).
+            const freshUser = await store.getUser(telegramId);
+            if (freshUser && freshUser.referredBy) {
+                const referrer = await store.getUser(freshUser.referredBy);
+                if (referrer && referrer.walletAddress) {
+                    claimOnChainReward(freshUser.referredBy, referrer.walletAddress, 2)
+                        .catch(e => logger.error('Referrer upload reward failed', e));
+                }
+            }
         })
         .catch(async (e) => {
             logger.error('Identity deployment failed', e);
@@ -1148,6 +1238,7 @@ bot.action('buy_ton', async (ctx) => {
 
     const transaction = {
         validUntil: Math.floor(Date.now() / 1000) + 600, // 10 minutes
+        network: '-3',
         messages: [{
             address: process.env.TOON_VAULT_ADDRESS,
             amount: toNano('1').toString()
@@ -1158,6 +1249,12 @@ bot.action('buy_ton', async (ctx) => {
     connector.sendTransaction(transaction)
         .then(async () => {
             await ctx.reply("1 TON sent to the vault! Your $TOON balance will update shortly.");
+            
+            // Trigger on-chain reward for investing (REWARD_DROP_INVESTOR = 7).
+            if (user.walletAddress) {
+                claimOnChainReward(telegramId, user.walletAddress, 7)
+                    .catch(e => logger.error('Drop Investor reward failed', e));
+            }
         })
         .catch(async (e) => {
             logger.error('TON purchase tx failed', e);
@@ -1425,15 +1522,18 @@ bot.on('audio', async (ctx) => {
         // Wait a few seconds for seqno to update before claiming reward
         await sleep(3000);
 
-        // Claim on-chain reward for artist launch (REWARD_ARTIST_LAUNCH is 500 $TOON per mission)
-        // NOTE: The mission table says track + 50 unique tip wallets, but code has reward ID 3.
-        // I will keep the call for now but remove the automatic toonBalance increment.
-        try {
-            // await claimOnChainReward(telegramId, user.walletAddress, 3); // Currently giving it too early?
-            // The user only asked to fix 'plays', but the upload reward also seems premature.
-            // Keeping it but removing the off-chain balance increment to stay conservative.
-        } catch (e) {
-            logger.error('Failed to claim on-chain reward', e);
+        // Claim on-chain rewards for artist launch
+        if (user.walletAddress) {
+            // 1. Artist Launch Reward (ID 3) - One-time per wallet
+            claimOnChainReward(telegramId, user.walletAddress, 3)
+                .catch(e => logger.error('Artist Launch reward failed', e));
+
+            // 2. Trendsetter Reward (ID 4) - For the first 100 tracks on the platform
+            const trackCount = await store.getTrackCount();
+            if (trackCount <= 100) {
+                claimOnChainReward(telegramId, user.walletAddress, 4)
+                    .catch(e => logger.error('Trendsetter reward failed', e));
+            }
         }
 
         logger.info('Audio upload complete', { telegramId, uploadId, trackId });
@@ -1454,6 +1554,7 @@ bot.on('audio', async (ctx) => {
                     
                     const deployTx = {
                         validUntil: Math.floor(Date.now() / 1000) + 600,
+                        network: '-3',
                         messages: [
                             {
                                 address: artistInit.address.toString(),

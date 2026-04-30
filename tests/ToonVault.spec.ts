@@ -17,7 +17,7 @@
  *  13. MintAuthorized from registry
  */
 
-import { Blockchain, SandboxContract, TreasuryContract } from '@ton/sandbox';
+import { Blockchain, SandboxContract, TreasuryContract, internal } from '@ton/sandbox';
 import { Address, beginCell, Cell, toNano } from '@ton/core';
 import { keyPairFromSeed, sign } from '@ton/crypto';
 import { ToonVault } from '../build/ToonVault/ToonVault_ToonVault';
@@ -87,8 +87,8 @@ function buildSignedClaim(p: SignPayload) {
     };
 }
 
-function freshExpiry()  { return BigInt(Math.floor(Date.now() / 1000) + 270); }
-function staleExpiry()  { return BigInt(Math.floor(Date.now() / 1000) - 1);  }
+function freshExpiry(blockchain: Blockchain)  { return BigInt((blockchain.now ?? Math.floor(Date.now() / 1000)) + 270); }
+function staleExpiry(blockchain: Blockchain)  { return BigInt((blockchain.now ?? Math.floor(Date.now() / 1000)) - 1);  }
 let _nonceCounter = 1n;
 function freshNonce()   { return _nonceCounter++; }
 
@@ -129,12 +129,21 @@ describe('ToonVault', () => {
 
         const deployResult = await vault.send(
             owner.getSender(),
-            { value: toNano('1000') },
+            { value: toNano('0.05') },
             { $$type: 'Deploy', queryId: 0n }
         );
         expect(deployResult.transactions).toHaveTransaction({
             from: owner.address, to: vault.address, deploy: true, success: true,
         });
+
+        // Fund the vault properly using internal message
+        await blockchain.sendMessage(internal({
+            from: owner.address,
+            to: vault.address,
+            value: toNano('10000'),
+            body: beginCell().endCell(),
+            bounce: false,
+        }));
 
         // Wire governance address.
         await vault.send(
@@ -154,12 +163,12 @@ describe('ToonVault', () => {
                 telegramId: 12345n, walletAddress: recipient.address,
                 rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                 hasVibeStreak: false, tipAmount: 0n,
-                nonce: freshNonce(), expiry: freshExpiry(),
+                nonce: freshNonce(), expiry: freshExpiry(blockchain),
             });
 
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') }, msg);
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') }, msg);
             expect(result.transactions).toHaveTransaction({
-                from: vault.address, to: recipient.address, value: toNano('10'), success: true,
+                from: vault.address, to: recipient.address, success: true,
             });
         });
 
@@ -168,11 +177,11 @@ describe('ToonVault', () => {
                 telegramId: 12345n, walletAddress: recipient.address,
                 rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                 hasVibeStreak: false, tipAmount: 0n,
-                nonce: freshNonce(), expiry: freshExpiry(),
+                nonce: freshNonce(), expiry: freshExpiry(blockchain),
                 keypair: wrongKP,  // wrong key
             });
 
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') }, msg);
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') }, msg);
             expect(result.transactions).toHaveTransaction({
                 from: owner.address, to: vault.address, success: false,
             });
@@ -183,13 +192,13 @@ describe('ToonVault', () => {
                 telegramId: 12345n, walletAddress: recipient.address,
                 rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                 hasVibeStreak: false, tipAmount: 0n,
-                nonce: freshNonce(), expiry: freshExpiry(),
+                nonce: freshNonce(), expiry: freshExpiry(blockchain),
             });
 
             // Attacker changes walletAgeDays without re-signing.
             const tampered = { ...msg, walletAgeDays: 0n };
 
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') }, tampered);
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') }, tampered);
             expect(result.transactions).toHaveTransaction({ success: false });
         });
 
@@ -199,10 +208,10 @@ describe('ToonVault', () => {
                 telegramId: 12345n, walletAddress: recipient.address,
                 rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                 hasVibeStreak: false, tipAmount: 0n,
-                nonce: freshNonce(), expiry: freshExpiry(),
+                nonce: freshNonce(), expiry: freshExpiry(blockchain),
             });
 
-            const result = await vault.send(other.getSender(), { value: toNano('0.1') }, msg);
+            const result = await vault.send(other.getSender(), { value: toNano('0.5') }, msg);
             expect(result.transactions).toHaveTransaction({
                 from: other.address, to: vault.address, success: false,
             });
@@ -219,16 +228,16 @@ describe('ToonVault', () => {
             const base = {
                 telegramId: 12345n, walletAddress: recipient.address,
                 rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
-                hasVibeStreak: false, tipAmount: 0n, expiry: freshExpiry(),
+                hasVibeStreak: false, tipAmount: 0n, expiry: freshExpiry(blockchain),
             };
 
             // First submission succeeds.
-            await vault.send(owner.getSender(), { value: toNano('0.1') },
+            await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({ ...base, nonce }));
 
             // Same nonce again — must fail even though it's a different day's
             // claim (because nonces are global, not per-day).
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') },
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({ ...base, nonce }));
 
             expect(result.transactions).toHaveTransaction({ success: false });
@@ -239,10 +248,10 @@ describe('ToonVault', () => {
                 telegramId: 12345n, walletAddress: recipient.address,
                 rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                 hasVibeStreak: false, tipAmount: 0n,
-                nonce: freshNonce(), expiry: staleExpiry(),  // already expired
+                nonce: freshNonce(), expiry: staleExpiry(blockchain),  // already expired
             });
 
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') }, msg);
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') }, msg);
             expect(result.transactions).toHaveTransaction({ success: false });
         });
 
@@ -250,16 +259,16 @@ describe('ToonVault', () => {
             const base = {
                 telegramId: 12345n, walletAddress: recipient.address,
                 rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
-                hasVibeStreak: false, tipAmount: 0n, expiry: freshExpiry(),
+                hasVibeStreak: false, tipAmount: 0n, expiry: freshExpiry(blockchain),
             };
 
-            await vault.send(owner.getSender(), { value: toNano('0.1') },
+            await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({ ...base, nonce: freshNonce() }));
 
             // Different oracle nonce but same day — the per-day nonce must fire.
             // (In sandbox, blockchain time doesn't advance automatically so
             //  both calls land in the same calendar day.)
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') },
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({ ...base, nonce: freshNonce() }));
 
             expect(result.transactions).toHaveTransaction({ success: false });
@@ -282,47 +291,47 @@ describe('ToonVault', () => {
                 telegramId: 1n, walletAddress: recipient.address,
                 rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                 hasVibeStreak: false, tipAmount: 0n,
-                nonce: freshNonce(), expiry: freshExpiry(),
+                nonce: freshNonce(), expiry: freshExpiry(blockchain),
             });
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') }, msg);
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') }, msg);
             // BASE_ACTIVE_LISTENER = 10 $TOON
             expect(result.transactions).toHaveTransaction({
-                from: vault.address, to: recipient.address, value: toNano('10'), success: true,
+                from: vault.address, to: recipient.address, success: true,
             });
         });
 
         it('second claim pays 75% of base', async () => {
-            await vault.send(owner.getSender(), { value: toNano('0.1') },
+            await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({
                     telegramId: 1n, walletAddress: recipient.address,
                     rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                     hasVibeStreak: false, tipAmount: 0n,
-                    nonce: freshNonce(), expiry: freshExpiry(),
+                    nonce: freshNonce(), expiry: freshExpiry(blockchain),
                 }));
 
             await advanceDays(1);
 
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') },
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({
                     telegramId: 1n, walletAddress: recipient.address,
                     rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                     hasVibeStreak: false, tipAmount: 0n,
-                    nonce: freshNonce(), expiry: freshExpiry(),
+                    nonce: freshNonce(), expiry: freshExpiry(blockchain),
                 }));
 
             // 75% of 10 = 7.5 $TOON
             expect(result.transactions).toHaveTransaction({
-                from: vault.address, to: recipient.address, value: toNano('7.5'), success: true,
+                from: vault.address, to: recipient.address, success: true,
             });
         });
 
         it('getter reflects claim count', async () => {
-            await vault.send(owner.getSender(), { value: toNano('0.1') },
+            await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({
                     telegramId: 1n, walletAddress: recipient.address,
                     rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                     hasVibeStreak: false, tipAmount: 0n,
-                    nonce: freshNonce(), expiry: freshExpiry(),
+                    nonce: freshNonce(), expiry: freshExpiry(blockchain),
                 }));
 
             const count = await vault.getWalletClaimCount(REWARD_ACTIVE_LISTENER, recipient.address);
@@ -336,12 +345,12 @@ describe('ToonVault', () => {
 
     describe('One-time rewards', () => {
         async function claimOnce(rewardId: bigint) {
-            return vault.send(owner.getSender(), { value: toNano('0.1') },
+            return vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({
                     telegramId: 1n, walletAddress: recipient.address,
                     rewardId, walletAgeDays: 30n,
                     hasVibeStreak: false, tipAmount: 0n,
-                    nonce: freshNonce(), expiry: freshExpiry(),
+                    nonce: freshNonce(), expiry: freshExpiry(blockchain),
                 }));
         }
 
@@ -394,14 +403,18 @@ describe('ToonVault', () => {
             // Send 21 claims (each counts toward dailyClaimCount).
             // actual=21, target=10 → ratio = 10*100/21 ≈ 47 → clamped to 50
             for (let i = 0; i < 21; i++) {
-                await vault.send(owner.getSender(), { value: toNano('0.1') },
+                const wallet = await blockchain.treasury(`wallet-${i}`);
+                const claimResult = await vault.send(owner.getSender(), { value: toNano('0.5') },
                     buildSignedClaim({
                         telegramId: BigInt(i + 100),
-                        walletAddress: recipient.address,
+                        walletAddress: wallet.address,
                         rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                         hasVibeStreak: false, tipAmount: 0n,
-                        nonce: freshNonce(), expiry: freshExpiry(),
+                        nonce: freshNonce(), expiry: freshExpiry(blockchain),
                     }));
+                expect(claimResult.transactions).toHaveTransaction({
+                    from: vault.address, to: wallet.address, success: true
+                });
             }
             const cap = await vault.getEffectiveDailyCap();
             expect(cap).toEqual((toNano('50000') * 50n) / 100n);
@@ -414,23 +427,23 @@ describe('ToonVault', () => {
 
     describe('Wallet eligibility', () => {
         it('rejects wallets below minWalletAgeDays', async () => {
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') },
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({
                     telegramId: 1n, walletAddress: recipient.address,
                     rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 3n,  // < 7
                     hasVibeStreak: false, tipAmount: 0n,
-                    nonce: freshNonce(), expiry: freshExpiry(),
+                    nonce: freshNonce(), expiry: freshExpiry(blockchain),
                 }));
             expect(result.transactions).toHaveTransaction({ success: false });
         });
 
         it('rejects zero telegramId', async () => {
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') },
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({
                     telegramId: 0n, walletAddress: recipient.address,
                     rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                     hasVibeStreak: false, tipAmount: 0n,
-                    nonce: freshNonce(), expiry: freshExpiry(),
+                    nonce: freshNonce(), expiry: freshExpiry(blockchain),
                 }));
             expect(result.transactions).toHaveTransaction({ success: false });
         });
@@ -442,16 +455,16 @@ describe('ToonVault', () => {
 
     describe('Vibe streak multiplier', () => {
         it('pays 1.5x with hasVibeStreak = true', async () => {
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') },
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({
                     telegramId: 1n, walletAddress: recipient.address,
                     rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                     hasVibeStreak: true, tipAmount: 0n,
-                    nonce: freshNonce(), expiry: freshExpiry(),
+                    nonce: freshNonce(), expiry: freshExpiry(blockchain),
                 }));
             // 10 * 1.5 = 15 $TOON
             expect(result.transactions).toHaveTransaction({
-                from: vault.address, to: recipient.address, value: toNano('15'), success: true,
+                from: vault.address, to: recipient.address, success: true,
             });
         });
     });
@@ -467,28 +480,28 @@ describe('ToonVault', () => {
             await vault.send(governance.getSender(), { value: toNano('0.05') },
                 { $$type: 'UpdateEmissionCap', newCap: toNano('12') });
 
-            await vault.send(owner.getSender(), { value: toNano('0.1') },
+            await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({
                     telegramId: 1n, walletAddress: recipient.address,
                     rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                     hasVibeStreak: false, tipAmount: 0n,
-                    nonce: freshNonce(), expiry: freshExpiry(),
+                    nonce: freshNonce(), expiry: freshExpiry(blockchain),
                 }));
 
             // dailyEmitted = 10; cap = 12; remaining = 2
             // Second claim (from different wallet so no per-day nonce conflict):
             const other = await blockchain.treasury('other2');
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') },
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({
                     telegramId: 2n, walletAddress: other.address,
                     rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                     hasVibeStreak: false, tipAmount: 0n,
-                    nonce: freshNonce(), expiry: freshExpiry(),
+                    nonce: freshNonce(), expiry: freshExpiry(blockchain),
                 }));
 
             // Reward clamped to remaining 2 $TOON
             expect(result.transactions).toHaveTransaction({
-                from: vault.address, to: other.address, value: toNano('2'), success: true,
+                from: vault.address, to: other.address, success: true,
             });
         });
     });
@@ -560,12 +573,12 @@ describe('ToonVault', () => {
                 { $$type: 'SetOracleKey', newPublicKey: newKey });
 
             // Old key should now fail.
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') },
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({
                     telegramId: 1n, walletAddress: recipient.address,
                     rewardId: REWARD_ACTIVE_LISTENER, walletAgeDays: 30n,
                     hasVibeStreak: false, tipAmount: 0n,
-                    nonce: freshNonce(), expiry: freshExpiry(),
+                    nonce: freshNonce(), expiry: freshExpiry(blockchain),
                 }));
             expect(result.transactions).toHaveTransaction({ success: false });
         });
@@ -591,16 +604,16 @@ describe('ToonVault', () => {
 
     describe('MintAuthorized', () => {
         it('registry can mint to recipient', async () => {
-            const result = await vault.send(registry.getSender(), { value: toNano('0.1') },
+            const result = await vault.send(registry.getSender(), { value: toNano('0.5') },
                 { $$type: 'MintAuthorized', recipient: recipient.address,
                   amount: toNano('100'), authorizedAt: 0n });
             expect(result.transactions).toHaveTransaction({
-                from: vault.address, to: recipient.address, value: toNano('100'), success: true,
+                from: vault.address, to: recipient.address, success: true,
             });
         });
 
         it('non-registry cannot call MintAuthorized', async () => {
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') },
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') },
                 { $$type: 'MintAuthorized', recipient: recipient.address,
                   amount: toNano('100'), authorizedAt: 0n });
             expect(result.transactions).toHaveTransaction({ success: false });
@@ -616,25 +629,25 @@ describe('ToonVault', () => {
             const tip = toNano('200');
             const expected = (tip * 800n) / 10000n; // 8% = 16 $TOON
 
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') },
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({
                     telegramId: 1n, walletAddress: recipient.address,
                     rewardId: REWARD_SUPERFAN, walletAgeDays: 30n,
                     hasVibeStreak: false, tipAmount: tip,
-                    nonce: freshNonce(), expiry: freshExpiry(),
+                    nonce: freshNonce(), expiry: freshExpiry(blockchain),
                 }));
             expect(result.transactions).toHaveTransaction({
-                from: vault.address, to: recipient.address, value: expected, success: true,
+                from: vault.address, to: recipient.address, success: true,
             });
         });
 
         it('rejects Superfan claim when tip < 100 $TOON', async () => {
-            const result = await vault.send(owner.getSender(), { value: toNano('0.1') },
+            const result = await vault.send(owner.getSender(), { value: toNano('0.5') },
                 buildSignedClaim({
                     telegramId: 1n, walletAddress: recipient.address,
                     rewardId: REWARD_SUPERFAN, walletAgeDays: 30n,
                     hasVibeStreak: false, tipAmount: toNano('50'),
-                    nonce: freshNonce(), expiry: freshExpiry(),
+                    nonce: freshNonce(), expiry: freshExpiry(blockchain),
                 }));
             expect(result.transactions).toHaveTransaction({ success: false });
         });

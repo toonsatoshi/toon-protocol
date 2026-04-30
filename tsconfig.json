@@ -9,9 +9,11 @@
         "skipLibCheck": true,
         "types": ["jest", "node"],
         "baseUrl": ".",
+        "rootDir": ".",
+        "ignoreDeprecations": "6.0",
         "paths": {
             "*": ["node_modules/*"]
         }
     },
-    "include": ["src/**/*", "tests/**/*"]
+    "include": ["src/**/*", "tests/**/*", "build/**/*"]
 }

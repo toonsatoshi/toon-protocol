@@ -377,6 +377,14 @@ module.exports = {
         };
     },
 
+    getTrackCount: async () => {
+        const { count, error } = await supabase
+            .from('tracks')
+            .select('*', { count: 'exact', head: true });
+        if (error) return 0;
+        return count || 0;
+    },
+
     deleteTrack: async (telegramId, trackId) => {
         const tid = normalizeTelegramId(telegramId);
         const { error } = await supabase

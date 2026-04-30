@@ -3,37 +3,44 @@
         {
             "name": "ToonRegistry",
             "path": "./contracts/toon_registry.tact",
-            "output": "./build/ToonRegistry"
+            "output": "./build/ToonRegistry",
+            "options": { "debug": true }
         },
         {
             "name": "ToonVault",
             "path": "./contracts/toon_vault.tact",
-            "output": "./build/ToonVault"
+            "output": "./build/ToonVault",
+            "options": { "debug": true }
         },
         {
             "name": "ToonArtist",
             "path": "./contracts/toon_artist.tact",
-            "output": "./build/ToonArtist"
+            "output": "./build/ToonArtist",
+            "options": { "debug": true }
         },
         {
             "name": "MusicNft",
             "path": "./contracts/music_nft.tact",
-            "output": "./build/MusicNft"
+            "output": "./build/MusicNft",
+            "options": { "debug": true }
         },
         {
             "name": "ToonDrop",
             "path": "./contracts/toon_drop.tact",
-            "output": "./build/ToonDrop"
+            "output": "./build/ToonDrop",
+            "options": { "debug": true }
         },
         {
             "name": "ToonTip",
             "path": "./contracts/toon_tip.tact",
-            "output": "./build/ToonTip"
+            "output": "./build/ToonTip",
+            "options": { "debug": true }
         },
         {
             "name": "ToonGovernance",
             "path": "./contracts/toon_governance.tact",
-            "output": "./build/ToonGovernance"
+            "output": "./build/ToonGovernance",
+            "options": { "debug": true }
         }
     ]
 }

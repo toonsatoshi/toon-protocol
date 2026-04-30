@@ -1,5 +1,5 @@
-import { Blockchain, SandboxContract, TreasuryContract } from '@ton/sandbox';
-import { Address, toNano, Dictionary } from '@ton/core';
+import { Blockchain, SandboxContract, TreasuryContract, internal } from '@ton/sandbox';
+import { Address, toNano, Dictionary, beginCell } from '@ton/core';
 import { ToonTip } from '../build/ToonTip/ToonTip_ToonTip';
 import '@ton/test-utils';
 
@@ -24,19 +24,28 @@ describe('ToonTip', () => {
 
         await tip.send(
             owner.getSender(),
-            { value: toNano('1') }, // Fund with 1 TON
+            { value: toNano('0.05') },
             { $$type: 'Deploy', queryId: 0n }
         );
+
+        // Fund properly
+        await blockchain.sendMessage(internal({
+            from: owner.address,
+            to: tip.address,
+            value: toNano('100'),
+            body: beginCell().endCell(),
+            bounce: false,
+        }));
     });
 
     it('should split tips between multiple targets', async () => {
-        const targets = Dictionary.empty(Dictionary.Keys.BigInt(257), Dictionary.Values.Address());
-        targets.set(0n, track1.address);
-        targets.set(1n, track2.address);
+        const targets = Dictionary.empty(Dictionary.Keys.Uint(8), Dictionary.Values.Address());
+        targets.set(0, track1.address);
+        targets.set(1, track2.address);
 
-        const ratios = Dictionary.empty(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257));
-        ratios.set(0n, 6000n); // 60%
-        ratios.set(1n, 4000n); // 40%
+        const ratios = Dictionary.empty(Dictionary.Keys.Uint(8), Dictionary.Values.BigInt(257));
+        ratios.set(0, 6000n); // 60%
+        ratios.set(1, 4000n); // 40%
 
         const result = await tip.send(
             fan.getSender(),
@@ -48,6 +57,10 @@ describe('ToonTip', () => {
                 count: 2n
             }
         );
+
+        if (!result.transactions.some(t => t.outMessagesCount > 1)) {
+            console.log('DEBUG LOGS:', result.transactions[1].debugLogs);
+        }
 
         expect(result.transactions).toHaveTransaction({
             from: tip.address,

@@ -5,8 +5,8 @@ import "@stdlib/deploy";
 // ─────────────────────────────────────────────────────────────────────────────
 
 message SplitTip {
-    targets: map<Int, Address>; // map index -> ToonTrack address
-    ratios:  map<Int, Int>;     // map index -> basis points (e.g., 5000 = 50%)
+    targets: map<Int as uint8, Address>; // map index -> ToonTrack address
+    ratios:  map<Int as uint8, Int>;     // map index -> basis points (e.g., 5000 = 50%)
     count:   Int as uint8;
 }
 
@@ -61,21 +61,36 @@ contract ToonTip with Deployable {
     /// Allows a user to tip multiple tracks at once.
     /// The message value is split according to ratios.
     receive(msg: SplitTip) {
-        let totalValue: Int = context().value;
+        let distributable: Int = context().value - ton("0.1"); // Reserve 0.1 TON for gas
+        if (distributable <= 0) { return; }
         
-        foreach (key, target in msg.targets) {
-            let ratio: Int? = msg.ratios.get(key);
-            if (ratio != null) {
-                let share: Int = (totalValue * ratio!!) / 10000;
-                if (share > 0) {
+        let i: Int = 0;
+        while (i < msg.count) {
+            let target: Address? = msg.targets.get(i);
+            let ratio: Int? = msg.ratios.get(i);
+            
+            if (target != null && ratio != null) {
+                if (i == msg.count - 1) {
+                    // Last one: send remaining distributable value
                     send(SendParameters{
-                        to: target,
-                        value: share,
-                        mode: SendIgnoreErrors,
+                        to: target!!,
+                        value: 0,
+                        mode: SendRemainingValue + SendIgnoreErrors,
                         body: "tip".asComment()
                     });
+                } else {
+                    let share: Int = (distributable * ratio!!) / 10000;
+                    if (share > 0) {
+                        send(SendParameters{
+                            to: target!!,
+                            value: share,
+                            mode: SendIgnoreErrors,
+                            body: "tip".asComment()
+                        });
+                    }
                 }
             }
+            i = i + 1;
         }
     }
 

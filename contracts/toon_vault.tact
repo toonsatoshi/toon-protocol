@@ -157,31 +157,31 @@ contract ToonVault with Deployable {
     // ─────────────────────────────────────────────────────────────────────────
 
     fun nonceKey(rewardId: Int, wallet: Address, day: Int): Int {
-        let sb: StringBuilder = beginString();
-        sb.append(rewardId.toString()); sb.append(":");
-        sb.append(wallet.toString()); sb.append(":");
-        sb.append(day.toString());
-        return sha256(sb.toString());
+        return beginCell()
+            .storeUint(rewardId, 8)
+            .storeAddress(wallet)
+            .storeUint(day, 32)
+            .endCell().hash();
     }
 
     fun cooldownKey(wallet: Address): Int {
-        let sb: StringBuilder = beginString();
-        sb.append("cd:"); sb.append(wallet.toString());
-        return sha256(sb.toString());
+        return beginCell().storeAddress(wallet).endCell().hash();
     }
 
     fun countKey(rewardId: Int, wallet: Address): Int {
-        let sb: StringBuilder = beginString();
-        sb.append("cnt:"); sb.append(rewardId.toString()); sb.append(":");
-        sb.append(wallet.toString());
-        return sha256(sb.toString());
+        return beginCell()
+            .storeUint(rewardId, 8)
+            .storeAddress(wallet)
+            .storeUint(1, 1) // discriminator
+            .endCell().hash();
     }
 
     fun onceKey(rewardId: Int, wallet: Address): Int {
-        let sb: StringBuilder = beginString();
-        sb.append("once:"); sb.append(rewardId.toString()); sb.append(":");
-        sb.append(wallet.toString());
-        return sha256(sb.toString());
+        return beginCell()
+            .storeUint(rewardId, 8)
+            .storeAddress(wallet)
+            .storeUint(0, 1) // discriminator
+            .endCell().hash();
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -307,9 +307,6 @@ contract ToonVault with Deployable {
         );
 
         // ── 2. Oracle signature verification ─────────────────────────────
-        // This is the primary trust gate.  A valid sig proves the bot's
-        // oracle key attested to these exact field values at claim time.
-        // Forging requires the oracle private key — not just a valid sender.
         require(
             self.verifyOracleSignature(msg),
             "ToonVault: invalid oracle signature"
@@ -319,8 +316,6 @@ contract ToonVault with Deployable {
         require(msg.expiry >= now(), "ToonVault: signed payload has expired");
 
         // ── 4. Oracle nonce replay guard ──────────────────────────────────
-        // One nonce = one lifetime use.  Prevents replay of a valid signed
-        // payload even before expiry.
         require(
             self.usedNonces.get(msg.nonce) == null,
             "ToonVault: oracle nonce already used"
@@ -415,7 +410,7 @@ contract ToonVault with Deployable {
         send(SendParameters{
             to:    msg.walletAddress,
             value: reward,
-            mode:  SendIgnoreErrors,
+            mode:  SendPayGasSeparately,
             body:  "toon_reward".asComment()
         });
     }
@@ -431,7 +426,7 @@ contract ToonVault with Deployable {
         send(SendParameters{
             to:    msg.recipient,
             value: msg.amount,
-            mode:  SendIgnoreErrors,
+            mode:  SendPayGasSeparately,
             body:  "mint_authorized".asComment()
         });
     }
