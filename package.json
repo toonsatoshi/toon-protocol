@@ -10,8 +10,11 @@
     "start": "node src/bot/index.js",
     "dev": "nodemon src/bot/index.js",
     "build:contracts": "npx tact --config tact.config.json",
-    "test": "npx jest",
-    "pretest": "npm run build:contracts"
+    "test": "npx jest && npm run test:bot",
+    "pretest": "npm run build:contracts",
+    "test:bot": "node src/bot/test_deploy_identity.js",
+    "check:mainnet": "node scripts/mainnetReadinessCheck.js",
+    "test:all": "npm test && npm run check:mainnet"
   },
   "keywords": [],
   "author": "",
