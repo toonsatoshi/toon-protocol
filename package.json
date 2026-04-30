@@ -10,7 +10,8 @@
     "start": "node src/bot/index.js",
     "dev": "nodemon src/bot/index.js",
     "build:contracts": "npx tact --config tact.config.json",
-    "test": "npx jest"
+    "test": "npx jest",
+    "pretest": "npm run build:contracts"
   },
   "keywords": [],
   "author": "",
