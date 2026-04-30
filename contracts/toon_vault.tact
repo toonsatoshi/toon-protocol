@@ -22,6 +22,7 @@ const EMISSION_CAP_CEILING:     Int = ton("500000");
 const DEFAULT_EMISSION_CAP:     Int = ton("50000");
 const DEFAULT_MIN_WALLET_AGE:   Int = 7;
 const MAX_NONCE_WINDOW_SECONDS: Int = 300; // oracle payloads expire in 5 min
+const NONCE_RETENTION_SECONDS: Int = 86400;
 
 // ── Reserve health ───────────────────────────────────────────────────────────
 const RESERVE_TARGET:           Int = ton("1000000");
@@ -71,6 +72,7 @@ message UpdateRegistry   { newRegistry: Address;        }
 message SetGovernance    { newGovernance: Address;      }
 message SetOracleKey     { newPublicKey: Int as uint256;}
 message TreasuryWithdraw { amount: Int as coins; recipient: Address; }
+message SetCircuitBreaker { enabled: Bool; }
 
 // ── ToonVault ────────────────────────────────────────────────────────────────
 //
@@ -102,10 +104,11 @@ contract ToonVault with Deployable {
     minWalletAgeDays:    Int as uint32;
     targetDailyActivity: Int as uint32;  // 0 = static cap, no dynamic scaling
     dailyClaimCount:     Int as uint32;
+    circuitBreaker:      Bool;
 
     // ── Replay protection ────────────────────────────────────────────────────
     // Oracle nonces: prevents the same signed payload being submitted twice.
-    usedNonces: map<Int, Bool>;
+    usedNonces: map<Int, Int>;
 
     // Per-day idempotency: same (reward, wallet, day) is rejected even if
     // submitted with a different oracle nonce.
@@ -136,7 +139,8 @@ contract ToonVault with Deployable {
         emissionCap: Int,
         minWalletAgeDays: Int,
         targetDailyActivity: Int,
-        dailyClaimCount: Int
+        dailyClaimCount: Int,
+        circuitBreaker: Bool
     ) {
         self.owner = owner;
         self.registry = registry;
@@ -150,6 +154,7 @@ contract ToonVault with Deployable {
         self.minWalletAgeDays = minWalletAgeDays;
         self.targetDailyActivity = targetDailyActivity;
         self.dailyClaimCount = dailyClaimCount;
+        self.circuitBreaker = circuitBreaker;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -300,6 +305,8 @@ contract ToonVault with Deployable {
     // ─────────────────────────────────────────────────────────────────────────
 
     receive(msg: ClaimReward) {
+        require(!self.circuitBreaker, "ToonVault: circuit breaker enabled");
+
         // ── 1. Origin check ───────────────────────────────────────────────
         require(
             sender() == self.registry || sender() == self.owner,
@@ -317,10 +324,10 @@ contract ToonVault with Deployable {
 
         // ── 4. Oracle nonce replay guard ──────────────────────────────────
         require(
-            self.usedNonces.get(msg.nonce) == null,
+            self.usedNonces.get(msg.nonce) == null || self.usedNonces.get(msg.nonce)!! + NONCE_RETENTION_SECONDS < now(),
             "ToonVault: oracle nonce already used"
         );
-        self.usedNonces.set(msg.nonce, true);
+        self.usedNonces.set(msg.nonce, now());
 
         // ── 5. Wallet eligibility ─────────────────────────────────────────
         require(msg.walletAgeDays >= self.minWalletAgeDays,
@@ -410,7 +417,7 @@ contract ToonVault with Deployable {
         send(SendParameters{
             to:    msg.walletAddress,
             value: reward,
-            mode:  SendPayGasSeparately,
+            mode:  SendPayGasSeparately + SendIgnoreErrors,
             body:  "toon_reward".asComment()
         });
     }
@@ -426,7 +433,7 @@ contract ToonVault with Deployable {
         send(SendParameters{
             to:    msg.recipient,
             value: msg.amount,
-            mode:  SendPayGasSeparately,
+            mode:  SendPayGasSeparately + SendIgnoreErrors,
             body:  "mint_authorized".asComment()
         });
     }
@@ -484,6 +491,11 @@ contract ToonVault with Deployable {
         self.governance = msg.newGovernance;
     }
 
+    receive(msg: SetCircuitBreaker) {
+        require(sender() == self.owner || sender() == self.governance, "ToonVault: not authorized");
+        self.circuitBreaker = msg.enabled;
+    }
+
     receive(msg: SetOracleKey) {
         require(sender() == self.owner, "ToonVault: not owner");
         require(msg.newPublicKey != 0, "ToonVault: zero oracle key");
@@ -526,6 +538,9 @@ contract ToonVault with Deployable {
     }
 
     get fun isNonceUsed(nonce: Int): Bool {
-        return self.usedNonces.get(nonce) != null;
+        let ts: Int? = self.usedNonces.get(nonce);
+        return ts != null && ts!! + NONCE_RETENTION_SECONDS >= now();
     }
+
+    get fun circuitBreakerEnabled(): Bool { return self.circuitBreaker; }
 }

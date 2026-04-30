@@ -13,6 +13,14 @@ message UnstakeGovernance {
     amount: Int as coins;
 }
 
+// Jetton transfer callback (TEP-74 style).
+
+message TransferNotification {
+    from: Address;
+    amount: Int as coins;
+    forwardPayload: Cell;
+}
+
 // Numeric parameter proposals (emissionCap, minWalletAge).
 message ProposeParameterUpdate {
     parameter:   String; // "emissionCap" | "minWalletAge"
@@ -157,8 +165,17 @@ contract ToonGovernance with Deployable {
     }
 
     // ─────────────────────────────────────────────────────────
-    //  Staking (mock — no real Jetton transfer yet)
+    //  Staking via Jetton TransferNotification (TEP-74)
     // ─────────────────────────────────────────────────────────
+
+    receive(msg: TransferNotification) {
+        require(msg.amount > 0, "ToonGovernance: zero transfer amount");
+        let existing: Int? = self.stakes.get(msg.from);
+        let current: Int   = existing != null ? existing!! : 0;
+        self.stakes.set(msg.from, current + msg.amount);
+        self.totalStaked = self.totalStaked + msg.amount;
+    }
+
 
     receive(msg: StakeToon) {
         let existing: Int? = self.stakes.get(sender());
