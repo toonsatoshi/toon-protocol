@@ -28,7 +28,7 @@ const RESERVE_TARGET:           Int = ton("1000000");
 const RESERVE_HALVE_THRESHOLD:  Int = 10;
 const RESERVE_RECOVER_THRESHOLD:Int = 20;
 const SUPERFAN_REBATE_BPS:      Int = 800;
-const VIBE_MULTIPLIER_BPS:      Int = 150;
+const VIBE_MULTIPLIER_BPS:      Int = 150; // +1.5% when streak is present
 
 // ── Anti-abuse ───────────────────────────────────────────────────────────────
 const CLAIM_COOLDOWN_SECONDS:   Int = 300;
@@ -264,7 +264,7 @@ contract ToonVault with Deployable {
     }
 
     fun applyMultiplier(amount: Int, hasStreak: Bool): Int {
-        if (hasStreak) { return (amount * VIBE_MULTIPLIER_BPS) / 100; }
+        if (hasStreak) { return (amount * (10000 + VIBE_MULTIPLIER_BPS)) / 10000; }
         return amount;
     }
 
