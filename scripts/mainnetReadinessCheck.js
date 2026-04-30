@@ -27,6 +27,11 @@ let failures = 0;
 
 function pass(msg) { console.log(`✅ ${msg}`); }
 function fail(msg) { console.log(`❌ ${msg}`); failures += 1; }
+function warn(msg) { console.log(`⚠️ ${msg}`); }
+
+function read(rel) {
+  return fs.readFileSync(path.join(root, rel), 'utf8');
+}
 
 console.log('🔎 Toon Protocol Mainnet Readiness Check\n');
 
@@ -64,6 +69,32 @@ for (const rel of expectedBuilds) {
   const exists = fs.existsSync(path.join(root, rel));
   if (exists) pass(`${rel} exists`);
   else fail(`${rel} missing (run npm run build:contracts)`);
+}
+
+console.log('\n🧱 Protocol architecture checks');
+const contractFiles = fs.readdirSync(path.join(root, 'contracts')).filter((f) => f.endsWith('.tact'));
+const hasJetton = contractFiles.some((f) => /jetton/i.test(f));
+if (hasJetton) pass('Jetton contract detected in /contracts');
+else fail('No Jetton contract detected in /contracts (TEP-74 master/wallet required for $TOON)');
+
+const governanceSource = read('contracts/toon_governance.tact');
+if (/mocked until real Jetton transfer flow is wired/i.test(governanceSource)) {
+  fail('Governance staking flow is still mocked');
+} else {
+  pass('Governance staking flow does not contain mocked-staking marker');
+}
+
+const vaultSource = read('contracts/toon_vault.tact');
+if (/const\s+VIBE_MULTIPLIER_BPS\s*:\s*Int\s*=\s*150\s*;/.test(vaultSource) && /VIBE_MULTIPLIER_BPS\)\s*\/\s*100/.test(vaultSource)) {
+  fail('VIBE_MULTIPLIER_BPS appears to be applied as percent (/100) instead of basis points (/10000)');
+} else {
+  pass('Vibe multiplier math does not match the known BPS/percent bug pattern');
+}
+
+if (/mode\s*:\s*SendIgnoreErrors/.test(vaultSource)) {
+  warn('ToonVault still uses SendIgnoreErrors in at least one send path; manually review financial sends');
+} else {
+  pass('ToonVault has no SendIgnoreErrors usage');
 }
 
 if (failures > 0) {
