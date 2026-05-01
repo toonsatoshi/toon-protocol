@@ -119,8 +119,14 @@ export async function run(provider: NetworkProvider) {
     await provider.waitForDeploy(tip.address);
     console.log('     ✅ ToonTip:', tip.address.toString());
 
+    const tokenMasterRaw = process.env.TOON_TOKEN_MASTER_ADDRESS?.trim();
+    const tokenMaster = tokenMasterRaw ? Address.parse(tokenMasterRaw) : registry.address;
+    if (!tokenMasterRaw) {
+        console.log('     ⚠️ TOON_TOKEN_MASTER_ADDRESS not set; defaulting governance tokenMaster to ToonRegistry address.');
+    }
+
     const governance = provider.open(
-        await ToonGovernance.fromInit(registry.address, vault.address)
+        await ToonGovernance.fromInit(deployerAddress, registry.address, vault.address, tokenMaster)
     );
     await governance.send(deployer, { value: toNano('0.1') }, { $$type: 'Deploy', queryId: 0n });
     await provider.waitForDeploy(governance.address);
