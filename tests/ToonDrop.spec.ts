@@ -41,7 +41,7 @@ describe('ToonDrop', () => {
     it('should allow purchasing slices', async () => {
         const result = await drop.send(
             investor1.getSender(),
-            { value: toNano('20') },
+            { value: toNano('21') },
             { $$type: 'PurchaseSlice', amount: toNano('20') }
         );
 
@@ -52,6 +52,29 @@ describe('ToonDrop', () => {
         });
 
         expect(await drop.getCurrentRaise()).toBe(toNano('20'));
+    });
+
+
+    it('should refund overpayment when purchase exceeds remaining headroom', async () => {
+        await drop.send(
+            investor1.getSender(),
+            { value: toNano('95') },
+            { $$type: 'PurchaseSlice', amount: toNano('95') }
+        );
+
+        const result = await drop.send(
+            investor2.getSender(),
+            { value: toNano('20') },
+            { $$type: 'PurchaseSlice', amount: toNano('20') }
+        );
+
+        expect(await drop.getCurrentRaise()).toBe(toNano('100'));
+
+        expect(result.transactions).toHaveTransaction({
+            from: drop.address,
+            to: investor2.address,
+            success: true,
+        });
     });
 
     it('should finalize and send funds to artist on successful raise', async () => {

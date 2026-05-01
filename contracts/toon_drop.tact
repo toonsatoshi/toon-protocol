@@ -114,6 +114,7 @@ contract ToonDrop with Deployable {
         let headroom: Int = self.raiseTarget - self.currentRaise;
         let accepted: Int = msg.amount;
         if (accepted > headroom) { accepted = headroom; }
+        let excess: Int = msg.amount - accepted;
 
         let existing: Int? = self.investments.get(investor);
         if (existing == null) {
@@ -124,6 +125,16 @@ contract ToonDrop with Deployable {
         }
 
         self.currentRaise = self.currentRaise + accepted;
+
+        // Return overpayment immediately so no TON remains stranded.
+        if (excess > 0) {
+            send(SendParameters{
+                to:    investor,
+                value: excess,
+                mode:  SendIgnoreErrors,
+                body:  "drop_overpayment_refund".asComment()
+            });
+        }
 
         // Exact comparison: currentRaise == raiseTarget triggers success.
         // (Never exceeds due to headroom cap above.)
