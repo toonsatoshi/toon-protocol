@@ -50,6 +50,7 @@ contract JettonWallet with Deployable {
         require(
             sender() == self.master ||
             sender() == self.owner ||
+            sender() == msg.from ||
             sender() == expectedWalletSender,
             "JettonWallet: bad sender"
         );
