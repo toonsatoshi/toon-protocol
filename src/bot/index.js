@@ -159,7 +159,7 @@ async function retry(fn, retries = 3, delay = 2000) {
 }
 
 async function getDeployer() {
-    const mnemonic = process.env.WALLET_MNEMONIC;
+    const mnemonic = runtimeConfig.walletMnemonic;
     if (!mnemonic) {
         throw new Error('WALLET_MNEMONIC not set in .env. Please provide a 24-word seed phrase.');
     }
