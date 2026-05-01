@@ -1,15 +1,27 @@
 const NETWORKS = {
   testnet: {
-    tonEndpoint: process.env.TON_ENDPOINT_TESTNET || 'https://testnet.toncenter.com/api/v2/jsonRPC',
-    tonApiBaseUrl: process.env.TON_API_BASE_URL_TESTNET || 'https://testnet.toncenter.com/api/v2',
+    tonEndpoint: process.env.TON_ENDPOINT_TESTNET || null,
+    tonApiBaseUrl: process.env.TON_API_BASE_URL_TESTNET || null,
     toonVaultAddress: process.env.TOON_VAULT_ADDRESS_TESTNET || process.env.TOON_VAULT_ADDRESS || null,
     toonRegistryAddress: process.env.TOON_REGISTRY_ADDRESS_TESTNET || process.env.TOON_REGISTRY_ADDRESS || null,
+    tonConnectManifestUrl: process.env.TONCONNECT_MANIFEST_URL_TESTNET || process.env.TONCONNECT_MANIFEST_URL || null,
+    tonConnectBridgeUrl: process.env.TONCONNECT_BRIDGE_URL_TESTNET || process.env.TONCONNECT_BRIDGE_URL || null,
+    tonConnectUniversalLink: process.env.TONCONNECT_UNIVERSAL_LINK_TESTNET || process.env.TONCONNECT_UNIVERSAL_LINK || null,
+    explorerNetworkId: process.env.EXPLORER_NETWORK_ID_TESTNET || '-3',
+    trackBaseUrl: process.env.TRACK_BASE_URL_TESTNET || process.env.TRACK_BASE_URL || null,
+    artistBaseUrl: process.env.ARTIST_BASE_URL_TESTNET || process.env.ARTIST_BASE_URL || null,
   },
   mainnet: {
-    tonEndpoint: process.env.TON_ENDPOINT_MAINNET || 'https://toncenter.com/api/v2/jsonRPC',
-    tonApiBaseUrl: process.env.TON_API_BASE_URL_MAINNET || 'https://toncenter.com/api/v2',
+    tonEndpoint: process.env.TON_ENDPOINT_MAINNET || null,
+    tonApiBaseUrl: process.env.TON_API_BASE_URL_MAINNET || null,
     toonVaultAddress: process.env.TOON_VAULT_ADDRESS_MAINNET || process.env.TOON_VAULT_ADDRESS || null,
     toonRegistryAddress: process.env.TOON_REGISTRY_ADDRESS_MAINNET || process.env.TOON_REGISTRY_ADDRESS || null,
+    tonConnectManifestUrl: process.env.TONCONNECT_MANIFEST_URL_MAINNET || process.env.TONCONNECT_MANIFEST_URL || null,
+    tonConnectBridgeUrl: process.env.TONCONNECT_BRIDGE_URL_MAINNET || process.env.TONCONNECT_BRIDGE_URL || null,
+    tonConnectUniversalLink: process.env.TONCONNECT_UNIVERSAL_LINK_MAINNET || process.env.TONCONNECT_UNIVERSAL_LINK || null,
+    explorerNetworkId: process.env.EXPLORER_NETWORK_ID_MAINNET || '-239',
+    trackBaseUrl: process.env.TRACK_BASE_URL_MAINNET || process.env.TRACK_BASE_URL || null,
+    artistBaseUrl: process.env.ARTIST_BASE_URL_MAINNET || process.env.ARTIST_BASE_URL || null,
   },
 };
 
@@ -35,8 +47,14 @@ function validateEnvironment() {
     ['DEPLOYER_PRIVATE_KEY', () => requireEnv('DEPLOYER_PRIVATE_KEY')],
     ['PROTOCOL_FEE_BPS', () => requireEnv('PROTOCOL_FEE_BPS')],
     ['TON_ENDPOINT', () => config.tonEndpoint],
+    ['TON_API_BASE_URL', () => config.tonApiBaseUrl],
     ['TOON_VAULT_ADDRESS', () => config.toonVaultAddress],
     ['TOON_REGISTRY_ADDRESS', () => config.toonRegistryAddress],
+    ['TONCONNECT_MANIFEST_URL', () => config.tonConnectManifestUrl],
+    ['TONCONNECT_BRIDGE_URL', () => config.tonConnectBridgeUrl],
+    ['TONCONNECT_UNIVERSAL_LINK', () => config.tonConnectUniversalLink],
+    ['TRACK_BASE_URL', () => config.trackBaseUrl],
+    ['ARTIST_BASE_URL', () => config.artistBaseUrl],
   ];
 
   for (const [name, getter] of required) {

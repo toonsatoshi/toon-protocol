@@ -57,7 +57,7 @@ async function getConnector(telegramId) {
         return connectors.get(telegramId);
     }
     const connector = new TonConnect.TonConnect({
-        manifestUrl: 'https://raw.githubusercontent.com/toonsatoshi/toon-protocol/main/tonconnect-manifest.json',
+        manifestUrl: runtimeConfig.tonConnectManifestUrl,
         storage: new TonConnectStorage(telegramId),
         disableAnalytics: true,
         logger: {
@@ -94,10 +94,10 @@ async function requireWalletConnected(ctx, connector, telegramId) {
     let telegramWallet;
     try {
         const walletList = await getWallets();
-        telegramWallet = walletList.find(w => w.appName === 'telegram-wallet' || w.name === 'Wallet' || w.bridgeUrl?.includes('bridge.ton.org'));
+        telegramWallet = walletList.find(w => w.appName === 'telegram-wallet' || w.name === 'Wallet' || w.bridgeUrl?.includes(runtimeConfig.tonConnectBridgeUrl));
     } catch (e) {}
     if (!telegramWallet) {
-        telegramWallet = { bridgeUrl: 'https://bridge.ton.org/bridge', universalLink: 'https://t.me/wallet/start' };
+        telegramWallet = { bridgeUrl: runtimeConfig.tonConnectBridgeUrl, universalLink: runtimeConfig.tonConnectUniversalLink };
     }
     let connectUrl = connector.connect({ universalLink: telegramWallet.universalLink, bridgeUrl: telegramWallet.bridgeUrl });
     const botUsername = ctx.botInfo?.username || process.env.BOT_USERNAME || 'toon_music_bot';
@@ -580,15 +580,15 @@ Your wallet has been linked to Toon. You're ready to tip artists, buy $TOON, and
     let telegramWallet;
     try {
         const walletList = await getWallets();
-        telegramWallet = walletList.find(w => w.appName === 'telegram-wallet' || w.name === 'Wallet' || w.bridgeUrl.includes('bridge.ton.org'));
+        telegramWallet = walletList.find(w => w.appName === 'telegram-wallet' || w.name === 'Wallet' || w.bridgeUrl.includes(runtimeConfig.tonConnectBridgeUrl));
     } catch (e) {
         logger.error('Failed to fetch wallet list, using fallback', e);
     }
     
     if (!telegramWallet) {
         telegramWallet = {
-            bridgeUrl: 'https://bridge.ton.org/bridge',
-            universalLink: 'https://t.me/wallet/start'
+            bridgeUrl: runtimeConfig.tonConnectBridgeUrl,
+            universalLink: runtimeConfig.tonConnectUniversalLink
         };
     }
 
@@ -1103,7 +1103,7 @@ bot.action(/^dotip_(\d+_\d+)_(\d+)$/, async (ctx) => {
     const amount = toNano(amountStr);
     const transaction = {
         validUntil: Math.floor(Date.now() / 1000) + 600,
-        network: runtimeConfig.network === 'testnet' ? '-3' : '-239',
+        network: runtimeConfig.explorerNetworkId,
         messages: [{
             address: track.contractAddress,
             amount: amount.toString()
@@ -1168,7 +1168,7 @@ bot.action('deploy_identity', async (ctx) => {
     // Bug A & B Fix: Destructure to remove extra props and refresh validUntil (30 min window)
     const request = {
         validUntil: Math.floor(Date.now() / 1000) + 600,
-        network: runtimeConfig.network === 'testnet' ? '-3' : '-239',
+        network: runtimeConfig.explorerNetworkId,
         messages: tx.messages
     };
 
@@ -1240,7 +1240,7 @@ bot.action('buy_ton', async (ctx) => {
     
     const transaction = {
         validUntil: Math.floor(Date.now() / 1000) + 600, // 10 minutes
-        network: runtimeConfig.network === 'testnet' ? '-3' : '-239',
+        network: runtimeConfig.explorerNetworkId,
         messages: [{
             address: VAULT_ADDRESS_ENV,
             amount: toNano('1').toString()
@@ -1499,7 +1499,7 @@ bot.on('audio', async (ctx) => {
         logger.info('Initializing MusicNft contract', { telegramId, uploadId, trackId });
         const nftInit = await MusicNft.fromInit(
             Address.parse(user.walletAddress.trim()),
-            { $$type: 'TrackMetadata', title: user.track.title, uri: `https://toon.music/track/${trackId}`, genre: user.track.genre },
+            { $$type: 'TrackMetadata', title: user.track.title, uri: `${runtimeConfig.trackBaseUrl.replace(/\/$/, '')}/${trackId}`, genre: user.track.genre },
             toNano('0.01'),
             0n
         );
@@ -1552,11 +1552,11 @@ bot.on('audio', async (ctx) => {
                     logger.warn('User has no wallet address linked, skipping identity prompt', { telegramId });
                 } else {
                     const OWNER_ADDRESS = Address.parse(walletAddrStr.trim());
-                    const artistInit = await ToonArtist.fromInit(OWNER_ADDRESS, REGISTRY_ADDRESS, BigInt(telegramId), `https://toon.music/artist/${telegramId}`);
+                    const artistInit = await ToonArtist.fromInit(OWNER_ADDRESS, REGISTRY_ADDRESS, BigInt(telegramId), `${runtimeConfig.artistBaseUrl.replace(/\/$/, '')}/${telegramId}`);
                     
                     const deployTx = {
                         validUntil: Math.floor(Date.now() / 1000) + 600,
-                        network: runtimeConfig.network === 'testnet' ? '-3' : '-239',
+                        network: runtimeConfig.explorerNetworkId,
                         messages: [
                             {
                                 address: artistInit.address.toString(),
