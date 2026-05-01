@@ -25,6 +25,10 @@ message RefundPoolContribution {
     contributionId: Int as uint16;
 }
 
+message RefundMyPoolContribution {
+    poolId: Int as uint256;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  Structs
 // ─────────────────────────────────────────────────────────────────────────────
@@ -37,6 +41,7 @@ struct Pool {
     completed:    Bool;
     contributors: map<Int, Address>;
     contributions: map<Int, Int as coins>;
+    contributionOwners: map<Address, Int as uint16>;
     contributorCount: Int as uint16;
 }
 
@@ -115,7 +120,8 @@ contract ToonTip with Deployable {
             completed: false,
             contributorCount: 0,
             contributors: emptyMap(),
-            contributions: emptyMap()
+            contributions: emptyMap(),
+            contributionOwners: emptyMap()
         };
 
         self.pools.set(poolId, newPool);
@@ -137,8 +143,10 @@ contract ToonTip with Deployable {
         p.currentAmount = p.currentAmount + contribution;
         
         // Record contributor
-        p.contributors.set(p.contributorCount, sender());
-        p.contributions.set(p.contributorCount, contribution);
+        let contributionId: Int = p.contributorCount;
+        p.contributors.set(contributionId, sender());
+        p.contributions.set(contributionId, contribution);
+        p.contributionOwners.set(sender(), contributionId);
         p.contributorCount = p.contributorCount + 1;
 
         if (p.currentAmount >= p.targetAmount) {
@@ -176,6 +184,41 @@ contract ToonTip with Deployable {
         let refundAmount: Int = contribution!!;
         p.currentAmount = p.currentAmount - refundAmount;
         p.contributions.del(msg.contributionId);
+        p.contributors.del(msg.contributionId);
+        p.contributionOwners.del(sender());
+        p.contributorCount = p.contributorCount - 1;
+
+        self.pools.set(msg.poolId, p);
+
+        send(SendParameters{
+            to: sender(),
+            value: refundAmount,
+            mode: SendIgnoreErrors,
+            body: "pool_refund".asComment()
+        });
+    }
+
+
+    receive(msg: RefundMyPoolContribution) {
+        let pool: Pool? = self.pools.get(msg.poolId);
+        require(pool != null, "ToonTip: pool does not exist");
+        let p: Pool = pool!!;
+
+        require(!p.completed, "ToonTip: pool already completed");
+        require(now() > p.deadline, "ToonTip: pool still active");
+
+        let contributionId: Int? = p.contributionOwners.get(sender());
+        require(contributionId != null, "ToonTip: contribution does not exist");
+
+        let contribution: Int? = p.contributions.get(contributionId!!);
+        require(contribution != null, "ToonTip: contribution already refunded");
+
+        let refundAmount: Int = contribution!!;
+        p.currentAmount = p.currentAmount - refundAmount;
+        p.contributions.del(contributionId!!);
+        p.contributors.del(contributionId!!);
+        p.contributionOwners.del(sender());
+        p.contributorCount = p.contributorCount - 1;
 
         self.pools.set(msg.poolId, p);
 
@@ -191,5 +234,14 @@ contract ToonTip with Deployable {
 
     get fun getPool(poolId: Int): Pool? {
         return self.pools.get(poolId);
+    }
+
+    get fun getContributionId(poolId: Int, contributor: Address): Int? {
+        let pool: Pool? = self.pools.get(poolId);
+        if (pool == null) {
+            return null;
+        }
+
+        return pool!!.contributionOwners.get(contributor);
     }
 }

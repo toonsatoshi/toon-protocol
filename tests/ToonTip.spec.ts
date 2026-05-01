@@ -99,6 +99,9 @@ describe('ToonTip', () => {
 
         const poolAfter = await tip.getGetPool(0n);
         expect(poolAfter?.currentAmount).toBe(toNano('20'));
+
+        const contributionId = await tip.getGetContributionId(0n, fan.address);
+        expect(contributionId).toBe(0n);
     });
 
 
@@ -128,7 +131,7 @@ describe('ToonTip', () => {
         const refund = await tip.send(
             fan.getSender(),
             { value: toNano('0.05') },
-            { $$type: 'RefundPoolContribution', poolId: 0n, contributionId: 0n }
+            { $$type: 'RefundMyPoolContribution', poolId: 0n }
         );
 
         expect(refund.transactions).toHaveTransaction({
@@ -139,6 +142,7 @@ describe('ToonTip', () => {
 
         const poolAfterRefund = await tip.getGetPool(0n);
         expect(poolAfterRefund?.currentAmount).toBe(0n);
+        expect(poolAfterRefund?.contributorCount).toBe(0n);
     });
 
     it('should finalize pool and tip track when threshold reached', async () => {
