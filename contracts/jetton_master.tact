@@ -6,13 +6,20 @@ message MintJetton {
     amount: Int as coins;
 }
 
-message BurnNotification {
-    owner: Address;
+message(0x7bdd97de) BurnNotification {
+    queryId: Int as uint64;
     amount: Int as coins;
+    owner: Address;
+    responseDestination: Address?;
 }
 
-message MintWalletCredit {
+message(0x178d4519) InternalTransfer {
+    queryId: Int as uint64;
     amount: Int as coins;
+    from: Address;
+    responseAddress: Address?;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Cell;
 }
 
 contract JettonMaster with Deployable {
@@ -37,9 +44,16 @@ contract JettonMaster with Deployable {
 
         send(SendParameters{
             to: walletAddress,
-            value: ton("0.05"),
-            mode: SendIgnoreErrors,
-            body: MintWalletCredit{ amount: msg.amount }.toCell(),
+            value: ton("0.08"),
+            mode: SendPayGasSeparately,
+            body: InternalTransfer{
+                queryId: 0,
+                amount: msg.amount,
+                from: myAddress(),
+                responseAddress: self.owner,
+                forwardTonAmount: 0,
+                forwardPayload: emptyCell()
+            }.toCell(),
             code: walletInit.code,
             data: walletInit.data
         });
@@ -51,6 +65,10 @@ contract JettonMaster with Deployable {
         require(msg.amount > 0, "JettonMaster: amount must be > 0");
         require(self.totalSupply >= msg.amount, "JettonMaster: underflow");
         self.totalSupply = self.totalSupply - msg.amount;
+
+        if (msg.responseDestination != null) {
+            send(SendParameters{to: msg.responseDestination!!, value: 0, mode: SendRemainingValue | SendIgnoreErrors});
+        }
     }
 
     get fun get_jetton_data(): (Int, Bool, Address, Cell, Cell) {

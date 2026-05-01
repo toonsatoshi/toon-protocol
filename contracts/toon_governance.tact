@@ -17,16 +17,21 @@ message UnstakeGovernance {
 
 // Jetton transfer callback (TEP-74 style).
 
-message TransferNotification {
-    from: Address;
+message(0x7362d09c) TransferNotification {
+    queryId: Int as uint64;
     amount: Int as coins;
+    from: Address;
     forwardPayload: Cell;
 }
 
-message TransferJetton {
-    to: Address;
+message(0xf8a7ea5) TransferJetton {
+    queryId: Int as uint64;
     amount: Int as coins;
+    destination: Address;
+    responseDestination: Address?;
+    customPayload: Cell?;
     forwardTonAmount: Int as coins;
+    forwardPayload: Cell;
 }
 
 // Numeric parameter proposals (emissionCap, minWalletAge).
@@ -238,9 +243,13 @@ contract ToonGovernance with Deployable {
             value: 0,
             mode: SendRemainingValue,
             body: TransferJetton{
-                to: recipientWallet!!,
+                queryId: 0,
                 amount: msg.amount,
-                forwardTonAmount: 0
+                destination: sender(),
+                responseDestination: myAddress(),
+                customPayload: null,
+                forwardTonAmount: 0,
+                forwardPayload: emptyCell()
             }.toCell()
         });
     }
