@@ -4,9 +4,9 @@ import "@stdlib/deploy";
 //  Messages — inbound
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Staking is mocked until real Jetton transfer flow is wired.
-message StakeToon {
-    amount: Int as coins;
+message RegisterJettonWallet {
+    owner: Address;
+    wallet: Address;
 }
 
 message UnstakeGovernance {
@@ -118,10 +118,14 @@ struct AddressProposal {
 //
 contract ToonGovernance with Deployable {
 
+    owner: Address;
     registry: Address;
     vault:    Address;
+    tokenMaster: Address;
 
     stakes:      map<Address, Int>;
+    jettonWalletByOwner: map<Address, Address>;
+    usedStakeNonces: map<Int, Bool>;
     totalStaked: Int as coins;
 
     // Numeric parameter proposals
@@ -137,9 +141,11 @@ contract ToonGovernance with Deployable {
     hasVoted:        map<Int, Bool>;
     hasVotedAddress: map<Int, Bool>;
 
-    init(registry: Address, vault: Address) {
+    init(owner: Address, registry: Address, vault: Address, tokenMaster: Address) {
+        self.owner                 = owner;
         self.registry              = registry;
         self.vault                 = vault;
+        self.tokenMaster           = tokenMaster;
         self.totalStaked           = 0;
         self.nextProposalId        = 0;
         self.nextAddressProposalId = 0;
@@ -168,19 +174,29 @@ contract ToonGovernance with Deployable {
     //  Staking via Jetton TransferNotification (TEP-74)
     // ─────────────────────────────────────────────────────────
 
+    receive(msg: RegisterJettonWallet) {
+        require(sender() == self.owner, "ToonGovernance: owner only");
+        self.jettonWalletByOwner.set(msg.owner, msg.wallet);
+    }
+
     receive(msg: TransferNotification) {
         require(msg.amount > 0, "ToonGovernance: zero transfer amount");
+        let expectedWallet: Address? = self.jettonWalletByOwner.get(msg.from);
+        require(expectedWallet != null, "ToonGovernance: wallet not registered");
+        require(sender() == expectedWallet!!, "ToonGovernance: invalid jetton wallet sender");
+
+        let slice = msg.forwardPayload.beginParse();
+        let nonce = slice.loadUint(64);
+        let claimedMaster = slice.loadAddress();
+        require(claimedMaster == self.tokenMaster, "ToonGovernance: invalid token master");
+
+        let replayKey = beginCell().storeAddress(msg.from).storeUint(nonce, 64).endCell().hash();
+        require(self.usedStakeNonces.get(replayKey) == null, "ToonGovernance: stake replay");
+        self.usedStakeNonces.set(replayKey, true);
+
         let existing: Int? = self.stakes.get(msg.from);
         let current: Int   = existing != null ? existing!! : 0;
         self.stakes.set(msg.from, current + msg.amount);
-        self.totalStaked = self.totalStaked + msg.amount;
-    }
-
-
-    receive(msg: StakeToon) {
-        let existing: Int? = self.stakes.get(sender());
-        let current: Int   = existing != null ? existing!! : 0;
-        self.stakes.set(sender(), current + msg.amount);
         self.totalStaked = self.totalStaked + msg.amount;
     }
 
