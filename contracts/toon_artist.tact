@@ -140,13 +140,22 @@ contract ToonArtist with Deployable {
 
     receive(msg: UnstakeToon) {
         require(sender() == self.owner, "ToonArtist: only owner can unstake");
+        require(msg.amount > 0, "ToonArtist: unstake amount must be > 0");
         require(self.stakedToon >= msg.amount, "ToonArtist: insufficient stake");
         self.stakedToon = self.stakedToon - msg.amount;
+
+        let ownerWallet: Address? = self.jettonWalletByOwner.get(self.owner);
+        require(ownerWallet != null, "ToonArtist: owner wallet not registered");
+
         send(SendParameters{
-            to:    self.owner,
+            to:    ownerWallet!!,
             value: 0,
             mode:  SendRemainingValue,
-            body:  "Unstaked $TOON".asComment()
+            body:  TransferNotification{
+                from: myAddress(),
+                amount: msg.amount,
+                forwardPayload: emptyCell()
+            }.toCell()
         });
     }
 

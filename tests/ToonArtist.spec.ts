@@ -168,4 +168,27 @@ describe('ToonArtist', () => {
             success: false,
         });
     });
+
+    it('should return staked $TOON to the registered wallet on unstake', async () => {
+        const MIN_STAKE = 100000000000n;
+        const payload = beginCell().storeUint(2n, 64).storeAddress(owner.address).endCell();
+        await artist.send(
+            ownerJettonWallet.getSender(),
+            { value: toNano('0.05') },
+            { $$type: 'TransferNotification', from: owner.address, amount: MIN_STAKE, forwardPayload: payload }
+        );
+
+        const unstakeResult = await artist.send(
+            owner.getSender(),
+            { value: toNano('0.05') },
+            { $$type: 'UnstakeToon', amount: MIN_STAKE }
+        );
+
+        expect(unstakeResult.transactions).toHaveTransaction({
+            from: artist.address,
+            to: ownerJettonWallet.address,
+            success: true,
+        });
+        expect(await artist.getStakedToon()).toBe(0n);
+    });
 });
