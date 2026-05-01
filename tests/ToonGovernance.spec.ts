@@ -51,6 +51,26 @@ describe('ToonGovernance', () => {
         expect(await governance.getTotalStaked()).toBe(amount);
     });
 
+    it('should allow staking with empty forward payload', async () => {
+        const amount = toNano('50');
+        await governance.send(proposer.getSender(), { value: toNano('0.05') }, { $$type: 'RegisterJettonWallet', owner: proposer.address, wallet: proposer.address });
+
+        const result = await governance.send(
+            proposer.getSender(),
+            { value: toNano('0.1') },
+            { $$type: 'TransferNotification', from: proposer.address, amount, forwardPayload: beginCell().endCell() }
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: proposer.address,
+            to: governance.address,
+            success: true,
+        });
+
+        expect(await governance.getGetStake(proposer.address)).toBe(amount);
+        expect(await governance.getTotalStaked()).toBe(amount);
+    });
+
     it('should allow proposing parameter updates after staking', async () => {
         const amount = toNano('100');
         await registerAndStake(proposer, amount, 1n);
