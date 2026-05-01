@@ -1,5 +1,5 @@
 import { Blockchain, SandboxContract, TreasuryContract } from '@ton/sandbox';
-import { Address, toNano } from '@ton/core';
+import { Address, beginCell, toNano } from '@ton/core';
 import { ToonArtist } from '../build/ToonArtist/ToonArtist_ToonArtist';
 import '@ton/test-utils';
 
@@ -8,11 +8,14 @@ describe('ToonArtist', () => {
     let owner: SandboxContract<TreasuryContract>;
     let registry: SandboxContract<TreasuryContract>;
     let artist: SandboxContract<ToonArtist>;
+    let ownerJettonWallet: SandboxContract<TreasuryContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         owner = await blockchain.treasury('owner');
         registry = await blockchain.treasury('registry');
+
+        ownerJettonWallet = await blockchain.treasury('ownerJettonWallet');
 
         artist = blockchain.openContract(
             await ToonArtist.fromInit(
@@ -34,6 +37,19 @@ describe('ToonArtist', () => {
             deploy: true,
             success: true,
         });
+
+        await artist.send(
+            owner.getSender(),
+            { value: toNano('0.05') },
+            { $$type: 'ConfigureTokenMaster', tokenMaster: owner.address }
+        );
+
+        await artist.send(
+            owner.getSender(),
+            { value: toNano('0.05') },
+            { $$type: 'RegisterJettonWallet', owner: owner.address, wallet: ownerJettonWallet.address }
+        );
+
     });
 
     it('should allow owner to update metadata', async () => {
@@ -102,10 +118,11 @@ describe('ToonArtist', () => {
 
         // Stake MIN_STAKE (100 $TOON = 100 * 10^9 nano)
         const MIN_STAKE = 100000000000n;
+        const payload = beginCell().storeUint(1n, 64).storeAddress(owner.address).endCell();
         await artist.send(
-            owner.getSender(),
-            { value: toNano('100') },
-            { $$type: 'StakeToon', amount: MIN_STAKE }
+            ownerJettonWallet.getSender(),
+            { value: toNano('0.05') },
+            { $$type: 'TransferNotification', from: owner.address, amount: MIN_STAKE, forwardPayload: payload }
         );
 
         expect(await artist.getIsActive()).toBe(true);
@@ -138,10 +155,10 @@ describe('ToonArtist', () => {
         expect(await artist.getCanLaunchToonDrop()).toBe(false);
     });
 
-    it('should reject stake inflation when attached value is lower than declared amount', async () => {
+    it('should reject direct TON-based staking path', async () => {
         const result = await artist.send(
             owner.getSender(),
-            { value: toNano('0.1') },
+            { value: toNano('100') },
             { $$type: 'StakeToon', amount: 100000000000n }
         );
 

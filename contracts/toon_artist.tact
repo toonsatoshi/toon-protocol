@@ -8,6 +8,21 @@ message RegisterArtist {
     artistContract: Address;
 }
 
+message RegisterJettonWallet {
+    owner: Address;
+    wallet: Address;
+}
+
+message ConfigureTokenMaster {
+    tokenMaster: Address;
+}
+
+message TransferNotification {
+    from: Address;
+    amount: Int as coins;
+    forwardPayload: Cell;
+}
+
 message RegisterTrack {
     trackId:        Int as uint256;
     fingerprint:    Int as uint256;
@@ -56,6 +71,9 @@ contract ToonArtist with Deployable {
     reputation:     Int as uint32;
     totalTipVolume: Int as coins;
     stakedToon:     Int as coins;
+    tokenMaster:    Address;
+    jettonWalletByOwner: map<Address, Address>;
+    usedStakeNonces: map<Int, Bool>;
 
     tracks:      map<Int, Address>;
     totalTracks: Int as uint32;
@@ -71,6 +89,7 @@ contract ToonArtist with Deployable {
         self.reputation    = 0;
         self.totalTipVolume = 0;
         self.stakedToon    = 0;
+        self.tokenMaster   = owner;
         self.totalTracks   = 0;
     }
 
@@ -87,11 +106,36 @@ contract ToonArtist with Deployable {
         self.totalTipVolume = self.totalTipVolume + context().value;
     }
 
-    receive(msg: StakeToon) {
-        require(sender() == self.owner, "ToonArtist: only owner can stake");
-        require(msg.amount > 0, "ToonArtist: amount must be positive");
-        require(context().value >= msg.amount, "ToonArtist: stake value mismatch");
+    receive(msg: ConfigureTokenMaster) {
+        require(sender() == self.owner, "ToonArtist: only owner can configure token master");
+        self.tokenMaster = msg.tokenMaster;
+    }
+
+    receive(msg: RegisterJettonWallet) {
+        require(sender() == self.owner, "ToonArtist: only owner can register jetton wallet");
+        self.jettonWalletByOwner.set(msg.owner, msg.wallet);
+    }
+
+    receive(msg: TransferNotification) {
+        require(msg.amount > 0, "ToonArtist: zero transfer amount");
+        let expectedWallet: Address? = self.jettonWalletByOwner.get(msg.from);
+        require(expectedWallet != null, "ToonArtist: wallet not registered");
+        require(sender() == expectedWallet!!, "ToonArtist: invalid jetton wallet sender");
+
+        let slice = msg.forwardPayload.beginParse();
+        let nonce = slice.loadUint(64);
+        let claimedMaster = slice.loadAddress();
+        require(claimedMaster == self.tokenMaster, "ToonArtist: invalid token master");
+
+        let replayKey = beginCell().storeAddress(msg.from).storeUint(nonce, 64).endCell().hash();
+        require(self.usedStakeNonces.get(replayKey) == null, "ToonArtist: stake replay");
+        self.usedStakeNonces.set(replayKey, true);
+
         self.stakedToon = self.stakedToon + msg.amount;
+    }
+
+    receive(msg: StakeToon) {
+        require(false, "ToonArtist: direct TON stake disabled; use $TOON transfer notification");
     }
 
     receive(msg: UnstakeToon) {
