@@ -39,9 +39,6 @@ struct Pool {
     currentAmount: Int as coins;
     deadline:     Int as uint32;
     completed:    Bool;
-    contributors: map<Int, Address>;
-    contributions: map<Int, Int as coins>;
-    contributionOwners: map<Address, Int as uint16>;
     contributorCount: Int as uint16;
 }
 
@@ -58,6 +55,10 @@ contract ToonTip with Deployable {
     /// Group Tipping Pools
     /// poolId (hash of track + owner + timestamp) → Pool data
     pools: map<Int, Pool>;
+    /// flattened pool contribution maps to avoid nested map depth in Pool cells
+    poolContributors: map<Int, Address>;
+    poolContributions: map<Int, Int as coins>;
+    poolContributionOwners: map<Int, Int as uint16>;
     nextPoolId: Int as uint256;
 
     // ── Constructor ──────────────────────────────────────────────────────────
@@ -65,6 +66,22 @@ contract ToonTip with Deployable {
     init(registry: Address) {
         self.registry = registry;
         self.nextPoolId = 0;
+    }
+
+    fun contributionKey(poolId: Int, contributionId: Int): Int {
+        return beginCell()
+            .storeUint(poolId, 256)
+            .storeUint(contributionId, 16)
+            .endCell()
+            .hash();
+    }
+
+    fun ownerKey(poolId: Int, contributor: Address): Int {
+        return beginCell()
+            .storeUint(poolId, 256)
+            .storeAddress(contributor)
+            .endCell()
+            .hash();
     }
 
     // ── Split Tipping ────────────────────────────────────────────────────────
@@ -118,10 +135,7 @@ contract ToonTip with Deployable {
             currentAmount: 0,
             deadline: msg.deadline,
             completed: false,
-            contributorCount: 0,
-            contributors: emptyMap(),
-            contributions: emptyMap(),
-            contributionOwners: emptyMap()
+            contributorCount: 0
         };
 
         self.pools.set(poolId, newPool);
@@ -144,9 +158,11 @@ contract ToonTip with Deployable {
         
         // Record contributor
         let contributionId: Int = p.contributorCount;
-        p.contributors.set(contributionId, sender());
-        p.contributions.set(contributionId, contribution);
-        p.contributionOwners.set(sender(), contributionId);
+        let contributionKey: Int = self.contributionKey(msg.poolId, contributionId);
+        let ownerKey: Int = self.ownerKey(msg.poolId, sender());
+        self.poolContributors.set(contributionKey, sender());
+        self.poolContributions.set(contributionKey, contribution);
+        self.poolContributionOwners.set(ownerKey, contributionId);
         p.contributorCount = p.contributorCount + 1;
 
         if (p.currentAmount >= p.targetAmount) {
@@ -174,18 +190,19 @@ contract ToonTip with Deployable {
         require(!p.completed, "ToonTip: pool already completed");
         require(now() > p.deadline, "ToonTip: pool still active");
 
-        let contributor: Address? = p.contributors.get(msg.contributionId);
+        let contributionKey: Int = self.contributionKey(msg.poolId, msg.contributionId);
+        let contributor: Address? = self.poolContributors.get(contributionKey);
         require(contributor != null, "ToonTip: contribution does not exist");
         require(contributor!! == sender(), "ToonTip: not contribution owner");
 
-        let contribution: Int? = p.contributions.get(msg.contributionId);
+        let contribution: Int? = self.poolContributions.get(contributionKey);
         require(contribution != null, "ToonTip: contribution already refunded");
 
         let refundAmount: Int = contribution!!;
         p.currentAmount = p.currentAmount - refundAmount;
-        p.contributions.del(msg.contributionId);
-        p.contributors.del(msg.contributionId);
-        p.contributionOwners.del(sender());
+        self.poolContributions.del(contributionKey);
+        self.poolContributors.del(contributionKey);
+        self.poolContributionOwners.del(self.ownerKey(msg.poolId, sender()));
         p.contributorCount = p.contributorCount - 1;
 
         self.pools.set(msg.poolId, p);
@@ -207,17 +224,18 @@ contract ToonTip with Deployable {
         require(!p.completed, "ToonTip: pool already completed");
         require(now() > p.deadline, "ToonTip: pool still active");
 
-        let contributionId: Int? = p.contributionOwners.get(sender());
+        let contributionId: Int? = self.poolContributionOwners.get(self.ownerKey(msg.poolId, sender()));
         require(contributionId != null, "ToonTip: contribution does not exist");
 
-        let contribution: Int? = p.contributions.get(contributionId!!);
+        let contributionKey: Int = self.contributionKey(msg.poolId, contributionId!!);
+        let contribution: Int? = self.poolContributions.get(contributionKey);
         require(contribution != null, "ToonTip: contribution already refunded");
 
         let refundAmount: Int = contribution!!;
         p.currentAmount = p.currentAmount - refundAmount;
-        p.contributions.del(contributionId!!);
-        p.contributors.del(contributionId!!);
-        p.contributionOwners.del(sender());
+        self.poolContributions.del(contributionKey);
+        self.poolContributors.del(contributionKey);
+        self.poolContributionOwners.del(self.ownerKey(msg.poolId, sender()));
         p.contributorCount = p.contributorCount - 1;
 
         self.pools.set(msg.poolId, p);
@@ -237,11 +255,6 @@ contract ToonTip with Deployable {
     }
 
     get fun getContributionId(poolId: Int, contributor: Address): Int? {
-        let pool: Pool? = self.pools.get(poolId);
-        if (pool == null) {
-            return null;
-        }
-
-        return pool!!.contributionOwners.get(contributor);
+        return self.poolContributionOwners.get(self.ownerKey(poolId, contributor));
     }
 }
