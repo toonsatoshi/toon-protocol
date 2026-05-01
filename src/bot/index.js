@@ -7,6 +7,7 @@ const logger = require('./logger');
 const axios = require('axios');
 const NodeID3 = require('node-id3');
 const fs = require('fs');
+const { validateEnvironment } = require('./config');
 
 // Point to the .ts build artifact
 const { ToonArtist } = require('../../build/ToonArtist/ToonArtist_ToonArtist');
@@ -109,21 +110,14 @@ async function requireWalletConnected(ctx, connector, telegramId) {
     return false;
 }
 
-function requireTestnet(ctx, connector) {
-    if (connector.account && connector.account.network !== '-3') {
-        ctx.reply('❌ Your wallet is connected to the **Mainnet**, but this bot is currently using the **TON Testnet**.\n\nPlease switch your wallet to Testnet in your settings and try again.', { parse_mode: 'Markdown' });
-        return false;
-    }
-    return true;
-}
-
 // ── TON Client & Wallet Setup ────────────────────────
 const apiKey = (process.env.TONCENTER_API_KEY && process.env.TONCENTER_API_KEY.length > 10) 
     ? process.env.TONCENTER_API_KEY.trim() 
     : undefined;
 
-const VAULT_ADDRESS_ENV = process.env.TOON_VAULT_ADDRESS ? process.env.TOON_VAULT_ADDRESS.trim() : null;
-const REGISTRY_ADDRESS_ENV = process.env.TOON_REGISTRY_ADDRESS ? process.env.TOON_REGISTRY_ADDRESS.trim() : null;
+const runtimeConfig = validateEnvironment();
+const VAULT_ADDRESS_ENV = runtimeConfig.toonVaultAddress ? runtimeConfig.toonVaultAddress.trim() : null;
+const REGISTRY_ADDRESS_ENV = runtimeConfig.toonRegistryAddress ? runtimeConfig.toonRegistryAddress.trim() : null;
 
 if (apiKey) {
     logger.info(`Using TONCENTER_API_KEY starting with: ${apiKey.slice(0, 4)}...`);
@@ -132,7 +126,7 @@ if (apiKey) {
 }
 
 let client = new TonClient({
-    endpoint: process.env.TON_ENDPOINT_1 || 'https://testnet.toncenter.com/api/v2/jsonRPC',
+    endpoint: runtimeConfig.tonEndpoint,
     apiKey: apiKey
 });
 
@@ -154,7 +148,7 @@ async function retry(fn, retries = 3, delay = 2000) {
                 logger.error('Unauthorized (401). Disabling API key and retrying once...');
                 // Fallback: Re-init client without API key for this session
                 client = new TonClient({
-                    endpoint: process.env.TON_ENDPOINT_1 || 'https://testnet.toncenter.com/api/v2/jsonRPC'
+                    endpoint: runtimeConfig.tonEndpoint
                 });
                 await sleep(1000);
             } else {
@@ -1105,12 +1099,11 @@ bot.action(/^dotip_(\d+_\d+)_(\d+)$/, async (ctx) => {
     if (!connector.connected) {
         if (!await requireWalletConnected(ctx, connector, telegramId)) return;
     }
-    if (!requireTestnet(ctx, connector)) return;
-
+    
     const amount = toNano(amountStr);
     const transaction = {
         validUntil: Math.floor(Date.now() / 1000) + 600,
-        network: '-3',
+        network: runtimeConfig.network === 'testnet' ? '-3' : '-239',
         messages: [{
             address: track.contractAddress,
             amount: amount.toString()
@@ -1157,8 +1150,7 @@ bot.action('deploy_identity', async (ctx) => {
     if (!connector.connected) {
         if (!await requireWalletConnected(ctx, connector, telegramId)) return;
     }
-    if (!requireTestnet(ctx, connector)) return;
-
+    
     await ctx.answerCbQuery('Sending request to your wallet...');
 
     let tx = user.pendingIdentityTx;
@@ -1176,7 +1168,7 @@ bot.action('deploy_identity', async (ctx) => {
     // Bug A & B Fix: Destructure to remove extra props and refresh validUntil (30 min window)
     const request = {
         validUntil: Math.floor(Date.now() / 1000) + 600,
-        network: '-3',
+        network: runtimeConfig.network === 'testnet' ? '-3' : '-239',
         messages: tx.messages
     };
 
@@ -1245,13 +1237,12 @@ bot.action('buy_ton', async (ctx) => {
     if (!connector.connected) {
         if (!await requireWalletConnected(ctx, connector, telegramId)) return;
     }
-    if (!requireTestnet(ctx, connector)) return;
-
+    
     const transaction = {
         validUntil: Math.floor(Date.now() / 1000) + 600, // 10 minutes
-        network: '-3',
+        network: runtimeConfig.network === 'testnet' ? '-3' : '-239',
         messages: [{
-            address: process.env.TOON_VAULT_ADDRESS,
+            address: VAULT_ADDRESS_ENV,
             amount: toNano('1').toString()
         }]
     };
@@ -1565,7 +1556,7 @@ bot.on('audio', async (ctx) => {
                     
                     const deployTx = {
                         validUntil: Math.floor(Date.now() / 1000) + 600,
-                        network: '-3',
+                        network: runtimeConfig.network === 'testnet' ? '-3' : '-239',
                         messages: [
                             {
                                 address: artistInit.address.toString(),
