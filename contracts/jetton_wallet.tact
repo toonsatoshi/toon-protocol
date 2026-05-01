@@ -12,6 +12,10 @@ message TransferNotification {
     forwardPayload: Cell;
 }
 
+message MintWalletCredit {
+    amount: Int as coins;
+}
+
 contract JettonWallet with Deployable {
     owner: Address;
     master: Address;
@@ -21,6 +25,12 @@ contract JettonWallet with Deployable {
         self.owner = owner;
         self.master = master;
         self.balance = 0;
+    }
+
+    receive(msg: MintWalletCredit) {
+        require(sender() == self.master, "JettonWallet: bad mint sender");
+        require(msg.amount > 0, "JettonWallet: amount must be > 0");
+        self.balance = self.balance + msg.amount;
     }
 
     receive(msg: TransferJetton) {
@@ -37,6 +47,7 @@ contract JettonWallet with Deployable {
 
     receive(msg: TransferNotification) {
         require(sender() == self.master || sender() == self.owner, "JettonWallet: bad sender");
+        require(msg.amount > 0, "JettonWallet: amount must be > 0");
         self.balance = self.balance + msg.amount;
     }
 
