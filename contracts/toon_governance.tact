@@ -1,5 +1,7 @@
 import "@stdlib/deploy";
 
+const MIN_QUORUM_VOTES: Int = ton("1000");
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  Messages — inbound
 // ─────────────────────────────────────────────────────────────────────────────
@@ -161,13 +163,17 @@ contract ToonGovernance with Deployable {
 
     // Quorum = proposer must hold stake; FOR votes must exceed 25% of total staked.
     fun quorumPassed(proposal: GlobalProposal): Bool {
+        let quorumVotes: Int = self.totalStaked / 4;
+        if (quorumVotes < MIN_QUORUM_VOTES) { quorumVotes = MIN_QUORUM_VOTES; }
         return proposal.votesFor > proposal.votesAgainst
-            && proposal.votesFor > (self.totalStaked / 4);
+            && proposal.votesFor >= quorumVotes;
     }
 
     fun quorumPassedAddr(proposal: AddressProposal): Bool {
+        let quorumVotes: Int = self.totalStaked / 4;
+        if (quorumVotes < MIN_QUORUM_VOTES) { quorumVotes = MIN_QUORUM_VOTES; }
         return proposal.votesFor > proposal.votesAgainst
-            && proposal.votesFor > (self.totalStaked / 4);
+            && proposal.votesFor >= quorumVotes;
     }
 
     // ─────────────────────────────────────────────────────────
