@@ -89,6 +89,8 @@ contract ToonArtist with Deployable {
 
     receive(msg: StakeToon) {
         require(sender() == self.owner, "ToonArtist: only owner can stake");
+        require(msg.amount > 0, "ToonArtist: amount must be positive");
+        require(context().value >= msg.amount, "ToonArtist: stake value mismatch");
         self.stakedToon = self.stakedToon + msg.amount;
     }
 
@@ -100,7 +102,7 @@ contract ToonArtist with Deployable {
             to:    self.owner,
             value: 0,
             mode:  SendRemainingValue,
-            body:  "Unstaked $TOON (mock)".asComment()
+            body:  "Unstaked $TOON".asComment()
         });
     }
 
