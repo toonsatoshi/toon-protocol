@@ -33,6 +33,7 @@ const VIBE_MULTIPLIER_BPS:      Int = 150; // +1.5% when streak is present
 
 // ── Anti-abuse ───────────────────────────────────────────────────────────────
 const CLAIM_COOLDOWN_SECONDS:   Int = 300;
+const TREASURY_WITHDRAW_DELAY_SECONDS: Int = 172800; // 48h timelock
 
 // ── Messages ─────────────────────────────────────────────────────────────────
 
@@ -71,6 +72,7 @@ message UpdateReserve    { amount: Int as coins;        }
 message UpdateRegistry   { newRegistry: Address;        }
 message SetGovernance    { newGovernance: Address;      }
 message SetOracleKey     { newPublicKey: Int as uint256;}
+message QueueTreasuryWithdraw { amount: Int as coins; recipient: Address; }
 message TreasuryWithdraw { amount: Int as coins; recipient: Address; }
 message SetCircuitBreaker { enabled: Bool; }
 
@@ -112,10 +114,12 @@ contract ToonVault with Deployable {
 
     // Per-day idempotency: same (reward, wallet, day) is rejected even if
     // submitted with a different oracle nonce.
-    claimNonces: map<Int, Bool>;
+    claimLastDay: map<Int, Int>;
 
     // Per-wallet burst throttle.
     lastClaimTimestamp: map<Int, Int>;
+    queuedTreasuryWithdrawHash: Int as uint256;
+    queuedTreasuryWithdrawEta: Int as uint32;
 
     // ── Diminishing returns ──────────────────────────────────────────────────
     // Tracks how many times a wallet has claimed a given reward type (lifetime).
@@ -155,6 +159,8 @@ contract ToonVault with Deployable {
         self.targetDailyActivity = targetDailyActivity;
         self.dailyClaimCount = dailyClaimCount;
         self.circuitBreaker = circuitBreaker;
+        self.queuedTreasuryWithdrawHash = 0;
+        self.queuedTreasuryWithdrawEta = 0;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -349,7 +355,8 @@ contract ToonVault with Deployable {
 
         // ── 8. Per-day idempotency nonce ──────────────────────────────────
         let nKey: Int = self.nonceKey(msg.rewardId, msg.walletAddress, today);
-        require(self.claimNonces.get(nKey) == null,
+        let claimedDay: Int? = self.claimLastDay.get(nKey);
+        require(claimedDay == null || claimedDay!! != today,
             "ToonVault: reward already claimed today");
 
         // ── 9. One-time reward guard ──────────────────────────────────────
@@ -405,7 +412,7 @@ contract ToonVault with Deployable {
         self.updateHalvingStatus();
         self.dailyEmitted   = self.dailyEmitted + reward;
         self.dailyClaimCount = self.dailyClaimCount + 1;
-        self.claimNonces.set(nKey, true);
+        self.claimLastDay.set(nKey, today);
         self.lastClaimTimestamp.set(cKey, now());
         self.claimCounts.set(ckKey, claimCount + 1);
 
@@ -417,7 +424,7 @@ contract ToonVault with Deployable {
         send(SendParameters{
             to:    msg.walletAddress,
             value: reward,
-            mode:  SendPayGasSeparately + SendIgnoreErrors,
+            mode:  SendPayGasSeparately,
             body:  "toon_reward".asComment()
         });
     }
@@ -433,7 +440,7 @@ contract ToonVault with Deployable {
         send(SendParameters{
             to:    msg.recipient,
             value: msg.amount,
-            mode:  SendPayGasSeparately + SendIgnoreErrors,
+            mode:  SendPayGasSeparately,
             body:  "mint_authorized".asComment()
         });
     }
@@ -503,15 +510,28 @@ contract ToonVault with Deployable {
         emit("OracleKeyRotated".asComment());
     }
 
+    receive(msg: QueueTreasuryWithdraw) {
+        require(sender() == self.governance, "ToonVault: only governance can queue withdrawals");
+        require(msg.amount > 0, "ToonVault: zero withdraw amount");
+        let requestHash: Int = beginCell().storeAddress(msg.recipient).storeCoins(msg.amount).endCell().hash();
+        self.queuedTreasuryWithdrawHash = requestHash;
+        self.queuedTreasuryWithdrawEta = now() + TREASURY_WITHDRAW_DELAY_SECONDS;
+    }
+
     receive(msg: TreasuryWithdraw) {
-        require(sender() == self.owner, "ToonVault: not owner");
+        require(sender() == self.governance, "ToonVault: only governance can execute withdrawals");
+        let requestHash: Int = beginCell().storeAddress(msg.recipient).storeCoins(msg.amount).endCell().hash();
+        require(self.queuedTreasuryWithdrawHash == requestHash, "ToonVault: withdrawal not queued");
+        require(now() >= self.queuedTreasuryWithdrawEta, "ToonVault: withdrawal timelock active");
         require(self.totalReserve >= msg.amount, "ToonVault: insufficient reserve");
         self.totalReserve = self.totalReserve - msg.amount;
         self.updateHalvingStatus();
+        self.queuedTreasuryWithdrawHash = 0;
+        self.queuedTreasuryWithdrawEta = 0;
         send(SendParameters{
             to:    msg.recipient,
             value: msg.amount,
-            mode:  SendIgnoreErrors,
+            mode:  SendPayGasSeparately,
             body:  "withdrawal".asComment()
         });
     }
