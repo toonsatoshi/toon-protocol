@@ -19,7 +19,7 @@ describe('ToonGovernance', () => {
         voter = await blockchain.treasury('voter');
 
         governance = blockchain.openContract(
-            await ToonGovernance.fromInit(registry.address, vault.address)
+            await ToonGovernance.fromInit(proposer.address, registry.address, vault.address, registry.address)
         );
 
         const deployResult = await governance.send(
@@ -33,15 +33,18 @@ describe('ToonGovernance', () => {
             deploy: true,
             success: true,
         });
-    });
+    })
+
+    async function registerAndStake(user: SandboxContract<TreasuryContract>, amount: bigint, nonce: bigint) {
+        await governance.send(proposer.getSender(), { value: toNano('0.05') }, { $$type: 'RegisterJettonWallet', owner: user.address, wallet: user.address });
+        const fp = beginCell().storeUint(nonce, 64).storeAddress(registry.address).endCell();
+        await governance.send(user.getSender(), { value: toNano('0.1') }, { $$type: 'TransferNotification', from: user.address, amount, forwardPayload: fp });
+    }
+;
 
     it('should allow staking', async () => {
         const amount = toNano('100');
-        await governance.send(
-            proposer.getSender(),
-            { value: toNano('0.1') },
-            { $$type: 'StakeToon', amount }
-        );
+        await registerAndStake(proposer, amount, 1n);
 
         const stake = await governance.getGetStake(proposer.address);
         expect(stake).toBe(amount);
@@ -50,11 +53,7 @@ describe('ToonGovernance', () => {
 
     it('should allow proposing parameter updates after staking', async () => {
         const amount = toNano('100');
-        await governance.send(
-            proposer.getSender(),
-            { value: toNano('0.1') },
-            { $$type: 'StakeToon', amount }
-        );
+        await registerAndStake(proposer, amount, 1n);
 
         const result = await governance.send(
             proposer.getSender(),
@@ -80,8 +79,8 @@ describe('ToonGovernance', () => {
 
     it('should allow voting on proposals', async () => {
         // Stake for proposer and voter
-        await governance.send(proposer.getSender(), { value: toNano('0.1') }, { $$type: 'StakeToon', amount: toNano('100') });
-        await governance.send(voter.getSender(), { value: toNano('0.1') }, { $$type: 'StakeToon', amount: toNano('200') });
+        await registerAndStake(proposer, toNano('100'), 11n);
+        await registerAndStake(voter, toNano('200'), 12n);
 
         // Propose
         await governance.send(proposer.getSender(), { value: toNano('0.1') }, {
@@ -110,8 +109,8 @@ describe('ToonGovernance', () => {
 
     it('should execute proposal after voting window and meeting quorum', async () => {
         // Total stake = 400. Quorum = 400/4 = 100.
-        await governance.send(proposer.getSender(), { value: toNano('0.1') }, { $$type: 'StakeToon', amount: toNano('200') });
-        await governance.send(voter.getSender(), { value: toNano('0.1') }, { $$type: 'StakeToon', amount: toNano('200') });
+        await registerAndStake(proposer, toNano('200'), 21n);
+        await registerAndStake(voter, toNano('200'), 12n);
 
         await governance.send(proposer.getSender(), { value: toNano('0.1') }, {
             $$type: 'ProposeParameterUpdate',
@@ -143,7 +142,7 @@ describe('ToonGovernance', () => {
     });
 
     it('should reject votes from non-stakers', async () => {
-        await governance.send(proposer.getSender(), { value: toNano('0.1') }, { $$type: 'StakeToon', amount: toNano('100') });
+        await registerAndStake(proposer, toNano('100'), 11n);
         await governance.send(proposer.getSender(), { value: toNano('0.1') }, {
             $$type: 'ProposeParameterUpdate',
             parameter: 'emissionCap',
@@ -166,7 +165,7 @@ describe('ToonGovernance', () => {
     });
 
     it('should prevent double voting', async () => {
-        await governance.send(proposer.getSender(), { value: toNano('0.1') }, { $$type: 'StakeToon', amount: toNano('100') });
+        await registerAndStake(proposer, toNano('100'), 11n);
         await governance.send(proposer.getSender(), { value: toNano('0.1') }, {
             $$type: 'ProposeParameterUpdate',
             parameter: 'emissionCap',
