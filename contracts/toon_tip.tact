@@ -20,6 +20,11 @@ message ContributeToPool {
     poolId: Int as uint256;
 }
 
+message RefundPoolContribution {
+    poolId: Int as uint256;
+    contributionId: Int as uint16;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  Structs
 // ─────────────────────────────────────────────────────────────────────────────
@@ -31,6 +36,7 @@ struct Pool {
     deadline:     Int as uint32;
     completed:    Bool;
     contributors: map<Int, Address>;
+    contributions: map<Int, Int as coins>;
     contributorCount: Int as uint16;
 }
 
@@ -108,7 +114,8 @@ contract ToonTip with Deployable {
             deadline: msg.deadline,
             completed: false,
             contributorCount: 0,
-            contributors: emptyMap()
+            contributors: emptyMap(),
+            contributions: emptyMap()
         };
 
         self.pools.set(poolId, newPool);
@@ -131,6 +138,7 @@ contract ToonTip with Deployable {
         
         // Record contributor
         p.contributors.set(p.contributorCount, sender());
+        p.contributions.set(p.contributorCount, contribution);
         p.contributorCount = p.contributorCount + 1;
 
         if (p.currentAmount >= p.targetAmount) {
@@ -146,6 +154,37 @@ contract ToonTip with Deployable {
         }
 
         self.pools.set(msg.poolId, p);
+    }
+
+
+    /// Contributors can refund after deadline if pool failed to hit target.
+    receive(msg: RefundPoolContribution) {
+        let pool: Pool? = self.pools.get(msg.poolId);
+        require(pool != null, "ToonTip: pool does not exist");
+        let p: Pool = pool!!;
+
+        require(!p.completed, "ToonTip: pool already completed");
+        require(now() > p.deadline, "ToonTip: pool still active");
+
+        let contributor: Address? = p.contributors.get(msg.contributionId);
+        require(contributor != null, "ToonTip: contribution does not exist");
+        require(contributor!! == sender(), "ToonTip: not contribution owner");
+
+        let contribution: Int? = p.contributions.get(msg.contributionId);
+        require(contribution != null, "ToonTip: contribution already refunded");
+
+        let refundAmount: Int = contribution!!;
+        p.currentAmount = p.currentAmount - refundAmount;
+        p.contributions.del(msg.contributionId);
+
+        self.pools.set(msg.poolId, p);
+
+        send(SendParameters{
+            to: sender(),
+            value: refundAmount,
+            mode: SendIgnoreErrors,
+            body: "pool_refund".asComment()
+        });
     }
 
     // ── Getters ──────────────────────────────────────────────────────────────

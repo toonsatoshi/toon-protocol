@@ -101,6 +101,46 @@ describe('ToonTip', () => {
         expect(poolAfter?.currentAmount).toBe(toNano('20'));
     });
 
+
+
+    it('should allow contributors to refund after failed pool deadline', async () => {
+        const now = blockchain.now ?? Math.floor(Date.now() / 1000);
+
+        await tip.send(
+            owner.getSender(),
+            { value: toNano('0.05') },
+            {
+                $$type: 'CreatePool',
+                trackAddress: track1.address,
+                threshold: toNano('50'),
+                deadline: BigInt(now + 100)
+            }
+        );
+
+        await tip.send(
+            fan.getSender(),
+            { value: toNano('20.05') },
+            { $$type: 'ContributeToPool', poolId: 0n }
+        );
+
+        blockchain.now = now + 101;
+
+        const refund = await tip.send(
+            fan.getSender(),
+            { value: toNano('0.05') },
+            { $$type: 'RefundPoolContribution', poolId: 0n, contributionId: 0n }
+        );
+
+        expect(refund.transactions).toHaveTransaction({
+            from: tip.address,
+            to: fan.address,
+            success: true,
+        });
+
+        const poolAfterRefund = await tip.getGetPool(0n);
+        expect(poolAfterRefund?.currentAmount).toBe(0n);
+    });
+
     it('should finalize pool and tip track when threshold reached', async () => {
         await tip.send(
             owner.getSender(),
