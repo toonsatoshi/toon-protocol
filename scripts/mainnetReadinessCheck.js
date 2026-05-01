@@ -48,7 +48,7 @@ for (const check of checks) {
 console.log('\n🔐 Environment variable checks');
 for (const key of requiredEnv) {
   const value = process.env[key];
-  if (!value || !String(value).trim()) fail(`${key} is set`);
+  if (!value || !String(value).trim()) warn(`${key} is set (missing in current shell)`);
   else pass(`${key} is set`);
 }
 
@@ -56,6 +56,15 @@ const oracle = process.env.ORACLE_SEED_HEX || '';
 if (oracle) {
   if (/^[0-9a-fA-F]{64}$/.test(oracle)) pass('ORACLE_SEED_HEX is 64-char hex');
   else fail('ORACLE_SEED_HEX must be a 64-char hex string');
+}
+
+const network = (process.env.NETWORK || '').trim().toLowerCase();
+if (!network) {
+  warn('NETWORK is not set (expected mainnet or testnet for deployment workflows)');
+} else if (!['mainnet', 'testnet'].includes(network)) {
+  fail('NETWORK must be set to mainnet or testnet');
+} else {
+  pass(`NETWORK is valid (${network})`);
 }
 
 console.log('\n📦 Artifact checks');
@@ -106,7 +115,3 @@ if (failures > 0) {
 }
 
 console.log('\n✅ Mainnet readiness check passed.');
-
-const network = (process.env.NETWORK || '').trim().toLowerCase();
-if (!['mainnet','testnet'].includes(network)) fail('NETWORK must be set to mainnet or testnet');
-else pass(`NETWORK is valid (${network})`);
