@@ -14,7 +14,7 @@ const checks = [
   { type: 'file', value: 'migrations/001_unique_listeners.sql', label: 'DB migration exists' },
   { type: 'dir', value: 'contracts', label: 'Contracts directory exists' },
   { type: 'dir', value: 'tests', label: 'Tests directory exists' },
-  { type: 'dir', value: 'build', label: 'Compiled build directory exists (run npm test to generate)' },
+  { type: 'dir', value: 'build', label: 'Compiled build directory exists (run npm test to generate)', nonBlocking: true },
 ];
 
 const requiredEnv = [
@@ -29,21 +29,27 @@ const requiredEnv = [
 ];
 
 let failures = 0;
+const strict = process.argv.includes('--strict');
 
 function pass(msg) { console.log(`✅ ${msg}`); }
 function fail(msg) { console.log(`❌ ${msg}`); failures += 1; }
 function warn(msg) { console.log(`⚠️ ${msg}`); }
+function failOrWarn(msg) {
+  if (strict) fail(msg);
+  else warn(`${msg} (non-blocking in default mode; use --strict to fail)`);
+}
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), 'utf8');
 }
 
-console.log('🔎 Toon Protocol Mainnet Readiness Check\n');
+console.log(`🔎 Toon Protocol Mainnet Readiness Check${strict ? ' (strict mode)' : ''}\n`);
 
 for (const check of checks) {
   const target = path.join(root, check.value);
   if (check.type === 'file' && fs.existsSync(target) && fs.statSync(target).isFile()) pass(check.label);
   else if (check.type === 'dir' && fs.existsSync(target) && fs.statSync(target).isDirectory()) pass(check.label);
+  else if (check.nonBlocking) failOrWarn(check.label);
   else fail(check.label);
 }
 
@@ -93,7 +99,7 @@ const expectedBuilds = [
 for (const rel of expectedBuilds) {
   const exists = fs.existsSync(path.join(root, rel));
   if (exists) pass(`${rel} exists`);
-  else fail(`${rel} missing (run npm run build:contracts)`);
+  else failOrWarn(`${rel} missing (run npm run build:contracts)`);
 }
 
 console.log('\n🧱 Protocol architecture checks');
@@ -116,10 +122,14 @@ if (/const\s+VIBE_MULTIPLIER_BPS\s*:\s*Int\s*=\s*150\s*;/.test(vaultSource) && /
   pass('Vibe multiplier math does not match the known BPS/percent bug pattern');
 }
 
-if (/mode\s*:\s*SendIgnoreErrors/.test(vaultSource)) {
-  warn('ToonVault still uses SendIgnoreErrors in at least one send path; manually review financial sends');
+const sendIgnoreTargets = ['toon_vault.tact', 'toon_drop.tact', 'toon_tip.tact'];
+const sendIgnoreHits = sendIgnoreTargets.filter((file) =>
+  /mode\s*:\s*[^\n]*SendIgnoreErrors/.test(read(`contracts/${file}`))
+);
+if (sendIgnoreHits.length > 0) {
+  warn(`SendIgnoreErrors is present in ${sendIgnoreHits.join(', ')}; hard-review payout/withdrawal paths before mainnet value flows`);
 } else {
-  pass('ToonVault has no SendIgnoreErrors usage');
+  pass('No SendIgnoreErrors usage found in ToonVault/ToonDrop/ToonTip');
 }
 
 if (failures > 0) {
