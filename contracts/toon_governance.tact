@@ -23,6 +23,12 @@ message TransferNotification {
     forwardPayload: Cell;
 }
 
+message TransferJetton {
+    to: Address;
+    amount: Int as coins;
+    forwardTonAmount: Int as coins;
+}
+
 // Numeric parameter proposals (emissionCap, minWalletAge).
 message ProposeParameterUpdate {
     parameter:   String; // "emissionCap" | "minWalletAge"
@@ -207,17 +213,31 @@ contract ToonGovernance with Deployable {
     }
 
     receive(msg: UnstakeGovernance) {
+        require(msg.amount > 0, "ToonGovernance: zero unstake amount");
+
         let existing: Int? = self.stakes.get(sender());
         require(existing != null && existing!! >= msg.amount,
             "ToonGovernance: insufficient stake");
+
+        let governanceWallet: Address? = self.jettonWalletByOwner.get(myAddress());
+        require(governanceWallet != null, "ToonGovernance: governance wallet not registered");
+
+        let recipientWallet: Address? = self.jettonWalletByOwner.get(sender());
+        require(recipientWallet != null, "ToonGovernance: recipient wallet not registered");
+
         let newBal: Int = existing!! - msg.amount;
         self.stakes.set(sender(), newBal);
         self.totalStaked = self.totalStaked - msg.amount;
+
         send(SendParameters{
-            to:   sender(),
+            to: governanceWallet!!,
             value: 0,
-            mode:  SendRemainingValue,
-            body:  "Unstaked $TOON".asComment()
+            mode: SendRemainingValue,
+            body: TransferJetton{
+                to: recipientWallet!!,
+                amount: msg.amount,
+                forwardTonAmount: 0
+            }.toCell()
         });
     }
 
