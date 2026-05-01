@@ -5,6 +5,29 @@ import { ToonTip } from '../build/ToonTip/ToonTip_ToonTip';
 import { ToonGovernance } from '../build/ToonGovernance/ToonGovernance_ToonGovernance';
 import { NetworkProvider } from '@ton/blueprint';
 
+function requireEnv(name: string): string {
+    const value = process.env[name]?.trim();
+    if (!value) {
+        throw new Error(`Missing required environment variable: ${name}`);
+    }
+    return value;
+}
+
+function requireSecret(name: string): string {
+    const direct = process.env[name]?.trim();
+    if (direct) return direct;
+    const filePath = process.env[`${name}_FILE`]?.trim();
+    if (!filePath) {
+        throw new Error(`Missing required secret: set ${name} or ${name}_FILE`);
+    }
+    const { readFileSync } = require('fs');
+    const fromFile = readFileSync(filePath, 'utf8').trim();
+    if (!fromFile) {
+        throw new Error(`Secret file for ${name} is empty: ${filePath}`);
+    }
+    return fromFile;
+}
+
 // ── Full Toon Protocol deployment ─────────────────────────────────────────────
 //
 //  Deployment order resolves the Registry ↔ Vault circular dependency:
@@ -16,6 +39,17 @@ import { NetworkProvider } from '@ton/blueprint';
 //  5. Rotate mintAuthority to Governance
 //
 export async function run(provider: NetworkProvider) {
+    const rpcUrl = requireEnv('TON_RPC_URL');
+    const deployerPrivateKey = requireSecret('DEPLOYER_PRIVATE_KEY');
+    const protocolFeeBpsRaw = requireEnv('PROTOCOL_FEE_BPS');
+    const protocolFeeBps = Number.parseInt(protocolFeeBpsRaw, 10);
+    if (!Number.isInteger(protocolFeeBps) || protocolFeeBps < 0 || protocolFeeBps > 10_000) {
+        throw new Error('PROTOCOL_FEE_BPS must be an integer between 0 and 10000');
+    }
+    console.log(`RPC URL: ${rpcUrl}`);
+    console.log(`Protocol fee (bps): ${protocolFeeBps}`);
+    console.log(`Deployer key loaded (${deployerPrivateKey.length} chars).`);
+
     const deployer        = provider.sender();
     const deployerAddress = deployer.address!;
 
@@ -41,7 +75,7 @@ export async function run(provider: NetworkProvider) {
     //    node -e "const {keyPairFromSeed}=require('@ton/crypto');
     //             const kp=keyPairFromSeed(Buffer.from(process.env.ORACLE_SEED_HEX,'hex'));
     //             console.log('0x'+Buffer.from(kp.publicKey).toString('hex'))"
-    const oracleSeedHex = process.env.ORACLE_SEED_HEX;
+    const oracleSeedHex = requireSecret('ORACLE_SEED_HEX');
     if (!oracleSeedHex || oracleSeedHex.length !== 64) {
         throw new Error('ORACLE_SEED_HEX not set in .env — cannot deploy vault');
     }
