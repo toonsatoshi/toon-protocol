@@ -17,9 +17,10 @@ message ConfigureTokenMaster {
     tokenMaster: Address;
 }
 
-message TransferNotification {
-    from: Address;
+message(0x7362d09c) TransferNotification {
+    queryId: Int as uint64;
     amount: Int as coins;
+    from: Address;
     forwardPayload: Cell;
 }
 
@@ -152,6 +153,7 @@ contract ToonArtist with Deployable {
             value: 0,
             mode:  SendRemainingValue,
             body:  TransferNotification{
+                queryId: 0,
                 from: myAddress(),
                 amount: msg.amount,
                 forwardPayload: emptyCell()
