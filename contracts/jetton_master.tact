@@ -6,61 +6,89 @@ message MintJetton {
     amount: Int as coins;
 }
 
-message BurnNotification {
-    owner: Address;
+message(0x7bdd97de) TokenBurnNotification {
+    queryId: Int as uint64;
     amount: Int as coins;
+    owner: Address;
+    responseDestination: Address?;
 }
 
-message MintWalletCredit {
-    amount: Int as coins;
+message(21) ChangeAdmin {
+    queryId: Int as uint64;
+    newAdmin: Address;
+}
+
+message(3) ChangeMetadata {
+    queryId: Int as uint64;
+    content: Cell;
 }
 
 contract JettonMaster with Deployable {
-    owner: Address;
     totalSupply: Int as coins;
-    metadataUri: String;
+    owner: Address;
+    content: Cell;
+    mintable: Bool;
 
     init(owner: Address, metadataUri: String) {
-        self.owner = owner;
         self.totalSupply = 0;
-        self.metadataUri = metadataUri;
+        self.owner = owner;
+        self.content = beginCell().storeStringTail(metadataUri).endCell();
+        self.mintable = true;
     }
 
     receive(msg: MintJetton) {
-        require(sender() == self.owner, "JettonMaster: not owner");
-        require(msg.amount > 0, "JettonMaster: amount must be > 0");
+        require(sender() == self.owner, "JettonMaster: owner only");
+        require(self.mintable, "JettonMaster: mint disabled");
+        require(msg.amount > 0, "JettonMaster: invalid amount");
 
         let walletInit: StateInit = initOf JettonWallet(msg.to, myAddress());
         let walletAddress: Address = contractAddress(walletInit);
-
-        self.totalSupply = self.totalSupply + msg.amount;
 
         send(SendParameters{
             to: walletAddress,
             value: ton("0.05"),
             mode: SendIgnoreErrors,
-            body: MintWalletCredit{ amount: msg.amount }.toCell(),
+            bounce: false,
+            body: TokenTransferInternal{
+                queryId: 0,
+                amount: msg.amount,
+                from: myAddress(),
+                responseAddress: self.owner,
+                forwardTonAmount: 0,
+                forwardPayload: emptySlice()
+            }.toCell(),
             code: walletInit.code,
             data: walletInit.data
         });
+
+        self.totalSupply = self.totalSupply + msg.amount;
     }
 
-    receive(msg: BurnNotification) {
+    receive(msg: TokenBurnNotification) {
         let walletInit: StateInit = initOf JettonWallet(msg.owner, myAddress());
-        require(sender() == contractAddress(walletInit), "JettonMaster: bad burn sender");
-        require(msg.amount > 0, "JettonMaster: amount must be > 0");
-        require(self.totalSupply >= msg.amount, "JettonMaster: underflow");
+        require(sender() == contractAddress(walletInit), "JettonMaster: invalid burn sender");
         self.totalSupply = self.totalSupply - msg.amount;
+
+        if (msg.responseDestination != null) {
+            send(SendParameters{to: msg.responseDestination!!, value: 0, mode: SendRemainingValue, bounce: false});
+        }
+    }
+
+    receive(msg: ChangeAdmin) {
+        require(sender() == self.owner, "JettonMaster: owner only");
+        self.owner = msg.newAdmin;
+    }
+
+    receive(msg: ChangeMetadata) {
+        require(sender() == self.owner, "JettonMaster: owner only");
+        self.content = msg.content;
     }
 
     get fun get_jetton_data(): (Int, Bool, Address, Cell, Cell) {
-        let content: Cell = beginCell().storeStringTail(self.metadataUri).endCell();
-        let walletCode: Cell = codeOf JettonWallet;
-        return (self.totalSupply, true, self.owner, content, walletCode);
+        return (self.totalSupply, self.mintable, self.owner, self.content, codeOf JettonWallet);
     }
 
     get fun get_wallet_address(owner: Address): Address {
-        let walletInit: StateInit = initOf JettonWallet(owner, myAddress());
-        return contractAddress(walletInit);
+        return contractAddress(initOf JettonWallet(owner, myAddress()));
     }
 }
