@@ -46,7 +46,13 @@ contract JettonWallet with Deployable {
     }
 
     receive(msg: TransferNotification) {
-        require(sender() == self.master || sender() == self.owner, "JettonWallet: bad sender");
+        let expectedWalletSender: Address = contractAddress(initOf JettonWallet(msg.from, self.master));
+        require(
+            sender() == self.master ||
+            sender() == self.owner ||
+            sender() == expectedWalletSender,
+            "JettonWallet: bad sender"
+        );
         require(msg.amount > 0, "JettonWallet: amount must be > 0");
         self.balance = self.balance + msg.amount;
     }
