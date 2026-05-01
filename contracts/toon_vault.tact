@@ -112,8 +112,8 @@ contract ToonVault with Deployable {
     // Oracle nonces: prevents the same signed payload being submitted twice.
     usedNonces: map<Int, Int>;
 
-    // Per-day idempotency: same (reward, wallet, day) is rejected even if
-    // submitted with a different oracle nonce.
+    // Per-day idempotency: same (reward, wallet) is rejected on the same day
+    // even if submitted with a different oracle nonce.
     claimLastDay: map<Int, Int>;
 
     // Per-wallet burst throttle.
@@ -167,11 +167,10 @@ contract ToonVault with Deployable {
     //  Key builders
     // ─────────────────────────────────────────────────────────────────────────
 
-    fun nonceKey(rewardId: Int, wallet: Address, day: Int): Int {
+    fun nonceKey(rewardId: Int, wallet: Address): Int {
         return beginCell()
             .storeUint(rewardId, 8)
             .storeAddress(wallet)
-            .storeUint(day, 32)
             .endCell().hash();
     }
 
@@ -354,7 +353,7 @@ contract ToonVault with Deployable {
         }
 
         // ── 8. Per-day idempotency nonce ──────────────────────────────────
-        let nKey: Int = self.nonceKey(msg.rewardId, msg.walletAddress, today);
+        let nKey: Int = self.nonceKey(msg.rewardId, msg.walletAddress);
         let claimedDay: Int? = self.claimLastDay.get(nKey);
         require(claimedDay == null || claimedDay!! != today,
             "ToonVault: reward already claimed today");
