@@ -197,14 +197,18 @@ contract ToonGovernance with Deployable {
         require(expectedWallet != null, "ToonGovernance: wallet not registered");
         require(sender() == expectedWallet!!, "ToonGovernance: invalid jetton wallet sender");
 
+        // Some JettonWallet implementations send emptyCell() in forwardPayload.
+        // Accept empty payloads; enforce nonce+master checks only when payload is present.
         let slice = msg.forwardPayload.beginParse();
-        let nonce = slice.loadUint(64);
-        let claimedMaster = slice.loadAddress();
-        require(claimedMaster == self.tokenMaster, "ToonGovernance: invalid token master");
+        if (msg.forwardPayload.hash() != beginCell().endCell().hash()) {
+            let nonce = slice.loadUint(64);
+            let claimedMaster = slice.loadAddress();
+            require(claimedMaster == self.tokenMaster, "ToonGovernance: invalid token master");
 
-        let replayKey = beginCell().storeAddress(msg.from).storeUint(nonce, 64).endCell().hash();
-        require(self.usedStakeNonces.get(replayKey) == null, "ToonGovernance: stake replay");
-        self.usedStakeNonces.set(replayKey, true);
+            let replayKey = beginCell().storeAddress(msg.from).storeUint(nonce, 64).endCell().hash();
+            require(self.usedStakeNonces.get(replayKey) == null, "ToonGovernance: stake replay");
+            self.usedStakeNonces.set(replayKey, true);
+        }
 
         let existing: Int? = self.stakes.get(msg.from);
         let current: Int   = existing != null ? existing!! : 0;
