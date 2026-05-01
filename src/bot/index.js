@@ -476,11 +476,9 @@ bot.start(async (ctx) => {
         await store.createPendingUser(telegramId, null, referredBy);
 
         return ctx.reply(
-`🎵 Welcome to Toon! (TESTNET)
+`🎵 Welcome to Toon!
 
 The newest way to share music and earn crypto — right inside Telegram.
-
-⚠️ Note: Toon is currently in development on the TON Testnet. All testnet $TOON earned will be redeemable 1:1 for mainnet tokens at launch! 🎁
 
 Powered by The Open Network. ⚡
 
@@ -825,7 +823,7 @@ const showReferral = async (ctx) => {
     const uploaded = refs.filter(r => r.uploadedAt).length;
 
     await ctx.reply(
-`🔗 Your Referral Link (TESTNET)
+`🔗 Your Referral Link
 
 Share this with friends:
 https://t.me/${ctx.botInfo.username}?start=ref_${user.referralCode}
@@ -833,15 +831,15 @@ https://t.me/${ctx.botInfo.username}?start=ref_${user.referralCode}
 👥 Friends signed up: ${refs.length}
 🎵 Friends uploaded: ${uploaded}
 
-🎁 Rewards (TESTNET):
+🎁 Rewards:
 ✅ Friend signs up → +5 $TOON
 🎵 Friend uploads → +25 $TOON
 ▶️ Friend's track hits 5 plays → +50 $TOON
 
-All testnet $TOON is redeemable 1:1 on Mainnet!`,
+Earn rewards as your referrals grow on Toon!`,
         Markup.inlineKeyboard([
             [Markup.button.url('Share Your Link',
-                `https://t.me/share/url?url=https://t.me/${ctx.botInfo.username}?start=ref_${user.referralCode}&text=Join me on Toon — the music platform on TON (TESTNET) 🎵`
+                `https://t.me/share/url?url=https://t.me/${ctx.botInfo.username}?start=ref_${user.referralCode}&text=Join me on Toon — the music platform on TON 🎵`
             )]
         ])
     );
@@ -1375,12 +1373,12 @@ bot.on('text', async (ctx) => {
                 } catch (e) {
                     logger.error('Failed to claim growth reward', e);
                 }
-                try { await bot.telegram.sendMessage(user.referredBy, `🎉 ${text.trim()} just joined via your link!\n+5 $TOON (TESTNET) earned (On-chain claim sent)`); } catch(e) {}
+                try { await bot.telegram.sendMessage(user.referredBy, `🎉 ${text.trim()} just joined via your link!\n+5 $TOON earned (On-chain claim sent)`); } catch(e) {}
             }
         }
 
         await ctx.reply(
-`🎉 Welcome to Toon (TESTNET), ${user.artistName}!
+`🎉 Welcome to Toon, ${user.artistName}!
 
 Next: Click 💎 Link Wallet to complete your setup.`,
             Markup.keyboard([
