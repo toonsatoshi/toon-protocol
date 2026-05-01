@@ -2,6 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const { spawnSync } = require('child_process');
+
 const root = path.resolve(__dirname, '..');
 
 const checks = [
@@ -67,7 +69,18 @@ if (!network) {
   pass(`NETWORK is valid (${network})`);
 }
 
+
 console.log('\n📦 Artifact checks');
+const buildDir = path.join(root, 'build');
+if (!fs.existsSync(buildDir)) {
+  warn('build/ is missing; running npm run build:contracts to generate release artifacts');
+  const buildResult = spawnSync('npm', ['run', 'build:contracts'], { cwd: root, stdio: 'inherit', shell: process.platform === 'win32' });
+  if (buildResult.status !== 0) {
+    fail('Automatic contract build failed; run npm run build:contracts and retry readiness checks');
+  } else {
+    pass('Compiled build directory generated via npm run build:contracts');
+  }
+}
 const expectedBuilds = [
   'build/ToonRegistry',
   'build/ToonVault',
