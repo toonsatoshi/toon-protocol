@@ -104,7 +104,7 @@ describe('ToonArtist', () => {
         const MIN_STAKE = 100000000000n;
         await artist.send(
             owner.getSender(),
-            { value: toNano('0.1') },
+            { value: toNano('100') },
             { $$type: 'StakeToon', amount: MIN_STAKE }
         );
 
@@ -136,5 +136,19 @@ describe('ToonArtist', () => {
         // Each track gives 10 reputation. Threshold is 1000.
         // This test might be slow if we add 100 tracks, but we can test the logic.
         expect(await artist.getCanLaunchToonDrop()).toBe(false);
+    });
+
+    it('should reject stake inflation when attached value is lower than declared amount', async () => {
+        const result = await artist.send(
+            owner.getSender(),
+            { value: toNano('0.1') },
+            { $$type: 'StakeToon', amount: 100000000000n }
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: owner.address,
+            to: artist.address,
+            success: false,
+        });
     });
 });
