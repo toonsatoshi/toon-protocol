@@ -17,16 +17,21 @@ message UnstakeGovernance {
 
 // Jetton transfer callback (TEP-74 style).
 
-message TransferNotification {
+message(0x7362d09c) TransferNotification {
+    queryId: Int as uint64;
     from: Address;
     amount: Int as coins;
-    forwardPayload: Cell;
+    forwardPayload: Slice as remaining;
 }
 
-message TransferJetton {
-    to: Address;
+message(0xf8a7ea5) TransferJetton {
+    queryId: Int as uint64;
     amount: Int as coins;
+    destination: Address;
+    responseDestination: Address?;
+    customPayload: Cell?;
     forwardTonAmount: Int as coins;
+    forwardPayload: Slice as remaining;
 }
 
 // Numeric parameter proposals (emissionCap, minWalletAge).
@@ -197,7 +202,7 @@ contract ToonGovernance with Deployable {
         require(expectedWallet != null, "ToonGovernance: wallet not registered");
         require(sender() == expectedWallet!!, "ToonGovernance: invalid jetton wallet sender");
 
-        let slice = msg.forwardPayload.beginParse();
+        let slice = msg.forwardPayload;
         let nonce = slice.loadUint(64);
         let claimedMaster = slice.loadAddress();
         require(claimedMaster == self.tokenMaster, "ToonGovernance: invalid token master");
@@ -234,9 +239,13 @@ contract ToonGovernance with Deployable {
             value: 0,
             mode: SendRemainingValue,
             body: TransferJetton{
-                to: recipientWallet!!,
+                queryId: 0,
                 amount: msg.amount,
-                forwardTonAmount: 0
+                destination: recipientWallet!!,
+                responseDestination: sender(),
+                customPayload: null,
+                forwardTonAmount: 0,
+                forwardPayload: emptySlice()
             }.toCell()
         });
     }

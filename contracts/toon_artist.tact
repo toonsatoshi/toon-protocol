@@ -17,10 +17,11 @@ message ConfigureTokenMaster {
     tokenMaster: Address;
 }
 
-message TransferNotification {
+message(0x7362d09c) TransferNotification {
+    queryId: Int as uint64;
     from: Address;
     amount: Int as coins;
-    forwardPayload: Cell;
+    forwardPayload: Slice as remaining;
 }
 
 message RegisterTrack {
@@ -122,7 +123,7 @@ contract ToonArtist with Deployable {
         require(expectedWallet != null, "ToonArtist: wallet not registered");
         require(sender() == expectedWallet!!, "ToonArtist: invalid jetton wallet sender");
 
-        let slice = msg.forwardPayload.beginParse();
+        let slice = msg.forwardPayload;
         let nonce = slice.loadUint(64);
         let claimedMaster = slice.loadAddress();
         require(claimedMaster == self.tokenMaster, "ToonArtist: invalid token master");

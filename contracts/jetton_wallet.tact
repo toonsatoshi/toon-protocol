@@ -62,7 +62,7 @@ contract JettonWallet with Deployable {
         let ctx: Context = context();
         let fwdFee: Int = ctx.readForwardFee() + ctx.readForwardFee();
         let final: Int = 2 * self.GasConsumption + self.MinTonsForStorage + fwdFee;
-        require(ctx.value > min(final, ton("0.01")), "JettonWallet: low ton attached");
+        require(ctx.value > final, "JettonWallet: low ton attached");
 
         self.balance = self.balance - msg.amount;
 
